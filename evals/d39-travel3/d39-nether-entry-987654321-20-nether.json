@@ -1,0 +1,55 @@
+{
+  "protocol": "/home/agaminggod/Desktop/Projects/arena-beat-game/sub/long/d39-nether-entry-987654321-20-codex/run-artifacts/run-1792921354804-74a4d342/q-nn2xdm-1a17-LONG-r1-11f6e573/quality-protocol.jsonl",
+  "playingWindow": {
+    "startedAt": 1792921396425,
+    "endedAt": 1792924082280
+  },
+  "netherMinutes": 41.77336666666667,
+  "pathBlocks": 1151.013032440411,
+  "path10Blocks": 873.8220708455159,
+  "blocksPerNetherMinute": 20.918162469839615,
+  "sampledPathBlocksPerNetherMinute": 27.553753127560807,
+  "maxFromEntry": 147.09934329459657,
+  "maxDisplacementPerNetherMinute": 3.521366723165635,
+  "firstFortress": {
+    "netherMinutes": 0.40658333333333335,
+    "wallMinutes": 0.40658333333333335,
+    "wallFromGameStartMinutes": 0.41395,
+    "at": {
+      "x": -9.699999988079071,
+      "y": 61.7531999805212,
+      "z": -23.69999998807907
+    },
+    "seen": {
+      "structure": "nether fortress",
+      "size": 6,
+      "new": true,
+      "x": -24,
+      "y": 65,
+      "z": -41,
+      "distance": 22,
+      "bearing": 41
+    }
+  },
+  "deaths": 2,
+  "travel": {
+    "calls": 39,
+    "activeMinutes": 9.026766666666667,
+    "netGain": 449,
+    "netBlocksPerActiveMinute": 49.740955602412086,
+    "reasons": {
+      "ACTION_CANCELLED": 4,
+      "ARRIVED": 17,
+      "HOSTILE_NEAR": 4,
+      "NO_ROUTE": 3,
+      "TRAVEL_TIMEOUT": 10,
+      "NO_WATER_BUCKET": 1
+    }
+  },
+  "serverTickRate": 19.96327803760131,
+  "sampling": {
+    "displacementCadenceSeconds": 10,
+    "gapsOver5s": 0,
+    "excludedJumps": 0
+  }
+}

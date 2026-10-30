@@ -1,0 +1,13 @@
+--- base
++++ candidate
+@@ -17,8 +17,8 @@
+       LocalVariableTable:
+         Start  Length  Slot  Name   Signature
+             0      12     0  this   Ldev/agaminggod/arenaagents/server/runtime/ServerActionExecutor$3;
+-            0      12     1  minY   I
+-            0      12     2 height   I
++            0      12     1  arg0   I
++            0      12     2  arg1   I
+ 
+   net.minecraft.world.level.block.state.BlockState knownState(net.minecraft.core.BlockPos);
+     Code:

@@ -1,0 +1,32 @@
+package dev.agaminggod.arenaagents;
+
+import dev.agaminggod.arenaagents.agent.CodexAgentEntities;
+import dev.agaminggod.arenaagents.server.AgentControlSync;
+import dev.agaminggod.arenaagents.server.AgentModelArgumentType;
+import dev.agaminggod.arenaagents.server.ArenaAgentCommands;
+import dev.agaminggod.arenaagents.server.CodexAgentCommands;
+import dev.agaminggod.arenaagents.server.CodexAgentServerRuntime;
+import dev.agaminggod.arenaagents.server.GoalPayload;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+
+public final class ArenaAgents implements ModInitializer {
+	@Override
+	public void onInitialize() {
+		// Fabric runs this from the start of the dedicated server's Main, before Main opens or creates the world: the
+		// intervention audit's evidence that this server is creating it.
+		if (net.fabricmc.loader.api.FabricLoader.getInstance().getEnvironmentType() == net.fabricmc.api.EnvType.SERVER) {
+			dev.agaminggod.arenaagents.server.audit.StartupWorldProvenance.capture(
+					net.fabricmc.loader.api.FabricLoader.getInstance().getGameDir(), net.fabricmc.loader.api.FabricLoader.getInstance().getLaunchArguments(false));
+		}
+		CodexAgentEntities.register();
+		dev.agaminggod.arenaagents.camera.CameraDolly.register();
+		AgentModelArgumentType.register();
+		PayloadTypeRegistry.clientboundPlay().register(GoalPayload.TYPE, GoalPayload.CODEC);
+		AgentControlSync.register();
+		dev.agaminggod.arenaagents.risk.RiskOverlayPublisher.register();
+		ArenaAgentCommands.register();
+		CodexAgentCommands.register();
+		CodexAgentServerRuntime.register();
+	}
+}

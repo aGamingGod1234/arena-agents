@@ -1,0 +1,274 @@
+{
+  "schemaVersion": 1,
+  "scorer": "d38-measure",
+  "scoredAt": "2026-10-24T19:31:00.686Z",
+  "run": "w-desk-d38-baseline-h-r4-codex",
+  "raw": null,
+  "evaluationReferences": [
+    "evals/d38-baseline"
+  ],
+  "identity": {
+    "agentId": null,
+    "agentName": null,
+    "seed": "20261024",
+    "profile": {
+      "provider": "codex",
+      "model": "gpt-6.1-sol",
+      "reasoningEffort": "low",
+      "serviceTier": "default"
+    },
+    "build": {
+      "commit": null,
+      "jar": {
+        "path": "C:\\Users\\player\\arena-runner\\jars\\d25-bc23e272.jar",
+        "sha256": "066a07667003c16784f6b9b34370de5a342436c798ea7a29d0de5b929fd19fb4"
+      },
+      "coordinatorSha256": "880b979bdfb7600f8913b6c915a87b1cb3e723628a33e7c7328573ff57229ed1"
+    },
+    "checkpoint": "checkpoint-at:1792720340000"
+  },
+  "window": {
+    "startedAt": null,
+    "observedThrough": null,
+    "plannedEndAt": null,
+    "windowMs": 3600000
+  },
+  "ending": {
+    "kind": "failure",
+    "reason": "ERROR",
+    "at": null,
+    "censored": true
+  },
+  "postRunFailure": null,
+  "censoring": {
+    "censored": true,
+    "unobservedRemainder": true,
+    "observedFirstLifeFailure": false,
+    "reason": "Continuation after the last observation is unobserved, including after a fixed budget. Observed first-life deaths remain failures."
+  },
+  "firstLife": {
+    "name": "first_life",
+    "samples": 0,
+    "startedAt": null,
+    "endedAt": null,
+    "deaths": 0,
+    "damageTakenCounterDelta": null,
+    "healthDropLowerBound": 0,
+    "resources": {
+      "rods": {
+        "unit": "rod equivalents (rod=1, powder=0.5, eye=0.5)",
+        "supplied": 0,
+        "earned": null,
+        "held": null,
+        "spent": null,
+        "lost": 0,
+        "observedGains": 0,
+        "recoveredOrEarned": 0,
+        "unexplainedDecrease": 0,
+        "peakHeld": 0,
+        "earnedBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedGains": 0,
+          "exact": false
+        },
+        "spentBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedDecreases": 0,
+          "exact": false
+        },
+        "lostBasis": "Last sampled holdings dropped at an observed death; inferred loss of possession, not verified destruction or exact loss between samples."
+      },
+      "pearlsEyes": {
+        "unit": "pearl/eye equivalents",
+        "supplied": 0,
+        "earned": null,
+        "held": null,
+        "spent": null,
+        "lost": 0,
+        "observedGains": 0,
+        "recoveredOrEarned": 0,
+        "unexplainedDecrease": 0,
+        "peakHeld": 0,
+        "earnedBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedGains": 0,
+          "exact": false
+        },
+        "spentBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedDecreases": 0,
+          "exact": false
+        },
+        "lostBasis": "Last sampled holdings dropped at an observed death; inferred loss of possession, not verified destruction or exact loss between samples."
+      },
+      "gold": {
+        "unit": "barterable ingot equivalents (block=9, nugget=1/9)",
+        "supplied": 2,
+        "earned": null,
+        "held": null,
+        "spent": null,
+        "lost": 0,
+        "observedGains": 0,
+        "recoveredOrEarned": 0,
+        "unexplainedDecrease": 0,
+        "peakHeld": 0,
+        "earnedBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedGains": 0,
+          "exact": false
+        },
+        "spentBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedDecreases": 0,
+          "exact": false
+        },
+        "lostBasis": "Last sampled holdings dropped at an observed death; inferred loss of possession, not verified destruction or exact loss between samples."
+      }
+    },
+    "milestones": {},
+    "status": "unobserved",
+    "durationMs": null,
+    "retentionRequirements": {
+      "rodsHeldAtStageEnd": null,
+      "pearlsOrEyesHeldAtStageEnd": null,
+      "required": {
+        "rods": 6,
+        "pearlsEyes": 12
+      }
+    },
+    "resourceBasis": "Inventory deltas. Earned/spent remain unknown without a causal receipt; positive deltas can be recovery, gifts or container transfers. Lost is the observed death-associated decrease, not item destruction. Counter units are vanilla tenths of HP."
+  },
+  "afterDeath": {
+    "name": "after_death",
+    "samples": 0,
+    "startedAt": null,
+    "endedAt": null,
+    "deaths": 0,
+    "damageTakenCounterDelta": null,
+    "healthDropLowerBound": 0,
+    "resources": {
+      "rods": {
+        "unit": "rod equivalents (rod=1, powder=0.5, eye=0.5)",
+        "supplied": 0,
+        "earned": null,
+        "held": null,
+        "spent": null,
+        "lost": 0,
+        "observedGains": 0,
+        "recoveredOrEarned": 0,
+        "unexplainedDecrease": 0,
+        "peakHeld": 0,
+        "earnedBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedGains": 0,
+          "exact": false
+        },
+        "spentBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedDecreases": 0,
+          "exact": false
+        },
+        "lostBasis": "Last sampled holdings dropped at an observed death; inferred loss of possession, not verified destruction or exact loss between samples."
+      },
+      "pearlsEyes": {
+        "unit": "pearl/eye equivalents",
+        "supplied": 0,
+        "earned": null,
+        "held": null,
+        "spent": null,
+        "lost": 0,
+        "observedGains": 0,
+        "recoveredOrEarned": 0,
+        "unexplainedDecrease": 0,
+        "peakHeld": 0,
+        "earnedBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedGains": 0,
+          "exact": false
+        },
+        "spentBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedDecreases": 0,
+          "exact": false
+        },
+        "lostBasis": "Last sampled holdings dropped at an observed death; inferred loss of possession, not verified destruction or exact loss between samples."
+      },
+      "gold": {
+        "unit": "barterable ingot equivalents (block=9, nugget=1/9)",
+        "supplied": 0,
+        "earned": null,
+        "held": null,
+        "spent": null,
+        "lost": 0,
+        "observedGains": 0,
+        "recoveredOrEarned": 0,
+        "unexplainedDecrease": 0,
+        "peakHeld": 0,
+        "earnedBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedGains": 0,
+          "exact": false
+        },
+        "spentBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedDecreases": 0,
+          "exact": false
+        },
+        "lostBasis": "Last sampled holdings dropped at an observed death; inferred loss of possession, not verified destruction or exact loss between samples."
+      }
+    },
+    "milestones": {},
+    "status": "unobserved",
+    "durationMs": null,
+    "retentionRequirements": {
+      "rodsHeldAtStageEnd": null,
+      "pearlsOrEyesHeldAtStageEnd": null,
+      "required": {
+        "rods": 6,
+        "pearlsEyes": 12
+      }
+    },
+    "resourceBasis": "Inventory deltas. Earned/spent remain unknown without a causal receipt; positive deltas can be recovery, gifts or container transfers. Lost is the observed death-associated decrease, not item destruction. Counter units are vanilla tenths of HP."
+  },
+  "suppliedKit": {
+    "inventory": {
+      "rods": 0,
+      "pearlsEyes": 0,
+      "gold": 2
+    },
+    "reserveContainers": {
+      "rods": 0,
+      "pearlsEyes": 0,
+      "gold": 0
+    }
+  },
+  "observedDeaths": null,
+  "firstLifeDeathTrace": null,
+  "timing": {
+    "decisionSegments": 0,
+    "decisionP50Ms": null,
+    "usageRecords": 0,
+    "usageRecordP50Ms": null,
+    "basis": "completed provider decision segments; usage notification timing shown separately, never substituted"
+  },
+  "coverage": {
+    "protocolRecords": 0,
+    "samples": 0,
+    "watcherFiles": 0,
+    "diagnostics": [
+      "Protocol absent: command arguments, exact perception, rule expiry and controller ownership may be unobservable."
+    ]
+  }
+}

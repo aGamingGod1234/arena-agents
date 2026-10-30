@@ -1,0 +1,299 @@
+{
+  "milestone": "end",
+  "sampleIndex": null,
+  "minute": null,
+  "seed": "20261009",
+  "source": "ladder L-H1 setup (End obsidian platform, iron armour, bow/64 arrows, 64 blocks, 24 food)",
+  "priorAdvancements": [
+    "story/iron_tools",
+    "story/obtain_armor",
+    "story/enter_the_nether",
+    "nether/find_fortress",
+    "nether/obtain_blaze_rod",
+    "story/follow_ender_eye",
+    "story/enter_the_end"
+  ],
+  "deathsBefore": 0,
+  "setup": {
+    "dimension": "minecraft:the_end",
+    "position": [
+      50.5,
+      49,
+      0.5
+    ],
+    "generality": true,
+    "freezeUntilGoalStart": true,
+    "time": 1000,
+    "weather": "clear",
+    "commands": [
+      "execute in minecraft:overworld run fill 320 -29 2550 328 -25 2556 minecraft:cobblestone",
+      "execute in minecraft:overworld run fill 321 -28 2551 327 -26 2555 minecraft:air",
+      "execute in minecraft:overworld run setblock 320 -28 2553 minecraft:oak_door[facing=west,half=lower]",
+      "execute in minecraft:overworld run setblock 320 -27 2553 minecraft:oak_door[facing=west,half=upper]",
+      "execute in minecraft:overworld run setblock 323 -28 2553 minecraft:red_bed[facing=east,part=foot]",
+      "execute in minecraft:overworld run setblock 324 -28 2553 minecraft:red_bed[facing=east,part=head]",
+      "execute in minecraft:overworld run setblock 322 -28 2554 minecraft:chest[facing=north]",
+      "execute in minecraft:overworld run setblock 325 -28 2552 minecraft:crafting_table",
+      "execute in minecraft:overworld run setblock 322 -28 2552 minecraft:torch",
+      "execute in minecraft:overworld run setblock 326 -28 2552 minecraft:torch",
+      "execute in minecraft:overworld run item replace block 322 -28 2554 container.0 with minecraft:stone_pickaxe 1",
+      "execute in minecraft:overworld run item replace block 322 -28 2554 container.1 with minecraft:stone_axe 1",
+      "execute in minecraft:overworld run item replace block 322 -28 2554 container.2 with minecraft:cooked_beef 16",
+      "execute in minecraft:overworld run item replace block 322 -28 2554 container.3 with minecraft:cobblestone 64",
+      "execute in minecraft:overworld run item replace block 322 -28 2554 container.4 with minecraft:oak_log 8",
+      "execute in minecraft:overworld run item replace block 322 -28 2554 container.5 with minecraft:shield 1",
+      "execute in minecraft:overworld run item replace block 322 -28 2554 container.6 with minecraft:water_bucket 1",
+      "execute in minecraft:overworld run item replace block 322 -28 2554 container.7 with minecraft:cobblestone 64",
+      "execute in minecraft:overworld run item replace block 322 -28 2554 container.8 with minecraft:bow 1",
+      "execute in minecraft:overworld run item replace block 322 -28 2554 container.9 with minecraft:arrow 32",
+      "execute in minecraft:overworld run fill 326 -28 2553 328 66 2555 minecraft:cobblestone",
+      "execute in minecraft:overworld run fill 327 -28 2554 327 67 2554 minecraft:air",
+      "execute in minecraft:overworld run fill 327 -28 2554 327 66 2554 minecraft:ladder[facing=west]",
+      "execute in minecraft:overworld run fill 325 -28 2554 326 -27 2554 minecraft:air",
+      "execute in minecraft:overworld run fill 319 -31 2544 341 -25 2564 minecraft:obsidian replace minecraft:lava",
+      "execute in minecraft:overworld run fill 319 -30 2544 341 -24 2564 minecraft:stone_bricks replace minecraft:spawner",
+      "execute in minecraft:overworld run kill @e[type=minecraft:silverfish,x=319,y=-31,z=2544,dx=22,dy=8,dz=20]",
+      "execute in minecraft:overworld run setblock 331 -26 2551 minecraft:end_portal_frame[facing=south,eye=true]",
+      "execute in minecraft:overworld run setblock 332 -26 2551 minecraft:end_portal_frame[facing=south,eye=true]",
+      "execute in minecraft:overworld run setblock 333 -26 2551 minecraft:end_portal_frame[facing=south,eye=true]",
+      "execute in minecraft:overworld run setblock 330 -26 2552 minecraft:end_portal_frame[facing=east,eye=true]",
+      "execute in minecraft:overworld run setblock 330 -26 2553 minecraft:end_portal_frame[facing=east,eye=true]",
+      "execute in minecraft:overworld run setblock 334 -26 2552 minecraft:end_portal_frame[facing=west,eye=true]",
+      "execute in minecraft:overworld run setblock 334 -26 2553 minecraft:end_portal_frame[facing=west,eye=true]",
+      "execute in minecraft:overworld run setblock 334 -26 2554 minecraft:end_portal_frame[facing=west,eye=true]",
+      "execute in minecraft:overworld run setblock 331 -26 2555 minecraft:end_portal_frame[facing=north,eye=true]",
+      "execute in minecraft:overworld run setblock 332 -26 2555 minecraft:end_portal_frame[facing=north,eye=true]",
+      "execute in minecraft:overworld run setblock 333 -26 2555 minecraft:end_portal_frame[facing=north,eye=true]",
+      "execute in minecraft:overworld run fill 331 -26 2552 333 -26 2554 minecraft:end_portal",
+      "execute in minecraft:overworld run setblock 322 -28 2548 minecraft:torch",
+      "execute in minecraft:overworld run setblock 338 -28 2548 minecraft:torch",
+      "execute in minecraft:overworld run setblock 322 -28 2558 minecraft:torch",
+      "execute in minecraft:overworld run setblock 338 -28 2558 minecraft:torch",
+      "execute in minecraft:overworld run fill 328 -28 2551 328 -25 2552 minecraft:air",
+      "execute in minecraft:overworld run fill 329 -29 2552 329 -28 2552 minecraft:cobblestone",
+      "execute in minecraft:overworld run fill 328 -28 2552 328 -28 2552 minecraft:stone_brick_stairs[facing=east]",
+      "execute in minecraft:overworld run fill 329 -27 2552 329 -27 2552 minecraft:stone_brick_stairs[facing=east]",
+      "execute in minecraft:the_end run fill 98 48 -2 102 48 2 minecraft:obsidian",
+      "execute in minecraft:the_end run fill 98 49 -2 102 52 2 minecraft:air",
+      "execute in minecraft:the_end run fill 48 48 0 97 48 0 minecraft:end_stone",
+      "execute in minecraft:the_end run fill 48 49 0 97 50 0 minecraft:air",
+      "execute in minecraft:the_end run fill 54 49 -1 97 49 -1 minecraft:end_stone",
+      "execute in minecraft:the_end run fill 54 49 1 97 49 1 minecraft:end_stone",
+      "execute in minecraft:the_end run fill 48 49 -1 53 50 1 minecraft:air",
+      "execute in minecraft:the_end run fill 48 48 -1 53 48 1 minecraft:end_stone",
+      "execute in minecraft:the_end run fill 47 49 0 47 59 0 minecraft:end_stone",
+      "execute in minecraft:the_end run fill 48 49 0 48 61 0 minecraft:air",
+      "execute in minecraft:the_end run fill 48 49 0 48 59 0 minecraft:ladder[facing=east]"
+    ],
+    "inventory": [
+      {
+        "item": "minecraft:iron_pickaxe",
+        "count": 1
+      },
+      {
+        "item": "minecraft:iron_sword",
+        "count": 1
+      },
+      {
+        "item": "minecraft:shield",
+        "count": 1
+      },
+      {
+        "item": "minecraft:water_bucket",
+        "count": 1
+      },
+      {
+        "item": "minecraft:flint_and_steel",
+        "count": 1
+      },
+      {
+        "item": "minecraft:cooked_beef",
+        "count": 32
+      },
+      {
+        "item": "minecraft:cobblestone",
+        "count": 64
+      },
+      {
+        "item": "minecraft:cobblestone",
+        "count": 64
+      },
+      {
+        "item": "minecraft:oak_planks",
+        "count": 32
+      },
+      {
+        "item": "minecraft:oak_log",
+        "count": 8
+      },
+      {
+        "item": "minecraft:crafting_table",
+        "count": 1
+      },
+      {
+        "item": "minecraft:stone_axe",
+        "count": 1
+      },
+      {
+        "item": "minecraft:torch",
+        "count": 32
+      },
+      {
+        "item": "minecraft:bow",
+        "count": 1
+      },
+      {
+        "item": "minecraft:arrow",
+        "count": 64
+      },
+      {
+        "item": "minecraft:ender_pearl",
+        "count": 2
+      }
+    ],
+    "armour": {
+      "head": "minecraft:iron_helmet",
+      "chest": "minecraft:iron_chestplate",
+      "legs": "minecraft:iron_leggings",
+      "feet": "minecraft:iron_boots"
+    },
+    "effects": [],
+    "mobs": [],
+    "loadChunks": [
+      {
+        "dimension": "minecraft:overworld",
+        "position": [
+          323,
+          -28,
+          2553
+        ]
+      },
+      {
+        "dimension": "minecraft:the_end",
+        "position": [
+          0,
+          80,
+          0
+        ]
+      },
+      {
+        "dimension": "minecraft:overworld",
+        "position": [
+          327,
+          67,
+          2554
+        ]
+      }
+    ],
+    "usedBedSpawn": {
+      "dimension": "minecraft:overworld",
+      "position": [
+        323,
+        -28,
+        2553
+      ]
+    },
+    "settleTicks": 100
+  },
+  "notes": [
+    "Version 2: reconstructed player preparation on the original seed; original file retained unchanged.",
+    "The bed is used through vanilla interaction. Breaking or moving it invalidates this respawn.",
+    "A lit recovery camp contains a spare kit and crafting table. A ladder visible from the bed reaches the surface.",
+    "Only visible world blocks supply route information; no hidden terrain memory or structure coordinates are injected.",
+    "End start: a dug two-block-high shelter under the island, a guarded end-stone bridge back to the arrival platform, and a ladder to the surface. No boss or spawn rules change."
+  ],
+  "variantOf": "6-end.json",
+  "fixtureVersion": 2,
+  "bedSpawn": {
+    "dimension": "minecraft:overworld",
+    "position": [
+      323,
+      -28,
+      2553
+    ]
+  },
+  "recoveryRoute": {
+    "dimension": "minecraft:overworld",
+    "kind": "ladder",
+    "bottom": [
+      327,
+      -28,
+      2554
+    ],
+    "top": [
+      327,
+      67,
+      2554
+    ],
+    "support": [
+      328,
+      2554
+    ]
+  },
+  "spareKit": [
+    [
+      "stone_pickaxe",
+      1
+    ],
+    [
+      "stone_axe",
+      1
+    ],
+    [
+      "cooked_beef",
+      16
+    ],
+    [
+      "cobblestone",
+      64
+    ],
+    [
+      "oak_log",
+      8
+    ],
+    [
+      "shield",
+      1
+    ],
+    [
+      "water_bucket",
+      1
+    ],
+    [
+      "cobblestone",
+      64
+    ],
+    [
+      "bow",
+      1
+    ],
+    [
+      "arrow",
+      32
+    ]
+  ],
+  "endRecovery": {
+    "bridge": [
+      48,
+      97,
+      48
+    ],
+    "ladder": {
+      "bottom": [
+        48,
+        49,
+        0
+      ],
+      "top": [
+        48,
+        60,
+        0
+      ]
+    },
+    "shelter": [
+      50.5,
+      49,
+      0.5
+    ]
+  }
+}

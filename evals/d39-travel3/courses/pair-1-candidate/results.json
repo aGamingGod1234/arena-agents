@@ -1,0 +1,167 @@
+{
+  "mode": "travel",
+  "jar": "/home/agaminggod/Desktop/Projects/arena-beat-game/jars/d25-6345839e.jar",
+  "results": [
+    {
+      "id": "entry9-fortress",
+      "mode": "travel",
+      "checkpoint": "9-nether-entry-sol-bed-gold10.json",
+      "target": {
+        "x": -127.5,
+        "z": 624.5,
+        "located": "The nearest minecraft:fortress is at [-128, ~, 624] (615 blocks away)"
+      },
+      "start": [
+        9.5,
+        37,
+        24.5
+      ],
+      "startDistance": 615.4,
+      "legChoices": {
+        "landmark": 0,
+        "bearing": 0
+      },
+      "bearingTries": 0,
+      "detours": 4,
+      "stopWhenSeen": null,
+      "results": {
+        "FAILED HOSTILE_NEAR": 3,
+        "FAILED BUILD_FAILED": 3,
+        "FAILED HOSTILE_NEAR (detour)": 1,
+        "FAILED LAVA_INCOMING": 1,
+        "FAILED TUNNEL_FLOODED (detour)": 1,
+        "TIMED_OUT TRAVEL_TIMEOUT (detour)": 1,
+        "SUCCEEDED ARRIVED (detour)": 1,
+        "FAILED NO_ROUTE": 4
+      },
+      "actions": 15,
+      "failures": 11,
+      "damage": 0,
+      "actionDamage": 0,
+      "actionDamageEvents": 0,
+      "minHealth": 20,
+      "fireSamples": 0,
+      "lavaSamples": 0,
+      "deaths": 0,
+      "path": 494.1798345698482,
+      "stops": [
+        {
+          "at": 37.6,
+          "state": "FAILED",
+          "reasonCode": "HOSTILE_NEAR",
+          "message": "minecraft:piglin_brute 523eed33-ccc3-473c-b194-815b44bfeb88 7.7 blocks away at 0.8,39.0,75.4, targeting you; at 2.5,35.0,69.0; 570 blocks left to the target (yaw 13); covered 45 blocks toward it in 37 s (73 blocks/min, 69 walked); 10 legs, bridged 5, pillared 0, tunnelled 8; 231 plain blocks carried"
+        },
+        {
+          "at": 59.9,
+          "state": "FAILED",
+          "reasonCode": "BUILD_FAILED",
+          "message": "No seen way on toward the target, and building cannot continue: Could not reach a view of the side of -6,34,74 to bridge -7,34,74; last leg: LAVA_FLOW toward -2,33,75: Route enters -7,33,75, where seen lava at -8,33,75 flows next; not entered. Keep out of the flow's way, or block the lava first; at -6.0,35.0,74.6; 563 blocks left to the target (yaw 12); covered 7 blocks toward it in 22 s (20 blocks/min, 14 walked); 4 legs, bridged 7, pillared 0, tunnelled 6; 226 plain blocks carried"
+        },
+        {
+          "at": 60.1,
+          "state": "FAILED",
+          "reasonCode": "HOSTILE_NEAR",
+          "detour": true,
+          "message": "minecraft:piglin_brute 722eb37f-6f9b-4381-8c5d-4abe4e4d0c95 7.0 blocks away at -12.5,33.0,76.4, targeting you; at -6.0,35.0,74.6; 30 blocks left to the target (yaw 72); covered 0 blocks toward it in 0 s (0 blocks/min, 0 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 226 plain blocks carried"
+        },
+        {
+          "at": 64.4,
+          "state": "FAILED",
+          "reasonCode": "HOSTILE_NEAR",
+          "message": "minecraft:piglin_brute 722eb37f-6f9b-4381-8c5d-4abe4e4d0c95 2.2 blocks away at -6.5,33.0,74.6, targeting you; at -5.6,35.0,74.6; 563 blocks left to the target (yaw 13); covered -0 blocks toward it in 4 s (-1 blocks/min, 1 walked); 0 legs, bridged 0, pillared 0, tunnelled 2; 227 plain blocks carried"
+        },
+        {
+          "at": 68.2,
+          "state": "FAILED",
+          "reasonCode": "HOSTILE_NEAR",
+          "message": "minecraft:hoglin a4d4d0a3-4593-4212-9ca3-4f353466de3f 10.4 blocks away at -6.2,33.0,88.9; at -5.5,35.0,78.7; 559 blocks left to the target (yaw 13); covered 4 blocks toward it in 4 s (63 blocks/min, 5 walked); 0 legs, bridged 3, pillared 0, tunnelled 0; 225 plain blocks carried"
+        },
+        {
+          "at": 73.3,
+          "state": "FAILED",
+          "reasonCode": "LAVA_INCOMING",
+          "message": "Seen lava was flowing into -4,33,78; backed out to -4,33,86 and the flow stopped short of it; at -3.5,33.0,86.3; 552 blocks left to the target (yaw 13); covered 7 blocks toward it in 5 s (82 blocks/min, 10 walked); 1 legs, bridged 0, pillared 0, tunnelled 0; 226 plain blocks carried"
+        },
+        {
+          "at": 86.5,
+          "state": "FAILED",
+          "reasonCode": "TUNNEL_FLOODED",
+          "detour": true,
+          "message": "Fluid flowed into the opened tunnel at -2,35,95; not entered; backed out to -3,33,86 and the flow stopped short of it; at -2.6,33.0,86.7; 29 blocks left to the target (yaw -46); covered 1 blocks toward it in 13 s (4 blocks/min, 17 walked); 2 legs, bridged 5, pillared 1, tunnelled 0; 222 plain blocks carried"
+        },
+        {
+          "at": 109.9,
+          "state": "FAILED",
+          "reasonCode": "BUILD_FAILED",
+          "message": "No seen way on toward the target, and building cannot continue: Could not mine through -5,34,93; at -4.4,32.5,92.7; 546 blocks left to the target (yaw 13); covered 6 blocks toward it in 23 s (16 blocks/min, 8 walked); 2 legs, bridged 0, pillared 0, tunnelled 0; 222 plain blocks carried; lava flowing at the stop: lava from -3,33,92 reaches -5,33,92 in about 1.0 s"
+        },
+        {
+          "at": 170.1,
+          "state": "TIMED_OUT",
+          "reasonCode": "TRAVEL_TIMEOUT",
+          "detour": true,
+          "message": "The trip's timeoutMs ran out before arrival; at -24.5,33.0,97.7; 9 blocks left to the target (yaw 67); covered 21 blocks toward it in 60 s (21 blocks/min, 45 walked); 3 legs, bridged 10, pillared 0, tunnelled 16; 238 plain blocks carried"
+        },
+        {
+          "at": 322.2,
+          "state": "FAILED",
+          "reasonCode": "BUILD_FAILED",
+          "message": "No seen way on toward the target, and building cannot continue: Could not mine through -35,33,252; at -34.4,33.0,251.7; 384 blocks left to the target (yaw 14); covered 153 blocks toward it in 152 s (60 blocks/min, 164 walked); 0 legs, bridged 116, pillared 0, tunnelled 54; 213 plain blocks carried; lava beside the stop: east one step down -34,31,251"
+        },
+        {
+          "at": 367.6,
+          "state": "SUCCEEDED",
+          "reasonCode": "ARRIVED",
+          "detour": true,
+          "message": "Arrived within 4.0 blocks of the target; at -11.5,33.0,268.8; 4 blocks left to the target (yaw 20); covered 26 blocks toward it in 45 s (34 blocks/min, 41 walked); 0 legs, bridged 22, pillared 0, tunnelled 20; 224 plain blocks carried"
+        },
+        {
+          "at": 468.1,
+          "state": "FAILED",
+          "reasonCode": "NO_ROUTE",
+          "message": "No seen way on toward the target, and building cannot continue: a hazard fills -22,33,391; at -21.5,33.0,390.3; 257 blocks left to the target (yaw 24); covered 117 blocks toward it in 100 s (70 blocks/min, 134 walked); 0 legs, bridged 124, pillared 0, tunnelled 26; 129 plain blocks carried"
+        },
+        {
+          "at": 468.7,
+          "state": "FAILED",
+          "reasonCode": "NO_ROUTE",
+          "message": "No seen way on toward the target, and building cannot continue: a hazard fills -22,33,391; at -21.5,33.0,390.3; 257 blocks left to the target (yaw 24); covered 0 blocks toward it in 1 s (0 blocks/min, 0 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 129 plain blocks carried"
+        },
+        {
+          "at": 469.3,
+          "state": "FAILED",
+          "reasonCode": "NO_ROUTE",
+          "message": "No seen way on toward the target, and building cannot continue: a hazard fills -22,33,391; at -21.5,33.0,390.3; 257 blocks left to the target (yaw 24); covered 0 blocks toward it in 1 s (0 blocks/min, 0 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 129 plain blocks carried"
+        },
+        {
+          "at": 470,
+          "state": "FAILED",
+          "reasonCode": "NO_ROUTE",
+          "message": "No seen way on toward the target, and building cannot continue: a hazard fills -22,33,391; at -21.5,33.0,390.3; 257 blocks left to the target (yaw 24); covered 0 blocks toward it in 1 s (0 blocks/min, 0 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 129 plain blocks carried"
+        }
+      ],
+      "hostilesRemoved": 3,
+      "gaveUp": "no progress over 3 actions",
+      "damageLowerBound": 0,
+      "end": [
+        -21.5,
+        33,
+        390.33
+      ],
+      "endDistance": 257,
+      "arrived": false,
+      "wallSeconds": 470.6,
+      "progressBlocks": 358.4,
+      "blocksPerMinute": 45.7,
+      "startedAtEpochMs": 1792941501215,
+      "endedAtEpochMs": 1792941971792,
+      "gameTicks": 9412,
+      "gameSeconds": 470.6,
+      "observedTicksPerSecond": 20,
+      "blocksPerGameMinute": 45.7,
+      "gameClockSource": "ready observation world.gameTime",
+      "pathBlocks": 494.2,
+      "blocksPerMinuteWithModel5s": 39.4
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "at": "2026-10-25T15:08:16.393891+00:00",
+  "reason": "Lucas redirected pearl work to warped forest endermen; close gold with existing valid evidence.",
+  "cancelledUnits": [
+    "d39-pearls4-mini-live202-r4",
+    "d39-pearls4-mini-live987-r4",
+    "d39-pearls4-mini-physical"
+  ],
+  "unfinishedPhysical": [
+    "base/8675309-r3-mini1"
+  ],
+  "pendingLiveGames": [
+    "20261024",
+    "987654321"
+  ],
+  "unfinishedResults": "Unscored, not zero gold and not completed games."
+}

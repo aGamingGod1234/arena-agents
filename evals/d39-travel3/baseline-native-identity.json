@@ -1,0 +1,38 @@
+[
+  {
+    "tag": "d39-nether-entry-123456789-18",
+    "sourceCommit": null,
+    "harnessCommit": "4682f12ef47a997d0f6fb9b3e9ca194dd765bfe8",
+    "coordinatorSha256": "37e2d8b1f58c131266ad090c603308815108c1b2140c6bb0788433ccd83e0484",
+    "sourceChangedDuringRun": false,
+    "jar": {
+      "path": "/home/agaminggod/Desktop/Projects/arena-beat-game/jars/d25-4682f12e.jar",
+      "sha256": "3d76f0c7295c6ca247c09d79d39ee4971d735f0ef6e5220d9e18eac19e75173b"
+    },
+    "profile": {
+      "provider": "codex",
+      "model": "gpt-6.1-sol",
+      "reasoningEffort": "low",
+      "serviceTier": "default"
+    },
+    "seed": "123456789"
+  },
+  {
+    "tag": "d39-nether-entry-987654321-20",
+    "sourceCommit": null,
+    "harnessCommit": "4682f12ef47a997d0f6fb9b3e9ca194dd765bfe8",
+    "coordinatorSha256": "37e2d8b1f58c131266ad090c603308815108c1b2140c6bb0788433ccd83e0484",
+    "sourceChangedDuringRun": false,
+    "jar": {
+      "path": "C:\\Users\\player\\arena-runner\\jars\\d25-4682f12e.jar",
+      "sha256": "adfaa5e3a89d2ed24faf5dd431801ec20dbeb7b739231a17de1a4cec390d8b43"
+    },
+    "profile": {
+      "provider": "codex",
+      "model": "gpt-6.1-sol",
+      "reasoningEffort": "low",
+      "serviceTier": "default"
+    },
+    "seed": "987654321"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "seed": "123456789",
+    "setupMatchesExceptRandomSalt": true,
+    "differingSetupFields": [],
+    "lootSalts": [
+      -1077808710,
+      -1068050980
+    ],
+    "checkpointMetadataMatches": true
+  },
+  {
+    "seed": "987654321",
+    "setupMatchesExceptRandomSalt": true,
+    "differingSetupFields": [],
+    "lootSalts": [
+      -50253188,
+      150243171
+    ],
+    "checkpointMetadataMatches": true
+  }
+]

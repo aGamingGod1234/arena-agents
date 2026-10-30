@@ -1,0 +1,4431 @@
+{
+  "schemaVersion": 1,
+  "scorer": "d38-measure",
+  "scoredAt": "2026-10-24T19:30:50.201Z",
+  "run": "w-desk-d38-baseline-e-codex",
+  "raw": "..\\..\\..\\aa-run-81f5d9d8\\runtime\\headless-runs\\run-1792856309774-1ceff8c7\\q-mkcshv-f66d-LONG-r1-d8875862",
+  "evaluationReferences": [
+    "evals/d38-baseline"
+  ],
+  "identity": {
+    "agentId": "fde41b27-2d5b-43bb-af6b-b4a8e131b03b",
+    "agentName": "ha_q_mkcsh_kd9oj",
+    "seed": "-8891462362762682724",
+    "profile": {
+      "provider": "codex",
+      "model": "gpt-6.1-sol",
+      "reasoningEffort": "low",
+      "serviceTier": "default"
+    },
+    "build": {
+      "commit": null,
+      "jar": {
+        "path": "C:\\Users\\player\\arena-runner\\jars\\d25-bc23e272.jar",
+        "sha256": "066a07667003c16784f6b9b34370de5a342436c798ea7a29d0de5b929fd19fb4"
+      },
+      "coordinatorSha256": "880b979bdfb7600f8913b6c915a87b1cb3e723628a33e7c7328573ff57229ed1"
+    },
+    "checkpoint": "checkpoint-at:1792720340000"
+  },
+  "window": {
+    "startedAt": 1792856364374,
+    "observedThrough": 1792859923430,
+    "plannedEndAt": 1792859964374,
+    "windowMs": 3600000
+  },
+  "ending": {
+    "kind": "budget_end",
+    "reason": "WALL_CLOCK_BUDGET",
+    "at": 1792860036469,
+    "censored": true
+  },
+  "postRunFailure": {
+    "category": "infrastructure",
+    "classification": "CLEANUP_FAILURE",
+    "diagnostics": "Scenario 'q-mkcshv-f66d-LONG-r1' failed with runner exit code 1"
+  },
+  "censoring": {
+    "censored": true,
+    "unobservedRemainder": true,
+    "observedFirstLifeFailure": true,
+    "reason": "Continuation after the last observation is unobserved, including after a fixed budget. Observed first-life deaths remain failures."
+  },
+  "firstLife": {
+    "name": "first_life",
+    "samples": 354,
+    "startedAt": 1792856364374,
+    "endedAt": 1792856752264,
+    "deaths": 1,
+    "damageTakenCounterDelta": 258,
+    "healthDropLowerBound": 15.66,
+    "resources": {
+      "rods": {
+        "unit": "rod equivalents (rod=1, powder=0.5, eye=0.5)",
+        "supplied": 0,
+        "earned": null,
+        "held": 0,
+        "spent": null,
+        "lost": 0,
+        "observedGains": 0,
+        "recoveredOrEarned": 0,
+        "unexplainedDecrease": 0,
+        "peakHeld": 0,
+        "heldBeforeDeath": 0,
+        "earnedBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedGains": 0,
+          "exact": false
+        },
+        "spentBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedDecreases": 0,
+          "exact": false
+        },
+        "lostBasis": "Last sampled holdings dropped at an observed death; inferred loss of possession, not verified destruction or exact loss between samples."
+      },
+      "pearlsEyes": {
+        "unit": "pearl/eye equivalents",
+        "supplied": 0,
+        "earned": null,
+        "held": 0,
+        "spent": null,
+        "lost": 0,
+        "observedGains": 0,
+        "recoveredOrEarned": 0,
+        "unexplainedDecrease": 0,
+        "peakHeld": 0,
+        "heldBeforeDeath": 0,
+        "earnedBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedGains": 0,
+          "exact": false
+        },
+        "spentBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedDecreases": 0,
+          "exact": false
+        },
+        "lostBasis": "Last sampled holdings dropped at an observed death; inferred loss of possession, not verified destruction or exact loss between samples."
+      },
+      "gold": {
+        "unit": "barterable ingot equivalents (block=9, nugget=1/9)",
+        "supplied": 2,
+        "earned": null,
+        "held": 0,
+        "spent": null,
+        "lost": 11,
+        "observedGains": 9,
+        "recoveredOrEarned": 0,
+        "unexplainedDecrease": 0,
+        "peakHeld": 11,
+        "heldBeforeDeath": 11,
+        "earnedBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedGains": 9,
+          "exact": false
+        },
+        "spentBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedDecreases": 0,
+          "exact": false
+        },
+        "lostBasis": "Last sampled holdings dropped at an observed death; inferred loss of possession, not verified destruction or exact loss between samples."
+      }
+    },
+    "milestones": {
+      "wood": {
+        "firstObservedAt": 1792856364385,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "planks": {
+        "firstObservedAt": 1792856364385,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "crafting_table": {
+        "firstObservedAt": 1792856364385,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "wooden_pickaxe": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "stone": {
+        "firstObservedAt": 1792856364385,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "stone_pickaxe": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "furnace": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "cooked_food": {
+        "firstObservedAt": 1792856364385,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "iron_ingot": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "iron_pickaxe": {
+        "firstObservedAt": 1792856364385,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "iron_armour": {
+        "firstObservedAt": 1792856364385,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "bucket": {
+        "firstObservedAt": 1792856364385,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "diamond": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "obsidian": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "flint_and_steel": {
+        "firstObservedAt": 1792856364385,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "nether": {
+        "firstObservedAt": 1792856364385,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "fortress": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": null,
+        "reached": false
+      },
+      "blaze_rod": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "ender_pearl": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "blaze_powder": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "ender_eye": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "stronghold": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": null,
+        "reached": false
+      },
+      "end": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "dragon": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": null,
+        "reached": false
+      }
+    },
+    "status": "observed_death",
+    "durationMs": 387890,
+    "retentionRequirements": {
+      "rodsHeldAtStageEnd": false,
+      "pearlsOrEyesHeldAtStageEnd": false,
+      "required": {
+        "rods": 6,
+        "pearlsEyes": 12
+      }
+    },
+    "resourceBasis": "Inventory deltas. Earned/spent remain unknown without a causal receipt; positive deltas can be recovery, gifts or container transfers. Lost is the observed death-associated decrease, not item destruction. Counter units are vanilla tenths of HP."
+  },
+  "afterDeath": {
+    "name": "after_death",
+    "samples": 2836,
+    "startedAt": 1792856752264,
+    "endedAt": 1792859923430,
+    "deaths": 0,
+    "damageTakenCounterDelta": 89,
+    "healthDropLowerBound": 7.602665999999999,
+    "resources": {
+      "rods": {
+        "unit": "rod equivalents (rod=1, powder=0.5, eye=0.5)",
+        "supplied": 0,
+        "earned": null,
+        "held": 0,
+        "spent": null,
+        "lost": 0,
+        "observedGains": 0,
+        "recoveredOrEarned": 0,
+        "unexplainedDecrease": 0,
+        "peakHeld": 0,
+        "earnedBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedGains": 0,
+          "exact": false
+        },
+        "spentBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedDecreases": 0,
+          "exact": false
+        },
+        "lostBasis": "Last sampled holdings dropped at an observed death; inferred loss of possession, not verified destruction or exact loss between samples."
+      },
+      "pearlsEyes": {
+        "unit": "pearl/eye equivalents",
+        "supplied": 0,
+        "earned": null,
+        "held": 0,
+        "spent": null,
+        "lost": 0,
+        "observedGains": 0,
+        "recoveredOrEarned": 0,
+        "unexplainedDecrease": 0,
+        "peakHeld": 0,
+        "earnedBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedGains": 0,
+          "exact": false
+        },
+        "spentBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedDecreases": 0,
+          "exact": false
+        },
+        "lostBasis": "Last sampled holdings dropped at an observed death; inferred loss of possession, not verified destruction or exact loss between samples."
+      },
+      "gold": {
+        "unit": "barterable ingot equivalents (block=9, nugget=1/9)",
+        "supplied": 0,
+        "earned": null,
+        "held": 6,
+        "spent": null,
+        "lost": 0,
+        "observedGains": 6,
+        "recoveredOrEarned": 6,
+        "unexplainedDecrease": 0,
+        "peakHeld": 6,
+        "earnedBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedGains": 6,
+          "exact": false
+        },
+        "spentBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedDecreases": 0,
+          "exact": false
+        },
+        "lostBasis": "Last sampled holdings dropped at an observed death; inferred loss of possession, not verified destruction or exact loss between samples."
+      }
+    },
+    "milestones": {
+      "wood": {
+        "firstObservedAt": 1792856776539,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "planks": {
+        "firstObservedAt": 1792856853396,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "crafting_table": {
+        "firstObservedAt": 1792856872052,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "wooden_pickaxe": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "stone": {
+        "firstObservedAt": 1792856776539,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "stone_pickaxe": {
+        "firstObservedAt": 1792856775444,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "furnace": {
+        "firstObservedAt": 1792857494233,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "cooked_food": {
+        "firstObservedAt": 1792856776539,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "iron_ingot": {
+        "firstObservedAt": 1792857597329,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "iron_pickaxe": {
+        "firstObservedAt": 1792856861086,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "iron_armour": {
+        "firstObservedAt": 1792857597329,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "bucket": {
+        "firstObservedAt": 1792856873156,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "diamond": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "obsidian": {
+        "firstObservedAt": 1792856872052,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "flint_and_steel": {
+        "firstObservedAt": 1792856873156,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "nether": {
+        "firstObservedAt": 1792856786434,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "fortress": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": null,
+        "reached": false
+      },
+      "blaze_rod": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "ender_pearl": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "blaze_powder": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "ender_eye": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "stronghold": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": null,
+        "reached": false
+      },
+      "end": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "dragon": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": null,
+        "reached": false
+      }
+    },
+    "status": "censored",
+    "durationMs": 3171166,
+    "retentionRequirements": {
+      "rodsHeldAtStageEnd": false,
+      "pearlsOrEyesHeldAtStageEnd": false,
+      "required": {
+        "rods": 6,
+        "pearlsEyes": 12
+      }
+    },
+    "resourceBasis": "Inventory deltas. Earned/spent remain unknown without a causal receipt; positive deltas can be recovery, gifts or container transfers. Lost is the observed death-associated decrease, not item destruction. Counter units are vanilla tenths of HP."
+  },
+  "suppliedKit": {
+    "inventory": {
+      "rods": 0,
+      "pearlsEyes": 0,
+      "gold": 2
+    },
+    "reserveContainers": {
+      "rods": 0,
+      "pearlsEyes": 0,
+      "gold": 0
+    }
+  },
+  "observedDeaths": 1,
+  "firstLifeDeathTrace": {
+    "death": {
+      "at": 1792856752264,
+      "cause": "ha_q_mkcsh_kd9oj was slain by Piglin Brute",
+      "source": "protocol"
+    },
+    "encounterStartAt": 1792856743968,
+    "hazards": [
+      {
+        "kind": "piglin",
+        "source": {
+          "type": "minecraft:piglin_brute",
+          "entityId": "3ce0910d-da77-43eb-a6d4-f5795c8d7d40",
+          "block": null,
+          "pos": {
+            "x": -16.76,
+            "y": 44,
+            "z": 55.83
+          }
+        },
+        "firstSensedAt": 1792856743968,
+        "watcherOpenedAt": 1792856745016,
+        "watcherDamageTakenHp": 26,
+        "advertisedRules": [
+          "shield:hostile_near"
+        ],
+        "firings": [
+          {
+            "rule": "shield",
+            "atMs": 1792856745084,
+            "result": "yielded: model command"
+          },
+          {
+            "rule": "shield",
+            "atMs": 1792856749884,
+            "result": "running"
+          }
+        ]
+      }
+    ],
+    "liveReflexCoverage": [
+      {
+        "at": 1792856744465,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3229,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3229,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3229,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3229,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shield",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3229,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suffocation",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3245,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "edge",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 14,
+            "expiresInS": 3265,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "shield"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792856744965,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3229,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3229,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3229,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3229,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shield",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3229,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suffocation",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3244,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "edge",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 14,
+            "expiresInS": 3264,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "shield"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792856745014,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3229,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3229,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3229,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3229,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shield",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3229,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suffocation",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3244,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "edge",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 14,
+            "expiresInS": 3264,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "shield"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792856745070,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3229,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3229,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3229,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3229,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shield",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 2,
+            "expiresInS": 3229,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suffocation",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3244,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "edge",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 14,
+            "expiresInS": 3264,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "shield"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792856745166,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3228,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3228,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3228,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3228,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shield",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 2,
+            "expiresInS": 3228,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suffocation",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3244,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "edge",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 14,
+            "expiresInS": 3264,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "shield"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792856745666,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3228,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3228,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3228,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3228,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shield",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 2,
+            "expiresInS": 3228,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suffocation",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3244,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "edge",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 14,
+            "expiresInS": 3264,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "shield"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792856746167,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3227,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3227,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3227,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3227,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shield",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 2,
+            "expiresInS": 3227,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suffocation",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3243,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "edge",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 14,
+            "expiresInS": 3263,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "shield"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792856746216,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3227,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3227,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3227,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3227,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shield",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 2,
+            "expiresInS": 3227,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suffocation",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3243,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "edge",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 14,
+            "expiresInS": 3263,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "shield"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792856746716,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3227,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3227,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3227,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3227,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shield",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 2,
+            "expiresInS": 3227,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suffocation",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3243,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "edge",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 14,
+            "expiresInS": 3263,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "shield"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792856746767,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3227,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3227,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3227,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3227,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shield",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 2,
+            "expiresInS": 3227,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suffocation",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3243,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "edge",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 14,
+            "expiresInS": 3263,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "shield"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792856747266,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3226,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3226,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3226,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3226,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shield",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 2,
+            "expiresInS": 3226,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suffocation",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3242,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "edge",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 14,
+            "expiresInS": 3262,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "shield"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792856747316,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3226,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3226,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3226,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3226,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shield",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 2,
+            "expiresInS": 3226,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suffocation",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3242,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "edge",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 14,
+            "expiresInS": 3262,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "shield"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792856747815,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3226,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3226,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3226,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3226,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shield",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 2,
+            "expiresInS": 3226,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suffocation",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3242,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "edge",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 14,
+            "expiresInS": 3262,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "shield"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792856747866,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3226,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3226,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3226,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3226,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shield",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 2,
+            "expiresInS": 3226,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suffocation",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3242,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "edge",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 14,
+            "expiresInS": 3262,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "shield"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792856748367,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3225,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3225,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3225,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3225,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shield",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 2,
+            "expiresInS": 3225,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suffocation",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3241,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "edge",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 14,
+            "expiresInS": 3261,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "shield"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792856748420,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3225,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3225,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3225,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3225,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shield",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 2,
+            "expiresInS": 3225,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suffocation",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3241,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "edge",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 14,
+            "expiresInS": 3261,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "shield"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792856748469,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3225,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3225,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3225,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3225,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shield",
+            "kind": "stance",
+            "state": "cooldown",
+            "fired": 2,
+            "expiresInS": 3225,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suffocation",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3241,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "edge",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 14,
+            "expiresInS": 3261,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "shield"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792856748566,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3225,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3225,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3225,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3225,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shield",
+            "kind": "stance",
+            "state": "cooldown",
+            "fired": 2,
+            "expiresInS": 3225,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suffocation",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3241,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "edge",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 14,
+            "expiresInS": 3261,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "shield"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792856748618,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3225,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3225,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3225,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3225,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shield",
+            "kind": "stance",
+            "state": "cooldown",
+            "fired": 2,
+            "expiresInS": 3225,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suffocation",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3241,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "edge",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 14,
+            "expiresInS": 3261,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "shield"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792856748669,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3225,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3225,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3225,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3225,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shield",
+            "kind": "stance",
+            "state": "cooldown",
+            "fired": 2,
+            "expiresInS": 3225,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suffocation",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3241,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "edge",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 14,
+            "expiresInS": 3261,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "shield"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792856748720,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3225,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3225,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3225,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3225,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shield",
+            "kind": "stance",
+            "state": "cooldown",
+            "fired": 2,
+            "expiresInS": 3225,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suffocation",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3241,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "edge",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 14,
+            "expiresInS": 3261,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "shield"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792856748778,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3225,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3225,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3225,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3225,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shield",
+            "kind": "stance",
+            "state": "cooldown",
+            "fired": 2,
+            "expiresInS": 3225,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suffocation",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3241,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "edge",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 14,
+            "expiresInS": 3261,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "shield"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792856748920,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3225,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3225,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3225,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3225,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shield",
+            "kind": "stance",
+            "state": "cooldown",
+            "fired": 2,
+            "expiresInS": 3225,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suffocation",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3240,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "edge",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 14,
+            "expiresInS": 3261,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "shield"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792856749368,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3224,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3224,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3224,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3224,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shield",
+            "kind": "stance",
+            "state": "yielded",
+            "fired": 2,
+            "expiresInS": 3224,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suffocation",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3240,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "edge",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 14,
+            "expiresInS": 3260,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "shield"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792856749866,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3224,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3224,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3224,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3224,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shield",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 3,
+            "expiresInS": 3224,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suffocation",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3240,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "edge",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 14,
+            "expiresInS": 3260,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "shield"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792856749966,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3224,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3224,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3224,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3224,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shield",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 3,
+            "expiresInS": 3224,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suffocation",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3239,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "edge",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 14,
+            "expiresInS": 3259,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "shield"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792856750016,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3224,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3224,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3224,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3224,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shield",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 3,
+            "expiresInS": 3224,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suffocation",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3239,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "edge",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 14,
+            "expiresInS": 3259,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "shield"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792856750166,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3223,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3223,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3223,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3223,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shield",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 3,
+            "expiresInS": 3223,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suffocation",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3239,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "edge",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 14,
+            "expiresInS": 3259,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "shield"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792856750366,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3223,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3223,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3223,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3223,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shield",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 3,
+            "expiresInS": 3223,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suffocation",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3239,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "edge",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 14,
+            "expiresInS": 3259,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "shield"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792856750515,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3223,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3223,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3223,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3223,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shield",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 3,
+            "expiresInS": 3223,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suffocation",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3239,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "edge",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 14,
+            "expiresInS": 3259,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "shield"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792856751017,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3223,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3223,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3223,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3223,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shield",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 3,
+            "expiresInS": 3223,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suffocation",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3238,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "edge",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 14,
+            "expiresInS": 3258,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "shield"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792856751517,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3222,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3222,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3222,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3222,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shield",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 3,
+            "expiresInS": 3222,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suffocation",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3238,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "edge",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 14,
+            "expiresInS": 3258,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "shield"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792856752014,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3222,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3222,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3222,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3222,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shield",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 3,
+            "expiresInS": 3222,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suffocation",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3237,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "edge",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 14,
+            "expiresInS": 3257,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "shield"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792856752115,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3221,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3221,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3221,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3221,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shield",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 3,
+            "expiresInS": 3221,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suffocation",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3237,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "edge",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 14,
+            "expiresInS": 3257,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "shield"
+        ],
+        "basis": "server observation status; live at observation time"
+      }
+    ],
+    "dispatchedCommands": [
+      {
+        "at": 1792856745037,
+        "source": "protocol",
+        "traceId": "native-program-7057c8a2-beee-4ef6-b952-f6a3c92eda84-105",
+        "goalRevision": 1,
+        "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:106:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+        "actionType": "fight_target",
+        "arguments": {
+          "targetId": "3ce0910d-da77-43eb-a6d4-f5795c8d7d40",
+          "pursue": false,
+          "shield": true,
+          "fleeAtHealth": 10,
+          "timeoutMs": 12000
+        },
+        "provenance": {
+          "provider": "codex",
+          "model": "gpt-6.1-sol",
+          "reasoningEffort": "low",
+          "serviceTier": "default",
+          "programId": "native-program-7057c8a2-beee-4ef6-b952-f6a3c92eda84-105",
+          "programVersion": 1,
+          "sourceStepId": "step-138-232",
+          "eventSequence": 1098,
+          "traceId": "native-program-7057c8a2-beee-4ef6-b952-f6a3c92eda84-105"
+        }
+      },
+      {
+        "at": 1792856748436,
+        "source": "protocol",
+        "traceId": "native-7057c8a2-beee-4ef6-b952-f6a3c92eda84-107-fde41b27-2d5b-43bb-af6b-b4a8e131-1",
+        "goalRevision": 1,
+        "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:107:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+        "actionType": "place_block",
+        "arguments": {
+          "x": -16,
+          "y": 43,
+          "z": 54,
+          "face": "west",
+          "itemId": "minecraft:cobblestone"
+        },
+        "provenance": {
+          "provider": "codex",
+          "model": "gpt-6.1-sol",
+          "reasoningEffort": "low",
+          "serviceTier": "default",
+          "programId": "native-01a16e96-778c-7650-b97c-09d3ba1df4da",
+          "programVersion": 1,
+          "sourceStepId": "exec-564ee6db-0969-42d4-9f50-3fc4eedc984d:1",
+          "eventSequence": 1110,
+          "traceId": "native-7057c8a2-beee-4ef6-b952-f6a3c92eda84-107-fde41b27-2d5b-43bb-af6b-b4a8e131-1"
+        }
+      },
+      {
+        "at": 1792856748650,
+        "source": "protocol",
+        "traceId": "native-7057c8a2-beee-4ef6-b952-f6a3c92eda84-108-fde41b27-2d5b-43bb-af6b-b4a8e131-1",
+        "goalRevision": 1,
+        "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:108:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+        "actionType": "navigate_to",
+        "arguments": {
+          "tolerance": 0.4,
+          "sprint": false,
+          "timeoutMs": 6000,
+          "x": -15,
+          "y": 44,
+          "z": 54
+        },
+        "provenance": {
+          "provider": "codex",
+          "model": "gpt-6.1-sol",
+          "reasoningEffort": "low",
+          "serviceTier": "default",
+          "programId": "native-01a16e96-778c-7650-b97c-09d3ba1df4da",
+          "programVersion": 1,
+          "sourceStepId": "exec-564ee6db-0969-42d4-9f50-3fc4eedc984d:2",
+          "eventSequence": 1113,
+          "traceId": "native-7057c8a2-beee-4ef6-b952-f6a3c92eda84-108-fde41b27-2d5b-43bb-af6b-b4a8e131-1"
+        }
+      },
+      {
+        "at": 1792856748761,
+        "source": "protocol",
+        "traceId": "native-program-7057c8a2-beee-4ef6-b952-f6a3c92eda84-109",
+        "goalRevision": 1,
+        "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:110:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+        "actionType": "fight_target",
+        "arguments": {
+          "targetId": "3ce0910d-da77-43eb-a6d4-f5795c8d7d40",
+          "pursue": false,
+          "shield": true,
+          "fleeAtHealth": 10,
+          "timeoutMs": 12000
+        },
+        "provenance": {
+          "provider": "codex",
+          "model": "gpt-6.1-sol",
+          "reasoningEffort": "low",
+          "serviceTier": "default",
+          "programId": "native-program-7057c8a2-beee-4ef6-b952-f6a3c92eda84-109",
+          "programVersion": 1,
+          "sourceStepId": "step-138-232",
+          "eventSequence": 1115,
+          "traceId": "native-program-7057c8a2-beee-4ef6-b952-f6a3c92eda84-109"
+        }
+      },
+      {
+        "at": 1792856745023,
+        "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:106:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+        "actionType": "fight_target",
+        "source": "coordinator"
+      },
+      {
+        "at": 1792856748423,
+        "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:107:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+        "actionType": "place_block",
+        "source": "coordinator"
+      },
+      {
+        "at": 1792856748620,
+        "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:108:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+        "actionType": "navigate_to",
+        "source": "coordinator"
+      },
+      {
+        "at": 1792856748726,
+        "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:110:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+        "actionType": "fight_target",
+        "source": "coordinator"
+      }
+    ],
+    "ownership": [],
+    "damage": {
+      "taken": [
+        {
+          "at": 1792856749205,
+          "health": 11.42,
+          "damageTakenCounter": 86,
+          "deathCounter": 0,
+          "position": {
+            "x": -13.300000011920929,
+            "y": 43.05489334703208,
+            "z": 54.30000001192093
+          },
+          "dimension": "minecraft:the_nether",
+          "counts": {
+            "rods": 0,
+            "pearlsEyes": 0,
+            "gold": 11
+          },
+          "counterDelta": 86,
+          "hpLowerBound": 8.58
+        },
+        {
+          "at": 1792856750296,
+          "health": 4.34,
+          "damageTakenCounter": 172,
+          "deathCounter": 0,
+          "position": {
+            "x": -13.300000011920929,
+            "y": 43,
+            "z": 54.07292351996305
+          },
+          "dimension": "minecraft:the_nether",
+          "counts": {
+            "rods": 0,
+            "pearlsEyes": 0,
+            "gold": 11
+          },
+          "counterDelta": 86,
+          "hpLowerBound": 7.08
+        }
+      ],
+      "dealt": [],
+      "dealtTotal": null,
+      "basis": "Taken: vanilla counter deltas (tenths of HP), health-drop lower bounds, and per-hazard Watcher damage (can overlap, do not sum). Dealt: unknown without attributed damage receipts; attack dispatch is not a hit."
+    },
+    "gaps": [
+      "Hands and aim ownership were not recorded; dispatched action types cannot prove controller ownership.",
+      "Damage dealt is unknown unless an attributed damage receipt is present."
+    ],
+    "traceWindow": {
+      "from": 1792856743968,
+      "through": 1792856752264,
+      "basis": "Watcher first sensed/opened time"
+    },
+    "controllerSnapshots": [
+      {
+        "at": 1792856744465,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 108.43519592285156,
+          "pitch": 14.254219055175781,
+          "selectedSlot": 0,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:iron_pickaxe",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792856744965,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 108.43519592285156,
+          "pitch": 14.254219055175781,
+          "selectedSlot": 0,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:iron_pickaxe",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792856745014,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 108.43519592285156,
+          "pitch": 14.254219055175781,
+          "selectedSlot": 0,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:iron_pickaxe",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792856745070,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": true,
+          "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:106:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+          "actionType": "fight_target"
+        },
+        "reflexFiring": {
+          "id": "shield",
+          "ms": 0,
+          "detail": "shield raised (fight)"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": 74.77833557128906,
+          "pitch": 8.10555648803711,
+          "selectedSlot": 1,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:iron_sword",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792856745166,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": true,
+          "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:106:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+          "actionType": "fight_target"
+        },
+        "reflexFiring": {
+          "id": "shield",
+          "ms": 100,
+          "detail": "shield raised (fight)"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": 60.414031982421875,
+          "pitch": 5.473658561706543,
+          "selectedSlot": 1,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:iron_sword",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792856745666,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": true,
+          "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:106:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+          "actionType": "fight_target"
+        },
+        "reflexFiring": {
+          "id": "shield",
+          "ms": 600,
+          "detail": "shield raised (fight)"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 85.04595947265625,
+          "pitch": 6.909601211547852,
+          "selectedSlot": 1,
+          "hand": "off_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:iron_sword",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792856746167,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": true,
+          "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:106:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+          "actionType": "fight_target"
+        },
+        "reflexFiring": {
+          "id": "shield",
+          "ms": 1100,
+          "detail": "shield raised (fight)"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": 85.36679077148438,
+          "pitch": 6.306134223937988,
+          "selectedSlot": 1,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:iron_sword",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792856746216,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": true,
+          "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:106:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+          "actionType": "fight_target"
+        },
+        "reflexFiring": {
+          "id": "shield",
+          "ms": 1150,
+          "detail": "shield raised (fight)"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 85.35906982421875,
+          "pitch": 6.316519260406494,
+          "selectedSlot": 1,
+          "hand": "off_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:iron_sword",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792856746716,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": true,
+          "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:106:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+          "actionType": "fight_target"
+        },
+        "reflexFiring": {
+          "id": "shield",
+          "ms": 1650,
+          "detail": "shield raised (fight)"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": 85.41537475585938,
+          "pitch": 6.8445940017700195,
+          "selectedSlot": 1,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:iron_sword",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792856746767,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": true,
+          "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:106:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+          "actionType": "fight_target"
+        },
+        "reflexFiring": {
+          "id": "shield",
+          "ms": 1700,
+          "detail": "shield raised (fight)"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 85.41975402832031,
+          "pitch": 6.957539081573486,
+          "selectedSlot": 1,
+          "hand": "off_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:iron_sword",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792856747266,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": true,
+          "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:106:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+          "actionType": "fight_target"
+        },
+        "reflexFiring": {
+          "id": "shield",
+          "ms": 2200,
+          "detail": "shield raised (fight)"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": 85.31602478027344,
+          "pitch": 6.3370041847229,
+          "selectedSlot": 1,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:iron_sword",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792856747316,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": true,
+          "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:106:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+          "actionType": "fight_target"
+        },
+        "reflexFiring": {
+          "id": "shield",
+          "ms": 2250,
+          "detail": "shield raised (fight)"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 85.29942321777344,
+          "pitch": 6.359228610992432,
+          "selectedSlot": 1,
+          "hand": "off_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:iron_sword",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792856747815,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": true,
+          "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:106:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+          "actionType": "fight_target"
+        },
+        "reflexFiring": {
+          "id": "shield",
+          "ms": 2750,
+          "detail": "shield raised (fight)"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": 85.45216369628906,
+          "pitch": 6.42754602432251,
+          "selectedSlot": 1,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:iron_sword",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792856747866,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": true,
+          "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:106:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+          "actionType": "fight_target"
+        },
+        "reflexFiring": {
+          "id": "shield",
+          "ms": 2800,
+          "detail": "shield raised (fight)"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 85.43409729003906,
+          "pitch": 6.452805042266846,
+          "selectedSlot": 1,
+          "hand": "off_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:iron_sword",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792856748367,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": true,
+          "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:106:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+          "actionType": "fight_target"
+        },
+        "reflexFiring": {
+          "id": "shield",
+          "ms": 3300,
+          "detail": "shield raised (fight)"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": 85.33189392089844,
+          "pitch": 6.522932052612305,
+          "selectedSlot": 1,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:iron_sword",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792856748420,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "shield",
+          "ms": 3350,
+          "detail": "shield raised"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": 85.31311798095703,
+          "pitch": 6.549014568328857,
+          "selectedSlot": 1,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:iron_sword",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792856748469,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": true,
+          "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:107:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+          "actionType": "place_block"
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 84.24475860595703,
+          "pitch": 27.412155151367188,
+          "selectedSlot": 1,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:iron_sword",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792856748566,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": true,
+          "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:107:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+          "actionType": "place_block"
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 84.24475860595703,
+          "pitch": 36.35350036621094,
+          "selectedSlot": 1,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:cobblestone",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792856748618,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 84.24475860595703,
+          "pitch": 36.35350036621094,
+          "selectedSlot": 6,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:cobblestone",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792856748669,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": true,
+          "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:108:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+          "actionType": "navigate_to"
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": true,
+          "forward": 0.9121906757354736,
+          "strafe": -0.20000000298023224,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 84.24475860595703,
+          "pitch": 17.906049728393555,
+          "selectedSlot": 6,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:cobblestone",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792856748720,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 84.24475860595703,
+          "pitch": 17.906049728393555,
+          "selectedSlot": 6,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:cobblestone",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792856748778,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": true,
+          "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:110:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+          "actionType": "fight_target"
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": 83.93507385253906,
+          "pitch": 18.022321701049805,
+          "selectedSlot": 1,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:iron_sword",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792856748920,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": true,
+          "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:110:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+          "actionType": "fight_target"
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": 80.15943908691406,
+          "pitch": 28.03748321533203,
+          "selectedSlot": 1,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:iron_sword",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792856749368,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 78.78994750976562,
+          "pitch": -18.622106552124023,
+          "selectedSlot": 1,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:iron_sword",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792856749866,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "shield",
+          "ms": 0,
+          "detail": "shield raised"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": 77.32534790039062,
+          "pitch": -20.82251739501953,
+          "selectedSlot": 1,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:iron_sword",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792856749966,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "shield",
+          "ms": 100,
+          "detail": "shield raised"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": 77.32534790039062,
+          "pitch": -20.82251739501953,
+          "selectedSlot": 1,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:iron_sword",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792856750016,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "shield",
+          "ms": 150,
+          "detail": "shield raised; lost 7.9 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": 72.1894760131836,
+          "pitch": -20.361438751220703,
+          "selectedSlot": 1,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:iron_sword",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792856750166,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "shield",
+          "ms": 300,
+          "detail": "shield raised; lost 7.9 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": 72.87179565429688,
+          "pitch": -10.065170288085938,
+          "selectedSlot": 1,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:iron_sword",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792856750366,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "shield",
+          "ms": 500,
+          "detail": "shield raised; lost 7.9 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": 70.53153228759766,
+          "pitch": -10.065170288085938,
+          "selectedSlot": 1,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:iron_sword",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792856750515,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "shield",
+          "ms": 650,
+          "detail": "shield raised; lost 7.6 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": 71.35811614990234,
+          "pitch": -10.065170288085938,
+          "selectedSlot": 1,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:iron_sword",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792856751017,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "shield",
+          "ms": 1150,
+          "detail": "shield raised; lost 7.2 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": 49.642974853515625,
+          "pitch": -10.065170288085938,
+          "selectedSlot": 1,
+          "hand": "off_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:iron_sword",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792856751517,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "shield",
+          "ms": 1650,
+          "detail": "blocked 1 hit(s); lost 7.1 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": 6.71858024597168,
+          "pitch": 16.947731018066406,
+          "selectedSlot": 1,
+          "hand": "off_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:iron_sword",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792856752014,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "shield",
+          "ms": 2150,
+          "detail": "blocked 1 hit(s); lost 6.9 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": 25.697908401489258,
+          "pitch": 17.87451171875,
+          "selectedSlot": 1,
+          "hand": "off_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:iron_sword",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792856752115,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "shield",
+          "ms": 2250,
+          "detail": "blocked 1 hit(s); lost 6.9 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": 37.490943908691406,
+          "pitch": 17.87451171875,
+          "selectedSlot": 1,
+          "hand": "off_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:iron_sword",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      }
+    ],
+    "actionReceipts": [
+      {
+        "at": 1792856745065,
+        "traceId": "native-program-7057c8a2-beee-4ef6-b952-f6a3c92eda84-105",
+        "goalRevision": 1,
+        "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:106:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+        "commandId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:106:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+        "actionType": "fight_target",
+        "state": "RUNNING",
+        "progress": 0,
+        "elapsedMs": 3,
+        "observedAtEpochMs": 1792856745065,
+        "serverTick": 8371
+      },
+      {
+        "at": 1792856745661,
+        "traceId": "native-program-7057c8a2-beee-4ef6-b952-f6a3c92eda84-105",
+        "goalRevision": 1,
+        "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:106:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+        "commandId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:106:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+        "actionType": "fight_target",
+        "state": "RUNNING",
+        "progress": 0.10525435209274292,
+        "elapsedMs": 599,
+        "observedAtEpochMs": 1792856745661,
+        "serverTick": 8383
+      },
+      {
+        "at": 1792856746211,
+        "traceId": "native-program-7057c8a2-beee-4ef6-b952-f6a3c92eda84-105",
+        "goalRevision": 1,
+        "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:106:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+        "commandId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:106:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+        "actionType": "fight_target",
+        "state": "RUNNING",
+        "progress": 0.21050870418548584,
+        "elapsedMs": 1149,
+        "observedAtEpochMs": 1792856746211,
+        "serverTick": 8394
+      },
+      {
+        "at": 1792856746761,
+        "traceId": "native-program-7057c8a2-beee-4ef6-b952-f6a3c92eda84-105",
+        "goalRevision": 1,
+        "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:106:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+        "commandId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:106:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+        "actionType": "fight_target",
+        "state": "RUNNING",
+        "progress": 0.31576311588287354,
+        "elapsedMs": 1699,
+        "observedAtEpochMs": 1792856746761,
+        "serverTick": 8405
+      },
+      {
+        "at": 1792856747311,
+        "traceId": "native-program-7057c8a2-beee-4ef6-b952-f6a3c92eda84-105",
+        "goalRevision": 1,
+        "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:106:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+        "commandId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:106:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+        "actionType": "fight_target",
+        "state": "RUNNING",
+        "progress": 0.42101746797561646,
+        "elapsedMs": 2249,
+        "observedAtEpochMs": 1792856747311,
+        "serverTick": 8416
+      },
+      {
+        "at": 1792856747862,
+        "traceId": "native-program-7057c8a2-beee-4ef6-b952-f6a3c92eda84-105",
+        "goalRevision": 1,
+        "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:106:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+        "commandId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:106:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+        "actionType": "fight_target",
+        "state": "RUNNING",
+        "progress": 0.5262718200683594,
+        "elapsedMs": 2800,
+        "observedAtEpochMs": 1792856747862,
+        "serverTick": 8427
+      },
+      {
+        "at": 1792856748411,
+        "traceId": "native-program-7057c8a2-beee-4ef6-b952-f6a3c92eda84-105",
+        "goalRevision": 1,
+        "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:106:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+        "commandId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:106:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+        "actionType": "fight_target",
+        "state": "CANCELLED",
+        "reasonCode": "ACTION_CANCELLED",
+        "message": "Cancelled by explicit model decision; health 20.0; onGround=true; footing below center: minecraft:cracked_polished_blackstone_bricks at -15,43,54; target airborne=false, verticalGap=0.0m, outOfVerticalReach=false; body: input idle, motion moving, onFire=false (0.0s), contact=none; nearest known water: none known; non-burning ground: (-14.5,44,54.5) 0.5m (ground does not extinguish; routes unverified; hazards/attackers may remain)",
+        "elapsedMs": 3349,
+        "observedAtEpochMs": 1792856748411,
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "timing": {
+          "acceptedAtEpochMs": 1792856745062,
+          "startedAtEpochMs": 1792856745065,
+          "startedTick": 8371,
+          "endedTick": 8437
+        }
+      },
+      {
+        "at": 1792856748465,
+        "traceId": "native-7057c8a2-beee-4ef6-b952-f6a3c92eda84-107-fde41b27-2d5b-43bb-af6b-b4a8e131-1",
+        "goalRevision": 1,
+        "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:107:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+        "commandId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:107:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+        "actionType": "place_block",
+        "state": "RUNNING",
+        "progress": 0.0006,
+        "elapsedMs": 3,
+        "observedAtEpochMs": 1792856748465,
+        "serverTick": 8439
+      },
+      {
+        "at": 1792856748611,
+        "traceId": "native-7057c8a2-beee-4ef6-b952-f6a3c92eda84-107-fde41b27-2d5b-43bb-af6b-b4a8e131-1",
+        "goalRevision": 1,
+        "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:107:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+        "commandId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:107:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+        "actionType": "place_block",
+        "state": "SUCCEEDED",
+        "reasonCode": "BLOCK_PLACED",
+        "message": "Block placement confirmed; Selected hotbar slot 6 for minecraft:cobblestone; used face=east support=-17,43,54",
+        "elapsedMs": 149,
+        "observedAtEpochMs": 1792856748611,
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "timing": {
+          "acceptedAtEpochMs": 1792856748462,
+          "startedAtEpochMs": 1792856748465,
+          "startedTick": 8439,
+          "endedTick": 8442
+        }
+      },
+      {
+        "at": 1792856748663,
+        "traceId": "native-7057c8a2-beee-4ef6-b952-f6a3c92eda84-108-fde41b27-2d5b-43bb-af6b-b4a8e131-1",
+        "goalRevision": 1,
+        "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:108:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+        "commandId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:108:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+        "actionType": "navigate_to",
+        "state": "RUNNING",
+        "progress": 0,
+        "elapsedMs": 2,
+        "observedAtEpochMs": 1792856748663,
+        "serverTick": 8443,
+        "actionObservation": {
+          "observedAtEpochMs": 1792856748663,
+          "worldTick": 7839,
+          "position": {
+            "x": -14.080407641844255,
+            "y": 44,
+            "z": 54.306529758558256
+          },
+          "velocity": {
+            "x": 0,
+            "y": -0.0784000015258789,
+            "z": 0
+          },
+          "yaw": 84.24475860595703,
+          "pitch": 17.906049728393555,
+          "collision": {
+            "horizontal": false,
+            "vertical": true,
+            "inWall": false
+          },
+          "lookedAt": {
+            "type": "entity",
+            "hitDistance": 2.249478824570174
+          },
+          "target": {
+            "kind": "position",
+            "position": {
+              "x": -15,
+              "y": 44,
+              "z": 54
+            },
+            "distanceRemaining": 0.9693351319642892,
+            "tolerance": 0.4,
+            "standable": true
+          },
+          "onGround": true,
+          "progress": {
+            "value": 0,
+            "basis": "world_position",
+            "verified": true
+          }
+        }
+      },
+      {
+        "at": 1792856748712,
+        "traceId": "native-7057c8a2-beee-4ef6-b952-f6a3c92eda84-108-fde41b27-2d5b-43bb-af6b-b4a8e131-1",
+        "goalRevision": 1,
+        "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:108:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+        "commandId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:108:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+        "actionType": "navigate_to",
+        "state": "CANCELLED",
+        "reasonCode": "ACTION_CANCELLED",
+        "message": "Cancelled by explicit model decision; navigation input released; health 20.0; onGround=true; footing below center: minecraft:cracked_polished_blackstone_bricks at -15,43,54",
+        "elapsedMs": 51,
+        "observedAtEpochMs": 1792856748712,
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "timing": {
+          "acceptedAtEpochMs": 1792856748661,
+          "startedAtEpochMs": 1792856748663,
+          "startedTick": 8443,
+          "endedTick": 8443
+        },
+        "actionObservation": {
+          "observedAtEpochMs": 1792856748663,
+          "worldTick": 7839,
+          "position": {
+            "x": -14.080407641844255,
+            "y": 44,
+            "z": 54.306529758558256
+          },
+          "velocity": {
+            "x": 0,
+            "y": -0.0784000015258789,
+            "z": 0
+          },
+          "yaw": 84.24475860595703,
+          "pitch": 17.906049728393555,
+          "collision": {
+            "horizontal": false,
+            "vertical": true,
+            "inWall": false
+          },
+          "lookedAt": {
+            "type": "entity",
+            "hitDistance": 2.249478824570174
+          },
+          "target": {
+            "kind": "position",
+            "position": {
+              "x": -15,
+              "y": 44,
+              "z": 54
+            },
+            "distanceRemaining": 0.9693351319642892,
+            "tolerance": 0.4,
+            "standable": true
+          },
+          "onGround": true,
+          "progress": {
+            "value": 0,
+            "basis": "world_position",
+            "verified": true
+          }
+        }
+      },
+      {
+        "at": 1792856748763,
+        "traceId": "native-program-7057c8a2-beee-4ef6-b952-f6a3c92eda84-109",
+        "goalRevision": 1,
+        "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:110:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+        "commandId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:110:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+        "actionType": "fight_target",
+        "state": "RUNNING",
+        "progress": 0.5262718200683594,
+        "elapsedMs": 2,
+        "observedAtEpochMs": 1792856748763,
+        "serverTick": 8445
+      },
+      {
+        "at": 1792856749361,
+        "traceId": "native-program-7057c8a2-beee-4ef6-b952-f6a3c92eda84-109",
+        "goalRevision": 1,
+        "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:110:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+        "commandId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:110:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+        "actionType": "fight_target",
+        "state": "CANCELLED",
+        "reasonCode": "ACTION_CANCELLED",
+        "message": "Cancelled by explicit model decision; health 11.4; onGround=true; footing below center: minecraft:blackstone at -14,42,54; target airborne=false, verticalGap=0.0m, outOfVerticalReach=false; body: input idle, motion moving, onFire=false (0.0s), contact=none; nearest known water: none known; non-burning ground: (-13.5,43,54.5) 0.3m remembered 1s (ground does not extinguish; routes unverified; hazards/attackers may remain)",
+        "elapsedMs": 600,
+        "observedAtEpochMs": 1792856749361,
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "timing": {
+          "acceptedAtEpochMs": 1792856748761,
+          "startedAtEpochMs": 1792856748763,
+          "startedTick": 8445,
+          "endedTick": 8456
+        }
+      }
+    ],
+    "lastObservationAt": 1792856752115,
+    "lastObservationAgeAtDeathMs": 149,
+    "coordinatorEvents": [
+      {
+        "event": "native_tool_action_completed",
+        "agentId": "fde41b27-2d5b-43bb-af6b-b4a8e131b03b",
+        "goalRevision": 1,
+        "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:106:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+        "state": "CANCELLED",
+        "reasonCode": "ACTION_CANCELLED",
+        "durationMs": 3397,
+        "message": "Cancelled by explicit model decision; health 20.0; onGround=true; footing below center: minecraft:cracked_polished_blackstone_bricks at -15,43,54; target airborne=false, verticalGap=0.0m, outOfVerticalReach=false; body: input idle, motion moving, onFire=false (0.0s), contact=none; nearest known water: none known; non-burning ground: (-14.5,44,54.5) 0.5m (ground does not extinguish; routes unverified; hazards/attackers may remain)",
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "failureClass": "action",
+        "javaElapsedMs": 3349,
+        "javaEndedAtEpochMs": 1792856748411,
+        "javaAcceptedAtEpochMs": 1792856745062,
+        "javaStartedAtEpochMs": 1792856745065,
+        "javaStartedTick": 8371,
+        "javaEndedTick": 8437,
+        "at": 1792856748420,
+        "mono": 424943.1
+      },
+      {
+        "event": "reflexes_fired",
+        "agentId": "fde41b27-2d5b-43bb-af6b-b4a8e131b03b",
+        "goalRevision": 1,
+        "events": [
+          "shield:yielded"
+        ],
+        "at": 1792856748475,
+        "mono": 424998.3
+      },
+      {
+        "event": "native_tool_action_completed",
+        "agentId": "fde41b27-2d5b-43bb-af6b-b4a8e131b03b",
+        "goalRevision": 1,
+        "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:107:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+        "state": "SUCCEEDED",
+        "reasonCode": "BLOCK_PLACED",
+        "durationMs": 194,
+        "message": "Block placement confirmed; Selected hotbar slot 6 for minecraft:cobblestone; used face=east support=-17,43,54",
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "javaElapsedMs": 149,
+        "javaEndedAtEpochMs": 1792856748611,
+        "javaAcceptedAtEpochMs": 1792856748462,
+        "javaStartedAtEpochMs": 1792856748465,
+        "javaStartedTick": 8439,
+        "javaEndedTick": 8442,
+        "at": 1792856748617,
+        "mono": 425140.6
+      },
+      {
+        "event": "native_tool_action_completed",
+        "agentId": "fde41b27-2d5b-43bb-af6b-b4a8e131b03b",
+        "goalRevision": 1,
+        "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:108:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+        "state": "CANCELLED",
+        "reasonCode": "ACTION_CANCELLED",
+        "durationMs": 100,
+        "message": "Cancelled by explicit model decision; navigation input released; health 20.0; onGround=true; footing below center: minecraft:cracked_polished_blackstone_bricks at -15,43,54",
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "actionObservation": {
+          "observedAtEpochMs": 1792856748663,
+          "worldTick": 7839,
+          "position": {
+            "x": -14.080407641844255,
+            "y": 44,
+            "z": 54.306529758558256
+          },
+          "velocity": {
+            "x": 0,
+            "y": -0.0784000015258789,
+            "z": 0
+          },
+          "yaw": 84.24475860595703,
+          "pitch": 17.906049728393555,
+          "collision": {
+            "horizontal": false,
+            "vertical": true,
+            "inWall": false
+          },
+          "lookedAt": {
+            "type": "entity",
+            "hitDistance": 2.249478824570174
+          },
+          "target": {
+            "kind": "position",
+            "position": {
+              "x": -15,
+              "y": 44,
+              "z": 54
+            },
+            "distanceRemaining": 0.9693351319642892,
+            "tolerance": 0.4,
+            "standable": true
+          },
+          "progress": {
+            "value": 0,
+            "basis": "world_position",
+            "verified": true
+          }
+        },
+        "failureClass": "action",
+        "cancelledBy": "standing:close-piglin",
+        "javaElapsedMs": 51,
+        "javaEndedAtEpochMs": 1792856748712,
+        "javaAcceptedAtEpochMs": 1792856748661,
+        "javaStartedAtEpochMs": 1792856748663,
+        "javaStartedTick": 8443,
+        "javaEndedTick": 8443,
+        "at": 1792856748720,
+        "mono": 425243
+      },
+      {
+        "event": "native_tool_action_completed",
+        "agentId": "fde41b27-2d5b-43bb-af6b-b4a8e131b03b",
+        "goalRevision": 1,
+        "actionId": "native:7057c8a2-beee-4ef6-b952-f6a3c92eda84:110:fde41b27-2d5b-43bb-af6b-b4a8e131:1",
+        "state": "CANCELLED",
+        "reasonCode": "ACTION_CANCELLED",
+        "durationMs": 642,
+        "message": "Cancelled by explicit model decision; health 11.4; onGround=true; footing below center: minecraft:blackstone at -14,42,54; target airborne=false, verticalGap=0.0m, outOfVerticalReach=false; body: input idle, motion moving, onFire=false (0.0s), contact=none; nearest known water: none known; non-burning ground: (-13.5,43,54.5) 0.3m remembered 1s (ground does not extinguish; routes unverified; hazards/attackers may remain)",
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "failureClass": "action",
+        "javaElapsedMs": 600,
+        "javaEndedAtEpochMs": 1792856749361,
+        "javaAcceptedAtEpochMs": 1792856748761,
+        "javaStartedAtEpochMs": 1792856748763,
+        "javaStartedTick": 8445,
+        "javaEndedTick": 8456,
+        "at": 1792856749367,
+        "mono": 425890.3
+      }
+    ]
+  },
+  "timing": {
+    "decisionSegments": 434,
+    "decisionP50Ms": 3293.800299999908,
+    "usageRecords": 350,
+    "usageRecordP50Ms": 9,
+    "basis": "completed provider decision segments; usage notification timing shown separately, never substituted"
+  },
+  "coverage": {
+    "protocolRecords": 19429,
+    "samples": 3190,
+    "watcherFiles": 1,
+    "diagnostics": []
+  }
+}

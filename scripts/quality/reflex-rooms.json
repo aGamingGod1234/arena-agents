@@ -1,0 +1,756 @@
+{
+  "version": 1,
+  "description": "Short repeatable reflex hazards. Server-owned predicates; setup-only validation is not a gameplay baseline.",
+  "scenarios": [
+    {
+      "id": "R-BLAZE",
+      "name": "r-blaze",
+      "phase": "R",
+      "seed": "20261009",
+      "goal": "Get at least 3 blaze rods from the fortress spawner corridor.",
+      "durationBudgetMs": 300000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": false
+      },
+      "setup": {
+        "dimension": "minecraft:the_nether",
+        "position": [
+          68.5,
+          100,
+          64.5
+        ],
+        "surface": false,
+        "time": 1000,
+        "weather": "clear",
+        "freezeUntilGoalStart": true,
+        "commands": [
+          "gamerule spawn_mobs false",
+          "execute at {agent} run fill ~-10 ~-2 ~-10 ~10 ~10 ~10 minecraft:nether_bricks",
+          "execute at {agent} run fill ~-9 ~ ~-9 ~9 ~9 ~9 minecraft:air",
+          "execute at {agent} run fill ~-9 ~-1 ~-9 ~9 ~-1 ~9 minecraft:nether_bricks",
+          "execute at {agent} run fill ~3 ~ ~-2 ~3 ~2 ~2 minecraft:nether_bricks",
+          "execute at {agent} run setblock ~7 ~ ~0 minecraft:spawner{SpawnData:{entity:{id:\"minecraft:blaze\"}}}",
+          "execute at {agent} run fill ~-9 ~ ~-9 ~9 ~8 ~-4 minecraft:nether_bricks",
+          "execute at {agent} run fill ~-9 ~ ~4 ~9 ~8 ~9 minecraft:nether_bricks"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:iron_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:iron_sword",
+            "count": 1
+          },
+          {
+            "item": "minecraft:shield",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 16
+          },
+          {
+            "item": "minecraft:cobblestone",
+            "count": 32
+          },
+          {
+            "item": "minecraft:torch",
+            "count": 16
+          }
+        ],
+        "armour": {
+          "head": "minecraft:iron_helmet",
+          "chest": "minecraft:iron_chestplate",
+          "legs": "minecraft:iron_leggings",
+          "feet": "minecraft:iron_boots"
+        },
+        "effects": [],
+        "mobs": []
+      },
+      "notes": "Fortress corridor, spawner seven blocks east, waist-to-head cover wall with a one-block walkable gap at each side (the corridor is 7 wide; the wall spans the middle 5), so the spawner half can be reached on foot; iron Nether-entry kit without pearls or fire resistance.",
+      "successCheck": "inventory: blaze_rod >=3",
+      "startState": "Closed nether-brick room 19x19x10, L-D1 kit",
+      "requireSampledSuccess": true
+    },
+    {
+      "id": "R-GHAST",
+      "name": "r-ghast",
+      "phase": "R",
+      "seed": "20261009",
+      "goal": "Reach the gold block at (120,100,100), across the open soul-sand valley strip, and stay alive.",
+      "durationBudgetMs": 300000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": false
+      },
+      "setup": {
+        "dimension": "minecraft:the_nether",
+        "position": [
+          100.5,
+          100,
+          100.5
+        ],
+        "surface": false,
+        "time": 1000,
+        "weather": "clear",
+        "freezeUntilGoalStart": true,
+        "commands": [
+          "gamerule spawn_mobs false",
+          "gamerule advance_time false",
+          "execute at {agent} run fill ~-24 ~-1 ~-12 ~24 ~-1 ~12 minecraft:soul_sand",
+          "execute at {agent} run fill ~-24 ~ ~-12 ~24 ~12 ~12 minecraft:air",
+          "execute at {agent} run fill ~-24 ~-1 ~-12 ~24 ~-1 ~12 minecraft:soul_soil",
+          "execute at {agent} run fill ~-24 ~-1 ~-4 ~24 ~-1 ~4 minecraft:soul_sand",
+          "execute at {agent} run fill ~-24 ~13 ~-12 ~24 ~24 ~12 minecraft:air",
+          "execute at {agent} run fillbiome ~-24 ~-1 ~-12 ~24 ~24 ~12 minecraft:soul_sand_valley",
+          "execute at {agent} run setblock ~20 ~-1 ~ minecraft:gold_block"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:iron_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:iron_sword",
+            "count": 1
+          },
+          {
+            "item": "minecraft:shield",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 16
+          },
+          {
+            "item": "minecraft:cobblestone",
+            "count": 32
+          },
+          {
+            "item": "minecraft:torch",
+            "count": 16
+          }
+        ],
+        "armour": {
+          "head": "minecraft:iron_helmet",
+          "chest": "minecraft:iron_chestplate",
+          "legs": "minecraft:iron_leggings",
+          "feet": "minecraft:iron_boots"
+        },
+        "effects": [],
+        "mobs": [
+          {
+            "id": "minecraft:ghast",
+            "offset": [
+              14,
+              16,
+              10
+            ],
+            "nbt": "{PersistenceRequired:1b}",
+            "tag": null
+          },
+          {
+            "id": "minecraft:ghast",
+            "offset": [
+              24,
+              16,
+              -10
+            ],
+            "nbt": "{PersistenceRequired:1b}",
+            "tag": null
+          }
+        ]
+      },
+      "successCheck": "all: position_within the_nether (120.5,100,100.5) radius 2 AND survive_duration: 0 ticks",
+      "startState": "Controlled ghast room; ordinary progression kit, no starting objective items.",
+      "notes": "Evaluator checks server samples; no model policy or reflexes are preinstalled. Ghasts start in view 16 blocks up, outside the 4-block height band a ghast needs to target a player, so the first fireball comes after they drift down rather than inside the first model turn.",
+      "requireSampledSuccess": true
+    },
+    {
+      "id": "R-CREEPER",
+      "name": "r-creeper",
+      "phase": "R",
+      "seed": "20261009",
+      "goal": "Mine at least 6 raw iron from the exposed ore nearby, and survive for 4 minutes without dying.",
+      "durationBudgetMs": 300000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": false
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          100.5,
+          100,
+          100.5
+        ],
+        "surface": false,
+        "time": 18000,
+        "weather": "clear",
+        "freezeUntilGoalStart": true,
+        "commands": [
+          "gamerule spawn_mobs false",
+          "gamerule advance_time false",
+          "execute at {agent} run fill ~-24 ~-1 ~-12 ~24 ~-1 ~12 minecraft:grass_block",
+          "execute at {agent} run fill ~-25 ~-1 ~-13 ~25 ~2 ~-13 minecraft:stone_bricks",
+          "execute at {agent} run fill ~-25 ~-1 ~13 ~25 ~2 ~13 minecraft:stone_bricks",
+          "execute at {agent} run fill ~-25 ~-1 ~-13 ~-25 ~2 ~13 minecraft:stone_bricks",
+          "execute at {agent} run fill ~25 ~-1 ~-13 ~25 ~2 ~13 minecraft:stone_bricks",
+          "execute at {agent} run fill ~-24 ~ ~-12 ~24 ~12 ~12 minecraft:air",
+          "execute at {agent} run fillbiome ~-24 ~-1 ~-12 ~24 ~12 ~12 minecraft:plains",
+          "execute at {agent} run fill ~4 ~ ~2 ~9 ~ ~2 minecraft:iron_ore"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:iron_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:iron_sword",
+            "count": 1
+          },
+          {
+            "item": "minecraft:shield",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 16
+          },
+          {
+            "item": "minecraft:cobblestone",
+            "count": 32
+          },
+          {
+            "item": "minecraft:torch",
+            "count": 16
+          }
+        ],
+        "armour": {
+          "head": "minecraft:iron_helmet",
+          "chest": "minecraft:iron_chestplate",
+          "legs": "minecraft:iron_leggings",
+          "feet": "minecraft:iron_boots"
+        },
+        "effects": [],
+        "mobs": [
+          {
+            "id": "minecraft:creeper",
+            "offset": [
+              14,
+              0,
+              -9
+            ],
+            "nbt": "{PersistenceRequired:1b}",
+            "tag": null
+          },
+          {
+            "id": "minecraft:creeper",
+            "offset": [
+              -15,
+              0,
+              6
+            ],
+            "nbt": "{PersistenceRequired:1b}",
+            "tag": null
+          },
+          {
+            "id": "minecraft:creeper",
+            "offset": [
+              22,
+              0,
+              8
+            ],
+            "nbt": "{PersistenceRequired:1b}",
+            "tag": null
+          },
+          {
+            "id": "minecraft:creeper",
+            "offset": [
+              -20,
+              0,
+              -8
+            ],
+            "nbt": "{PersistenceRequired:1b}",
+            "tag": null
+          }
+        ]
+      },
+      "successCheck": "all: inventory raw_iron >=6 AND survive_duration: 4800 ticks",
+      "startState": "Controlled creeper room; ordinary progression kit, no starting objective items.",
+      "notes": "Evaluator checks server samples; no model policy or reflexes are preinstalled. Creepers start 16-23 blocks out (creeper follow range is 16), so they close in while the agent works the ore instead of exploding before its first turn ends; the nearest to the ore is 13 blocks from it. The field sits 13-23 blocks above the natural ground, so a 3-high wall rims it: a creeper blast or a flight along the edge cannot throw the agent off a cliff a vanilla field does not have.",
+      "requireSampledSuccess": true
+    },
+    {
+      "id": "R-SKELETON",
+      "name": "r-skeleton",
+      "phase": "R",
+      "seed": "20261009",
+      "goal": "Survive for 4 minutes without dying; skeletons are firing from range.",
+      "durationBudgetMs": 300000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": false
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          100.5,
+          100,
+          100.5
+        ],
+        "surface": false,
+        "time": 18000,
+        "weather": "clear",
+        "freezeUntilGoalStart": true,
+        "commands": [
+          "gamerule spawn_mobs false",
+          "gamerule advance_time false",
+          "execute at {agent} run fill ~-24 ~-1 ~-12 ~24 ~-1 ~12 minecraft:stone",
+          "execute at {agent} run fill ~-24 ~ ~-12 ~24 ~12 ~12 minecraft:air"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:iron_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:iron_sword",
+            "count": 1
+          },
+          {
+            "item": "minecraft:shield",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 16
+          },
+          {
+            "item": "minecraft:cobblestone",
+            "count": 32
+          },
+          {
+            "item": "minecraft:torch",
+            "count": 16
+          }
+        ],
+        "armour": {
+          "head": "minecraft:iron_helmet",
+          "chest": "minecraft:iron_chestplate",
+          "legs": "minecraft:iron_leggings",
+          "feet": "minecraft:iron_boots"
+        },
+        "effects": [],
+        "mobs": [
+          {
+            "id": "minecraft:skeleton",
+            "offset": [
+              12,
+              0,
+              0
+            ],
+            "nbt": "{PersistenceRequired:1b,equipment:{mainhand:{id:\"minecraft:bow\",count:1}}}"
+          },
+          {
+            "id": "minecraft:skeleton",
+            "offset": [
+              -14,
+              0,
+              6
+            ],
+            "nbt": "{PersistenceRequired:1b,equipment:{mainhand:{id:\"minecraft:bow\",count:1}}}"
+          }
+        ]
+      },
+      "successCheck": "survive_duration: 4800 ticks",
+      "startState": "Controlled skeleton room; ordinary progression kit, no starting objective items.",
+      "notes": "Evaluator checks server samples; no model policy or reflexes are preinstalled.",
+      "requireSampledSuccess": true
+    },
+    {
+      "id": "R-FLOOD",
+      "name": "r-flood",
+      "phase": "R",
+      "seed": "20261009",
+      "goal": "Mine iron in this flooded tunnel: get at least 6 raw iron, and stay alive.",
+      "durationBudgetMs": 360000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": false
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          100.31,
+          30,
+          100.69
+        ],
+        "surface": false,
+        "time": 1000,
+        "weather": "clear",
+        "freezeUntilGoalStart": true,
+        "commands": [
+          "gamerule spawn_mobs false",
+          "execute at {agent} run fill ~-3 ~-2 ~-7 ~3 ~9 ~3 minecraft:stone",
+          "execute at {agent} run fill ~0 ~0 ~0 ~0 ~2 ~0 minecraft:water",
+          "execute at {agent} run fill ~0 ~1 ~-1 ~0 ~3 ~-1 minecraft:water",
+          "execute at {agent} run fill ~0 ~2 ~-2 ~0 ~4 ~-2 minecraft:water",
+          "execute at {agent} run fill ~0 ~3 ~-3 ~0 ~5 ~-3 minecraft:water",
+          "execute at {agent} run fill ~0 ~4 ~-4 ~0 ~6 ~-4 minecraft:water",
+          "execute at {agent} run fill ~0 ~5 ~-5 ~0 ~7 ~-5 minecraft:water",
+          "execute at {agent} run fill ~0 ~7 ~-5 ~0 ~8 ~-5 minecraft:air",
+          "execute at {agent} run setblock ~1 ~0 ~0 minecraft:iron_ore",
+          "execute at {agent} run setblock ~-1 ~1 ~0 minecraft:iron_ore",
+          "execute at {agent} run setblock ~1 ~1 ~-1 minecraft:iron_ore",
+          "execute at {agent} run setblock ~-1 ~2 ~-1 minecraft:iron_ore",
+          "execute at {agent} run setblock ~1 ~2 ~-2 minecraft:iron_ore",
+          "execute at {agent} run setblock ~-1 ~3 ~-2 minecraft:iron_ore",
+          "execute at {agent} run setblock ~1 ~3 ~-3 minecraft:iron_ore",
+          "execute at {agent} run setblock ~-1 ~4 ~-3 minecraft:iron_ore",
+          "execute at {agent} run setblock ~1 ~4 ~-4 minecraft:iron_ore",
+          "execute at {agent} run setblock ~-1 ~5 ~-4 minecraft:iron_ore"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:iron_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cobblestone",
+            "count": 32
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 8
+          },
+          {
+            "item": "minecraft:torch",
+            "count": 16
+          }
+        ],
+        "armour": {},
+        "effects": [],
+        "mobs": []
+      },
+      "notes": "Run6 drowning class: 1-wide staircase tunnel flooded up to a small air chimney at the top step; start pressed against the south-west wall. Reuses W-FLOOD geometry and kit; adds an explicit no-death evaluator check.",
+      "successCheck": "all: inventory raw_iron >=6 AND survive_duration: 0 ticks",
+      "startState": "Underwater in a flooded 1-wide staircase, full air, iron pickaxe",
+      "requireSampledSuccess": true
+    },
+    {
+      "id": "R-VOID",
+      "name": "r-void",
+      "phase": "R",
+      "seed": "20261009",
+      "goal": "Cross the one-block-wide bridge to the gold marker at (1022,100,1000) without falling or dying.",
+      "durationBudgetMs": 300000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": false
+      },
+      "setup": {
+        "dimension": "minecraft:the_end",
+        "position": [
+          1000.5,
+          100,
+          1000.5
+        ],
+        "surface": false,
+        "time": 1000,
+        "weather": "clear",
+        "freezeUntilGoalStart": true,
+        "commands": [
+          "gamerule spawn_mobs false",
+          "execute at {agent} run fill ~-8 0 ~-8 ~28 31 ~8 minecraft:air",
+          "execute at {agent} run fill ~-8 32 ~-8 ~28 63 ~8 minecraft:air",
+          "execute at {agent} run fill ~-8 64 ~-8 ~28 98 ~8 minecraft:air",
+          "execute at {agent} run fill ~-8 ~ ~-8 ~28 ~12 ~8 minecraft:air",
+          "execute at {agent} run fill ~-6 ~-1 ~-5 ~3 ~-1 ~5 minecraft:end_stone",
+          "execute at {agent} run fill ~4 ~-1 ~ ~18 ~-1 ~ minecraft:end_stone",
+          "execute at {agent} run fill ~19 ~-1 ~-5 ~26 ~-1 ~5 minecraft:end_stone",
+          "execute at {agent} run setblock ~22 ~-1 ~ minecraft:gold_block"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:iron_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:iron_sword",
+            "count": 1
+          },
+          {
+            "item": "minecraft:shield",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 16
+          },
+          {
+            "item": "minecraft:cobblestone",
+            "count": 32
+          },
+          {
+            "item": "minecraft:torch",
+            "count": 16
+          },
+          {
+            "item": "minecraft:water_bucket",
+            "count": 1
+          }
+        ],
+        "armour": {
+          "head": "minecraft:iron_helmet",
+          "chest": "minecraft:iron_chestplate",
+          "legs": "minecraft:iron_leggings",
+          "feet": "minecraft:iron_boots"
+        },
+        "effects": [],
+        "mobs": [
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              2,
+              0,
+              3
+            ],
+            "nbt": "{PersistenceRequired:1b}",
+            "tag": null
+          },
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              22,
+              0,
+              -3
+            ],
+            "nbt": "{PersistenceRequired:1b}",
+            "tag": null
+          }
+        ]
+      },
+      "successCheck": "all: position_within the_end (1022.5,100,1000.5) radius 2 AND survive_duration: 0 ticks",
+      "startState": "Controlled void room; ordinary progression kit, no starting objective items.",
+      "notes": "Evaluator checks server samples; no model policy or reflexes are preinstalled.",
+      "requireSampledSuccess": true
+    },
+    {
+      "id": "R-TOOLBREAK",
+      "name": "r-toolbreak",
+      "phase": "R",
+      "seed": "20261009",
+      "goal": "Mine at least 8 raw iron from the exposed vein. Your held stone pickaxe is almost broken; a spare is in your inventory.",
+      "durationBudgetMs": 180000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": false
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          100.5,
+          100,
+          100.5
+        ],
+        "surface": false,
+        "time": 1000,
+        "weather": "clear",
+        "freezeUntilGoalStart": true,
+        "commands": [
+          "gamerule spawn_mobs false",
+          "gamerule advance_time false",
+          "execute at {agent} run fill ~-24 ~-1 ~-12 ~24 ~-1 ~12 minecraft:stone",
+          "execute at {agent} run fill ~-24 ~ ~-12 ~24 ~12 ~12 minecraft:air",
+          "execute at {agent} run fill ~3 ~ ~ ~10 ~ ~ minecraft:iron_ore"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:stone_pickaxe[minecraft:damage=129]",
+            "count": 1
+          },
+          {
+            "item": "minecraft:stone_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 8
+          },
+          {
+            "item": "minecraft:torch",
+            "count": 16
+          }
+        ],
+        "armour": {},
+        "effects": [],
+        "mobs": []
+      },
+      "successCheck": "inventory: raw_iron >=8",
+      "startState": "Controlled toolbreak room; ordinary progression kit, no starting objective items.",
+      "notes": "Evaluator checks server samples; no model policy or reflexes are preinstalled.",
+      "requireSampledSuccess": true
+    },
+    {
+      "id": "R-PIGLIN",
+      "name": "r-piglin",
+      "phase": "R",
+      "seed": "20261009",
+      "goal": "At this bastion edge, keep your gold helmet on, barter with a piglin for at least one item, and survive 3 minutes without dying.",
+      "durationBudgetMs": 300000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": false
+      },
+      "setup": {
+        "dimension": "minecraft:the_nether",
+        "position": [
+          100.5,
+          100,
+          100.5
+        ],
+        "surface": false,
+        "time": 1000,
+        "weather": "clear",
+        "freezeUntilGoalStart": true,
+        "commands": [
+          "gamerule spawn_mobs false",
+          "gamerule advance_time false",
+          "execute at {agent} run fill ~-24 ~-1 ~-12 ~24 ~-1 ~12 minecraft:polished_blackstone_bricks",
+          "execute at {agent} run fill ~-24 ~ ~-12 ~24 ~12 ~12 minecraft:air",
+          "execute at {agent} run fill ~-24 ~-1 ~5 ~24 ~-1 ~12 minecraft:air",
+          "execute at {agent} run fill ~-24 ~-5 ~5 ~24 ~-5 ~12 minecraft:lava"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:iron_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:iron_sword",
+            "count": 1
+          },
+          {
+            "item": "minecraft:shield",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 16
+          },
+          {
+            "item": "minecraft:cobblestone",
+            "count": 32
+          },
+          {
+            "item": "minecraft:torch",
+            "count": 16
+          },
+          {
+            "item": "minecraft:gold_ingot",
+            "count": 12
+          }
+        ],
+        "armour": {
+          "head": "minecraft:golden_helmet",
+          "chest": "minecraft:iron_chestplate",
+          "legs": "minecraft:iron_leggings",
+          "feet": "minecraft:iron_boots"
+        },
+        "effects": [],
+        "mobs": [
+          {
+            "id": "minecraft:piglin",
+            "offset": [
+              5,
+              0,
+              0
+            ],
+            "nbt": "{PersistenceRequired:1b}",
+            "tag": null
+          },
+          {
+            "id": "minecraft:piglin",
+            "offset": [
+              9,
+              0,
+              -3
+            ],
+            "nbt": "{PersistenceRequired:1b}",
+            "tag": null
+          }
+        ]
+      },
+      "successCheck": "all: inventory_contains_any: quartz|leather|gravel|blackstone|crying_obsidian|obsidian|soul_sand|nether_brick|iron_nugget|string|ender_pearl|fire_charge|spectral_arrow|potion|splash_potion|enchanted_book >=1 AND survive_duration: 3600 ticks",
+      "startState": "Controlled piglin room; ordinary progression kit, no starting objective items.",
+      "notes": "Evaluator checks server samples; no model policy or reflexes are preinstalled.",
+      "requireSampledSuccess": true
+    },
+    {
+      "id": "R-GRAVEL",
+      "name": "r-gravel",
+      "phase": "R",
+      "seed": "20261009",
+      "goal": "Dig up out of this sealed rock column to the open air on top (stand on top, at or above y 125) and stay alive.",
+      "durationBudgetMs": 300000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": false
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          100.5,
+          100,
+          100.5
+        ],
+        "surface": false,
+        "time": 1000,
+        "weather": "clear",
+        "freezeUntilGoalStart": true,
+        "commands": [
+          "gamerule spawn_mobs false",
+          "gamerule advance_time false",
+          "execute at {agent} run fill ~-5 ~-1 ~-5 ~5 ~24 ~5 minecraft:stone",
+          "execute at {agent} run fill ~-5 ~3 ~-5 ~5 ~5 ~5 minecraft:gravel",
+          "execute at {agent} run fill ~-5 ~10 ~-5 ~5 ~11 ~5 minecraft:sand",
+          "execute at {agent} run fill ~-5 ~16 ~-5 ~5 ~18 ~5 minecraft:gravel",
+          "execute at {agent} run fill ~-8 ~25 ~-8 ~8 ~32 ~8 minecraft:air",
+          "execute at {agent} run fill ~ ~ ~ ~ ~1 ~ minecraft:air"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:stone_pickaxe",
+            "count": 2
+          },
+          {
+            "item": "minecraft:stone_shovel",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cobblestone",
+            "count": 32
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 8
+          },
+          {
+            "item": "minecraft:torch",
+            "count": 16
+          }
+        ],
+        "armour": {},
+        "effects": [],
+        "mobs": []
+      },
+      "successCheck": "all: position_within overworld (100.5,125,100.5) radius 8 AND survive_duration: 0 ticks",
+      "startState": "Sealed stone column with gravel and sand sheets above; digging kit.",
+      "notes": "Gravel sheets at +3..+5 and +16..+18 and sand at +10..+11 fall into the shaft as it is opened, as in the full-game suffocation deaths (rx113-g2-claude 33.6 and 67.2 min, rxfinal-g1-claude 9.8 min). Evaluator checks server samples; no model policy or reflexes are preinstalled.",
+      "requireSampledSuccess": true
+    }
+  ]
+}

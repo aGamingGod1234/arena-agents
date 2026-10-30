@@ -1,0 +1,24 @@
+{
+  "baseline": "112d8be8f18d7c45a22a8890b2d586ee9b511a91",
+  "integration": "9203dd1e7414129e248d10ce900ac1b1130cdc24",
+  "controllerMerge": "381f15030217b7ad2f95267e576844be95335486",
+  "candidateJavaTree": "7fd06fa831b16e6ec533e5eeb826ba9118cacffd",
+  "baselineJavaTree": "7fd06fa831b16e6ec533e5eeb826ba9118cacffd",
+  "candidateResourcesTree": "b4604c36f6579a73c72dac6952fbef771d38954c",
+  "baselineResourcesTree": "b4604c36f6579a73c72dac6952fbef771d38954c",
+  "sameBodySources": true,
+  "controllerShippingJarSha256": "5438851a310c2296240c5bbe2cbd8b128a6ab7d8816f5c5f1b7723221488fac3",
+  "mergedCandidate": "95ba29a47356421d45c125c1371a888da787eeb4",
+  "candidateBuildSource": "c9bb6914c39b08533edb54f6c3d4f90073f7661d",
+  "finalTestHarnessSource": "b618143be2b7a9828d51e750029d1ecd1657f60c",
+  "candidateJarSha256": "056be600acbbba4df670396a8fb156f5e88188d752ea9138be202a6f9c18a534",
+  "baseJarSha256": "f566af7502ed2cbc73311e649d2ddfefd254eb74538504bb7e7518bd2c3571de",
+  "spawnerHarnessSha256": "c7b835b698d8f4389090c0fb3285541c968ca811136aca334b2f0be2721e6a50",
+  "spawnerHarnessGitLfSha256": "4127295bb8e0177809e5b063c6b34e765c67a2a2b5192755c6723a81a2331085",
+  "spawnerHarnessLineEndings": "Desktop CRLF; Git blob LF",
+  "finalBowRoof": true,
+  "finalBowCohorts": [
+    "matrix2-base-bow",
+    "matrix2-candidate-bow"
+  ]
+}

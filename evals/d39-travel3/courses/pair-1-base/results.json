@@ -1,0 +1,119 @@
+{
+  "mode": "travel",
+  "jar": "/home/agaminggod/Desktop/Projects/arena-beat-game/jars/d25-4682f12e.jar",
+  "results": [
+    {
+      "id": "entry9-fortress",
+      "mode": "travel",
+      "checkpoint": "9-nether-entry-sol-bed-gold10.json",
+      "target": {
+        "x": -127.5,
+        "z": 624.5,
+        "located": "The nearest minecraft:fortress is at [-128, ~, 624] (615 blocks away)"
+      },
+      "start": [
+        9.5,
+        37,
+        24.5
+      ],
+      "startDistance": 615.4,
+      "legChoices": {
+        "landmark": 0,
+        "bearing": 0
+      },
+      "bearingTries": 0,
+      "detours": 2,
+      "stopWhenSeen": null,
+      "results": {
+        "FAILED LAVA_INCOMING": 1,
+        "SUCCEEDED ARRIVED (detour)": 1,
+        "FAILED NO_ROUTE": 1,
+        "FAILED TRAVEL_DAMAGED (detour)": 1,
+        "FAILED TRAVEL_DAMAGED": 4
+      },
+      "actions": 8,
+      "failures": 6,
+      "damage": 1.8800010681152344,
+      "actionDamage": 3.6,
+      "actionDamageEvents": 4,
+      "minHealth": 19.059999465942383,
+      "fireSamples": 0,
+      "lavaSamples": 0,
+      "deaths": 0,
+      "path": 376.5853250261696,
+      "stops": [
+        {
+          "at": 289.9,
+          "state": "FAILED",
+          "reasonCode": "LAVA_INCOMING",
+          "message": "Seen lava was flowing into -11,41,234; backed out to -11,41,226 and the flow stopped short of it; at -10.5,41.0,226.5; 415 blocks left to the target (yaw 16); covered 201 blocks toward it in 290 s (41 blocks/min, 269 walked); 14 legs, bridged 27, pillared 0, tunnelled 86; 75 plain blocks on the hotbar"
+        },
+        {
+          "at": 323.7,
+          "state": "SUCCEEDED",
+          "reasonCode": "ARRIVED",
+          "detour": true,
+          "message": "Arrived within 4.0 blocks of the target; at -37.1,33.0,230.5; 4 blocks left to the target (yaw 40); covered 26 blocks toward it in 34 s (46 blocks/min, 44 walked); 3 legs, bridged 18, pillared 0, tunnelled 3; 57 plain blocks on the hotbar; lava beside the stop: north one step down -38,31,229, south one step down -38,31,231, west one step down -39,31,230"
+        },
+        {
+          "at": 385,
+          "state": "FAILED",
+          "reasonCode": "NO_ROUTE",
+          "message": "No seen way on toward the target, and building cannot continue: lava or another hazard fills the head cell -35,36,256; last leg: backtracking toward -37,34,233; at -34.5,35.0,255.3; 381 blocks left to the target (yaw 14); covered 23 blocks toward it in 61 s (23 blocks/min, 32 walked); 1 legs, bridged 12, pillared 1, tunnelled 11; 44 plain blocks on the hotbar; footing {\"drop\":4,\"into\":\"lava\",\"yaw\":-77}"
+        },
+        {
+          "at": 398.2,
+          "state": "FAILED",
+          "reasonCode": "TRAVEL_DAMAGED",
+          "detour": true,
+          "message": "Took 0.9 damage (hotFloor); health 19.1; at -27.8,35.0,258.5; 23 blocks left to the target (yaw -40); covered 7 blocks toward it in 13 s (32 blocks/min, 15 walked); 1 legs, bridged 9, pillared 0, tunnelled 1; 35 plain blocks on the hotbar; footing {\"drop\":4,\"into\":\"lava\",\"yaw\":143}"
+        },
+        {
+          "at": 443.8,
+          "state": "FAILED",
+          "reasonCode": "TRAVEL_DAMAGED",
+          "message": "Took 0.9 damage (hotFloor); health 19.1; at -33.3,33.0,280.5; 357 blocks left to the target (yaw 15); covered 23 blocks toward it in 46 s (30 blocks/min, 38 walked); 2 legs, bridged 16, pillared 0, tunnelled 11; 19 plain blocks on the hotbar"
+        },
+        {
+          "at": 444.5,
+          "state": "FAILED",
+          "reasonCode": "TRAVEL_DAMAGED",
+          "message": "Took 0.9 damage (hotFloor); health 19.1; at -33.3,33.0,280.5; 357 blocks left to the target (yaw 15); covered 0 blocks toward it in 1 s (0 blocks/min, 0 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 19 plain blocks on the hotbar"
+        },
+        {
+          "at": 445.2,
+          "state": "FAILED",
+          "reasonCode": "TRAVEL_DAMAGED",
+          "message": "Took 0.9 damage (hotFloor); health 19.1; at -33.3,33.0,280.5; 357 blocks left to the target (yaw 15); covered 0 blocks toward it in 1 s (0 blocks/min, 0 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 19 plain blocks on the hotbar"
+        },
+        {
+          "at": 446.2,
+          "state": "FAILED",
+          "reasonCode": "TRAVEL_DAMAGED",
+          "message": "Took 0.9 damage (hotFloor); health 19.1; at -33.3,33.0,280.5; 357 blocks left to the target (yaw 15); covered 0 blocks toward it in 1 s (0 blocks/min, 0 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 19 plain blocks on the hotbar"
+        }
+      ],
+      "gaveUp": "no progress over 3 actions",
+      "damageLowerBound": 3.6,
+      "end": [
+        -33.32,
+        33,
+        280.5
+      ],
+      "endDistance": 356.7,
+      "arrived": false,
+      "wallSeconds": 446.4,
+      "progressBlocks": 258.7,
+      "blocksPerMinute": 34.8,
+      "startedAtEpochMs": 1792940971366,
+      "endedAtEpochMs": 1792941417762,
+      "gameTicks": 8934,
+      "gameSeconds": 446.7,
+      "observedTicksPerSecond": 20.01,
+      "blocksPerGameMinute": 34.7,
+      "gameClockSource": "ready observation world.gameTime",
+      "pathBlocks": 376.6,
+      "blocksPerMinuteWithModel5s": 31.9
+    }
+  ]
+}

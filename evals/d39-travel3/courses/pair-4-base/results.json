@@ -1,0 +1,164 @@
+{
+  "mode": "travel",
+  "jar": "/home/agaminggod/Desktop/Projects/arena-beat-game/jars/d25-4682f12e.jar",
+  "results": [
+    {
+      "id": "entry9-east300",
+      "mode": "travel",
+      "checkpoint": "9-nether-entry-sol-bed-gold10.json",
+      "target": {
+        "x": 309.5,
+        "z": 24.5,
+        "located": "heading -90 300"
+      },
+      "start": [
+        9.5,
+        37,
+        24.5
+      ],
+      "startDistance": 300,
+      "legChoices": {
+        "landmark": 0,
+        "bearing": 0
+      },
+      "bearingTries": 0,
+      "detours": 4,
+      "stopWhenSeen": null,
+      "results": {
+        "FAILED NO_ROUTE": 10,
+        "FAILED NO_ROUTE (detour)": 2,
+        "FAILED TRAVEL_DAMAGED (detour)": 1,
+        "FAILED TRAVEL_DAMAGED": 1,
+        "TIMED_OUT TRAVEL_TIMEOUT (detour)": 1
+      },
+      "actions": 15,
+      "failures": 11,
+      "damage": 1.8800010681152344,
+      "actionDamage": 0.9,
+      "actionDamageEvents": 1,
+      "minHealth": 19.059999465942383,
+      "fireSamples": 0,
+      "lavaSamples": 0,
+      "deaths": 0,
+      "path": 280.7397536453848,
+      "stops": [
+        {
+          "at": 122.6,
+          "state": "FAILED",
+          "reasonCode": "NO_ROUTE",
+          "message": "No seen way on toward the target, and building cannot continue: a hazard fills 111,32,20; at 110.3,32.0,20.5; 199 blocks left to the target (yaw -89); covered 101 blocks toward it in 122 s (50 blocks/min, 147 walked); 7 legs, bridged 40, pillared 0, tunnelled 25; 62 plain blocks on the hotbar"
+        },
+        {
+          "at": 123.2,
+          "state": "FAILED",
+          "reasonCode": "NO_ROUTE",
+          "detour": true,
+          "message": "No seen way on toward the target, and building cannot continue: a hazard fills 110,32,21; at 110.3,32.0,20.5; 30 blocks left to the target (yaw -29); covered 0 blocks toward it in 1 s (1 blocks/min, 0 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 62 plain blocks on the hotbar"
+        },
+        {
+          "at": 123.8,
+          "state": "FAILED",
+          "reasonCode": "NO_ROUTE",
+          "message": "No seen way on toward the target, and building cannot continue: a hazard fills 111,32,20; at 110.3,32.0,20.5; 199 blocks left to the target (yaw -89); covered 0 blocks toward it in 1 s (0 blocks/min, 0 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 62 plain blocks on the hotbar"
+        },
+        {
+          "at": 133.4,
+          "state": "FAILED",
+          "reasonCode": "TRAVEL_DAMAGED",
+          "detour": true,
+          "message": "Took 0.9 damage (hotFloor); health 19.1; at 110.5,32.0,16.7; 27 blocks left to the target (yaw -145); covered 3 blocks toward it in 10 s (20 blocks/min, 4 walked); 0 legs, bridged 0, pillared 0, tunnelled 4; 62 plain blocks on the hotbar"
+        },
+        {
+          "at": 192.8,
+          "state": "FAILED",
+          "reasonCode": "TRAVEL_DAMAGED",
+          "message": "Took 0.9 damage (hotFloor); health 19.1; at 140.3,32.0,16.5; 169 blocks left to the target (yaw -87); covered 30 blocks toward it in 59 s (30 blocks/min, 30 walked); 0 legs, bridged 7, pillared 0, tunnelled 22; 55 plain blocks on the hotbar"
+        },
+        {
+          "at": 317.1,
+          "state": "FAILED",
+          "reasonCode": "NO_ROUTE",
+          "message": "No seen way on toward the target, and building cannot continue: lava or another hazard fills the head cell 204,33,21; at 203.3,32.0,21.5; 106 blocks left to the target (yaw -88); covered 63 blocks toward it in 124 s (30 blocks/min, 68 walked); 0 legs, bridged 18, pillared 0, tunnelled 43; 37 plain blocks on the hotbar"
+        },
+        {
+          "at": 317.7,
+          "state": "FAILED",
+          "reasonCode": "NO_ROUTE",
+          "detour": true,
+          "message": "No seen way on toward the target, and building cannot continue: lava or another hazard fills the head cell 203,33,22; at 203.3,32.0,21.5; 30 blocks left to the target (yaw -28); covered 0 blocks toward it in 1 s (0 blocks/min, 0 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 37 plain blocks on the hotbar"
+        },
+        {
+          "at": 318.3,
+          "state": "FAILED",
+          "reasonCode": "NO_ROUTE",
+          "message": "No seen way on toward the target, and building cannot continue: lava or another hazard fills the head cell 204,33,21; at 203.3,32.0,21.5; 106 blocks left to the target (yaw -88); covered 0 blocks toward it in 1 s (0 blocks/min, 0 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 37 plain blocks on the hotbar"
+        },
+        {
+          "at": 378.4,
+          "state": "TIMED_OUT",
+          "reasonCode": "TRAVEL_TIMEOUT",
+          "detour": true,
+          "message": "The trip's timeoutMs ran out before arrival; at 207.6,32.0,1.5; 13 blocks left to the target (yaw -116); covered 17 blocks toward it in 60 s (17 blocks/min, 24 walked); 0 legs, bridged 0, pillared 0, tunnelled 25; 80 plain blocks on the hotbar"
+        },
+        {
+          "at": 386.8,
+          "state": "FAILED",
+          "reasonCode": "NO_ROUTE",
+          "message": "No seen way on toward the target, and building cannot continue: minecraft:netherrack at 212,33,1 takes 2.0 s per block with the hotbar's best tool; a better tool is in the main inventory (select_tool moves it); at 211.3,32.0,1.5; 101 blocks left to the target (yaw -77); covered 4 blocks toward it in 8 s (25 blocks/min, 4 walked); 0 legs, bridged 0, pillared 0, tunnelled 3; 86 plain blocks on the hotbar"
+        },
+        {
+          "at": 401.7,
+          "state": "FAILED",
+          "reasonCode": "NO_ROUTE",
+          "message": "No seen way on toward the target, and building cannot continue: minecraft:netherrack at 217,33,1 takes 2.0 s per block with the hotbar's best tool; a better tool is in the main inventory (select_tool moves it); at 216.3,32.0,1.5; 96 blocks left to the target (yaw -76); covered 5 blocks toward it in 15 s (20 blocks/min, 5 walked); 0 legs, bridged 0, pillared 0, tunnelled 5; 95 plain blocks on the hotbar"
+        },
+        {
+          "at": 416.4,
+          "state": "FAILED",
+          "reasonCode": "NO_ROUTE",
+          "message": "No seen way on toward the target, and building cannot continue: seen lava is beside 222,32,1, so opening it lets the lava in; at 221.4,32.0,1.5; 91 blocks left to the target (yaw -75); covered 5 blocks toward it in 14 s (21 blocks/min, 5 walked); 0 legs, bridged 1, pillared 0, tunnelled 5; 104 plain blocks on the hotbar; lava beside the stop: east at floor height 222,31,1"
+        },
+        {
+          "at": 417.2,
+          "state": "FAILED",
+          "reasonCode": "NO_ROUTE",
+          "message": "No seen way on toward the target, and building cannot continue: seen lava is beside 222,32,1, so opening it lets the lava in; at 221.4,32.0,1.5; 91 blocks left to the target (yaw -75); covered 0 blocks toward it in 1 s (0 blocks/min, 0 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 104 plain blocks on the hotbar; lava beside the stop: east at floor height 222,31,1"
+        },
+        {
+          "at": 417.8,
+          "state": "FAILED",
+          "reasonCode": "NO_ROUTE",
+          "message": "No seen way on toward the target, and building cannot continue: seen lava is beside 222,32,1, so opening it lets the lava in; at 221.4,32.0,1.5; 91 blocks left to the target (yaw -75); covered 0 blocks toward it in 1 s (0 blocks/min, 0 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 104 plain blocks on the hotbar; lava beside the stop: east at floor height 222,31,1"
+        },
+        {
+          "at": 418.5,
+          "state": "FAILED",
+          "reasonCode": "NO_ROUTE",
+          "message": "No seen way on toward the target, and building cannot continue: seen lava is beside 222,32,1, so opening it lets the lava in; at 221.4,32.0,1.5; 91 blocks left to the target (yaw -75); covered 0 blocks toward it in 1 s (0 blocks/min, 0 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 104 plain blocks on the hotbar; lava beside the stop: east at floor height 222,31,1"
+        }
+      ],
+      "toolSwaps": 2,
+      "gaveUp": "no progress over 3 actions",
+      "damageLowerBound": 1.8800010681152344,
+      "end": [
+        221.43,
+        32,
+        1.5
+      ],
+      "endDistance": 91,
+      "arrived": false,
+      "wallSeconds": 418.8,
+      "progressBlocks": 209,
+      "blocksPerMinute": 29.9,
+      "startedAtEpochMs": 1792945078563,
+      "endedAtEpochMs": 1792945497354,
+      "gameTicks": 8376,
+      "gameSeconds": 418.8,
+      "observedTicksPerSecond": 20,
+      "blocksPerGameMinute": 29.9,
+      "gameClockSource": "ready observation world.gameTime",
+      "pathBlocks": 280.7,
+      "blocksPerMinuteWithModel5s": 25.4
+    }
+  ]
+}

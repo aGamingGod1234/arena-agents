@@ -1,0 +1,193 @@
+{
+  "milestone": "at:1792720340000",
+  "sampleIndex": null,
+  "minute": null,
+  "seed": "8675309",
+  "source": "Independent seed; a player-prepared surface portal camp and a small Nether portal shelter.",
+  "priorAdvancements": [
+    "story/iron_tools",
+    "story/enter_the_nether"
+  ],
+  "deathsBefore": 0,
+  "setup": {
+    "dimension": "minecraft:the_nether",
+    "position": [
+      16.5,
+      77,
+      -2.5
+    ],
+    "generality": true,
+    "freezeUntilGoalStart": true,
+    "time": 1000,
+    "weather": "clear",
+    "commands": [
+      "execute in minecraft:overworld run fill 125 62 -3 133 66 3 minecraft:cobblestone",
+      "execute in minecraft:overworld run fill 126 63 -2 132 65 2 minecraft:air",
+      "execute in minecraft:overworld run setblock 125 63 0 minecraft:oak_door[facing=west,half=lower]",
+      "execute in minecraft:overworld run setblock 125 64 0 minecraft:oak_door[facing=west,half=upper]",
+      "execute in minecraft:overworld run setblock 128 63 0 minecraft:red_bed[facing=east,part=foot]",
+      "execute in minecraft:overworld run setblock 129 63 0 minecraft:red_bed[facing=east,part=head]",
+      "execute in minecraft:overworld run setblock 127 63 1 minecraft:chest[facing=north]",
+      "execute in minecraft:overworld run setblock 130 63 -1 minecraft:crafting_table",
+      "execute in minecraft:overworld run setblock 127 63 -1 minecraft:torch",
+      "execute in minecraft:overworld run setblock 131 63 -1 minecraft:torch",
+      "execute in minecraft:overworld run item replace block 127 63 1 container.0 with minecraft:stone_pickaxe 1",
+      "execute in minecraft:overworld run item replace block 127 63 1 container.1 with minecraft:stone_axe 1",
+      "execute in minecraft:overworld run item replace block 127 63 1 container.2 with minecraft:cooked_beef 16",
+      "execute in minecraft:overworld run item replace block 127 63 1 container.3 with minecraft:cobblestone 64",
+      "execute in minecraft:overworld run item replace block 127 63 1 container.4 with minecraft:oak_log 8",
+      "execute in minecraft:overworld run item replace block 127 63 1 container.5 with minecraft:shield 1",
+      "execute in minecraft:overworld run item replace block 127 63 1 container.6 with minecraft:golden_helmet 1",
+      "execute in minecraft:overworld run item replace block 127 63 1 container.7 with minecraft:flint_and_steel 1",
+      "execute in minecraft:overworld run fill 126 62 -2 129 66 -2 minecraft:obsidian",
+      "execute in minecraft:overworld run fill 127 63 -2 128 65 -2 minecraft:nether_portal[axis=x]",
+      "execute in minecraft:the_nether run fill 13 76 -4 20 80 2 minecraft:cobblestone",
+      "execute in minecraft:the_nether run fill 14 77 -3 19 79 1 minecraft:air",
+      "execute in minecraft:the_nether run setblock 13 77 -2 minecraft:oak_door[facing=west,half=lower]",
+      "execute in minecraft:the_nether run setblock 13 78 -2 minecraft:oak_door[facing=west,half=upper]",
+      "execute in minecraft:the_nether run setblock 15 77 -2 minecraft:torch",
+      "execute in minecraft:the_nether run fill 15 76 0 18 80 0 minecraft:obsidian",
+      "execute in minecraft:the_nether run fill 16 77 0 17 79 0 minecraft:nether_portal[axis=x]"
+    ],
+    "inventory": [
+      {
+        "item": "minecraft:iron_pickaxe",
+        "count": 1
+      },
+      {
+        "item": "minecraft:iron_sword",
+        "count": 1
+      },
+      {
+        "item": "minecraft:shield",
+        "count": 1
+      },
+      {
+        "item": "minecraft:water_bucket",
+        "count": 1
+      },
+      {
+        "item": "minecraft:flint_and_steel",
+        "count": 1
+      },
+      {
+        "item": "minecraft:cooked_beef",
+        "count": 32
+      },
+      {
+        "item": "minecraft:cobblestone",
+        "count": 64
+      },
+      {
+        "item": "minecraft:cobblestone",
+        "count": 64
+      },
+      {
+        "item": "minecraft:oak_planks",
+        "count": 32
+      },
+      {
+        "item": "minecraft:oak_log",
+        "count": 8
+      },
+      {
+        "item": "minecraft:crafting_table",
+        "count": 1
+      },
+      {
+        "item": "minecraft:stone_axe",
+        "count": 1
+      },
+      {
+        "item": "minecraft:torch",
+        "count": 32
+      },
+      {
+        "item": "minecraft:gold_ingot",
+        "count": 2
+      }
+    ],
+    "armour": {
+      "head": "minecraft:golden_helmet",
+      "chest": "minecraft:iron_chestplate",
+      "legs": "minecraft:iron_leggings",
+      "feet": "minecraft:iron_boots"
+    },
+    "effects": [],
+    "mobs": [],
+    "loadChunks": [
+      {
+        "dimension": "minecraft:overworld",
+        "position": [
+          128,
+          63,
+          0
+        ]
+      }
+    ],
+    "usedBedSpawn": {
+      "dimension": "minecraft:overworld",
+      "position": [
+        128,
+        63,
+        0
+      ]
+    }
+  },
+  "notes": [
+    "Version 2: independent seed with a surface portal camp; structure truth is evaluator-only.",
+    "The bed is used through vanilla interaction. Breaking or moving it invalidates this respawn.",
+    "A lit surface camp contains a spare kit and crafting table beside the return portal.",
+    "Only visible world blocks supply route information; no hidden terrain memory or structure coordinates are injected."
+  ],
+  "bedSpawn": {
+    "dimension": "minecraft:overworld",
+    "position": [
+      128,
+      63,
+      0
+    ]
+  },
+  "variantOf": "9-nether-entry-sol-bed-gold-v2.json",
+  "fixtureVersion": 2,
+  "recoveryRoute": null,
+  "spareKit": [
+    [
+      "stone_pickaxe",
+      1
+    ],
+    [
+      "stone_axe",
+      1
+    ],
+    [
+      "cooked_beef",
+      16
+    ],
+    [
+      "cobblestone",
+      64
+    ],
+    [
+      "oak_log",
+      8
+    ],
+    [
+      "shield",
+      1
+    ],
+    [
+      "golden_helmet",
+      1
+    ],
+    [
+      "flint_and_steel",
+      1
+    ]
+  ],
+  "netherExit": [
+    12,
+    77,
+    -2
+  ]
+}

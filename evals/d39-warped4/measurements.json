@@ -1,0 +1,232 @@
+{
+  "at": "2026-10-25T17:33:25.842896+00:00",
+  "survey": [
+    {
+      "seed": "123456789",
+      "operatorOnly": true,
+      "portal": [
+        0.5,
+        65,
+        5.5
+      ],
+      "locate": "The nearest minecraft:warped_forest is at [-288, 65, -379] (480 blocks away)",
+      "located": [
+        -288,
+        65,
+        -379
+      ],
+      "position": [
+        -287.5,
+        32,
+        -378.5
+      ],
+      "horizontalDistance": 480,
+      "threeDimensionalDistance": 481.1330377348868,
+      "accessTravelMeasured": false,
+      "routeSafetyVerified": false
+    },
+    {
+      "seed": "8675309",
+      "operatorOnly": true,
+      "portal": [
+        16.5,
+        77,
+        -2.5
+      ],
+      "locate": "The nearest minecraft:warped_forest is at [464, 77, 285] (532 blocks away)",
+      "located": [
+        464,
+        77,
+        285
+      ],
+      "position": [
+        464.5,
+        79,
+        285.5
+      ],
+      "horizontalDistance": 532.5861432669836,
+      "threeDimensionalDistance": 532.5898985147953,
+      "accessTravelMeasured": false,
+      "routeSafetyVerified": false
+    },
+    {
+      "seed": "987654321",
+      "operatorOnly": true,
+      "portal": [
+        0.5,
+        61,
+        -2.5
+      ],
+      "locate": "The nearest minecraft:warped_forest is at [-192, 61, 253] (320 blocks away)",
+      "located": [
+        -192,
+        61,
+        253
+      ],
+      "position": [
+        -191.5,
+        63,
+        261.5
+      ],
+      "horizontalDistance": 326.43529220965064,
+      "threeDimensionalDistance": 326.44141894067303,
+      "accessTravelMeasured": false,
+      "routeSafetyVerified": false
+    },
+    {
+      "seed": "20261024",
+      "operatorOnly": true,
+      "portal": [
+        0.5,
+        82,
+        -2.5
+      ],
+      "locate": "The nearest minecraft:warped_forest is at [-160, 82, -419] (445 blocks away)",
+      "located": [
+        -160,
+        82,
+        -419
+      ],
+      "position": [
+        -167.5,
+        49,
+        -418.5
+      ],
+      "horizontalDistance": 448.64239656991856,
+      "threeDimensionalDistance": 449.8544208963607,
+      "accessTravelMeasured": false,
+      "routeSafetyVerified": false
+    }
+  ],
+  "physical": [],
+  "physicalGroups": [
+    {
+      "seed": "123456789",
+      "n": 0,
+      "pearlsRetainedPer20MinuteOpportunity": null,
+      "pearlsPickedUpPer20MinuteOpportunity": null,
+      "endermenKilled": 0,
+      "deaths": 0
+    },
+    {
+      "seed": "8675309",
+      "n": 0,
+      "pearlsRetainedPer20MinuteOpportunity": null,
+      "pearlsPickedUpPer20MinuteOpportunity": null,
+      "endermenKilled": 0,
+      "deaths": 0
+    },
+    {
+      "seed": "987654321",
+      "n": 0,
+      "pearlsRetainedPer20MinuteOpportunity": null,
+      "pearlsPickedUpPer20MinuteOpportunity": null,
+      "endermenKilled": 0,
+      "deaths": 0
+    },
+    {
+      "seed": "20261024",
+      "n": 0,
+      "pearlsRetainedPer20MinuteOpportunity": null,
+      "pearlsPickedUpPer20MinuteOpportunity": null,
+      "endermenKilled": 0,
+      "deaths": 0
+    }
+  ],
+  "games": [],
+  "probes": [
+    {
+      "at": "2026-10-25T15:16:18.295Z",
+      "model": "gpt-6.1-sol",
+      "effort": "low",
+      "serviceTier": "default",
+      "fastServiceRequested": null,
+      "launcher": null,
+      "observedModel": null,
+      "observedServiceTier": null,
+      "responseMs": null,
+      "passed": false,
+      "failure": "NO_RESPONSE_WITHIN_30_SECONDS"
+    },
+    {
+      "at": "2026-10-25T16:55:52.761Z",
+      "model": "gpt-6.1-sol",
+      "effort": "low",
+      "serviceTier": "default",
+      "fastServiceRequested": false,
+      "launcher": "unchanged production CodexStdioTransport",
+      "observedModel": "gpt-6.1-sol",
+      "observedServiceTier": "default",
+      "responseMs": null,
+      "passed": false,
+      "failure": "NO_RESPONSE_WITHIN_30_SECONDS"
+    },
+    {
+      "at": "2026-10-25T17:31:15.413Z",
+      "model": "gpt-6.1-sol",
+      "effort": "low",
+      "serviceTier": "default",
+      "fastServiceRequested": false,
+      "launcher": "unchanged production CodexStdioTransport",
+      "observedModel": "gpt-6.1-sol",
+      "observedServiceTier": "default",
+      "responseMs": null,
+      "passed": false,
+      "failure": "NO_RESPONSE_WITHIN_30_SECONDS"
+    },
+    {
+      "at": "2026-10-25T15:34:57.152Z",
+      "model": "gpt-6.1-sol",
+      "effort": "low",
+      "serviceTier": "default",
+      "fastServiceRequested": null,
+      "launcher": null,
+      "observedModel": "gpt-6.1-sol",
+      "observedServiceTier": null,
+      "responseMs": null,
+      "passed": false,
+      "failure": "NO_RESPONSE_WITHIN_30_SECONDS"
+    },
+    {
+      "at": "2026-10-25T16:02:36.582Z",
+      "model": "gpt-6.1-sol",
+      "effort": "low",
+      "serviceTier": "default",
+      "fastServiceRequested": null,
+      "launcher": null,
+      "observedModel": "gpt-6.1-sol",
+      "observedServiceTier": null,
+      "responseMs": null,
+      "passed": false,
+      "failure": "NO_RESPONSE_WITHIN_30_SECONDS"
+    },
+    {
+      "at": "2026-10-25T16:49:34.422Z",
+      "model": "gpt-6.1-sol",
+      "effort": "low",
+      "serviceTier": "default",
+      "fastServiceRequested": null,
+      "launcher": null,
+      "observedModel": "gpt-6.1-sol",
+      "observedServiceTier": null,
+      "responseMs": null,
+      "passed": false,
+      "failure": "NO_RESPONSE_WITHIN_30_SECONDS"
+    }
+  ],
+  "gates": {
+    "gradle": 0,
+    "npm-test": 1,
+    "contracts": 0
+  },
+  "physicalCoverageComplete": false,
+  "liveCoverageComplete": false,
+  "notes": [
+    "Operator locate output never enters player observations, memory or instructions.",
+    "No travel-to-forest performance or safety is established.",
+    "Deaths truncate model-free trials and score zero retained pearls in a twenty-minute opportunity; no survivor-rate extrapolation.",
+    "Sol games use a sixty-minute wall-clock budget and a beat-game goal with pearl gathering as its next stage.",
+    "Minutes per retained pearl is the full sixty-minute budget divided by ending holdings; zero holdings have no finite rate.",
+    "Unrun, preflight-failed, void and stale-inventory outcomes are unavailable, not zero-pearl games."
+  ]
+}

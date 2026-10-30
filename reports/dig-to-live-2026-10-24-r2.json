@@ -1,0 +1,1810 @@
+{
+ "build": "claude/d31-dig2 7e549337 (dig2-v8 jar)",
+ "date": "2026-10-24",
+ "method": "Provider-free: scripts/quality/test-dig-live.mjs calls dig_to over the bridge; between calls it stands in for the model: a cave, lava or loose-block stop turns 90 degrees, HOSTILE_NEAR removes the sensed monsters by command (a fight stand-in) and goes on, TOOL_WORN gives a stone pickaxe (a crafting stand-in) or turns away from an ore only an iron pickaxe harvests, a body of water ends the spot as the model's decision. Kit: iron pickaxe + stone pickaxe, the checkpoint's other items. Before = round 1 (6a393dc2, same spots; it stopped at caves and water). Times are digging seconds (sum of dig_to calls); model turns between calls are not included.",
+ "surface": [
+  {
+   "spot": "A1 iron-pickaxe checkpoint steep",
+   "before": {
+    "name": "A1 iron-pickaxe checkpoint steep",
+    "reached": false,
+    "legsToReach": null,
+    "legs": 4,
+    "digSeconds": 76,
+    "lowestY": 30,
+    "stops": [
+     "CAVE_OPENING",
+     "CAVE_OPENING",
+     "CAVE_OPENING",
+     "HOSTILE_NEAR"
+    ],
+    "standIns": null,
+    "decision": null,
+    "healthLost": 0,
+    "deaths": 0
+   },
+   "after": {
+    "name": "A1 iron-pickaxe checkpoint steep",
+    "reached": true,
+    "legsToReach": 4,
+    "legs": 4,
+    "digSeconds": 434,
+    "lowestY": -55,
+    "stops": [
+     "HOSTILE_NEAR",
+     "HOSTILE_NEAR",
+     "HOSTILE_NEAR",
+     "DIG_GOAL_REACHED"
+    ],
+    "standIns": 3,
+    "decision": null,
+    "healthLost": 4,
+    "deaths": 0
+   }
+  },
+  {
+   "spot": "A2 lava-pool x/z steep",
+   "before": {
+    "name": "A2 lava-pool x/z steep",
+    "reached": false,
+    "legsToReach": null,
+    "legs": 3,
+    "digSeconds": 95,
+    "lowestY": 26,
+    "stops": [
+     "CAVE_OPENING",
+     "CAVE_OPENING",
+     "HOSTILE_NEAR"
+    ],
+    "standIns": null,
+    "decision": null,
+    "healthLost": 0,
+    "deaths": 0
+   },
+   "after": {
+    "name": "A2 lava-pool x/z steep",
+    "reached": true,
+    "legsToReach": 4,
+    "legs": 4,
+    "digSeconds": 379,
+    "lowestY": -55,
+    "stops": [
+     "HOSTILE_NEAR",
+     "CAVE_OPENING",
+     "HOSTILE_NEAR",
+     "DIG_GOAL_REACHED"
+    ],
+    "standIns": 2,
+    "decision": null,
+    "healthLost": 2,
+    "deaths": 0
+   }
+  },
+  {
+   "spot": "A3 300,-200 steep",
+   "before": {
+    "name": "A3 300,-200 steep",
+    "reached": false,
+    "legsToReach": null,
+    "legs": 4,
+    "digSeconds": 176,
+    "lowestY": 32,
+    "stops": [
+     "CAVE_OPENING",
+     "CAVE_OPENING",
+     "CAVE_OPENING",
+     "HOSTILE_NEAR"
+    ],
+    "standIns": null,
+    "decision": null,
+    "healthLost": 0,
+    "deaths": 0
+   },
+   "after": {
+    "name": "A3 300,-200 steep",
+    "reached": false,
+    "legsToReach": null,
+    "legs": 6,
+    "digSeconds": 504,
+    "lowestY": -53,
+    "stops": [
+     "DAMAGE_TAKEN",
+     "HOSTILE_NEAR",
+     "HOSTILE_NEAR",
+     "TOOL_WORN",
+     "TOOL_WORN",
+     "TOOL_WORN"
+    ],
+    "standIns": 3,
+    "decision": null,
+    "healthLost": 3,
+    "deaths": 0
+   }
+  },
+  {
+   "spot": "A1 iron-pickaxe checkpoint +40x stairs",
+   "before": {
+    "name": "A1 iron-pickaxe checkpoint +40x stairs",
+    "reached": false,
+    "legsToReach": null,
+    "legs": 6,
+    "digSeconds": 248,
+    "lowestY": -5,
+    "stops": [
+     "CAVE_OPENING",
+     "CAVE_OPENING",
+     "CAVE_OPENING",
+     "CAVE_OPENING",
+     "CAVE_OPENING",
+     "CAVE_OPENING"
+    ],
+    "standIns": null,
+    "decision": null,
+    "healthLost": 0,
+    "deaths": 0
+   },
+   "after": {
+    "name": "A1 iron-pickaxe checkpoint +40x stairs",
+    "reached": true,
+    "legsToReach": 2,
+    "legs": 2,
+    "digSeconds": 526,
+    "lowestY": -55,
+    "stops": [
+     "HOSTILE_NEAR",
+     "DIG_GOAL_REACHED"
+    ],
+    "standIns": 1,
+    "decision": null,
+    "healthLost": 0,
+    "deaths": 0
+   }
+  },
+  {
+   "spot": "B1 stronghold-search checkpoint steep",
+   "before": {
+    "name": "B1 stronghold-search checkpoint steep",
+    "reached": false,
+    "legsToReach": null,
+    "legs": 6,
+    "digSeconds": 57,
+    "lowestY": 35,
+    "stops": [
+     "CAVE_OPENING",
+     "WATER_AHEAD",
+     "WATER_AHEAD",
+     "WATER_AHEAD",
+     "WATER_AHEAD",
+     "WATER_AHEAD"
+    ],
+    "standIns": null,
+    "decision": null,
+    "healthLost": 0,
+    "deaths": 0
+   },
+   "after": {
+    "name": "B1 stronghold-search checkpoint steep",
+    "reached": false,
+    "legsToReach": null,
+    "legs": 1,
+    "digSeconds": 60,
+    "lowestY": 35,
+    "stops": [
+     "WATER_AHEAD"
+    ],
+    "standIns": 0,
+    "decision": "WATER_AHEAD",
+    "healthLost": 0,
+    "deaths": 0
+   }
+  },
+  {
+   "spot": "C1 12345 100,100 steep",
+   "before": {
+    "name": "C1 12345 100,100 steep",
+    "reached": false,
+    "legsToReach": null,
+    "legs": 6,
+    "digSeconds": 72,
+    "lowestY": 74,
+    "stops": [
+     "CAVE_OPENING",
+     "CAVE_OPENING",
+     "CAVE_OPENING",
+     "WATER_AHEAD",
+     "CAVE_OPENING",
+     "CAVE_OPENING"
+    ],
+    "standIns": null,
+    "decision": null,
+    "healthLost": 0,
+    "deaths": 0
+   },
+   "after": {
+    "name": "C1 12345 100,100 steep",
+    "reached": true,
+    "legsToReach": 2,
+    "legs": 2,
+    "digSeconds": 459,
+    "lowestY": -55,
+    "stops": [
+     "HOSTILE_NEAR",
+     "DIG_GOAL_REACHED"
+    ],
+    "standIns": 1,
+    "decision": null,
+    "healthLost": 0,
+    "deaths": 0
+   }
+  },
+  {
+   "spot": "A3 340,-200 stairs",
+   "before": {
+    "name": "A3 340,-200 stairs",
+    "reached": false,
+    "legsToReach": null,
+    "legs": 1,
+    "digSeconds": 243,
+    "lowestY": 32,
+    "stops": [
+     "TOOL_WORN"
+    ],
+    "standIns": null,
+    "decision": null,
+    "healthLost": 0,
+    "deaths": 0
+   },
+   "after": {
+    "name": "A3 340,-200 stairs",
+    "reached": false,
+    "legsToReach": null,
+    "legs": 2,
+    "digSeconds": 373,
+    "lowestY": -2,
+    "stops": [
+     "TOOL_WORN",
+     "WATER_AHEAD"
+    ],
+    "standIns": 0,
+    "decision": "WATER_AHEAD",
+    "healthLost": 0,
+    "deaths": 0
+   }
+  },
+  {
+   "spot": "N1 12345 -300,200 steep",
+   "before": null,
+   "after": {
+    "name": "N1 12345 -300,200 steep",
+    "reached": false,
+    "legsToReach": null,
+    "legs": 1,
+    "digSeconds": 15,
+    "lowestY": 63,
+    "stops": [
+     "WATER_AHEAD"
+    ],
+    "standIns": 0,
+    "decision": "WATER_AHEAD",
+    "healthLost": 0,
+    "deaths": 0
+   }
+  },
+  {
+   "spot": "N2 20261009 134,488 steep",
+   "before": null,
+   "after": {
+    "name": "N2 20261009 134,488 steep",
+    "reached": true,
+    "legsToReach": 2,
+    "legs": 2,
+    "digSeconds": 262,
+    "lowestY": -55,
+    "stops": [
+     "HOSTILE_NEAR",
+     "DIG_GOAL_REACHED"
+    ],
+    "standIns": 1,
+    "decision": null,
+    "healthLost": 0,
+    "deaths": 0
+   }
+  }
+ ],
+ "surfaceRaw": [
+  {
+   "name": "A1 iron-pickaxe checkpoint steep",
+   "seed": "-8891462362762682724",
+   "legs": [
+    {
+     "heading": "east",
+     "state": "FAILED",
+     "reasonCode": "HOSTILE_NEAR",
+     "seconds": 79,
+     "blocks": 83,
+     "blocksPerMinute": 63,
+     "fromY": 70,
+     "toY": 30,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: minecraft:spider afa1a287-9bf6-4d8c-8b5e-06bddd09b578 at 23,26,110, 11.0 blocks away. At 33,30,107, steep_down heading north; 83 blocks mined in 20 steps over 78 s (y70 to y30); mined stone 71, andesite 9, grass_block 2, iron_ore 1; ores seen iron_ore 2 (first at iron_ore 14,68,107); tool iron_pickaxe 167 uses left; dug past caves at 34,29,108 (y29), 32,30,108 (y30); turned south along a cave at y30; turned north along a cave at y30"
+    },
+    {
+     "heading": "east",
+     "state": "FAILED",
+     "reasonCode": "HOSTILE_NEAR",
+     "seconds": 102,
+     "blocks": 71,
+     "blocksPerMinute": 42,
+     "fromY": 30,
+     "toY": 24,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: minecraft:zombie 06201468-7942-4ac2-8218-90e0c07a75fc at 42,17,103, 11.5 blocks away. At 50,24,107, steep_down heading east; 71 blocks mined in 17 steps over 101 s (y30 to y24); mined stone 51, dirt 18, diorite 2; tool iron_pickaxe 112 uses left; dug past caves at 33,27,106 (y27), 35,29,108 (y29), 39,25,107 (y25), 38,27,109 (y27); 14 level steps across cave tops; turned south along a cave at y30; turned north along a cave at y30; crossed a cave top east from y30; turned south along a cave at y28; turned north along a cave at y28; crossed a cave top east from y28; crossed a cave top east from y26"
+    },
+    {
+     "heading": "east",
+     "state": "FAILED",
+     "reasonCode": "HOSTILE_NEAR",
+     "seconds": 216,
+     "blocks": 156,
+     "blocksPerMinute": 43,
+     "fromY": 24,
+     "toY": -43,
+     "healthLost": 4,
+     "deaths": 0,
+     "message": "Stopped: minecraft:creeper 5610d0e2-6f1c-4239-a86d-e7ccfb03c008 at 93,-43,102, 7.5 blocks away. At 86,-43,106, steep_down heading north; 156 blocks mined in 36 steps over 215 s (y24 to y-43); mined deepslate 116, stone 22, diorite 13, tuff 3, lapis_ore 2; ores seen lapis_ore 5, iron_ore 3, deepslate_diamond_ore 3 (first at iron_ore 56,17,107, lapis_ore 55,14,106, deepslate_diamond_ore 65,-5,108); tool stone_pickaxe 85 uses left; dug past caves at 80,-37,107 (y-37), 87,-37,106 (y-37), 86,-39,108 (y-39), 86,-36,105 (y-36); dropped 7 blocks onto deepslate at 86,-44,106; 6 level steps across cave tops; turned south along a cave at y-34; turned north along a cave at y-34; crossed a cave top east from y-34; turned south along a cave at y-36; turned north along a cave at y-36; fell 7 blocks; fall HP sum 4.0"
+    },
+    {
+     "heading": "east",
+     "state": "SUCCEEDED",
+     "reasonCode": "DIG_GOAL_REACHED",
+     "seconds": 37,
+     "blocks": 22,
+     "blocksPerMinute": 36,
+     "fromY": -43,
+     "toY": -55,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Reached y-55. At 92,-55,106, steep_down heading east; 22 blocks mined in 6 steps over 37 s (y-43 to y-55); mined deepslate 22; tool stone_pickaxe 63 uses left"
+    }
+   ],
+   "start": [
+    13.55608852979721,
+    70,
+    107.30000001192093
+   ],
+   "standIns": 3,
+   "end": [
+    92.64640393168591,
+    -55,
+    106.50000224327736
+   ],
+   "seconds": 433,
+   "deaths": 0,
+   "reached": true,
+   "legsToReach": 4,
+   "healthLost": 4
+  },
+  {
+   "name": "A2 lava-pool x/z steep",
+   "seed": "-8891462362762682724",
+   "legs": [
+    {
+     "heading": "east",
+     "state": "FAILED",
+     "reasonCode": "HOSTILE_NEAR",
+     "seconds": 97,
+     "blocks": 103,
+     "blocksPerMinute": 64,
+     "fromY": 78,
+     "toY": 26,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: minecraft:creeper 519eeb3e-9e6a-4052-9e0f-7dc7437478d2 at 22,15,94, 11.8 blocks away. At 19,26,97, steep_down heading south; 103 blocks mined in 26 steps over 96 s (y78 to y26); mined stone 75, diorite 13, andesite 10, gravel 4, dirt 1; ores seen coal_ore 1 (first at coal_ore 9,47,96); tool iron_pickaxe 147 uses left; dug past caves at 18,27,96 (y27), 20,25,97 (y25); turned south along a cave at y26"
+    },
+    {
+     "heading": "east",
+     "state": "FAILED",
+     "reasonCode": "CAVE_OPENING",
+     "seconds": 58,
+     "blocks": 32,
+     "blocksPerMinute": 33,
+     "fromY": 26,
+     "toY": 26,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The floor under the next step at 31,23,97 is open: a drop of 10 blocks onto minecraft:granite; not stepping in; no other heading here has a floor (tried east), no seen landing within 7 blocks and 12 level steps across the cave found no floor below. At 30,26,97, steep_down heading east; 32 blocks mined in 12 steps over 58 s (y26 to y26); mined dirt 11, andesite 10, stone 8, copper_ore 3; ores seen copper_ore 9 (first at copper_ore 23,27,98); tool iron_pickaxe; dug past caves at 18,23,98 (y23), 18,27,95 (y27), 20,25,98 (y25), 21,25,98 (y25); 12 level steps across cave tops; turned south along a cave at y26; turned north along a cave at y26; crossed a cave top east from y26"
+    },
+    {
+     "heading": "south",
+     "state": "FAILED",
+     "reasonCode": "HOSTILE_NEAR",
+     "seconds": 36,
+     "blocks": 12,
+     "blocksPerMinute": 20,
+     "fromY": 26,
+     "toY": 19,
+     "healthLost": 2,
+     "deaths": 0,
+     "message": "Stopped: minecraft:zombie 3d814564-08db-42e7-a392-6425161f93ff at 38,20,116, 11.9 blocks away. At 30,19,108, steep_down heading south; 12 blocks mined in 11 steps over 35 s (y26 to y19); mined dirt 6, stone 5, cobblestone 1; tool iron_pickaxe 120 uses left; dug past caves at 30,25,99 (y25), 29,23,97 (y23), 30,25,100 (y25), 30,25,101 (y25); dropped 7 blocks onto stone at 30,18,108; 10 level steps across cave tops; turned west along a cave at y26; turned east along a cave at y26; crossed a cave top south from y26; fell 7 blocks; fall HP sum 4.0"
+    },
+    {
+     "heading": "south",
+     "state": "SUCCEEDED",
+     "reasonCode": "DIG_GOAL_REACHED",
+     "seconds": 188,
+     "blocks": 151,
+     "blocksPerMinute": 48,
+     "fromY": 19,
+     "toY": -55,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Reached y-55. At -7,-55,108, steep_down heading west; 151 blocks mined in 37 steps over 187 s (y19 to y-55); mined deepslate 94, stone 23, tuff 13, diorite 10, gravel 10, iron_ore 1; ores seen iron_ore 4, deepslate_gold_ore 1 (first at iron_ore 24,11,108, deepslate_gold_ore -7,-55,107); tool stone_pickaxe 98 uses left; dug past caves at 18,0,108 (y0); turned west along a cave at y19"
+    }
+   ],
+   "start": [
+    -7.5,
+    78,
+    97.5
+   ],
+   "standIns": 2,
+   "end": [
+    -6.6387744780094335,
+    -55,
+    108.50000968253293
+   ],
+   "seconds": 378,
+   "deaths": 0,
+   "reached": true,
+   "legsToReach": 4,
+   "healthLost": 2
+  },
+  {
+   "name": "A3 300,-200 steep",
+   "seed": "-8891462362762682724",
+   "legs": [
+    {
+     "heading": "east",
+     "state": "FAILED",
+     "reasonCode": "DAMAGE_TAKEN",
+     "seconds": 264,
+     "blocks": 249,
+     "blocksPerMinute": 57,
+     "fromY": 120,
+     "toY": 17,
+     "healthLost": 3,
+     "deaths": 0,
+     "message": "Stopped: Took 3.0 damage (arrow); health 17.0. At 359,18,-202, steep_down heading east; 249 blocks mined in 60 steps over 263 s (y120 to y18); mined stone 183, andesite 35, gravel 21, dirt 6, grass_block 2, short_grass 1; ores seen copper_ore 6, iron_ore 4 (first at copper_ore 314,92,-199, iron_ore 354,31,-201); tool iron_pickaxe 2 uses left; dug past caves at 349,30,-199 (y30), 350,30,-199 (y30), 351,31,-199 (y31), 352,31,-199 (y31); dropped 7 blocks onto stone at 357,22,-201; 12 level steps across cave tops; turned south along a cave at y32; turned north along a cave at y32; crossed a cave top east from y32; turned south along a cave at y30; turned north along a cave at y30; turned east along a cave at y21; filled a hole with cobblestone at 358,18,-202; fell 7 blocks; fall HP sum 4.0"
+    },
+    {
+     "heading": "east",
+     "state": "FAILED",
+     "reasonCode": "HOSTILE_NEAR",
+     "seconds": 0,
+     "blocks": 0,
+     "blocksPerMinute": 0,
+     "fromY": 17,
+     "toY": 17,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: minecraft:skeleton 85213fe0-5941-4489-a2be-ba8903d44ae6 at 360,8,-207, 10.5 blocks away. At 359,17,-202, steep_down heading east; 0 blocks mined in 0 steps over 1 s (y17 to y17); tool stone_pickaxe 131 uses left"
+    },
+    {
+     "heading": "east",
+     "state": "FAILED",
+     "reasonCode": "HOSTILE_NEAR",
+     "seconds": 98,
+     "blocks": 66,
+     "blocksPerMinute": 41,
+     "fromY": 17,
+     "toY": -9,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: minecraft:spider b6f94722-0ae1-47cf-ba82-df5fdc6dd48f at 361,-10,-200, 1.7 blocks away. At 362,-9,-199, steep_down heading west; 66 blocks mined in 14 steps over 97 s (y17 to y-9); mined deepslate 35, stone 16, andesite 9, diorite 3, gravel 3; tool stone_pickaxe 66 uses left; dug past caves at 366,6,-203 (y6), 366,-6,-198 (y-6), 364,-8,-199 (y-8), 365,-4,-201 (y-4); 1 level steps across cave tops; turned south along a cave at y3; turned west along a cave at y-3; turned north along a cave at y-5; turned south along a cave at y-5; crossed a cave top west from y-5"
+    },
+    {
+     "heading": "east",
+     "state": "FAILED",
+     "reasonCode": "TOOL_WORN",
+     "seconds": 107,
+     "blocks": 64,
+     "blocksPerMinute": 36,
+     "fromY": -9,
+     "toY": -43,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: Every hotbar tool for minecraft:deepslate has 2 or fewer uses left. At 379,-43,-199, steep_down heading east; 64 blocks mined in 17 steps over 106 s (y-9 to y-43); mined deepslate 64; ores seen deepslate_iron_ore 1 (first at deepslate_iron_ore 377,-34,-199); tool stone_pickaxe 2 uses left; dug past caves at 363,-8,-200 (y-8)"
+    },
+    {
+     "heading": "south",
+     "state": "FAILED",
+     "reasonCode": "TOOL_WORN",
+     "seconds": 0,
+     "blocks": 0,
+     "blocksPerMinute": 0,
+     "fromY": -43,
+     "toY": -43,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: Every hotbar tool for minecraft:deepslate has 2 or fewer uses left. At 379,-43,-199, steep_down heading south; 0 blocks mined in 0 steps over 1 s (y-43 to y-43)"
+    },
+    {
+     "heading": "south",
+     "state": "FAILED",
+     "reasonCode": "TOOL_WORN",
+     "seconds": 35,
+     "blocks": 21,
+     "blocksPerMinute": 36,
+     "fromY": -43,
+     "toY": -53,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: Every hotbar tool for minecraft:deepslate_redstone_ore has 2 or fewer uses left. At 379,-53,-194, steep_down heading south; 21 blocks mined in 5 steps over 34 s (y-43 to y-53); mined deepslate 21; ores seen deepslate_redstone_ore 1 (first at deepslate_redstone_ore 379,-53,-193); tool stone_pickaxe 110 uses left"
+    }
+   ],
+   "start": [
+    300.5,
+    120,
+    -199.5
+   ],
+   "standIns": 3,
+   "end": [
+    379.4999598160371,
+    -53,
+    -193.30000001192093
+   ],
+   "seconds": 503,
+   "deaths": 0,
+   "reached": false,
+   "legsToReach": null,
+   "healthLost": 3
+  },
+  {
+   "name": "A1 iron-pickaxe checkpoint +40x stairs",
+   "seed": "-8891462362762682724",
+   "legs": [
+    {
+     "heading": "east",
+     "state": "FAILED",
+     "reasonCode": "HOSTILE_NEAR",
+     "seconds": 336,
+     "blocks": 289,
+     "blocksPerMinute": 52,
+     "fromY": 74,
+     "toY": -12,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: minecraft:zombie d7aa0b6d-cbdf-4e26-ad0c-adab1d113bd5 at 147,-23,103, 11.5 blocks away. At 146,-12,107, stairs_down heading south; 289 blocks mined in 92 steps over 335 s (y74 to y-12); mined stone 141, deepslate 79, andesite 25, diorite 16, granite 13, dirt 7; ores seen iron_ore 7, copper_ore 3, deepslate_iron_ore 1 (first at copper_ore 62,66,107, iron_ore 81,48,107, deepslate_iron_ore 126,5,107); tool stone_pickaxe 90 uses left; dug past caves at 133,-7,108 (y-7), 136,-8,108 (y-8), 147,-11,106 (y-11); 6 level steps across cave tops; turned south along a cave at y-5; turned north along a cave at y-5; crossed a cave top east from y-5; turned south along a cave at y-6; turned north along a cave at y-6; crossed a cave top east from y-6"
+    },
+    {
+     "heading": "east",
+     "state": "SUCCEEDED",
+     "reasonCode": "DIG_GOAL_REACHED",
+     "seconds": 190,
+     "blocks": 116,
+     "blocksPerMinute": 37,
+     "fromY": -12,
+     "toY": -55,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Reached y-55. At 106,-55,108, stairs_down heading west; 116 blocks mined in 41 steps over 190 s (y-12 to y-55); mined deepslate 103, tuff 13; tool stone_pickaxe 82 uses left; dug past caves at 147,-12,109 (y-12), 142,-15,107 (y-15); turned south along a cave at y-12; turned west along a cave at y-13; filled a hole with cobblestone at 141,-19,108"
+    }
+   ],
+   "start": [
+    54.5,
+    74,
+    107.30000001192093
+   ],
+   "standIns": 1,
+   "end": [
+    106.35683525804887,
+    -55,
+    108.5000044279099
+   ],
+   "seconds": 526,
+   "deaths": 0,
+   "reached": true,
+   "legsToReach": 2,
+   "healthLost": 0
+  },
+  {
+   "name": "B1 stronghold-search checkpoint steep",
+   "seed": "20261009",
+   "legs": [
+    {
+     "heading": "east",
+     "state": "FAILED",
+     "reasonCode": "WATER_AHEAD",
+     "seconds": 60,
+     "blocks": 57,
+     "blocksPerMinute": 57,
+     "fromY": 63,
+     "toY": 35,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: Water at 1063,36,2535 beside the opened cell 1063,36,2536; water on 4 sides of it: a body of water (an aquifer or lake), not a trickle; not going further. At 1062,35,2536, steep_down heading east; 57 blocks mined in 14 steps over 60 s (y63 to y35); mined stone 29, granite 12, dirt 9, andesite 4, birch_log 2, grass_block 1; tool iron_pickaxe 193 uses left; dug past caves at 1049,64,2535 (y64)"
+    }
+   ],
+   "start": [
+    1048.5,
+    63,
+    2536.5
+   ],
+   "standIns": 0,
+   "decision": "WATER_AHEAD",
+   "end": [
+    1062.699999988079,
+    35,
+    2536.5
+   ],
+   "seconds": 60,
+   "deaths": 0,
+   "reached": false,
+   "legsToReach": null,
+   "healthLost": 0
+  },
+  {
+   "name": "C1 12345 100,100 steep",
+   "seed": "12345",
+   "legs": [
+    {
+     "heading": "east",
+     "state": "FAILED",
+     "reasonCode": "HOSTILE_NEAR",
+     "seconds": 203,
+     "blocks": 203,
+     "blocksPerMinute": 60,
+     "fromY": 102,
+     "toY": 5,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: minecraft:zombie 4b014987-e298-4de2-bbf6-dce0e0db1ae3 at 147,4,34, 12.0 blocks away. At 136,5,29, steep_down heading west; 203 blocks mined in 47 steps over 202 s (y102 to y5); mined stone 145, clay 25, andesite 16, diorite 8, dirt 4, gravel 4; ores seen iron_ore 4 (first at iron_ore 137,31,37); tool iron_pickaxe 47 uses left; dug past caves at 139,87,68 (y87), 139,88,66 (y88), 136,12,29 (y12); dropped 5 blocks onto deepslate at 137,6,29; turned south along a cave at y90; turned north along a cave at y90; turned east along a cave at y12; turned west along a cave at y12; fell 5 blocks; fall HP sum 2.0"
+    },
+    {
+     "heading": "east",
+     "state": "SUCCEEDED",
+     "reasonCode": "DIG_GOAL_REACHED",
+     "seconds": 256,
+     "blocks": 168,
+     "blocksPerMinute": 39,
+     "fromY": 5,
+     "toY": -55,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Reached y-55. At 132,-55,30, steep_down heading west; 168 blocks mined in 35 steps over 255 s (y5 to y-55); mined deepslate 133, sculk 19, andesite 13, sculk_vein 2, deepslate_iron_ore 1; ores seen deepslate_iron_ore 2, deepslate_lapis_ore 1 (first at deepslate_lapis_ore 145,-8,29, deepslate_iron_ore 150,-30,29); tool stone_pickaxe 8 uses left; dug past caves at 153,-26,29 (y-26), 151,-26,32 (y-26), 149,-32,30 (y-32), 150,-32,29 (y-32); 5 level steps across cave tops; turned south along a cave at y-25; turned west along a cave at y-27; turned north along a cave at y-29; turned south along a cave at y-29; crossed a cave top west from y-29; turned north along a cave at y-31; crossed a cave top west from y-31; crossed a cave top west from y-33"
+    }
+   ],
+   "start": [
+    132.5,
+    102,
+    68.5
+   ],
+   "standIns": 1,
+   "end": [
+    132.35901498520084,
+    -55,
+    30.500011665511693
+   ],
+   "seconds": 459,
+   "deaths": 0,
+   "reached": true,
+   "legsToReach": 2,
+   "healthLost": 0
+  },
+  {
+   "name": "A3 340,-200 stairs",
+   "seed": "-8891462362762682724",
+   "legs": [
+    {
+     "heading": "east",
+     "state": "FAILED",
+     "reasonCode": "TOOL_WORN",
+     "seconds": 325,
+     "blocks": 316,
+     "blocksPerMinute": 58,
+     "fromY": 117,
+     "toY": 10,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: Every hotbar tool for minecraft:gold_ore has 2 or fewer uses left. At 447,10,-200, stairs_down heading east; 316 blocks mined in 107 steps over 324 s (y117 to y10); mined stone 224, granite 33, dirt 22, diorite 18, grass_block 8, gravel 5; ores seen copper_ore 8, gold_ore 1 (first at copper_ore 441,16,-200, gold_ore 447,10,-201); tool stone_pickaxe 63 uses left"
+    },
+    {
+     "heading": "south",
+     "state": "FAILED",
+     "reasonCode": "WATER_AHEAD",
+     "seconds": 48,
+     "blocks": 38,
+     "blocksPerMinute": 47,
+     "fromY": 10,
+     "toY": -2,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: Water at 447,-2,-186 beside the opened cell 447,-2,-187; water on 3 sides of it: a body of water (an aquifer or lake), not a trickle; not going further. At 447,-2,-188, stairs_down heading south; 38 blocks mined in 12 steps over 48 s (y10 to y-2); mined stone 17, granite 11, deepslate 10; tool stone_pickaxe 25 uses left"
+    }
+   ],
+   "start": [
+    340.5,
+    117,
+    -199.5
+   ],
+   "standIns": 0,
+   "decision": "WATER_AHEAD",
+   "end": [
+    447.49996142252235,
+    -2,
+    -187.30000001192093
+   ],
+   "seconds": 373,
+   "deaths": 0,
+   "reached": false,
+   "legsToReach": null,
+   "healthLost": 0
+  },
+  {
+   "name": "N1 12345 -300,200 steep",
+   "seed": "12345",
+   "legs": [
+    {
+     "heading": "east",
+     "state": "FAILED",
+     "reasonCode": "WATER_AHEAD",
+     "seconds": 15,
+     "blocks": 14,
+     "blocksPerMinute": 56,
+     "fromY": 69,
+     "toY": 63,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The body is under water at -305,63,224 (air 298/300); not digging on. At -305,63,224, steep_down heading east; 14 blocks mined in 3 steps over 14 s (y69 to y63); mined stone 7, dirt 6, grass_block 1; tool iron_pickaxe 236 uses left"
+    }
+   ],
+   "start": [
+    -307.5,
+    69,
+    224.5
+   ],
+   "standIns": 0,
+   "decision": "WATER_AHEAD",
+   "end": [
+    -304.30000001192093,
+    63,
+    224.5
+   ],
+   "seconds": 15,
+   "deaths": 0,
+   "reached": false,
+   "legsToReach": null,
+   "healthLost": 0
+  },
+  {
+   "name": "N2 20261009 134,488 steep",
+   "seed": "20261009",
+   "legs": [
+    {
+     "heading": "east",
+     "state": "FAILED",
+     "reasonCode": "HOSTILE_NEAR",
+     "seconds": 159,
+     "blocks": 160,
+     "blocksPerMinute": 60,
+     "fromY": 68,
+     "toY": -13,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: minecraft:skeleton 6b424a63-9237-4431-87ee-2a9e5dc20735 at 170,-24,447, 11.9 blocks away. At 174,-13,449, steep_down heading east; 160 blocks mined in 39 steps over 159 s (y68 to y-13); mined stone 73, deepslate 35, granite 24, andesite 19, moss_block 6, dirt 2; ores seen coal_ore 1 (first at coal_ore 155,63,464); tool iron_pickaxe 90 uses left; dug past caves at 151,69,463 (y69), 173,23,463 (y23), 172,21,465 (y21), 172,23,462 (y23); dropped 5 blocks onto andesite at 172,18,463; turned south along a cave at y24; turned north along a cave at y24; turned east along a cave at y-9; fell 5 blocks; fall HP sum 2.0"
+    },
+    {
+     "heading": "east",
+     "state": "SUCCEEDED",
+     "reasonCode": "DIG_GOAL_REACHED",
+     "seconds": 103,
+     "blocks": 82,
+     "blocksPerMinute": 48,
+     "fromY": -13,
+     "toY": -55,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Reached y-55. At 195,-55,449, steep_down heading east; 82 blocks mined in 21 steps over 103 s (y-13 to y-55); mined deepslate 82; ores seen deepslate_lapis_ore 1 (first at deepslate_lapis_ore 191,-44,450); tool iron_pickaxe 8 uses left"
+    }
+   ],
+   "start": [
+    150.5,
+    68,
+    464.5
+   ],
+   "standIns": 1,
+   "end": [
+    195.63935036960814,
+    -55,
+    449.49999546549935
+   ],
+   "seconds": 263,
+   "deaths": 0,
+   "reached": true,
+   "legsToReach": 2,
+   "healthLost": 0
+  }
+ ],
+ "a3RerunFixedStandIn": [
+  {
+   "name": "A3 300,-200 steep",
+   "seed": "-8891462362762682724",
+   "legs": [
+    {
+     "heading": "east",
+     "state": "FAILED",
+     "reasonCode": "HOSTILE_NEAR",
+     "seconds": 198,
+     "blocks": 198,
+     "blocksPerMinute": 60,
+     "fromY": 120,
+     "toY": 32,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: minecraft:skeleton 4841e2b5-a4bb-4bdd-b0f6-3a8fa014d651 at 350,21,-199, 11.6 blocks away. At 346,32,-200, steep_down heading east; 198 blocks mined in 46 steps over 197 s (y120 to y32); mined stone 151, gravel 21, andesite 16, dirt 6, grass_block 2, short_grass 1; ores seen copper_ore 6 (first at copper_ore 314,92,-199); tool iron_pickaxe 53 uses left; 2 level steps across cave tops; turned south along a cave at y32; turned north along a cave at y32; crossed a cave top east from y32"
+    },
+    {
+     "heading": "east",
+     "state": "FAILED",
+     "reasonCode": "TOOL_WORN",
+     "seconds": 216,
+     "blocks": 154,
+     "blocksPerMinute": 43,
+     "fromY": 32,
+     "toY": -23,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: Every hotbar tool for minecraft:deepslate_diamond_ore has 2 or fewer uses left. At 355,-23,-199, steep_down heading west; 154 blocks mined in 36 steps over 216 s (y32 to y-23); mined stone 52, deepslate 47, andesite 32, tuff 13, gravel 7, diorite 3; ores seen iron_ore 4 (first at iron_ore 354,31,-201); tool stone_pickaxe 29 uses left; dug past caves at 349,30,-199 (y30), 350,30,-199 (y30), 351,31,-199 (y31), 352,31,-199 (y31); dropped 7 blocks onto stone at 357,22,-201; 11 level steps across cave tops; turned south along a cave at y32; turned north along a cave at y32; crossed a cave top east from y32; turned south along a cave at y30; turned north along a cave at y30; turned east along a cave at y21; filled a hole with cobblestone at 358,18,-202; crossed a cave top west from y-5; fell 7 blocks; fall HP sum 4.0"
+    },
+    {
+     "heading": "south",
+     "state": "FAILED",
+     "reasonCode": "TOOL_WORN",
+     "seconds": 44,
+     "blocks": 27,
+     "blocksPerMinute": 37,
+     "fromY": -23,
+     "toY": -35,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: Every hotbar tool for minecraft:deepslate has 2 or fewer uses left. At 355,-35,-193, steep_down heading south; 27 blocks mined in 6 steps over 44 s (y-23 to y-35); mined deepslate 27; tool stone_pickaxe 2 uses left"
+    },
+    {
+     "heading": "south",
+     "state": "SUCCEEDED",
+     "reasonCode": "DIG_GOAL_REACHED",
+     "seconds": 49,
+     "blocks": 37,
+     "blocksPerMinute": 45,
+     "fromY": -35,
+     "toY": -55,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Reached y-55. At 355,-55,-183, steep_down heading south; 37 blocks mined in 10 steps over 48 s (y-35 to y-55); mined deepslate 20, calcite 9, smooth_basalt 8; tool stone_pickaxe 94 uses left"
+    }
+   ],
+   "start": [
+    300.5,
+    120,
+    -199.5
+   ],
+   "standIns": 2,
+   "end": [
+    355.49998475283326,
+    -55,
+    -182.30000001192093
+   ],
+   "seconds": 507,
+   "deaths": 0,
+   "reached": true,
+   "legsToReach": 4,
+   "healthLost": 0
+  },
+  {
+   "name": "A3 340,-200 stairs",
+   "seed": "-8891462362762682724",
+   "legs": [
+    {
+     "heading": "east",
+     "state": "FAILED",
+     "reasonCode": "TOOL_WORN",
+     "seconds": 325,
+     "blocks": 316,
+     "blocksPerMinute": 58,
+     "fromY": 117,
+     "toY": 10,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: Every hotbar tool for minecraft:gold_ore has 2 or fewer uses left. At 447,10,-200, stairs_down heading east; 316 blocks mined in 107 steps over 325 s (y117 to y10); mined stone 224, granite 33, dirt 22, diorite 18, grass_block 8, gravel 5; ores seen copper_ore 8, gold_ore 1 (first at copper_ore 441,16,-200, gold_ore 447,10,-201); tool stone_pickaxe 63 uses left"
+    },
+    {
+     "heading": "south",
+     "state": "FAILED",
+     "reasonCode": "WATER_AHEAD",
+     "seconds": 48,
+     "blocks": 38,
+     "blocksPerMinute": 47,
+     "fromY": 10,
+     "toY": -2,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: Water at 447,-2,-186 beside the opened cell 447,-2,-187; water on 3 sides of it: a body of water (an aquifer or lake), not a trickle; not going further. At 447,-2,-188, stairs_down heading south; 38 blocks mined in 12 steps over 48 s (y10 to y-2); mined stone 17, granite 11, deepslate 10; tool stone_pickaxe 25 uses left"
+    }
+   ],
+   "start": [
+    340.5,
+    117,
+    -199.5
+   ],
+   "standIns": 0,
+   "decision": "WATER_AHEAD",
+   "end": [
+    447.49996142252235,
+    -2,
+    -187.30000001192093
+   ],
+   "seconds": 373,
+   "deaths": 0,
+   "reached": false,
+   "legsToReach": null,
+   "healthLost": 0
+  }
+ ],
+ "earlierRunV5": {
+  "build": "dbb884ca (dig2-v5 jar, before the water, stairs_up, under-water and lean fixes)",
+  "summary": [
+   {
+    "name": "A1 iron-pickaxe checkpoint steep",
+    "reached": true,
+    "legsToReach": 3,
+    "legs": 3,
+    "digSeconds": 435,
+    "lowestY": -55,
+    "stops": [
+     "HOSTILE_NEAR",
+     "HOSTILE_NEAR",
+     "DIG_GOAL_REACHED"
+    ],
+    "standIns": 2,
+    "decision": null,
+    "healthLost": 1,
+    "deaths": 0
+   },
+   {
+    "name": "A2 lava-pool x/z steep",
+    "reached": true,
+    "legsToReach": 3,
+    "legs": 3,
+    "digSeconds": 366,
+    "lowestY": -56,
+    "stops": [
+     "HOSTILE_NEAR",
+     "HOSTILE_NEAR",
+     "DIG_GOAL_REACHED"
+    ],
+    "standIns": 2,
+    "decision": null,
+    "healthLost": 0,
+    "deaths": 0
+   },
+   {
+    "name": "A3 300,-200 steep",
+    "reached": false,
+    "legsToReach": null,
+    "legs": 6,
+    "digSeconds": 507,
+    "lowestY": -53,
+    "stops": [
+     "HOSTILE_NEAR",
+     "TOOL_WORN",
+     "TOOL_WORN",
+     "TOOL_WORN",
+     "TOOL_WORN",
+     "TOOL_WORN"
+    ],
+    "standIns": 6,
+    "decision": null,
+    "healthLost": 0,
+    "deaths": 0
+   },
+   {
+    "name": "A1 iron-pickaxe checkpoint +40x stairs",
+    "reached": true,
+    "legsToReach": 3,
+    "legs": 3,
+    "digSeconds": 491,
+    "lowestY": -55,
+    "stops": [
+     "HOSTILE_NEAR",
+     "HOSTILE_NEAR",
+     "DIG_GOAL_REACHED"
+    ],
+    "standIns": 2,
+    "decision": null,
+    "healthLost": 0,
+    "deaths": 0
+   },
+   {
+    "name": "B1 stronghold-search checkpoint steep",
+    "reached": false,
+    "legsToReach": null,
+    "legs": 6,
+    "digSeconds": 62,
+    "lowestY": 35,
+    "stops": [
+     "WATER_AHEAD",
+     "WATER_AHEAD",
+     "WATER_AHEAD",
+     "WATER_AHEAD",
+     "WATER_AHEAD",
+     "WATER_AHEAD"
+    ],
+    "standIns": 0,
+    "decision": null,
+    "healthLost": 0,
+    "deaths": 0
+   },
+   {
+    "name": "C1 12345 100,100 steep",
+    "reached": true,
+    "legsToReach": 3,
+    "legs": 3,
+    "digSeconds": 445,
+    "lowestY": -55,
+    "stops": [
+     "HOSTILE_NEAR",
+     "HOSTILE_NEAR",
+     "DIG_GOAL_REACHED"
+    ],
+    "standIns": 2,
+    "decision": null,
+    "healthLost": 0,
+    "deaths": 0
+   },
+   {
+    "name": "A3 340,-200 stairs",
+    "reached": false,
+    "legsToReach": null,
+    "legs": 6,
+    "digSeconds": 321,
+    "lowestY": 10,
+    "stops": [
+     "TOOL_WORN",
+     "TOOL_WORN",
+     "TOOL_WORN",
+     "TOOL_WORN",
+     "TOOL_WORN",
+     "TOOL_WORN"
+    ],
+    "standIns": 6,
+    "decision": null,
+    "healthLost": 0,
+    "deaths": 0
+   },
+   {
+    "name": "N1 12345 -300,200 steep",
+    "reached": false,
+    "legsToReach": null,
+    "legs": 6,
+    "digSeconds": 21,
+    "lowestY": 63,
+    "stops": [
+     "WATER_AHEAD",
+     "WATER_AHEAD",
+     "WATER_AHEAD",
+     "WATER_AHEAD",
+     "WATER_AHEAD",
+     "WATER_AHEAD"
+    ],
+    "standIns": 0,
+    "decision": null,
+    "healthLost": 0,
+    "deaths": 0
+   },
+   {
+    "name": "N2 20261009 134,488 steep",
+    "reached": true,
+    "legsToReach": 2,
+    "legs": 2,
+    "digSeconds": 263,
+    "lowestY": -55,
+    "stops": [
+     "HOSTILE_NEAR",
+     "DIG_GOAL_REACHED"
+    ],
+    "standIns": 1,
+    "decision": null,
+    "healthLost": 0,
+    "deaths": 0
+   }
+  ]
+ },
+ "stopFixtures": [
+  {
+   "name": "S1 FALLING_BLOCKS gravel column over a tunnel",
+   "seed": "20261009",
+   "legs": [
+    {
+     "heading": "east",
+     "state": "FAILED",
+     "reasonCode": "FALLING_BLOCKS",
+     "seconds": 18,
+     "blocks": 13,
+     "blocksPerMinute": 44,
+     "fromY": -2,
+     "toY": -2,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: Loose blocks keep falling into 135,-1,488 (13 refills this step); minecraft:gravel above. At 134,-2,488, tunnel heading east; 13 blocks mined in 0 steps over 17 s (y-2 to y-2); mined gravel 12, deepslate 1; tool iron_pickaxe 237 uses left"
+    }
+   ],
+   "fixture": [
+    "Successfully filled 21 block(s)"
+   ],
+   "start": [
+    134.5,
+    -2,
+    488.5
+   ],
+   "standIns": 0,
+   "end": [
+    134.5,
+    -2,
+    488.5
+   ],
+   "seconds": 18,
+   "deaths": 0,
+   "reached": false,
+   "legsToReach": null,
+   "healthLost": 0
+  },
+  {
+   "name": "S2 LOW_FOOD hunger while digging",
+   "seed": "20261009",
+   "legs": [
+    {
+     "heading": "east",
+     "state": "FAILED",
+     "reasonCode": "LOW_FOOD",
+     "seconds": 3,
+     "blocks": 3,
+     "blocksPerMinute": 54,
+     "fromY": -2,
+     "toY": -2,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: Food 6 is at or below 6 (no sprinting or healing soon). At 134,-2,488, steep_down heading east; 3 blocks mined in 0 steps over 3 s (y-2 to y-2); mined deepslate 3; tool iron_pickaxe 247 uses left"
+    }
+   ],
+   "fixture": [
+    "Applied effect Hunger to Probe"
+   ],
+   "start": [
+    134.5,
+    -2,
+    488.5
+   ],
+   "standIns": 0,
+   "end": [
+    134.5,
+    -2,
+    488.5
+   ],
+   "seconds": 3,
+   "deaths": 0,
+   "reached": false,
+   "legsToReach": null,
+   "healthLost": 0
+  },
+  {
+   "name": "S3 NO_TOOL no pickaxe",
+   "seed": "20261009",
+   "legs": [
+    {
+     "heading": "east",
+     "state": "FAILED",
+     "reasonCode": "NO_TOOL",
+     "seconds": 0,
+     "blocks": 0,
+     "blocksPerMinute": 0,
+     "fromY": -2,
+     "toY": -2,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: No hotbar tool can harvest minecraft:deepslate at 135,-1,488. At 134,-2,488, steep_down heading east; 0 blocks mined in 0 steps over 1 s (y-2 to y-2)"
+    }
+   ],
+   "start": [
+    134.5,
+    -1.999999999999993,
+    488.5
+   ],
+   "standIns": 0,
+   "end": [
+    134.5,
+    -1.999999999999993,
+    488.5
+   ],
+   "seconds": 0,
+   "deaths": 0,
+   "reached": false,
+   "legsToReach": null,
+   "healthLost": 0
+  },
+  {
+   "name": "S4 INVENTORY_FULL 35 swords",
+   "seed": "20261009",
+   "legs": [
+    {
+     "heading": "east",
+     "state": "FAILED",
+     "reasonCode": "INVENTORY_FULL",
+     "seconds": 0,
+     "blocks": 0,
+     "blocksPerMinute": 0,
+     "fromY": -2,
+     "toY": -2,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: Inventory is full; minecraft:cobbled_deepslate from minecraft:deepslate at 135,-1,488 would stay on the ground. At 134,-2,488, steep_down heading east; 0 blocks mined in 0 steps over 1 s (y-2 to y-2)"
+    }
+   ],
+   "start": [
+    134.5,
+    -2,
+    488.5
+   ],
+   "standIns": 0,
+   "end": [
+    134.5,
+    -2,
+    488.5
+   ],
+   "seconds": 0,
+   "deaths": 0,
+   "reached": false,
+   "legsToReach": null,
+   "healthLost": 0
+  },
+  {
+   "name": "S5 tunnel to x146",
+   "seed": "20261009",
+   "legs": [
+    {
+     "heading": "east",
+     "state": "SUCCEEDED",
+     "reasonCode": "DIG_GOAL_REACHED",
+     "seconds": 30,
+     "blocks": 24,
+     "blocksPerMinute": 49,
+     "fromY": -2,
+     "toY": -2,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Reached the tunnel goal. At 146,-2,488, tunnel heading east; 24 blocks mined in 12 steps over 29 s (y-2 to y-2); mined deepslate 24; tool iron_pickaxe 226 uses left"
+    }
+   ],
+   "start": [
+    134.5,
+    -2,
+    488.5
+   ],
+   "standIns": 0,
+   "end": [
+    146.2628716222687,
+    -2,
+    488.5
+   ],
+   "seconds": 30,
+   "deaths": 0,
+   "reached": true,
+   "legsToReach": 1,
+   "healthLost": 0
+  },
+  {
+   "name": "S6 stairs_up to y10",
+   "seed": "20261009",
+   "legs": [
+    {
+     "heading": "east",
+     "state": "FAILED",
+     "reasonCode": "WATER_AHEAD",
+     "seconds": 20,
+     "blocks": 17,
+     "blocksPerMinute": 50,
+     "fromY": -2,
+     "toY": 3,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The body is under water at 139,3,488 (air 298/300); not digging on. At 139,3,488, stairs_up heading east; 17 blocks mined in 5 steps over 20 s (y-2 to y3); mined deepslate 13, stone 4; tool iron_pickaxe 233 uses left"
+    }
+   ],
+   "start": [
+    134.5,
+    -2,
+    488.5
+   ],
+   "standIns": 0,
+   "decision": "WATER_AHEAD",
+   "end": [
+    139.26213482190448,
+    3,
+    488.4999026971506
+   ],
+   "seconds": 20,
+   "deaths": 0,
+   "reached": false,
+   "legsToReach": null,
+   "healthLost": 0
+  },
+  {
+   "name": "S7 water source beside step 2 (stairs)",
+   "seed": "20261009",
+   "legs": [
+    {
+     "heading": "east",
+     "state": "SUCCEEDED",
+     "reasonCode": "DIG_GOAL_REACHED",
+     "seconds": 63,
+     "blocks": 48,
+     "blocksPerMinute": 45,
+     "fromY": -2,
+     "toY": -20,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Reached y-20. At 152,-20,488, stairs_down heading east; 48 blocks mined in 18 steps over 63 s (y-2 to y-20); mined deepslate 46, clay 2; tool iron_pickaxe 202 uses left; dug past caves at 146,-11,488 (y-11); sealed water with 1 block"
+    }
+   ],
+   "fixture": [
+    "Changed the block at 136, -3, 489"
+   ],
+   "start": [
+    134.5,
+    -2,
+    488.5
+   ],
+   "standIns": 0,
+   "end": [
+    152.69999998807907,
+    -20,
+    488.5
+   ],
+   "seconds": 63,
+   "deaths": 0,
+   "reached": true,
+   "legsToReach": 1,
+   "healthLost": 0
+  },
+  {
+   "name": "S8 water pouring from above step 3 (steep)",
+   "seed": "20261009",
+   "legs": [
+    {
+     "heading": "east",
+     "state": "SUCCEEDED",
+     "reasonCode": "DIG_GOAL_REACHED",
+     "seconds": 45,
+     "blocks": 36,
+     "blocksPerMinute": 48,
+     "fromY": -2,
+     "toY": -20,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Reached y-20. At 143,-20,488, steep_down heading east; 36 blocks mined in 9 steps over 45 s (y-2 to y-20); mined deepslate 34, clay 2; tool iron_pickaxe 214 uses left"
+    }
+   ],
+   "fixture": [
+    "Changed the block at 137, 1, 488",
+    "Successfully filled 1 block(s)"
+   ],
+   "start": [
+    134.5,
+    -2,
+    488.5
+   ],
+   "standIns": 0,
+   "end": [
+    143.69999998807907,
+    -20,
+    488.5
+   ],
+   "seconds": 45,
+   "deaths": 0,
+   "reached": true,
+   "legsToReach": 1,
+   "healthLost": 0
+  },
+  {
+   "name": "S9 cave pocket under the path (steep)",
+   "seed": "20261009",
+   "legs": [
+    {
+     "heading": "east",
+     "state": "SUCCEEDED",
+     "reasonCode": "DIG_GOAL_REACHED",
+     "seconds": 79,
+     "blocks": 64,
+     "blocksPerMinute": 49,
+     "fromY": -2,
+     "toY": -30,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Reached y-30. At 136,-30,500, steep_down heading south; 64 blocks mined in 14 steps over 78 s (y-2 to y-30); mined deepslate 38, tuff 13, gravel 11, deepslate_iron_ore 2; ores seen deepslate_iron_ore 2 (first at deepslate_iron_ore 136,-11,492); tool iron_pickaxe 186 uses left; dug past caves at 137,-7,487 (y-7), 136,-9,492 (y-9); turned south along a cave at y-6"
+    }
+   ],
+   "fixture": [
+    "Successfully filled 180 block(s)"
+   ],
+   "start": [
+    134.5,
+    -2,
+    488.5
+   ],
+   "standIns": 0,
+   "end": [
+    136.4999921013067,
+    -30,
+    500.69999998807907
+   ],
+   "seconds": 79,
+   "deaths": 0,
+   "reached": true,
+   "legsToReach": 1,
+   "healthLost": 0
+  }
+ ],
+ "spots": {
+  "surface": [
+   {
+    "name": "A1 iron-pickaxe checkpoint steep",
+    "checkpoint": "arena-beat-game/long/checkpoints/1-iron-pickaxe.json",
+    "pattern": "steep_down",
+    "legs": 6
+   },
+   {
+    "name": "A2 lava-pool x/z steep",
+    "checkpoint": "arena-beat-game/long/checkpoints/8-lava-pool-bed.json",
+    "pattern": "steep_down",
+    "legs": 6
+   },
+   {
+    "name": "A3 300,-200 steep",
+    "seed": "-8891462362762682724",
+    "x": 300,
+    "z": -200,
+    "pattern": "steep_down",
+    "legs": 6
+   },
+   {
+    "name": "A1 iron-pickaxe checkpoint +40x stairs",
+    "checkpoint": "arena-beat-game/long/checkpoints/1-iron-pickaxe.json",
+    "x": 54,
+    "pattern": "stairs_down",
+    "legs": 6
+   },
+   {
+    "name": "B1 stronghold-search checkpoint steep",
+    "checkpoint": "arena-beat-game/long/checkpoints/4-stronghold-search.json",
+    "pattern": "steep_down",
+    "legs": 6
+   },
+   {
+    "name": "C1 12345 100,100 steep",
+    "seed": "12345",
+    "x": 100,
+    "z": 100,
+    "pattern": "steep_down",
+    "legs": 6
+   },
+   {
+    "name": "A3 340,-200 stairs",
+    "seed": "-8891462362762682724",
+    "x": 340,
+    "z": -200,
+    "pattern": "stairs_down",
+    "legs": 6
+   },
+   {
+    "name": "N1 12345 -300,200 steep",
+    "seed": "12345",
+    "x": -300,
+    "z": 200,
+    "pattern": "steep_down",
+    "legs": 6
+   },
+   {
+    "name": "N2 20261009 134,488 steep",
+    "seed": "20261009",
+    "x": 134,
+    "z": 488,
+    "pattern": "steep_down",
+    "legs": 6
+   }
+  ],
+  "stops": [
+   {
+    "seed": "20261009",
+    "x": 134,
+    "z": 488,
+    "y": -2,
+    "legs": 1,
+    "name": "S1 FALLING_BLOCKS gravel column over a tunnel",
+    "pattern": "tunnel",
+    "digArgs": {
+     "y": null,
+     "x": 146
+    },
+    "fixture": [
+     "fill {x+1} {y+2} {z} {x+1} {y+22} {z} minecraft:gravel"
+    ]
+   },
+   {
+    "seed": "20261009",
+    "x": 134,
+    "z": 488,
+    "y": -2,
+    "legs": 1,
+    "name": "S2 LOW_FOOD hunger while digging",
+    "pattern": "steep_down",
+    "targetY": -55,
+    "fixture": [
+     "effect give Probe minecraft:hunger 120 255 true"
+    ]
+   },
+   {
+    "seed": "20261009",
+    "x": 134,
+    "z": 488,
+    "y": -2,
+    "legs": 1,
+    "name": "S3 NO_TOOL no pickaxe",
+    "pattern": "steep_down",
+    "targetY": -55,
+    "inventory": [
+     {
+      "item": "minecraft:dirt",
+      "count": 16
+     }
+    ]
+   },
+   {
+    "seed": "20261009",
+    "x": 134,
+    "z": 488,
+    "y": -2,
+    "legs": 1,
+    "name": "S4 INVENTORY_FULL 35 swords",
+    "pattern": "steep_down",
+    "targetY": -55,
+    "inventory": [
+     {
+      "item": "minecraft:iron_pickaxe",
+      "count": 1
+     },
+     {
+      "item": "minecraft:iron_sword",
+      "count": 1
+     },
+     {
+      "item": "minecraft:iron_sword",
+      "count": 1
+     },
+     {
+      "item": "minecraft:iron_sword",
+      "count": 1
+     },
+     {
+      "item": "minecraft:iron_sword",
+      "count": 1
+     },
+     {
+      "item": "minecraft:iron_sword",
+      "count": 1
+     },
+     {
+      "item": "minecraft:iron_sword",
+      "count": 1
+     },
+     {
+      "item": "minecraft:iron_sword",
+      "count": 1
+     },
+     {
+      "item": "minecraft:iron_sword",
+      "count": 1
+     },
+     {
+      "item": "minecraft:iron_sword",
+      "count": 1
+     },
+     {
+      "item": "minecraft:iron_sword",
+      "count": 1
+     },
+     {
+      "item": "minecraft:iron_sword",
+      "count": 1
+     },
+     {
+      "item": "minecraft:iron_sword",
+      "count": 1
+     },
+     {
+      "item": "minecraft:iron_sword",
+      "count": 1
+     },
+     {
+      "item": "minecraft:iron_sword",
+      "count": 1
+     },
+     {
+      "item": "minecraft:iron_sword",
+      "count": 1
+     },
+     {
+      "item": "minecraft:iron_sword",
+      "count": 1
+     },
+     {
+      "item": "minecraft:iron_sword",
+      "count": 1
+     },
+     {
+      "item": "minecraft:iron_sword",
+      "count": 1
+     },
+     {
+      "item": "minecraft:iron_sword",
+      "count": 1
+     },
+     {
+      "item": "minecraft:iron_sword",
+      "count": 1
+     },
+     {
+      "item": "minecraft:iron_sword",
+      "count": 1
+     },
+     {
+      "item": "minecraft:iron_sword",
+      "count": 1
+     },
+     {
+      "item": "minecraft:iron_sword",
+      "count": 1
+     },
+     {
+      "item": "minecraft:iron_sword",
+      "count": 1
+     },
+     {
+      "item": "minecraft:iron_sword",
+      "count": 1
+     },
+     {
+      "item": "minecraft:iron_sword",
+      "count": 1
+     },
+     {
+      "item": "minecraft:iron_sword",
+      "count": 1
+     },
+     {
+      "item": "minecraft:iron_sword",
+      "count": 1
+     },
+     {
+      "item": "minecraft:iron_sword",
+      "count": 1
+     },
+     {
+      "item": "minecraft:iron_sword",
+      "count": 1
+     },
+     {
+      "item": "minecraft:iron_sword",
+      "count": 1
+     },
+     {
+      "item": "minecraft:iron_sword",
+      "count": 1
+     },
+     {
+      "item": "minecraft:iron_sword",
+      "count": 1
+     },
+     {
+      "item": "minecraft:iron_sword",
+      "count": 1
+     },
+     {
+      "item": "minecraft:iron_sword",
+      "count": 1
+     }
+    ]
+   },
+   {
+    "seed": "20261009",
+    "x": 134,
+    "z": 488,
+    "y": -2,
+    "legs": 1,
+    "name": "S5 tunnel to x146",
+    "pattern": "tunnel",
+    "digArgs": {
+     "y": null,
+     "x": 146
+    }
+   },
+   {
+    "seed": "20261009",
+    "x": 134,
+    "z": 488,
+    "y": -2,
+    "legs": 1,
+    "name": "S6 stairs_up to y10",
+    "pattern": "stairs_up",
+    "targetY": 10
+   },
+   {
+    "seed": "20261009",
+    "x": 134,
+    "z": 488,
+    "y": -2,
+    "legs": 1,
+    "name": "S7 water source beside step 2 (stairs)",
+    "pattern": "stairs_down",
+    "targetY": -20,
+    "extraItems": [
+     {
+      "item": "minecraft:cobblestone",
+      "count": 16
+     }
+    ],
+    "fixture": [
+     "setblock {x+2} {y-1} {z+1} minecraft:water"
+    ]
+   },
+   {
+    "seed": "20261009",
+    "x": 134,
+    "z": 488,
+    "y": -2,
+    "legs": 1,
+    "name": "S8 water pouring from above step 3 (steep)",
+    "pattern": "steep_down",
+    "targetY": -20,
+    "extraItems": [
+     {
+      "item": "minecraft:cobblestone",
+      "count": 16
+     }
+    ],
+    "fixture": [
+     "setblock {x+3} {y+3} {z} minecraft:water",
+     "fill {x+3} {y+2} {z} {x+3} {y+2} {z} minecraft:air"
+    ]
+   },
+   {
+    "seed": "20261009",
+    "x": 134,
+    "z": 488,
+    "y": -2,
+    "legs": 1,
+    "name": "S9 cave pocket under the path (steep)",
+    "pattern": "steep_down",
+    "targetY": -30,
+    "extraItems": [
+     {
+      "item": "minecraft:cobblestone",
+      "count": 16
+     }
+    ],
+    "fixture": [
+     "fill {x+3} {y-10} {z-2} {x+8} {y-5} {z+2} minecraft:air"
+    ]
+   }
+  ]
+ }
+}

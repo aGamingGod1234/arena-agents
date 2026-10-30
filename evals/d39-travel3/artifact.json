@@ -1,0 +1,12 @@
+{
+  "commit": "6345839ef4a61df87e8da7115c6ce0e61f433be5",
+  "base": "4682f12ef47a997d0f6fb9b3e9ca194dd765bfe8",
+  "root": "/home/agaminggod/Desktop/Projects/aa-run-6345839e",
+  "jar": "/home/agaminggod/Desktop/Projects/arena-beat-game/jars/d25-6345839e.jar",
+  "jarSha256": "53545d9bf635763da270c9077888de9e675d4587f86e833149c20eb52670f88f",
+  "fortressFactUnchanged": true,
+  "safetyStatus": "FAILED zero-fire bar: pair 2 candidate recorded 15 fire samples after piglin-arrow damage; cause unresolved. Diagnostic not substituted.",
+  "coordinatorTrackedSrcConfigSha256": "5492a135a408109d4577b3ccca7fad8454ac030e7e22b69fcb46d38cb99b5862",
+  "coordinatorNativeFingerprint": "23a75cdf2428218e02ccecb702ca909b53cce1bb13504859778ab14ab39be885",
+  "fingerprintNote": "Tracked src/config digest and quality-runner native fingerprint use different file inventories; native games must match the latter."
+}

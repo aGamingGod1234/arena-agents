@@ -1,0 +1,99 @@
+﻿import test from 'node:test';
+import assert from 'node:assert/strict';
+import { ExplorationOccupancy } from '../src/explore-frontier.mjs';
+import { TwoCallLlmWrap, classifyBodyFailure, composeTwoCallView, wrapTwoCallObservation } from '../src/two-call-llm-wrap.mjs';
+
+const death = { cause: 'lava', dimensionId: 'minecraft:overworld', x: 12, y: 64, z: -8 };
+
+test('recovery lists evidenced current and lost items without deciding corpse recovery or recrafting', () => {
+	const view = composeTwoCallView({ player: { dead: true }, death, inventory: { items: [] } }, { lastDeath: death, lastLostInventory: [{ itemId: 'minecraft:stone_pickaxe', count: 1 }], alreadyHave: ['minecraft:crafting_table'], doNotRedo: [] });
+	assert.equal(view.failureClass, 'lifecycle');
+	// The dimension and whole-block coordinates make the fact usable after a respawn elsewhere.
+	assert.deepEqual(view.recovery.lastDeath, death);
+	assert.doesNotMatch(view.recovery.facts, /x=|Last death:/);
+	assert.doesNotMatch(view.recovery.facts, /Current inventory/);
+	assert.deepEqual(view.recovery.lastLostInventory, [{ itemId: 'minecraft:stone_pickaxe', count: 1 }]);
+	assert.doesNotMatch(view.recovery.facts, /stone_pickaxe/);
+	assert.equal(view.recovery.alreadyHave.includes('minecraft:stone_pickaxe'), false);
+	assert.equal(view.options, undefined);
+	assert.doesNotMatch(view.recovery.facts, /Go back|recraft/);
+});
+
+test('goal prose does not inject game-specific search, recipe or target suggestions', () => {
+	const observation = { world: { dimension: 'minecraft:overworld' }, inventory: { items: [] } };
+	assert.deepEqual(wrapTwoCallObservation(observation, {}, { goal: 'Beat Minecraft and find a fortress' }), wrapTwoCallObservation(observation, {}, { goal: 'Build a cottage' }));
+});
+
+test('blocked paths are categorized factually without issuing another objective', () => {
+	const view = composeTwoCallView({ lastResult: { state: 'FAILED', reasonCode: 'PATH_BLOCKED' } });
+	assert.equal(view.failureClass, 'path');
+	assert.equal(view.options, undefined);
+	assert.equal(view.exploration, undefined);
+	assert.equal(classifyBodyFailure('RECIPE_NOT_FOUND', 'FAILED'), 'capability');
+	assert.equal(classifyBodyFailure('TARGET_NOT_VISIBLE', 'FAILED'), 'target');
+	assert.equal(classifyBodyFailure('NEW_ERROR', 'FAILED'), 'action');
+	assert.equal(classifyBodyFailure('BLOCK_BROKEN', 'SUCCEEDED'), null);
+});
+
+test('obstructed targets and dead agents keep their factual failure categories', () => {
+	assert.equal(classifyBodyFailure('TARGET_OBSTRUCTED', 'FAILED'), 'target');
+	assert.equal(classifyBodyFailure('AGENT_NOT_DEAD', 'FAILED'), 'lifecycle');
+});
+
+test('exploration decoration provides factual candidates and strips stale strategy options', () => {
+	const occupancy = new ExplorationOccupancy();
+	const observation = { position: { x: 0, y: 64, z: 0 }, world: { worldId: 'one', dimension: 'minecraft:overworld' }, landmarks: [{ blockId: 'minecraft:obsidian', x: 20, y: 60, z: 0 }], options: [{ id: 'explore_frontier', moveTo: { x: 8, y: 64, z: 0 } }] };
+	occupancy.ingest('a', observation);
+	const view = composeTwoCallView(observation, null, { occupancy, agentId: 'a', goal: 'Beat Minecraft' });
+	assert.equal(view.options, undefined);
+	assert.deepEqual(view.exploration.candidates.map(({ x, y, z, footing }) => ({ x, y, z, footing })), [{ x: 20, y: 61, z: 0, footing: 'seen_surface' }]);
+	assert.equal(view.exploration.candidates.some((entry) => entry.class === 'portal'), false);
+});
+
+test('death recovery facts continue across later observations', () => {
+	const wrap = new TwoCallLlmWrap();
+	wrap.ingest('a', { player: { dead: false, x: 12, y: 64, z: -8 }, inventory: { items: [{ itemId: 'minecraft:stone_pickaxe', count: 1 }] }, world: { dimension: 'minecraft:overworld' } }, { goalRevision: 1 });
+	wrap.ingest('a', { death, player: { dead: true }, inventory: { items: [] }, world: { dimension: 'minecraft:overworld' } }, { goalRevision: 1 });
+	const result = wrap.decorate('a', { player: { dead: false, x: 0, y: 64, z: 0 }, inventory: { items: [] }, world: { dimension: 'minecraft:overworld' } });
+	assert.equal(result.recovery.lastDeath.x, 12);
+	assert.equal(result.recovery.lastLostInventory[0].itemId, 'minecraft:stone_pickaxe');
+	assert.equal(result.options, undefined);
+});
+
+test('remembered stations and inventory remain qualified through summary and compatibility wrapper', () => {
+	const wrap = new TwoCallLlmWrap();
+	const station = { blockId: 'minecraft:crafting_table', x: 1, y: 64, z: 1 };
+	const world = { worldId: 'one', dimension: 'minecraft:overworld' };
+	const live = { world, inventory: { items: [{ itemId: 'minecraft:diamond', count: 1 }] }, blocks: [station] };
+	wrap.ingest('a', live);
+	const current = wrap.decorate('a', live);
+	assert.match(current.recovery.facts, /Currently evidenced: minecraft:diamond, minecraft:crafting_table/);
+	const remembered = wrap.ingestAndDecorate('a', { world, blocks: [] });
+	assert.doesNotMatch(remembered.recovery.facts, /Currently evidenced|Current inventory is empty/);
+	assert.match(remembered.recovery.facts, /Remembered \(not currently verified\): minecraft:diamond, minecraft:crafting_table/);
+	assert.equal(remembered.recovery.alreadyHaveFacts.every((entry) => entry.remembered), true);
+	const compat = wrapTwoCallObservation({ world }, remembered.recovery);
+	assert.equal(compat.recovery.facts, remembered.recovery.facts);
+	assert.deepEqual(compat.recovery.alreadyHaveFacts, remembered.recovery.alreadyHaveFacts);
+	const contradicted = wrap.ingestAndDecorate('a', { world, inventory: { items: [] }, blocks: [{ ...station, blockId: 'minecraft:stone' }] });
+	assert.equal(contradicted.recovery, undefined);
+});
+
+test('merged death sections retain historical provenance instead of claiming current evidence', () => {
+	const wrap = new TwoCallLlmWrap();
+	const blocks = [{ blockId: 'minecraft:crafting_table', x: 1, y: 64, z: 1 }];
+	wrap.ingest('a', { blocks, inventory: { items: [] } });
+	const dead = wrap.ingestAndDecorate('a', { death, blocks, inventory: { items: [] }, continuity: { rememberedSections: ['blocks'] } });
+	assert.match(dead.recovery.facts, /Remembered \(not currently verified\): minecraft:crafting_table/);
+	assert.doesNotMatch(dead.recovery.facts, /Currently evidenced/);
+	assert.equal(dead.recovery.alreadyHaveFacts[0].remembered, true);
+});
+
+
+test('unverified near stop remains a path failure for ok consumers', async () => {
+	const { isFailureResult, withFailureSchema } = await import('../src/failure-schema.mjs');
+	const receipt = { state: 'FAILED', reasonCode: 'DESTINATION_NEAR_UNVERIFIED', message: 'Stopped 2.5 blocks from target (requested tolerance 1)' };
+	assert.equal(classifyBodyFailure(receipt.reasonCode, receipt.state), 'path');
+	assert.equal(isFailureResult(receipt), true);
+	assert.ok(withFailureSchema(receipt).failure);
+});

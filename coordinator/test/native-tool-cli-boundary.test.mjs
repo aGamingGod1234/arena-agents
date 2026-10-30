@@ -1,0 +1,365 @@
+import assert from 'node:assert/strict';
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import { spawn } from 'node:child_process';
+import test from 'node:test';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+
+import { runNativeToolCli } from '../src/native-tool-cli-boundary.mjs';
+
+const coordinatorRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const privateMissingModule = 'C:\\private\\api-token-secret.mjs';
+const maximumDiagnosticBytes = 8 * 1_024;
+
+function runCli(script, args, options = {}) {
+	return new Promise((resolve, reject) => {
+		const child = spawn(process.execPath, [path.join(coordinatorRoot, 'src', script), ...args], {
+			cwd: coordinatorRoot,
+			env: { ...process.env, ...options.env },
+			stdio: ['ignore', 'pipe', 'pipe'],
+			windowsHide: true,
+		});
+		let stdout = '';
+		let stderr = '';
+		const timeout = setTimeout(() => child.kill(), 10_000);
+		child.stdout.on('data', (chunk) => { stdout += chunk; });
+		child.stderr.on('data', (chunk) => { stderr += chunk; });
+		child.on('error', reject);
+		child.on('close', (code, signal) => {
+			clearTimeout(timeout);
+			resolve({ code, signal, stdout, stderr });
+		});
+	});
+}
+
+function assertBoundedSanitizedFailure(result, expectedCode = null) {
+	assert.equal(result.signal, null);
+	assert.equal(result.code, 1);
+	const output = `${result.stdout}${result.stderr}`;
+	assert.ok(Buffer.byteLength(output, 'utf8') <= maximumDiagnosticBytes, `diagnostic was ${Buffer.byteLength(output, 'utf8')} bytes`);
+	assert.doesNotMatch(output, /C:\\private|api-token-secret/i);
+	assert.doesNotMatch(output, /Users\\lucas|\.worktrees|coordinator\\src/i);
+	assert.equal(result.stderr, '');
+	const lines = result.stdout.trim().split(/\r?\n/).filter(Boolean);
+	assert.equal(lines.length, 1);
+	const failure = JSON.parse(lines[0]);
+	assert.equal(failure.status, 'FAILED');
+	assert.match(failure.code, /^[A-Z][A-Z0-9_:-]{0,63}$/);
+	if (expectedCode !== null) assert.equal(failure.code, expectedCode);
+	assert.equal(typeof failure.message, 'string');
+	assert.equal(typeof failure.stack, 'string');
+}
+
+async function writeFixtureService(filePath, { resultExpression = '{ toolCalls: 1 }', stopBody = '' } = {}) {
+	await writeFile(filePath, `
+export class CodexService {
+ async start() {}
+ async stop() { ${stopBody} }
+ async createAgent() {
+  return {
+   async setGoalRevision() {},
+   async act(input, context) {
+    const call = async (actionType) => context.executeTool({ tool: { kind: 'action', actionType, arguments:
+      actionType === 'chat' ? { message: 'Hello' } :
+      actionType === 'craft_inventory' ? { recipeId: 'minecraft:oak_planks', count: 4, timeoutMs: 15_000 } :
+      { x: 2, y: 64, z: 1, expectedBlockId: 'minecraft:stone', timeoutMs: 15_000 }
+    } });
+    if (input.includes('mine the known')) { await call('navigate_to'); await call('break_block'); return { status: 'completed', ...${resultExpression} }; }
+    if (input.includes('craft_inventory')) { await call('craft_inventory'); return { status: 'completed', ...${resultExpression} }; }
+    await call('chat'); return { status: 'completed', ...${resultExpression} };
+   },
+  };
+ }
+}
+`, 'utf8');
+}
+
+test('native A/B trial contains missing service-module failures at the CLI root', { timeout: 120_000 }, async () => {
+	const first = await runCli('native-tool-ab-trial.mjs', [privateMissingModule, 'baseline', '1']);
+	const second = await runCli('native-tool-ab-trial.mjs', [privateMissingModule, 'baseline', '1']);
+	assertBoundedSanitizedFailure(first, 'ERR_MODULE_NOT_FOUND');
+	assertBoundedSanitizedFailure(second, 'ERR_MODULE_NOT_FOUND');
+});
+
+test('native A/B trial accepts documented normalized move/mine forms and rejects unrelated work', { timeout: 120_000 }, async (context) => {
+	const root = await mkdtemp(path.join(os.tmpdir(), 'native-ab-normalization-'));
+	const fixture = path.join(coordinatorRoot, 'test/fixtures/native-benchmark-service.mjs');
+	try {
+		const accepted = ['exact', 'autoAim', 'adjacent', 'adjacent-autoAim', 'fractional-near', 'boundary'];
+		const rejected = ['outside', 'diagonal', 'wrong-height', 'wrong-target', 'wrong-block', 'reversed',
+			'missing-mine', 'missing-move', 'extra', 'wrong-aim', 'reversed-aim', 'extra-sequence', 'finish-sequence'];
+		for (const variant of [...accepted, ...rejected]) await context.test(variant, async () => {
+			const result = await runCli('native-tool-ab-trial.mjs', [fixture, variant, '1'], {
+				env: { NATIVE_BENCHMARK_CASE: variant, TEMP: root, TMP: root, TMPDIR: root },
+			});
+			assert.equal(result.signal, null);
+			assert.equal(result.stderr, '');
+			const report = JSON.parse(result.stdout);
+			const passed = accepted.includes(variant);
+			assert.equal(result.code, passed ? 0 : 1, result.stdout);
+			assert.equal(report.status, passed ? 'PASSED' : 'FAILED');
+			assert.equal(report.moveMine.valid, passed);
+			assert.equal(report.moveMine.result.status, 'completed');
+			assert.ok([report.coldDm, report.warmDm, report.craft].every(turn => turn.valid));
+			if (variant === 'autoAim') {
+				assert.equal(report.moveMine.result.toolCalls, 2);
+				assert.equal(report.moveMine.requests[1].kind, 'sequence');
+				assert.deepEqual(report.moveMine.requests[1].actions.map(action => action.actionType), ['look_at', 'break_block']);
+				assert.deepEqual(report.moveMine.requests[1].actions[0].arguments, { x: 2.5, y: 64.5, z: 1.5 });
+			}
+		});
+	} finally {
+		await rm(root, { recursive: true, force: true });
+	}
+});
+
+test('native A/B runner contains child module failures at the CLI root', { timeout: 120_000 }, async () => {
+	const root = await mkdtemp(path.join(os.tmpdir(), 'native-ab-cli-failure-'));
+	try {
+		const outputPath = path.join(root, 'private-result.json');
+		const first = await runCli('native-tool-ab-runner.mjs', [privateMissingModule, privateMissingModule, outputPath, '2']);
+		const second = await runCli('native-tool-ab-runner.mjs', [privateMissingModule, privateMissingModule, outputPath, '2']);
+		for (const result of [first, second]) {
+			assert.equal(result.signal, null);
+			assert.equal(result.code, 1);
+			assert.equal(result.stderr, '');
+			assert.ok(Buffer.byteLength(result.stdout, 'utf8') <= maximumDiagnosticBytes);
+			assert.doesNotMatch(result.stdout, /C:\\private|api-token-secret/i);
+			assert.doesNotMatch(result.stdout, /Users\\lucas|\.worktrees|coordinator\\src/i);
+			const lines = result.stdout.trim().split(/\r?\n/).filter(Boolean).map((line) => JSON.parse(line));
+			assert.equal(lines.length, 5);
+			assert.equal(lines.at(-1).status, 'FAILED');
+		}
+		const artifact = JSON.parse(await readFile(outputPath, 'utf8'));
+		assert.equal(artifact.failed, 4);
+		assert.ok(artifact.rows.every((row) => row.code === 'ERR_MODULE_NOT_FOUND'));
+		assert.doesNotMatch(JSON.stringify(artifact), /C:\\private|api-token-secret/i);
+	} finally {
+		await rm(root, { recursive: true, force: true });
+	}
+});
+
+test('native load probe contains setup validation failures at the CLI root', { timeout: 120_000 }, async () => {
+	const first = await runCli('native-tool-load-probe.mjs', [privateMissingModule, 'low', 'fast', '0']);
+	const second = await runCli('native-tool-load-probe.mjs', [privateMissingModule, 'low', 'fast', '0']);
+	assertBoundedSanitizedFailure(first, 'ERROR');
+	assertBoundedSanitizedFailure(second, 'ERROR');
+});
+
+test('native tool probe contains setup failures at the CLI root', { timeout: 120_000 }, async () => {
+	const root = await mkdtemp(path.join(os.tmpdir(), 'native-probe-cli-failure-'));
+	try {
+		const blockedTemp = path.join(root, 'api-token-secret.mjs');
+		await writeFile(blockedTemp, 'not a directory', 'utf8');
+		const first = await runCli('native-tool-probe.mjs', ['fixture-model', 'low', 'fast'], {
+			env: { TEMP: blockedTemp, TMP: blockedTemp, TMPDIR: blockedTemp },
+		});
+		assertBoundedSanitizedFailure(first, 'ENOTDIR');
+	} finally {
+		await rm(root, { recursive: true, force: true });
+	}
+});
+
+test('native A/B runner success reports only the artifact basename', { timeout: 120_000 }, async () => {
+	const root = await mkdtemp(path.join(os.tmpdir(), 'native-ab-cli-success-'));
+	try {
+		const fixture = path.join(root, 'fixture-service.mjs');
+		const outputPath = path.join(root, 'private-artifacts', 'ab-result.json');
+		await writeFixtureService(fixture);
+		const result = await runCli('native-tool-ab-runner.mjs', [fixture, fixture, outputPath, '2']);
+		assert.equal(result.code, 0, result.stderr || result.stdout);
+		assert.equal(result.stderr, '');
+		const lines = result.stdout.trim().split(/\r?\n/).filter(Boolean);
+		const summary = JSON.parse(lines.at(-1));
+		assert.equal(summary.status, 'PASSED');
+		assert.equal(summary.outputPath, 'ab-result.json');
+		assert.doesNotMatch(result.stdout, new RegExp(root.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i'));
+		assert.doesNotMatch(result.stdout, /private-artifacts/i);
+		assert.equal(JSON.parse(await readFile(outputPath, 'utf8')).failed, 0);
+	} finally {
+		await rm(root, { recursive: true, force: true });
+	}
+});
+
+test('native trial sanitizes credential-shaped success fields through the common boundary', { timeout: 120_000 }, async () => {
+	const root = await mkdtemp(path.join(os.tmpdir(), 'native-cli-sanitized-success-'));
+	try {
+		const fixture = path.join(root, 'fixture-service.mjs');
+		await writeFixtureService(fixture);
+		const result = await runCli('native-tool-ab-trial.mjs', [
+			fixture,
+			'C:\\private\\api-token-secret.mjs',
+			'1',
+			'/private/oauth-secret/model',
+			'credential=private-effort',
+			'api_key=private-tier',
+		]);
+		assert.equal(result.code, 0, result.stderr || result.stdout);
+		assert.equal(result.stderr, '');
+		assert.ok(Buffer.byteLength(result.stdout, 'utf8') <= maximumDiagnosticBytes);
+		assert.doesNotMatch(result.stdout, /private|api-token-secret|oauth-secret|private-effort|private-tier/i);
+		const outcome = JSON.parse(result.stdout);
+		assert.equal(outcome.status, 'PASSED');
+		assert.equal(outcome.trial, 1);
+		assert.equal(outcome.profile.model, '[location redacted]');
+	} finally {
+		await rm(root, { recursive: true, force: true });
+	}
+});
+
+test('native terminal serializer bounds escaped JSON to 8 KiB and keeps it valid', { timeout: 120_000 }, async () => {
+	const root = await mkdtemp(path.join(os.tmpdir(), 'native-cli-bounded-success-'));
+	try {
+		const fixture = path.join(root, 'fixture-service.mjs');
+		await writeFixtureService(fixture, { resultExpression: `{ toolCalls: 1, payload: ('"' + '\\\\').repeat(10_000) }` });
+		const result = await runCli('native-tool-ab-trial.mjs', [fixture, 'baseline', '1']);
+		assert.equal(result.code, 0, result.stderr || result.stdout);
+		assert.equal(result.stderr, '');
+		assert.ok(Buffer.byteLength(result.stdout, 'utf8') <= maximumDiagnosticBytes);
+		const outcome = JSON.parse(result.stdout);
+		assert.equal(outcome.status, 'PASSED');
+		assert.equal(outcome.variant, 'baseline');
+		assert.equal(outcome.profile.model, 'gpt-5.6-luna');
+	} finally {
+		await rm(root, { recursive: true, force: true });
+	}
+});
+
+test('cleanup failure replaces success with exactly one failed terminal outcome', { timeout: 120_000 }, async () => {
+	const root = await mkdtemp(path.join(os.tmpdir(), 'native-cli-cleanup-failure-'));
+	try {
+		const fixture = path.join(root, 'fixture-service.mjs');
+		await writeFixtureService(fixture, { stopBody: `throw Object.assign(new Error('cleanup at C:\\\\private\\\\api-token-secret.mjs'), { code: 'CLEANUP_FAILED' });` });
+		const result = await runCli('native-tool-ab-trial.mjs', [fixture, 'baseline', '1']);
+		assert.equal(result.code, 1);
+		assert.equal(result.stderr, '');
+		const lines = result.stdout.trim().split(/\r?\n/).filter(Boolean);
+		assert.equal(lines.length, 1);
+		const outcome = JSON.parse(lines[0]);
+		assert.equal(outcome.status, 'FAILED');
+		assert.equal(outcome.code, 'CLEANUP_FAILED');
+		assert.doesNotMatch(result.stdout, /C:\\private|api-token-secret/i);
+	} finally {
+		await rm(root, { recursive: true, force: true });
+	}
+});
+
+test('hostile terminal status access cannot create a second outcome', { timeout: 120_000 }, async (context) => {
+	for (const [name, fixture] of [
+		['accessor', () => {
+			let calls = 0;
+			const value = Object.create(null, {
+				status: { enumerable: true, get() { calls += 1; throw new Error('must not run'); } },
+			});
+			return { value, calls: () => calls };
+		}],
+		['proxy', () => {
+			let calls = 0;
+			const value = new Proxy({}, {
+				get(_target, property) {
+					if (property === 'then') return undefined;
+					calls += 1;
+					throw new Error('must not run');
+				},
+				ownKeys() { calls += 1; throw new Error('must not run'); },
+			});
+			return { value, calls: () => calls };
+		}],
+	]) await context.test(name, async () => {
+		const { value, calls } = fixture();
+		const stdout = [];
+		const stderr = [];
+		const exitCode = await runNativeToolCli(async () => value, {
+			stdout: { write: (line) => stdout.push(String(line)) },
+			stderr: { write: (line) => stderr.push(String(line)) },
+		});
+		assert.equal(exitCode, 1);
+		assert.equal(calls(), 0);
+		assert.equal(stdout.length, 1);
+		assert.equal(stderr.length, 0);
+		assert.ok(Buffer.byteLength(stdout[0], 'utf8') <= maximumDiagnosticBytes);
+		assert.deepEqual(JSON.parse(stdout[0]), { status: 'FAILED', code: 'INVALID_OUTCOME' });
+	});
+});
+
+// Runs the real probe with only its CodexService import replaced by a scripted fixture.
+async function runProbeWithService(root, behaviour) {
+	const service = path.join(root, 'probe-service.mjs');
+	const hooks = path.join(root, 'probe-hooks.mjs');
+	const register = path.join(root, 'probe-register.mjs');
+	await writeFile(service, `
+const behaviour = ${JSON.stringify(behaviour)};
+const action = (actionType, args) => ({ tool: { kind: 'action', actionType, arguments: args } });
+export class CodexService {
+	async start() {}
+	async stop() {}
+	async createAgent() {
+		let active = null;
+		return {
+			async setGoalRevision() {}, async prewarm() {},
+			async steer() { if (['complete', 'far'].includes(behaviour) && active) setTimeout(() => active.executeTool(action('chat', { message: 'I hear you' })), 5); },
+			async act(input, context) {
+				if (input.startsWith('Call wait exactly once')) {
+					if (behaviour === 'nowait') return { status: 'completed', toolCalls: 0 };
+					active = context;
+					if (behaviour === 'presteer') await context.executeTool(action('chat', { message: 'unrelated before steering' }));
+					await context.executeTool(action('wait', { durationMs: 30000 }));
+					return { status: 'completed', toolCalls: 1 };
+				}
+				if (!['complete', 'far', 'presteer'].includes(behaviour)) return { status: 'completed', toolCalls: 0 };
+				if (input.includes('Call say exactly once')) await context.executeTool(action('chat', { message: 'hi' }));
+				else if (input.includes('mine the known stone block')) {
+					await context.executeTool(action('navigate_to', behaviour === 'far' ? { x: 500, y: 64, z: 500 } : { x: 2, y: 64, z: 0 }));
+					await context.executeTool(action('break_block', { x: 2, y: 64, z: 1, expectedBlockId: 'minecraft:stone' }));
+				} else if (input.includes('craft_inventory')) await context.executeTool(action('craft_inventory', { recipeId: 'minecraft:oak_planks', count: 4, timeoutMs: 15000 }));
+				return { status: 'completed', toolCalls: 1 };
+			},
+		};
+	}
+}
+`);
+	await writeFile(hooks, `export async function resolve(specifier, context, next) {
+	if (specifier === './codex-service.mjs' && context.parentURL?.endsWith('/native-tool-probe.mjs')) return { url: ${JSON.stringify(pathToFileURL(service).href)}, shortCircuit: true };
+	return next(specifier, context);
+}\n`);
+	await writeFile(register, `import { register } from 'node:module';\nregister(${JSON.stringify(pathToFileURL(hooks).href)});\n`);
+	return new Promise((resolve, reject) => {
+		const child = spawn(process.execPath, ['--import', pathToFileURL(register).href, path.join(coordinatorRoot, 'src', 'native-tool-probe.mjs'), 'fixture-model', 'low', 'fast'], {
+			cwd: coordinatorRoot, env: { ...process.env, TMPDIR: root, TEMP: root, TMP: root }, stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true,
+		});
+		let stdout = '';
+		const timeout = setTimeout(() => child.kill(), 30_000);
+		child.stdout.on('data', (chunk) => { stdout += chunk; });
+		child.on('error', reject);
+		child.on('close', (code, signal) => { clearTimeout(timeout); resolve({ code, signal, outcome: JSON.parse(stdout.trim().split('\n').at(-1)) }); });
+	});
+}
+
+test('native tool probe certifies behaviour only when every instructed phase happened', { timeout: 120_000 }, async () => {
+	const root = await mkdtemp(path.join(os.tmpdir(), 'native-probe-behaviour-'));
+	try {
+		const empty = await runProbeWithService(root, 'empty');
+		assert.equal(empty.code, 1);
+		assert.equal(empty.outcome.status, 'FAILED');
+		assert.ok(empty.outcome.failedChecks.includes('coldTurnSaidOnce'));
+		assert.ok(empty.outcome.failedChecks.includes('steerReplyBeforeBodyResult'));
+		const noWait = await runProbeWithService(root, 'nowait');
+		assert.equal(noWait.signal, null, 'a turn without the initial wait ends the probe instead of hanging');
+		assert.equal(noWait.outcome.status, 'FAILED');
+		assert.ok(noWait.outcome.failedChecks.includes('steerInitialWaitStarted'));
+		// A chat sent before steering is not the steered reply.
+		const preSteer = await runProbeWithService(root, 'presteer');
+		assert.equal(preSteer.outcome.status, 'FAILED');
+		assert.deepEqual(preSteer.outcome.failedChecks, ['steerReplyBeforeBodyResult']);
+		// Moving somewhere far away before mining is not moving near the block.
+		const far = await runProbeWithService(root, 'far');
+		assert.equal(far.outcome.status, 'FAILED');
+		assert.deepEqual(far.outcome.failedChecks, ['chainMovedThenMined']);
+		const complete = await runProbeWithService(root, 'complete');
+		assert.equal(complete.code, 0, JSON.stringify(complete.outcome.failedChecks));
+		assert.equal(complete.outcome.status, 'PASSED');
+	} finally {
+		await rm(root, { recursive: true, force: true });
+	}
+});

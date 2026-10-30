@@ -1,0 +1,441 @@
+{
+  "checkpoint": "8-lava-pool-987654321-v2.json",
+  "sha256": "67eb1084c3d7e1c4da4c0ed1c57febdc01150d5f3dc8bf18d6e655cecdd2e0df",
+  "seed": "987654321",
+  "jar": "/home/agaminggod/Desktop/Projects/arena-beat-game/jars/d25-bb227cbc.jar",
+  "modelCalls": 0,
+  "startedAt": "2026-10-24T12:08:15.760Z",
+  "summon": "Creating Probe. It will be ready when its player joins.",
+  "setup": {
+    "pos": [
+      16.5,
+      -54,
+      1.5
+    ],
+    "dimension": "Probe has the following entity data: \"minecraft:overworld\"",
+    "bedReceipt": {
+      "command": "used bed respawn receipt",
+      "response": "Probe has the following entity data: {pos: [I; 17, -54, 0], pitch: 38.3778f, dimension: \"minecraft:overworld\", yaw: -135.0f}"
+    }
+  },
+  "kit": {
+    "expected": {
+      "minecraft:iron_pickaxe": 1,
+      "minecraft:iron_sword": 1,
+      "minecraft:shield": 1,
+      "minecraft:water_bucket": 1,
+      "minecraft:flint_and_steel": 1,
+      "minecraft:cooked_beef": 32,
+      "minecraft:cobblestone": 128,
+      "minecraft:oak_planks": 32,
+      "minecraft:oak_log": 8,
+      "minecraft:crafting_table": 1,
+      "minecraft:stone_axe": 1,
+      "minecraft:torch": 32,
+      "minecraft:bucket": 2
+    },
+    "actual": {
+      "minecraft:iron_pickaxe": 1,
+      "minecraft:iron_sword": 1,
+      "minecraft:shield": 1,
+      "minecraft:water_bucket": 1,
+      "minecraft:flint_and_steel": 1,
+      "minecraft:cooked_beef": 32,
+      "minecraft:cobblestone": 128,
+      "minecraft:oak_planks": 32,
+      "minecraft:oak_log": 8,
+      "minecraft:crafting_table": 1,
+      "minecraft:stone_axe": 1,
+      "minecraft:torch": 32,
+      "minecraft:bucket": 2
+    },
+    "equipment": {
+      "head": {
+        "id": "minecraft:iron_helmet",
+        "damage": null
+      },
+      "feet": {
+        "id": "minecraft:iron_boots",
+        "damage": null
+      },
+      "chest": {
+        "id": "minecraft:iron_chestplate",
+        "damage": null
+      },
+      "legs": {
+        "id": "minecraft:iron_leggings",
+        "damage": null
+      }
+    },
+    "pass": true
+  },
+  "naturalPool": {
+    "sources": 10
+  },
+  "safety": {
+    "samples": [
+      {
+        "ms": 55,
+        "health": 20,
+        "deaths": 0,
+        "pos": [
+          16.5,
+          -54,
+          1.5
+        ]
+      },
+      {
+        "ms": 2093,
+        "health": 20,
+        "deaths": 0,
+        "pos": [
+          16.5,
+          -54,
+          1.5
+        ]
+      },
+      {
+        "ms": 4099,
+        "health": 20,
+        "deaths": 0,
+        "pos": [
+          16.5,
+          -54,
+          1.5
+        ]
+      },
+      {
+        "ms": 6103,
+        "health": 20,
+        "deaths": 0,
+        "pos": [
+          16.5,
+          -54,
+          1.5
+        ]
+      },
+      {
+        "ms": 8110,
+        "health": 20,
+        "deaths": 0,
+        "pos": [
+          16.5,
+          -54,
+          1.5
+        ]
+      },
+      {
+        "ms": 10114,
+        "health": 20,
+        "deaths": 0,
+        "pos": [
+          16.5,
+          -54,
+          1.5
+        ]
+      },
+      {
+        "ms": 12117,
+        "health": 20,
+        "deaths": 0,
+        "pos": [
+          16.5,
+          -54,
+          1.5
+        ]
+      },
+      {
+        "ms": 14120,
+        "health": 20,
+        "deaths": 0,
+        "pos": [
+          16.5,
+          -54,
+          1.5
+        ]
+      },
+      {
+        "ms": 16124,
+        "health": 20,
+        "deaths": 0,
+        "pos": [
+          16.5,
+          -54,
+          1.5
+        ]
+      },
+      {
+        "ms": 18126,
+        "health": 20,
+        "deaths": 0,
+        "pos": [
+          16.5,
+          -54,
+          1.5
+        ]
+      },
+      {
+        "ms": 20132,
+        "health": 20,
+        "deaths": 0,
+        "pos": [
+          16.5,
+          -54,
+          1.5
+        ]
+      },
+      {
+        "ms": 22147,
+        "health": 20,
+        "deaths": 0,
+        "pos": [
+          16.5,
+          -54,
+          1.5
+        ]
+      },
+      {
+        "ms": 24169,
+        "health": 20,
+        "deaths": 0,
+        "pos": [
+          16.5,
+          -54,
+          1.5
+        ]
+      },
+      {
+        "ms": 26176,
+        "health": 20,
+        "deaths": 0,
+        "pos": [
+          16.5,
+          -54,
+          1.5
+        ]
+      },
+      {
+        "ms": 28180,
+        "health": 20,
+        "deaths": 0,
+        "pos": [
+          16.5,
+          -54,
+          1.5
+        ]
+      },
+      {
+        "ms": 30185,
+        "health": 20,
+        "deaths": 0,
+        "pos": [
+          16.5,
+          -54,
+          1.5
+        ]
+      },
+      {
+        "ms": 32189,
+        "health": 20,
+        "deaths": 0,
+        "pos": [
+          16.5,
+          -54,
+          1.5
+        ]
+      },
+      {
+        "ms": 34193,
+        "health": 20,
+        "deaths": 0,
+        "pos": [
+          16.5,
+          -54,
+          1.5
+        ]
+      },
+      {
+        "ms": 36197,
+        "health": 20,
+        "deaths": 0,
+        "pos": [
+          16.5,
+          -54,
+          1.5
+        ]
+      },
+      {
+        "ms": 38201,
+        "health": 20,
+        "deaths": 0,
+        "pos": [
+          16.5,
+          -54,
+          1.5
+        ]
+      },
+      {
+        "ms": 40211,
+        "health": 20,
+        "deaths": 0,
+        "pos": [
+          16.5,
+          -54,
+          1.5
+        ]
+      },
+      {
+        "ms": 42220,
+        "health": 20,
+        "deaths": 0,
+        "pos": [
+          16.5,
+          -54,
+          1.5
+        ]
+      },
+      {
+        "ms": 44225,
+        "health": 20,
+        "deaths": 0,
+        "pos": [
+          16.5,
+          -54,
+          1.5
+        ]
+      },
+      {
+        "ms": 46229,
+        "health": 20,
+        "deaths": 0,
+        "pos": [
+          16.5,
+          -54,
+          1.5
+        ]
+      },
+      {
+        "ms": 48234,
+        "health": 20,
+        "deaths": 0,
+        "pos": [
+          16.5,
+          -54,
+          1.5
+        ]
+      },
+      {
+        "ms": 50238,
+        "health": 20,
+        "deaths": 0,
+        "pos": [
+          16.5,
+          -54,
+          1.5
+        ]
+      },
+      {
+        "ms": 52242,
+        "health": 20,
+        "deaths": 0,
+        "pos": [
+          16.5,
+          -54,
+          1.5
+        ]
+      },
+      {
+        "ms": 54246,
+        "health": 20,
+        "deaths": 0,
+        "pos": [
+          16.5,
+          -54,
+          1.5
+        ]
+      },
+      {
+        "ms": 56255,
+        "health": 20,
+        "deaths": 0,
+        "pos": [
+          16.5,
+          -54,
+          1.5
+        ]
+      },
+      {
+        "ms": 58270,
+        "health": 20,
+        "deaths": 0,
+        "pos": [
+          16.5,
+          -54,
+          1.5
+        ]
+      },
+      {
+        "ms": 60276,
+        "health": 20,
+        "deaths": 0,
+        "pos": [
+          16.5,
+          -54,
+          1.5
+        ]
+      }
+    ],
+    "wallMs": 62280,
+    "ticks": 1235,
+    "minHealth": 20,
+    "pass": true
+  },
+  "respawnConfig": "Probe has the following entity data: {pos: [I; 17, -54, 0], pitch: 38.3778f, dimension: \"minecraft:overworld\", yaw: -135.0f}",
+  "bedRespawn": {
+    "pos": [
+      17.5,
+      -54,
+      1.5
+    ],
+    "dimension": "Probe has the following entity data: \"minecraft:overworld\"",
+    "health": 20,
+    "action": "CANCELLED",
+    "reasonCode": "ACTION_CANCELLED",
+    "pass": true
+  },
+  "spareKit": {
+    "chest": "15, -54, 1 has the following block data: [{count: 1, Slot: 0b, id: \"minecraft:stone_pickaxe\"}, {count: 1, Slot: 1b, id: \"minecraft:stone_axe\"}, {count: 16, Slot: 2b, id: \"minecraft:cooked_beef\"}, {count: 64, Slot: 3b, id: \"minecraft:cobblestone\"}, {count: 8, Slot: 4b, id: \"minecraft:oak_log\"}, {count: 1, Slot: 5b, id: \"minecraft:shield\"}]",
+    "table": "The game time is 2331 tick(s)",
+    "pass": true
+  },
+  "route": {
+    "pass": true,
+    "kind": "ladder",
+    "checks": 124,
+    "climbedTo": [
+      20.51249998807907,
+      64.77600231170585,
+      1.5
+    ]
+  },
+  "brokenBedRespawn": {
+    "pos": [
+      4096.5,
+      300,
+      4096.5
+    ],
+    "dimension": "Probe has the following entity data: \"minecraft:overworld\"",
+    "health": 20,
+    "action": "CANCELLED",
+    "reasonCode": "ACTION_CANCELLED",
+    "expectedWorldSpawn": [
+      4096.5,
+      300,
+      4096.5
+    ],
+    "pass": true
+  },
+  "pass": true,
+  "finishedAt": "2026-10-24T12:11:54.412Z",
+  "evidenceDirectory": "/home/agaminggod/Desktop/Projects/arena-beat-game/evals/d38-savepoints/live/8-lava-pool-987654321-v2"
+}

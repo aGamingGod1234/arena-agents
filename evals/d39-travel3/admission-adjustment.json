@@ -1,0 +1,8 @@
+{
+  "at": "2026-10-26T03:43:29.591030",
+  "oldTag": "d39-travel3-987654321",
+  "newTag": "d39-travel3-987654321-r2",
+  "reason": "The queued launch had zero log bytes and an empty output directory after about an hour. Polling competes with blocking lock waiters. Resume only the pending seed with private timed flock waits inside the canonical slot.sh, same three-slot limit.",
+  "oldPlayed": false,
+  "firstCompletedGameRetained": true
+}

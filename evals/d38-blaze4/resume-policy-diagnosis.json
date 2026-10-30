@@ -1,0 +1,13 @@
+{
+  "source": "1103ad7c",
+  "rodsHeldBeforeLaterDeath": 3,
+  "rodsCreditedAfterDeath": 0,
+  "returnShelters": {
+    "SHELTER_BLOCKED": 6,
+    "SHELTER_BUILT": 3
+  },
+  "blockedShotsThirdNoGap": {
+    "The bow's arc to the target from here meets minecraft:cobblestone at 82,73,91 before the target": 112,
+    "The bow's arc to the target from here meets minecraft:nether_bricks at 80,72,94 before the target": 2
+  }
+}

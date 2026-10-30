@@ -1,0 +1,611 @@
+[
+  {
+    "seed": "123456789",
+    "baselineTag": "d39-nether-entry-123456789-18",
+    "baselineMachine": "mini",
+    "baselineObservedMinutes": 89.9934,
+    "base": {
+      "protocol": "/home/agaminggod/Desktop/Projects/aa-run-4682f12e/runtime/headless-runs/run-1792916871970-151e31e8/q-nkew1o-9b51-LONG-r1-3bdb5d53/quality-protocol.jsonl",
+      "playingWindow": {
+        "startedAt": 1792916917789,
+        "endedAt": 1792922317393
+      },
+      "netherMinutes": 89.97651666666667,
+      "pathBlocks": 5265.508736048152,
+      "path10Blocks": 3397.9344279588418,
+      "blocksPerNetherMinute": 37.76468076161549,
+      "sampledPathBlocksPerNetherMinute": 58.520922248580995,
+      "maxFromEntry": 432.8768959844139,
+      "maxDisplacementPerNetherMinute": 4.810998602980821,
+      "firstFortress": {
+        "netherMinutes": 39.5407,
+        "wallMinutes": 39.5407,
+        "wallFromGameStartMinutes": 39.54946666666667,
+        "at": {
+          "x": -149.30000001192093,
+          "y": 48,
+          "z": -177.42438216771063
+        },
+        "seen": {
+          "x": -148,
+          "y": 45,
+          "z": -189,
+          "blockId": "minecraft:nether_bricks",
+          "distance": 11.49605629813292,
+          "bearing": 19.600616455078125,
+          "elevation": -18.571278987880778,
+          "tags": [
+            "#minecraft:mineable/pickaxe"
+          ]
+        }
+      },
+      "deaths": 0,
+      "travel": {
+        "calls": 106,
+        "activeMinutes": 38.9908,
+        "netGain": 1491,
+        "netBlocksPerActiveMinute": 38.239789899155696,
+        "reasons": {
+          "HOSTILE_NEAR": 4,
+          "ACTION_CANCELLED": 16,
+          "OUT_OF_BLOCKS": 8,
+          "ARRIVED": 29,
+          "NO_ROUTE": 33,
+          "TARGET_SEEN": 2,
+          "TRAVEL_TIMEOUT": 13,
+          "BUILD_FAILED": 1
+        }
+      },
+      "serverTickRate": 20.000218575550544,
+      "sampling": {
+        "displacementCadenceSeconds": 10,
+        "gapsOver5s": 0,
+        "excludedJumps": 0
+      }
+    },
+    "baseScore": {
+      "schemaVersion": 1,
+      "tag": "d39-nether-entry-123456789-18",
+      "machine": "mini",
+      "checkpoint": "9-nether-entry-123456789-v2.json",
+      "build": "4682f12ef47a997d0f6fb9b3e9ca194dd765bfe8",
+      "requestedMinutes": 90,
+      "maxCostUsd": 15,
+      "launchedAt": "2026-10-25T16:17:20+0800",
+      "scoredAt": "2026-10-25T09:59:26.477Z",
+      "observedMinutes": 89.9934,
+      "firstLife": {
+        "minutes": 89.9934,
+        "outcome": "censored_alive"
+      },
+      "launchIdentity": null,
+      "deaths": 0,
+      "deathsPerHour": 0,
+      "deathBasis": "maximum sampled vanilla death counter",
+      "stageScorerDeaths": 0,
+      "milestones": {
+        "portal": {
+          "at": 1792916926579,
+          "minutes": 0.1465,
+          "basis": "visible lit portal, observation upper bound on ignition"
+        },
+        "fortressSeen": {
+          "at": 1792919290757,
+          "minutes": 39.54946666666667,
+          "basis": "visible fortress brick, not proof of fortress entry"
+        },
+        "fortressEntered": {
+          "at": 1792919423390,
+          "minutes": 41.760016666666665,
+          "basis": "advancement nether/find_fortress"
+        },
+        "blazeRods": null,
+        "pearls": null,
+        "eyes": null,
+        "stronghold": null,
+        "dragonKill": null
+      },
+      "costUsd": 9.685996,
+      "costBasis": "token-price observer estimate, not subscription charges",
+      "ending": {
+        "kind": "budget_end",
+        "reason": "WALL_CLOCK_BUDGET",
+        "at": 1792922317764,
+        "censored": true
+      },
+      "measurementStatus": "INCOMPLETE",
+      "failure": null,
+      "coverage": {
+        "protocolRecords": 31129,
+        "samples": 5289,
+        "watcherFiles": 1,
+        "diagnostics": [],
+        "maxSampleGapSeconds": 1.173,
+        "protocolPresent": true
+      },
+      "source": "sub/long/d39-nether-entry-123456789-18-codex",
+      "stageScore": "d39-nether-entry-123456789-18.json.stage.json"
+    },
+    "candidateTag": "d39-travel3-123456789-r3",
+    "candidatePlayedMinutes": 90.00001666666667,
+    "candidate": {
+      "protocol": "/home/agaminggod/Desktop/Projects/aa-run-6345839e/runtime/headless-runs/run-1792948141172-7295223b/q-o313nj-00ae-LONG-r1-2bff6604/quality-protocol.jsonl",
+      "playingWindow": {
+        "startedAt": 1792948193108,
+        "endedAt": 1792953593108
+      },
+      "netherMinutes": 89.23588333333333,
+      "pathBlocks": 2925.150298053573,
+      "path10Blocks": 2245.6564947047514,
+      "blocksPerNetherMinute": 25.16539771692835,
+      "sampledPathBlocksPerNetherMinute": 32.77997806248988,
+      "maxFromEntry": 451.1160455878825,
+      "maxDisplacementPerNetherMinute": 5.055321119002941,
+      "firstFortress": {
+        "netherMinutes": 26.1685,
+        "wallMinutes": 26.1685,
+        "wallFromGameStartMinutes": 26.169266666666665,
+        "at": {
+          "x": -313.30000001192093,
+          "y": 50.41999998688698,
+          "z": -317.77654528016194
+        },
+        "seen": {
+          "x": -259,
+          "y": 62,
+          "z": -331,
+          "blockId": "minecraft:nether_bricks",
+          "distance": 57.54000957274089,
+          "bearing": -27.835311889648438,
+          "elevation": 10.532741140063553,
+          "tags": [
+            "#minecraft:mineable/pickaxe"
+          ]
+        }
+      },
+      "deaths": 1,
+      "travel": {
+        "calls": 43,
+        "activeMinutes": 19.267216666666666,
+        "netGain": 1284,
+        "netBlocksPerActiveMinute": 66.64169621455443,
+        "reasons": {
+          "HOSTILE_NEAR": 4,
+          "TRAVEL_DAMAGED": 1,
+          "ARRIVED": 15,
+          "TUNNEL_FLOODED": 1,
+          "NO_ROUTE": 9,
+          "TARGET_SEEN": 1,
+          "TRAVEL_TIMEOUT": 6,
+          "NO_STANDABLE_PATH": 1,
+          "ACTION_CANCELLED": 1,
+          "OUT_OF_BLOCKS": 4
+        }
+      },
+      "serverTickRate": 20.00017556465047,
+      "sampling": {
+        "displacementCadenceSeconds": 10,
+        "gapsOver5s": 0,
+        "excludedJumps": 0
+      }
+    },
+    "candidateScore": {
+      "schemaVersion": 1,
+      "tag": "d39-travel3-123456789-r3",
+      "machine": "mini",
+      "checkpoint": "9-nether-entry-123456789-v2.json",
+      "build": "6345839ef4a61df87e8da7115c6ce0e61f433be5",
+      "requestedMinutes": 90,
+      "maxCostUsd": 15,
+      "scoredAt": "2026-10-25T18:40:35.637Z",
+      "observedMinutes": 89.99985,
+      "firstLife": {
+        "minutes": 83.42773333333334,
+        "outcome": "observed_death"
+      },
+      "launchIdentity": null,
+      "deaths": 1,
+      "deathsPerHour": 0.6666677777796297,
+      "deathBasis": "maximum sampled vanilla death counter",
+      "stageScorerDeaths": 1,
+      "milestones": {
+        "portal": {
+          "at": 1792948310019,
+          "minutes": 1.9471333333333334,
+          "basis": "visible lit portal, observation upper bound on ignition"
+        },
+        "fortressSeen": {
+          "at": 1792949763264,
+          "minutes": 26.167883333333332,
+          "basis": "visible fortress brick, not proof of fortress entry"
+        },
+        "fortressEntered": {
+          "at": 1792950309867,
+          "minutes": 35.27793333333333,
+          "basis": "advancement nether/find_fortress"
+        },
+        "blazeRods": null,
+        "pearls": null,
+        "eyes": null,
+        "stronghold": null,
+        "dragonKill": null
+      },
+      "costUsd": 11.4290613,
+      "costBasis": "token-price observer estimate, not subscription charges",
+      "ending": {
+        "kind": "budget_end",
+        "reason": "WALL_CLOCK_BUDGET",
+        "at": 1792953593155,
+        "censored": true
+      },
+      "measurementStatus": "INCOMPLETE",
+      "failure": null,
+      "coverage": {
+        "protocolRecords": 26813,
+        "samples": 5295,
+        "watcherFiles": 1,
+        "diagnostics": [],
+        "maxSampleGapSeconds": 3.773,
+        "protocolPresent": true
+      },
+      "source": "sub/long/d39-travel3-123456789-r3-codex",
+      "stageScore": "d39-travel3-123456789-r3-score.json.stage.json"
+    },
+    "commonWindowMinutes": 89.9934,
+    "candidateCommon": {
+      "protocol": "/home/agaminggod/Desktop/Projects/aa-run-6345839e/runtime/headless-runs/run-1792948141172-7295223b/q-o313nj-00ae-LONG-r1-2bff6604/quality-protocol.jsonl",
+      "playingWindow": {
+        "startedAt": 1792948193108,
+        "endedAt": 1792953592712
+      },
+      "netherMinutes": 89.22753333333333,
+      "pathBlocks": 2925.150298053573,
+      "path10Blocks": 2245.6564947047514,
+      "blocksPerNetherMinute": 25.16775271950532,
+      "sampledPathBlocksPerNetherMinute": 32.78304564495682,
+      "maxFromEntry": 451.1160455878825,
+      "maxDisplacementPerNetherMinute": 5.0557942009067744,
+      "firstFortress": {
+        "netherMinutes": 26.1685,
+        "wallMinutes": 26.1685,
+        "wallFromGameStartMinutes": 26.169266666666665,
+        "at": {
+          "x": -313.30000001192093,
+          "y": 50.41999998688698,
+          "z": -317.77654528016194
+        },
+        "seen": {
+          "x": -259,
+          "y": 62,
+          "z": -331,
+          "blockId": "minecraft:nether_bricks",
+          "distance": 57.54000957274089,
+          "bearing": -27.835311889648438,
+          "elevation": 10.532741140063553,
+          "tags": [
+            "#minecraft:mineable/pickaxe"
+          ]
+        }
+      },
+      "deaths": 1,
+      "travel": {
+        "calls": 43,
+        "activeMinutes": 19.267216666666666,
+        "netGain": 1284,
+        "netBlocksPerActiveMinute": 66.64169621455443,
+        "reasons": {
+          "HOSTILE_NEAR": 4,
+          "TRAVEL_DAMAGED": 1,
+          "ARRIVED": 15,
+          "TUNNEL_FLOODED": 1,
+          "NO_ROUTE": 9,
+          "TARGET_SEEN": 1,
+          "TRAVEL_TIMEOUT": 6,
+          "NO_STANDABLE_PATH": 1,
+          "ACTION_CANCELLED": 1,
+          "OUT_OF_BLOCKS": 4
+        }
+      },
+      "serverTickRate": 20.00017931684764,
+      "sampling": {
+        "displacementCadenceSeconds": 10,
+        "gapsOver5s": 0,
+        "excludedJumps": 0
+      },
+      "nativeDeaths": 1
+    },
+    "candidateCommonMilestones": {
+      "portal": {
+        "at": 1792948310019,
+        "minutes": 1.9471333333333334,
+        "basis": "visible lit portal, observation upper bound on ignition"
+      },
+      "fortressSeen": {
+        "at": 1792949763264,
+        "minutes": 26.167883333333332,
+        "basis": "visible fortress brick, not proof of fortress entry"
+      },
+      "fortressEntered": {
+        "at": 1792950309867,
+        "minutes": 35.27793333333333,
+        "basis": "advancement nether/find_fortress"
+      },
+      "blazeRods": null,
+      "pearls": null,
+      "eyes": null,
+      "stronghold": null,
+      "dragonKill": null
+    }
+  },
+  {
+    "seed": "987654321",
+    "baselineTag": "d39-nether-entry-987654321-20",
+    "baselineMachine": "desktop",
+    "baselineObservedMinutes": 44.76425,
+    "base": {
+      "protocol": "/home/agaminggod/Desktop/Projects/arena-beat-game/sub/long/d39-nether-entry-987654321-20-codex/run-artifacts/run-1792921354804-74a4d342/q-nn2xdm-1a17-LONG-r1-11f6e573/quality-protocol.jsonl",
+      "playingWindow": {
+        "startedAt": 1792921396425,
+        "endedAt": 1792924082280
+      },
+      "netherMinutes": 41.77336666666667,
+      "pathBlocks": 1151.013032440411,
+      "path10Blocks": 873.8220708455159,
+      "blocksPerNetherMinute": 20.918162469839615,
+      "sampledPathBlocksPerNetherMinute": 27.553753127560807,
+      "maxFromEntry": 147.09934329459657,
+      "maxDisplacementPerNetherMinute": 3.521366723165635,
+      "firstFortress": {
+        "netherMinutes": 0.40658333333333335,
+        "wallMinutes": 0.40658333333333335,
+        "wallFromGameStartMinutes": 0.41395,
+        "at": {
+          "x": -9.699999988079071,
+          "y": 61.7531999805212,
+          "z": -23.69999998807907
+        },
+        "seen": {
+          "structure": "nether fortress",
+          "size": 6,
+          "new": true,
+          "x": -24,
+          "y": 65,
+          "z": -41,
+          "distance": 22,
+          "bearing": 41
+        }
+      },
+      "deaths": 2,
+      "travel": {
+        "calls": 39,
+        "activeMinutes": 9.026766666666667,
+        "netGain": 449,
+        "netBlocksPerActiveMinute": 49.740955602412086,
+        "reasons": {
+          "ACTION_CANCELLED": 4,
+          "ARRIVED": 17,
+          "HOSTILE_NEAR": 4,
+          "NO_ROUTE": 3,
+          "TRAVEL_TIMEOUT": 10,
+          "NO_WATER_BUCKET": 1
+        }
+      },
+      "serverTickRate": 19.96327803760131,
+      "sampling": {
+        "displacementCadenceSeconds": 10,
+        "gapsOver5s": 0,
+        "excludedJumps": 0
+      }
+    },
+    "baseScore": {
+      "schemaVersion": 1,
+      "tag": "d39-nether-entry-987654321-20",
+      "machine": "desktop",
+      "checkpoint": "9-nether-entry-987654321-v2.json",
+      "build": "4682f12ef47a997d0f6fb9b3e9ca194dd765bfe8",
+      "requestedMinutes": 90,
+      "maxCostUsd": 15,
+      "launchedAt": "2026-10-25T17:42:28+0800",
+      "scoredAt": "2026-10-25T10:35:00.977Z",
+      "observedMinutes": 44.76425,
+      "firstLife": {
+        "minutes": 16.328283333333335,
+        "outcome": "observed_death"
+      },
+      "launchIdentity": {
+        "nodePid": 32332,
+        "commandLine": "node  scripts/quality/run-long.mjs --provider codex --model gpt-6.1-sol --effort low --service-tier default --checkpoint \"C:\\Users\\player\\arena-runner\\long-checkpoints\\9-nether-entry-987654321-v2.json\" --codex-observer-cap yes --budget-minutes 90 --max-total-cost-usd 40 --ledger \"C:\\Users\\player\\arena-runner\\sub\\long\\d39-nether-entry-987654321-20-codex.ledger.json\" --port-base 54380 --jar \"C:\\Users\\player\\arena-runner\\jars\\d25-4682f12e.jar\" --coordinator-root \"C:\\Users\\player\\arena-runner\\aa-run-4682f12e\" --server-template \"C:\\Users\\player\\arena-runner\\long-template\" --java \"C:\\Users\\player\\arena-runner\\jdk25\\bin\\java.exe\" --out \"C:\\Users\\player\\arena-runner\\sub\\long\\d39-nether-entry-987654321-20-codex\" ",
+        "verified": true
+      },
+      "deaths": 2,
+      "deathsPerHour": 2.680710611704653,
+      "deathBasis": "maximum sampled vanilla death counter",
+      "stageScorerDeaths": 2,
+      "milestones": {
+        "portal": {
+          "at": 1792921403361,
+          "minutes": 0.1156,
+          "basis": "visible lit portal, observation upper bound on ignition"
+        },
+        "fortressSeen": {
+          "at": 1792921421759,
+          "minutes": 0.42223333333333335,
+          "basis": "visible fortress brick, not proof of fortress entry"
+        },
+        "fortressEntered": {
+          "at": 1792921448185,
+          "minutes": 0.8626666666666667,
+          "basis": "advancement nether/find_fortress"
+        },
+        "blazeRods": null,
+        "pearls": null,
+        "eyes": null,
+        "stronghold": null,
+        "dragonKill": null
+      },
+      "costUsd": 10.6122502,
+      "costBasis": "token-price observer estimate, not subscription charges",
+      "ending": {
+        "kind": "failure",
+        "reason": "RCON_CLOSED",
+        "at": 1792924082280,
+        "censored": true
+      },
+      "measurementStatus": "INCOMPLETE",
+      "failure": null,
+      "coverage": {
+        "protocolRecords": 14834,
+        "samples": 2354,
+        "watcherFiles": 1,
+        "diagnostics": [],
+        "maxSampleGapSeconds": 82.565,
+        "protocolPresent": true
+      },
+      "source": "sub/long/d39-nether-entry-987654321-20-codex",
+      "stageScore": "d39-nether-entry-987654321-20.json.stage.json"
+    },
+    "candidateTag": "d39-travel3-987654321-r2",
+    "candidatePlayedMinutes": 90.00001666666667,
+    "candidate": {
+      "protocol": "/home/agaminggod/Desktop/Projects/aa-run-6345839e/runtime/headless-runs/run-1792959535135-93e3686e/q-o9tb67-3181-LONG-r1-0827675e/quality-protocol.jsonl",
+      "playingWindow": {
+        "startedAt": 1792959579379,
+        "endedAt": 1792964979379
+      },
+      "netherMinutes": 10.814933333333334,
+      "pathBlocks": 444.510529020288,
+      "path10Blocks": 326.8982454595383,
+      "blocksPerNetherMinute": 30.226561309627886,
+      "sampledPathBlocksPerNetherMinute": 41.10155054310287,
+      "maxFromEntry": 70.32065058701025,
+      "maxDisplacementPerNetherMinute": 6.5021806810654015,
+      "firstFortress": null,
+      "deaths": 4,
+      "travel": {
+        "calls": 7,
+        "activeMinutes": 2.43655,
+        "netGain": 56,
+        "netBlocksPerActiveMinute": 22.983316574664997,
+        "reasons": {
+          "TRAVEL_DAMAGED": 1,
+          "NO_ROUTE": 1,
+          "TRAVEL_TIMEOUT": 1,
+          "ARRIVED": 2,
+          "HOSTILE_NEAR": 1,
+          "TARGET_SEEN": 1
+        }
+      },
+      "serverTickRate": 20.001664365322025,
+      "sampling": {
+        "displacementCadenceSeconds": 10,
+        "gapsOver5s": 0,
+        "excludedJumps": 0
+      }
+    },
+    "candidateScore": {
+      "schemaVersion": 1,
+      "tag": "d39-travel3-987654321-r2",
+      "machine": "mini",
+      "checkpoint": "9-nether-entry-987654321-v2.json",
+      "build": "6345839ef4a61df87e8da7115c6ce0e61f433be5",
+      "requestedMinutes": 90,
+      "maxCostUsd": 15,
+      "scoredAt": "2026-10-25T21:50:26.344Z",
+      "observedMinutes": 89.9895,
+      "firstLife": {
+        "minutes": 5.06355,
+        "outcome": "observed_death"
+      },
+      "launchIdentity": null,
+      "deaths": 4,
+      "deathsPerHour": 2.666977814078309,
+      "deathBasis": "maximum sampled vanilla death counter",
+      "stageScorerDeaths": 4,
+      "milestones": {
+        "portal": {
+          "at": 1792959585832,
+          "minutes": 0.10613333333333333,
+          "basis": "visible lit portal, observation upper bound on ignition"
+        },
+        "fortressSeen": null,
+        "fortressEntered": null,
+        "blazeRods": null,
+        "pearls": null,
+        "eyes": null,
+        "stronghold": null,
+        "dragonKill": null
+      },
+      "costUsd": 13.427766100000001,
+      "costBasis": "token-price observer estimate, not subscription charges",
+      "ending": {
+        "kind": "budget_end",
+        "reason": "WALL_CLOCK_BUDGET",
+        "at": 1792964979467,
+        "censored": true
+      },
+      "measurementStatus": "INCOMPLETE",
+      "failure": null,
+      "coverage": {
+        "protocolRecords": 32256,
+        "samples": 5267,
+        "watcherFiles": 1,
+        "diagnostics": [],
+        "maxSampleGapSeconds": 4.869,
+        "protocolPresent": true
+      },
+      "source": "sub/long/d39-travel3-987654321-r2-codex",
+      "stageScore": "d39-travel3-987654321-r2-score.json.stage.json"
+    },
+    "commonWindowMinutes": 44.76425,
+    "candidateCommon": {
+      "protocol": "/home/agaminggod/Desktop/Projects/aa-run-6345839e/runtime/headless-runs/run-1792959535135-93e3686e/q-o9tb67-3181-LONG-r1-0827675e/quality-protocol.jsonl",
+      "playingWindow": {
+        "startedAt": 1792959579379,
+        "endedAt": 1792962265234
+      },
+      "netherMinutes": 10.1068,
+      "pathBlocks": 414.4859363204931,
+      "path10Blocks": 303.25941739336747,
+      "blocksPerNetherMinute": 30.005483178985187,
+      "sampledPathBlocksPerNetherMinute": 41.01060041956833,
+      "maxFromEntry": 70.32065058701025,
+      "maxDisplacementPerNetherMinute": 6.957756222247423,
+      "firstFortress": null,
+      "deaths": 4,
+      "travel": {
+        "calls": 6,
+        "activeMinutes": 2.3207333333333335,
+        "netGain": 53,
+        "netBlocksPerActiveMinute": 22.837608801815517,
+        "reasons": {
+          "TRAVEL_DAMAGED": 1,
+          "NO_ROUTE": 1,
+          "TRAVEL_TIMEOUT": 1,
+          "ARRIVED": 2,
+          "HOSTILE_NEAR": 1
+        }
+      },
+      "serverTickRate": 20.00138520599992,
+      "sampling": {
+        "displacementCadenceSeconds": 10,
+        "gapsOver5s": 0,
+        "excludedJumps": 0
+      },
+      "nativeDeaths": 4
+    },
+    "candidateCommonMilestones": {
+      "portal": {
+        "at": 1792959585832,
+        "minutes": 0.10613333333333333,
+        "basis": "visible lit portal, observation upper bound on ignition"
+      },
+      "fortressSeen": null,
+      "fortressEntered": null,
+      "blazeRods": null,
+      "pearls": null,
+      "eyes": null,
+      "stronghold": null,
+      "dragonKill": null
+    }
+  }
+]

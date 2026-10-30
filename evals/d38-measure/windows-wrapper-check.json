@@ -1,0 +1,11 @@
+{
+  "status": "stopped",
+  "signalExitCode": 0,
+  "reasonMatch": true,
+  "runRecordUpdated": true,
+  "requestedTimePresent": true,
+  "stoppedTimePresent": true,
+  "pidFileRemoved": true,
+  "usesLocalStopSource": true,
+  "stalePidRejected": true
+}

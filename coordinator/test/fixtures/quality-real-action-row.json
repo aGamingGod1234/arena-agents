@@ -1,0 +1,44 @@
+{
+    "runId":  "run-1791631521637-349dad8a",
+    "scenarioId":  "q-2b5clq-f7b1-T01-r1",
+    "direction":  "coordinator_to_server",
+    "envelope":  {
+                     "protocolVersion":  2,
+                     "serverInstanceId":  "d48b7dd5-5496-441e-b4d9-d271f434a86e",
+                     "agentId":  "5179b515-bc89-422e-b6b8-6f628139b228",
+                     "type":  "action_command",
+                     "messageId":  "coordinator-v2-31",
+                     "payload":  {
+                                     "traceId":  "native-e71abbba-7e6a-4951-9e8e-b24f2d08509e-1-5179b515-bc89-422e-b6b8-6f628139-1",
+                                     "goalRevision":  1,
+                                     "actionId":  "native:e71abbba-7e6a-4951-9e8e-b24f2d08509e:1:5179b515-bc89-422e-b6b8-6f628139:1",
+                                     "actionType":  "control",
+                                     "arguments":  {
+                                                       "forward":  0,
+                                                       "strafe":  0,
+                                                       "jump":  false,
+                                                       "sneak":  false,
+                                                       "sprint":  false,
+                                                       "attack":  false,
+                                                       "use":  false,
+                                                       "yaw":  90,
+                                                       "pitch":  0,
+                                                       "selectedSlot":  0,
+                                                       "hand":  "main",
+                                                       "ticks":  5
+                                                   },
+                                     "provenance":  {
+                                                        "provider":  "claude",
+                                                        "model":  "claude-opus-5-5",
+                                                        "reasoningEffort":  "low",
+                                                        "serviceTier":  "priority",
+                                                        "programId":  "native-1:1",
+                                                        "programVersion":  1,
+                                                        "sourceStepId":  "toolu_01Q393a4CC36ZbN6JSt4BJwy:1",
+                                                        "eventSequence":  21,
+                                                        "traceId":  "native-e71abbba-7e6a-4951-9e8e-b24f2d08509e-1-5179b515-bc89-422e-b6b8-6f628139-1"
+                                                    }
+                                 }
+                 },
+    "observedAtMs":  1791631552786
+}

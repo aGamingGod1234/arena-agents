@@ -1,0 +1,118 @@
+{
+  "8675309": {
+    "heights": {
+      "4,1": "Probe has the following entity data: [4.5d, 63.0d, 1.5d]"
+    },
+    "netherY": 77,
+    "netherPortal": [
+      16,
+      77,
+      0
+    ],
+    "campBed": [
+      128,
+      63,
+      0
+    ],
+    "naturalExit": [
+      12,
+      77,
+      -2
+    ]
+  },
+  "20261009": {
+    "heights": {
+      "118,688": "Probe has the following entity data: [118.5d, 63.0d, 688.5d]",
+      "548,501": "Probe has the following entity data: [548.5d, 67.0d, 501.5d]",
+      "327,2554": "Probe has the following entity data: [327.5d, 67.0d, 2554.5d]",
+      "264,2549": "Marker has the following entity data: [264.5d, 70.0d, 2549.5d]"
+    },
+    "4-stronghold-search": {
+      "pos": "Probe has the following entity data: [1048.5d, 63.0d, 2536.5d]",
+      "location": [
+        256,
+        2544
+      ]
+    },
+    "5-stronghold": {
+      "pos": "Probe has the following entity data: [260.5d, -12.0d, 2548.5d]",
+      "location": [
+        256,
+        2544
+      ]
+    },
+    "5-surface": 70
+  },
+  "20261024": {
+    "heights": {
+      "4,1": "Probe has the following entity data: [4.5d, 63.0d, 1.5d]"
+    },
+    "netherY": 82,
+    "netherPortal": [
+      0,
+      82,
+      0
+    ],
+    "campBed": [
+      0,
+      63,
+      0
+    ],
+    "naturalExit": [
+      -4,
+      82,
+      -2
+    ]
+  },
+  "123456789": {
+    "heights": {
+      "4,1": "Probe has the following entity data: [4.5d, 63.0d, 1.5d]"
+    },
+    "netherY": 65,
+    "netherPortal": [
+      0,
+      65,
+      8
+    ],
+    "campBed": [
+      0,
+      64,
+      64
+    ],
+    "naturalExit": [
+      -4,
+      65,
+      6
+    ]
+  },
+  "987654321": {
+    "heights": {
+      "4,1": "Probe has the following entity data: [4.5d, 67.0d, 1.5d]"
+    },
+    "netherY": 61,
+    "netherPortal": [
+      0,
+      61,
+      0
+    ],
+    "campBed": [
+      0,
+      67,
+      0
+    ],
+    "naturalExit": [
+      -4,
+      61,
+      -2
+    ]
+  },
+  "-8891462362762682724": {
+    "heights": {
+      "17,108": "Probe has the following entity data: [17.5d, 68.0d, 108.5d]",
+      "89,64": "Probe has the following entity data: [89.5d, 86.0d, 64.5d]",
+      "74,143": "Probe has the following entity data: [74.5d, 80.0d, 143.5d]",
+      "-1,98": "Marker has the following entity data: [-0.5d, 75.0d, 98.5d]",
+      "-14,95": "Marker has the following entity data: [-13.5d, 78.0d, 95.5d]"
+    }
+  }
+}

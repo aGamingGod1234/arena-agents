@@ -1,0 +1,2102 @@
+import path from 'node:path';
+import { writeArtifactReport } from './benchmark/report-artifacts.mjs';
+import { normalizeQualitySetup, applyQualitySetup, activateQualitySetup } from './benchmark/quality-scenarios.mjs';
+import { runnerPhaseChannel } from './benchmark/paired-runner-channel.mjs';
+import { mkdir as defaultMkdir, open as defaultOpen, readFile as defaultReadFile, writeFile as defaultWriteFile, readdir, stat } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+import { HeadlessRconClient } from './headless-rcon.mjs';
+import { parseInterventionAudit } from './intervention-audit.mjs';
+import { sanitizeDiagnosticErrorStack, sanitizeDiagnosticText, sanitizeDiagnosticValue } from './diagnostic-sanitizer.mjs';
+import { claimNaturalWorld, classifyHeadlessFailure, normalizeHeadlessWorld, parsePlayerPosition, parseServerSeed, summarizeProviderAttestation, validateNaturalWorldManifest } from './headless-world.mjs';
+import { defaultServiceTier } from './constants.mjs';
+
+const PROVIDERS = new Set(['codex', 'claude', 'opencode']);
+const MAX_TIMEOUT_MS = 900_000;
+const MAX_NATURAL_TIMEOUT_MS = 21_600_000;
+const MAX_DIAGNOSTICS = 4096;
+const MAX_TEXT = 4096;
+const MAX_ASSERTION_ARGS = 8192;
+const MAX_EVIDENCE_BYTES = 16_384;
+const MAX_EVIDENCE_TAIL_BYTES = 262_144;
+// ProviderTurnRecorder bounds a JSONL record to 262143 bytes; protocol records
+// are smaller. An oversized/corrupt line is a coverage gap, never a silent tail.
+const MAX_EVIDENCE_RECORD_BYTES = 262_144;
+const POST_RUN_EVIDENCE_TIMEOUT_MS = 10_000;
+const MAX_SCENARIOS = 24;
+const POLL_INTERVAL_MS = 50;
+const SCENARIO_KEYS = new Set(['id', 'provider', 'model', 'reasoningEffort', 'serviceTier', 'task', 'timeoutMs', 'rosterSize', 'assert', 'assertions', 'repetitions', 'planningTimeoutMs', 'scenarioTimeoutMs', 'requireFactualSuccess', 'setupBlocks', 'qualitySetup', 'world', 'playWindowMs', 'preparationTimeoutMs', 'continueAfterDeath']);
+const ASSERTION_KEYS = {
+	lifecycle: new Set(['type', 'state']),
+	chat: new Set(['type', 'message']),
+	action: new Set(['type', 'actionType', 'args', 'resultState']),
+	program: new Set(['type', 'event', 'status']),
+	rcon: new Set(['type', 'command', 'match']),
+	audit: new Set(['type', 'autonomy']),
+};
+const LIFECYCLE_STATES = new Set(['COMPLETED', 'ERROR', 'DEAD']);
+const ACTION_RESULT_STATES = new Set(['SUCCEEDED', 'FAILED', 'CANCELLED', 'TIMED_OUT']);
+
+function freeze(value) {
+	if (value && typeof value === 'object' && !Object.isFrozen(value)) {
+		Object.freeze(value);
+		for (const child of Object.values(value)) freeze(child);
+	}
+	return value;
+}
+
+function text(value, field) {
+	if (typeof value !== 'string' || !value.trim()) throw new TypeError(`${field} must be nonblank text`);
+	if (value.length > MAX_TEXT) throw new RangeError(`${field} exceeds bounded length`);
+	return value.trim();
+}
+
+function exactKeys(value, allowed, field) {
+	if (!value || typeof value !== 'object' || Array.isArray(value)) throw new TypeError(`${field} must be an object`);
+	for (const key of Object.keys(value)) if (!allowed.has(key)) throw new TypeError(`${field} has unknown key '${key}'`);
+}
+
+function normalizeAssertion(value, index) {
+	const field = `assert[${index}]`;
+	if (!value || typeof value !== 'object' || Array.isArray(value)) throw new TypeError(`${field} must be an object`);
+	const type = text(value.type, `${field}.type`);
+	const allowed = ASSERTION_KEYS[type];
+	if (!allowed) throw new TypeError(`${field} has unknown assertion type`);
+	exactKeys(value, allowed, field);
+	const result = { type };
+	if (type === 'lifecycle') {
+		const state = text(value.state, `${field}.state`).toUpperCase();
+		if (!LIFECYCLE_STATES.has(state)) throw new TypeError(`${field}.state is unsupported`);
+		result.state = state;
+	} else if (type === 'chat') result.message = text(value.message, `${field}.message`);
+	else if (type === 'action') {
+		result.actionType = text(value.actionType, `${field}.actionType`);
+		if (value.resultState !== undefined) {
+			result.resultState = text(value.resultState, `${field}.resultState`).toUpperCase();
+			if (!ACTION_RESULT_STATES.has(result.resultState)) throw new TypeError(`${field}.resultState is unsupported`);
+		}
+		if (value.args !== undefined) {
+			if (!value.args || typeof value.args !== 'object' || Array.isArray(value.args)) throw new TypeError(`${field}.args must be an object`);
+			result.args = structuredClone(value.args);
+			if (JSON.stringify(result.args).length > MAX_ASSERTION_ARGS) throw new RangeError(`${field}.args exceeds bounded length`);
+		}
+	} else if (type === 'program') {
+		result.event = text(value.event, `${field}.event`);
+		if (value.status !== undefined) result.status = text(value.status, `${field}.status`);
+	} else if (type === 'audit') {
+		// Only an unassisted run is a supported expectation; there is nothing to gain from asserting assistance.
+		if (value.autonomy !== 'autonomous') throw new TypeError(`${field}.autonomy must be autonomous`);
+		result.autonomy = 'autonomous';
+	} else {
+		result.command = text(value.command, `${field}.command`);
+		result.match = text(value.match, `${field}.match`);
+	}
+	return freeze(result);
+}
+
+function normalizeSetupBlock(value, index) {
+	const field = `setupBlocks[${index}]`;
+	exactKeys(value, new Set(['x', 'y', 'z', 'blockId']), field);
+	for (const coordinate of ['x', 'y', 'z']) {
+		if (!Number.isSafeInteger(value?.[coordinate]) || Math.abs(value[coordinate]) > 30_000_000) throw new RangeError(`${field}.${coordinate} must be a bounded integer`);
+	}
+	const blockId = text(value.blockId, `${field}.blockId`);
+	if (!/^[a-z0-9_.-]+:[a-z0-9_./-]+$/.test(blockId) || blockId === 'minecraft:air') throw new TypeError(`${field}.blockId must be a non-air namespaced block ID`);
+	return freeze({ x: value.x, y: value.y, z: value.z, blockId });
+}
+
+export function normalizeHeadlessScenario(value, index = 0) {
+	exactKeys(value, SCENARIO_KEYS, `scenarios[${index}]`);
+	if (typeof value?.id !== 'string' || /[\\/\u0000-\u001f\u007f]/.test(value.id) || value.id.includes('..')) throw new TypeError(`scenarios[${index}].id must be a safe path segment`);
+	const assertions = value.assert ?? value.assertions;
+	if (value.assert !== undefined && value.assertions !== undefined) throw new TypeError('use only assert or assertions');
+	if (!Array.isArray(assertions) || assertions.length === 0) throw new TypeError('scenario requires one or more assertions');
+	const world = normalizeHeadlessWorld(value.world);
+	const timeoutMs = value.timeoutMs;
+	const maximumTimeoutMs = world.mode === 'natural' ? MAX_NATURAL_TIMEOUT_MS : MAX_TIMEOUT_MS;
+	if (!Number.isInteger(timeoutMs) || timeoutMs <= 0 || timeoutMs > maximumTimeoutMs) throw new RangeError(`timeoutMs must be between 1 and ${maximumTimeoutMs}`);
+	const rosterSize = value.rosterSize ?? 1;
+	if (![1, 8, 16].includes(rosterSize)) throw new RangeError('rosterSize must be one of 1, 8, or 16');
+	if (value.setupBlocks !== undefined && (!Array.isArray(value.setupBlocks) || value.setupBlocks.length === 0 || value.setupBlocks.length > 32)) throw new RangeError('setupBlocks must contain between 1 and 32 blocks');
+	if (value.continueAfterDeath !== undefined && typeof value.continueAfterDeath !== 'boolean') throw new TypeError('continueAfterDeath must be boolean');
+	if (value.preparationTimeoutMs !== undefined && value.playWindowMs === undefined) throw new TypeError('preparationTimeoutMs requires playWindowMs');
+	if ((value.playWindowMs !== undefined || value.continueAfterDeath === true) && (world.mode !== 'natural' || rosterSize !== 1)) throw new TypeError('Goal-start windows and death continuation require one natural-world agent');
+	const scenario = {
+		id: text(value.id, `scenarios[${index}].id`), provider: text(value.provider, `scenarios[${index}].provider`),
+		model: text(value.model, `scenarios[${index}].model`), reasoningEffort: text(value.reasoningEffort, `scenarios[${index}].reasoningEffort`),
+		serviceTier: text(value.serviceTier ?? defaultServiceTier(value.provider), `scenarios[${index}].serviceTier`), task: text(value.task, `scenarios[${index}].task`), timeoutMs, rosterSize,
+		repetitions: value.repetitions === undefined ? 1 : boundedPositiveInteger(value.repetitions, `scenarios[${index}].repetitions`),
+		planningTimeoutMs: value.planningTimeoutMs === undefined ? null : boundedPositiveInteger(value.planningTimeoutMs, `scenarios[${index}].planningTimeoutMs`),
+		scenarioTimeoutMs: value.scenarioTimeoutMs === undefined ? timeoutMs : boundedPositiveInteger(value.scenarioTimeoutMs, `scenarios[${index}].scenarioTimeoutMs`),
+		requireFactualSuccess: value.requireFactualSuccess === true,
+		...(value.playWindowMs === undefined ? {} : { playWindowMs: boundedPositiveInteger(value.playWindowMs, 'playWindowMs'), preparationTimeoutMs: boundedPositiveInteger(value.preparationTimeoutMs ?? 300000, 'preparationTimeoutMs') }),
+		...(value.continueAfterDeath === undefined ? {} : { continueAfterDeath: value.continueAfterDeath }),
+		setupBlocks: (value.setupBlocks ?? []).map(normalizeSetupBlock),
+		...(value.qualitySetup === undefined ? {} : { qualitySetup: normalizeQualitySetup(value.qualitySetup) }),
+		world,
+		assertions: assertions.map(normalizeAssertion),
+	};
+	if (scenario.playWindowMs !== undefined && scenario.playWindowMs + scenario.preparationTimeoutMs > scenario.timeoutMs) throw new RangeError('timeoutMs must cover preparationTimeoutMs plus playWindowMs');
+	if (scenario.repetitions > 32) throw new RangeError(`scenarios[${index}].repetitions must not exceed 32`);
+	if (scenario.scenarioTimeoutMs > timeoutMs) throw new RangeError('scenarioTimeoutMs must not exceed timeoutMs');
+	if (scenario.world.mode === 'natural') {
+		if (scenario.rosterSize !== 1 || scenario.repetitions !== 1) throw new TypeError('natural evaluations require one agent and one repetition per fresh world; expand repetitions into separate scenarios');
+		if (scenario.setupBlocks.length > 0) throw new TypeError('natural evaluations cannot plant setupBlocks');
+		if (!scenario.requireFactualSuccess || !scenario.assertions.some((assertion) => assertion.type === 'rcon')) throw new TypeError('natural evaluations require independent RCON factual success');
+	}
+	if (!PROVIDERS.has(scenario.provider)) throw new TypeError(`unsupported provider '${scenario.provider}'`);
+	return freeze(scenario);
+}
+
+export function normalizeHeadlessMatrix(value) {
+	if (!value || typeof value !== 'object' || Array.isArray(value)) throw new TypeError('matrix must be an object');
+	exactKeys(value, new Set(['version', 'scenarios']), 'matrix');
+	if (value.version !== 1) throw new TypeError('matrix version must be 1');
+	if (!Array.isArray(value.scenarios) || value.scenarios.length === 0) throw new TypeError('matrix requires scenarios');
+	const scenarios = value.scenarios.map(normalizeHeadlessScenario);
+	const ids = new Set();
+	for (const scenario of scenarios) { if (ids.has(scenario.id)) throw new TypeError(`duplicate scenario ID '${scenario.id}'`); ids.add(scenario.id); }
+	return freeze({ version: 1, scenarios });
+}
+
+export function selectHeadlessScenarios(matrix, selector) {
+	if (selector === null || selector === undefined) return matrix.scenarios.slice();
+	text(selector, 'selector');
+	const scenario = matrix.scenarios.find((entry) => entry.id === selector);
+	if (!scenario) throw new RangeError(`unknown scenario ID '${selector}'`);
+	return [scenario];
+}
+
+export function scenarioReport(status, scenario, fields = {}) {
+	const normalizedStatus = text(status, 'status').toUpperCase();
+	const report = { status: normalizedStatus, scenarioId: scenario.id, rosterSize: scenario.rosterSize ?? 1, profile: { provider: scenario.provider, model: scenario.model, reasoningEffort: scenario.reasoningEffort, serviceTier: scenario.serviceTier } };
+	if (scenario.world?.mode === 'natural') {
+		report.settings = { requested: { ...report.profile }, configured: null, configuredVerified: false, effective: null, evidence: null };
+		report.budget = { wallClockMs: Math.min(scenario.timeoutMs, scenario.scenarioTimeoutMs ?? scenario.timeoutMs) };
+		report.world = { ...scenario.world, worldId: null, fresh: false };
+	}
+	for (const [key, value] of Object.entries(fields)) {
+		if (key === 'status') continue;
+		if (key === 'diagnostics' || key === 'error') report[key] = redactReportText(value, MAX_DIAGNOSTICS);
+		else if (key === 'commands') report[key] = publicCommandRecords(value);
+		else report[key] = boundReportValue(value);
+	}
+	if (report.classification) report.failureCategory = classifyHeadlessFailure(report.classification);
+	return freeze(report);
+}
+
+function boundReportValue(value) {
+	const sanitized = sanitizeDiagnosticValue(value, {
+		maxDepth: 6,
+		maxEntries: 64,
+		maxNodes: 512,
+		maxStringBytes: MAX_DIAGNOSTICS,
+		redactPaths: true,
+	});
+	return boundSanitizedReportValue(sanitized);
+}
+
+function boundSanitizedReportValue(value, depth = 0) {
+	if (depth > 6) return '[TRUNCATED]';
+	if (value === null || typeof value !== 'object') return value;
+	if (Array.isArray(value)) return value.slice(0, 64).map((entry) => boundSanitizedReportValue(entry, depth + 1));
+	return Object.fromEntries(Object.entries(value).slice(0, 64).map(([key, entry]) => [key.slice(0, 128), boundSanitizedReportValue(entry, depth + 1)]));
+}
+
+function publicCommandRecords(value) {
+	if (!Array.isArray(value)) return [];
+	return value.slice(0, 64).map((command) => {
+		if (command && typeof command === 'object' && /^[a-z0-9_]{1,64}$/.test(command.operation)) return { operation: command.operation };
+		const source = String(command ?? '').trim();
+		let operation = 'rcon_command';
+		if (/\bforceload\s+add\b/i.test(source)) operation = 'arena_forceload_add';
+		else if (/\bforceload\s+remove\b/i.test(source)) operation = 'arena_forceload_remove';
+		else if (/\brun\s+fill\b/i.test(source)) operation = 'arena_prepare';
+		else if (/\bcodex\s+summon-configured\b/i.test(source)) operation = 'agent_summon';
+		else if (/^codex\s+start\b/i.test(source)) operation = 'agent_start';
+		else if (/^codex\s+status\b/i.test(source)) operation = 'agent_status';
+		else if (/^tick\s+query$/i.test(source)) operation = 'minecraft_tick_query';
+		else if (isReadOnlyRcon(source)) operation = 'read_only_assertion';
+		return { operation };
+	});
+}
+
+/** Evaluate only evidence that was observed from the server/protocol path. */
+export function evaluateHeadlessAssertions(assertions, evidence = {}) {
+	if (!Array.isArray(assertions)) throw new TypeError('assertions must be an array');
+	const results = assertions.map((assertion, index) => evaluateAssertion(assertion, evidence, index));
+	return { passed: results.every((result) => result.passed), results };
+}
+
+/** Drive one summoned agent through the normal RCON and protocol lifecycle. */
+export async function runHeadlessScenario({
+	scenario,
+	runDirectory,
+	rcon,
+	now = Date.now,
+	readFile = defaultReadFile,
+	readTail = null,
+	fileSize = defaultFileSize,
+	writeFile = defaultWriteFile,
+	protocolAudit = null,
+	providerTurnsPath = null,
+	providerTurnRecorder = null,
+	worldManifest = null,
+	trialDeadlineMs = null, onCleanup = null, cleanupRconFactory = null,
+	poll = defaultPoll,
+} = {}) {
+	if (!scenario || typeof scenario !== 'object') throw new TypeError('scenario must be an object');
+	if (!rcon || typeof rcon.command !== 'function') throw new TypeError('rcon.command must be a function');
+	if (typeof now !== 'function' || typeof readFile !== 'function' || typeof writeFile !== 'function' || typeof poll !== 'function' || typeof fileSize !== 'function') throw new TypeError('runner dependencies must be functions');
+	const directory = normalizeRunDirectory(runDirectory);
+	const assertions = scenario.assertions ?? scenario.assert ?? [];
+	validateRunnerScenario(scenario, assertions);
+	if (onCleanup !== null && (scenario.world?.mode !== 'natural' || (scenario.rosterSize ?? 1) !== 1)) throw new Error('Paired phases require one natural-world agent');
+	if ((scenario.rosterSize ?? 1) > 1) {
+		return runConcurrentHeadlessScenario({
+			scenario, directory, rcon, now, readFile, readTail, fileSize, writeFile, protocolAudit,
+			providerTurnsPath, providerTurnRecorder, poll,
+		});
+	}
+	const profile = {
+		provider: boundedScalar(scenario.provider), model: boundedScalar(scenario.model),
+		reasoningEffort: boundedScalar(scenario.reasoningEffort), serviceTier: boundedScalar(scenario.serviceTier),
+	};
+	const base = { status: 'FAILED', scenarioId: boundedScalar(scenario.id), profile };
+	if (scenario.skip === true || scenario.skipped === true || scenario.profileAvailable === false) {
+		let cleanup = { status: 'NOT_REQUIRED' };
+		try { await closeResources(rcon, providerTurnRecorder); } catch (error) { cleanup = { status: 'FAILED', diagnostics: boundedText(error?.message ?? error, MAX_DIAGNOSTICS) }; }
+		const report = scenarioReport(cleanup.status === 'FAILED' ? 'FAILED' : 'SKIPPED', scenario, { classification: cleanup.status === 'FAILED' ? 'CLEANUP_FAILURE' : 'SKIPPED_PROFILE', reason: scenario.skipReason ?? scenario.reason ?? 'provider profile unavailable', cleanup });
+		return await persistReportOrFailure(scenario, report, directory, writeFile);
+	}
+	const commands = [];
+	const rconEvidence = [];
+	const startedAt = Number(now());
+	if (!Number.isFinite(startedAt)) throw new TypeError('now must return a finite number');
+	const generatedName = generatedAgentName(scenario, startedAt);
+	const timeoutMs = Math.min(scenario.timeoutMs, scenario.scenarioTimeoutMs ?? scenario.timeoutMs);
+	if (scenario.playWindowMs !== undefined && trialDeadlineMs !== null) throw new TypeError('Goal-start play windows cannot override a paired trial deadline');
+	let goalStartedAt = null;
+	let deadline = trialDeadlineMs ?? startedAt + (scenario.playWindowMs === undefined ? timeoutMs : scenario.preparationTimeoutMs);
+	if (!Number.isFinite(deadline)) throw new TypeError('invalid trial deadline');
+	let cleanupBoundary = null;
+	const enterCleanup = async value => {
+		if (onCleanup !== null && cleanupBoundary === null) {
+			cleanupBoundary = await onCleanup(value);
+			if (!Number.isFinite(cleanupBoundary)) throw new TypeError('invalid cleanup deadline');
+		}
+	};
+	const cleanupDeadline = () => onCleanup === null ? Math.max(deadline, Number(now()) + 10_000) : cleanupBoundary ?? deadline;
+	const tailReader = readTail ?? (readFile === defaultReadFile
+		? defaultReadTail
+		: async (file, limit, offset = 0) => boundedTailText(Buffer.from(await readFile(file, 'utf8')).subarray(offset), limit));
+	const evidencePaths = resolveEvidencePaths(directory, protocolAudit, providerTurnsPath);
+	const evidenceOffsets = await captureEvidenceOffsets(evidencePaths, fileSize);
+	evidenceOffsets.scope = { scenario, names: [generatedName] };
+	if (readTail) evidenceOffsets.readRows = (file) => readTail(file, Number.MAX_SAFE_INTEGER, 0);
+	const protocolAuditOffset = auditRows(protocolAudit).length;
+	let terminalState = null;
+	let classification = null;
+	let diagnostics = '';
+	let goalScan = { registrations: 0, starts: 0 };
+	let minecraftMspt = null;
+	let closed = false;
+	let summoned = false;
+	let naturalWorld = null;
+	let spawnPosition = null;
+	let spawnTicket = null;
+	let trialTransportRetired = false;
+	let cleanupRcon = null;
+	let cleanupConnectionAttempted = false;
+	let cleanupConnectionError = null;
+	const withinDeadline = onCleanup === null ? withDeadline : settledOperation;
+	const command = async (value, { readOnly = false, deadlineMs = deadline, attempt = 0, recordEvidence = true } = {}) => {
+		const commandText = String(value);
+		if (readOnly && !isReadOnlyRcon(commandText)) throw new Error(`RCON assertion command is not read-only: ${commandText}`);
+		commands.push(commandText);
+		if (cleanupBoundary !== null && trialTransportRetired && !cleanupConnectionAttempted) {
+			cleanupConnectionAttempted = true;
+			try {
+				if (now() >= cleanupBoundary) throw headlessTimeout();
+				if (typeof cleanupRconFactory !== 'function') throw new Error('Cleanup requires a fresh RCON connection');
+				// Never reuse the expired stream: late status packets have no safe
+				// command boundary. Authentication spends the existing cleanup budget.
+				cleanupRcon = cleanupRconFactory();
+				if (!cleanupRcon || cleanupRcon === rcon || typeof cleanupRcon.connect !== 'function' || typeof cleanupRcon.command !== 'function' || typeof cleanupRcon.close !== 'function') throw new TypeError('cleanupRconFactory must return a fresh RCON client');
+				await settledRconOperation(cleanupRcon, () => cleanupRcon.connect(), cleanupBoundary, now);
+			} catch (error) { cleanupConnectionError = error; }
+		}
+		if (cleanupConnectionError !== null) throw cleanupConnectionError;
+		const result = onCleanup === null
+			? await withDeadline(() => rcon.command(commandText), deadlineMs, () => logicalNow(now, startedAt, attempt), 'HEADLESS_TIMEOUT')
+			: await settledRconOperation(cleanupRcon ?? rcon, () => (cleanupRcon ?? rcon).command(commandText), deadlineMs, now, () => {
+				if (cleanupBoundary === null) trialTransportRetired = true;
+			});
+		const rawText = String(result?.text ?? result);
+		// A complete lifecycle poll is input, not retained assertion evidence; long task text can exceed the report bound.
+		const statusPoll = !readOnly && commandText === `codex status ${generatedName}`;
+		if (result?.complete === false || result?.truncated === true || (!statusPoll && Buffer.byteLength(rawText, 'utf8') > MAX_EVIDENCE_BYTES)) {
+			throw Object.assign(new Error(`RCON_INCOMPLETE: ${commandText}; received ${Buffer.byteLength(rawText, 'utf8')} bytes; complete=${result?.complete}, truncated=${result?.truncated}`), { code: 'RCON_INCOMPLETE' });
+		}
+		const textValue = statusPoll ? rawText : boundedText(rawText, MAX_EVIDENCE_BYTES);
+		if (readOnly && recordEvidence) rconEvidence.push({ command: commandText, text: textValue });
+		return { result, text: textValue };
+	};
+	const releaseSpawnTicket = async () => {
+		if (spawnTicket === null) return;
+		const result = await command(`execute in minecraft:overworld run forceload remove ${spawnTicket.x} ${spawnTicket.z}`, { deadlineMs: cleanupDeadline() });
+		if (isFailedResponse(result.text)) throw new Error('NATURAL_SPAWN_CLEANUP: could not release the spawn chunk ticket');
+		spawnTicket.released = true;
+		spawnTicket = null;
+	};
+	try {
+		let summon;
+		if (scenario.world?.mode === 'natural') {
+			naturalWorld = validateNaturalWorldManifest(worldManifest, scenario.world, scenario.id);
+			const { spawn, gameMode } = scenario.world;
+			const saved = worldManifest.savedSpawn;
+			if (!saved || saved.source !== 'level.dat' || saved.dimension !== 'minecraft:overworld'
+				|| ['x', 'y', 'z'].some((axis) => !Number.isSafeInteger(saved[axis])) || Math.abs(saved.x) > 29_999_984 || Math.abs(saved.z) > 29_999_984 || saved.y < -2048 || saved.y > 2048) throw new Error('NATURAL_SPAWN_EVIDENCE: launcher must read the generated world spawn from level.dat');
+			const origin = spawn.policy === 'surface' ? { x: spawn.x, y: 0, z: spawn.z } : saved;
+			const loading = worldManifest.spawnLoading;
+			if (!loading || loading.operation !== 'temporary_spawn_chunk_loading' || loading.ready !== true || loading.x !== origin.x || loading.z !== origin.z
+				|| loading.terrainModified !== false || loading.inventoryModified !== false || !Number.isFinite(loading.elapsedMs) || loading.elapsedMs < 0 || loading.elapsedMs > 120_000) throw new Error('NATURAL_SPAWN_EVIDENCE: launcher must verify temporary spawn chunk loading');
+			spawnTicket = { operation: loading.operation, x: loading.x, z: loading.z, ready: true, elapsedMs: loading.elapsedMs, terrainModified: false, inventoryModified: false, released: false };
+			naturalWorld = { ...naturalWorld, savedSpawn: { source: saved.source, dimension: saved.dimension, x: saved.x, y: saved.y, z: saved.z }, setupInterventions: [spawnTicket] };
+			const actualSeed = parseServerSeed((await command('seed', { readOnly: true, recordEvidence: false })).text);
+			if (actualSeed !== scenario.world.seed) throw new Error('NATURAL_WORLD_IDENTITY: actual server seed does not match the fresh-world manifest');
+			const difficulty = (await command('difficulty', { readOnly: true, recordEvidence: false })).text;
+			if (!new RegExp(`\\b${scenario.world.difficulty}\\b`, 'i').test(difficulty)) throw new Error('NATURAL_WORLD_IDENTITY: actual server difficulty does not match the scenario');
+			for (const [rule, value] of Object.entries(scenario.world.rules)) {
+				if (isFailedResponse((await command(`gamerule ${rule} ${value}`)).text)) throw new Error(`NATURAL_WORLD_RULE: server rejected gamerule ${rule}`);
+				if (!new RegExp(`\\b${value}\\b`).test((await command(`gamerule ${rule}`, { readOnly: true, recordEvidence: false })).text)) throw new Error(`NATURAL_WORLD_RULE: server did not verify gamerule ${rule}`);
+			}
+			const loaded = await command(`execute in minecraft:overworld if loaded ${origin.x} 0 ${origin.z} run time query gametime`);
+			if (!/\btime is \d+\b/i.test(loaded.text)) throw new Error('NATURAL_SPAWN_LOADING: spawn chunk is no longer loaded');
+			const source = `execute in minecraft:overworld positioned ${origin.x + 0.5} ${origin.y} ${origin.z + 0.5}${spawn.policy === 'surface' ? ' positioned over world_surface' : ''} run `;
+			summon = await command(`${source}codex summon-configured ${scenario.provider} ${scenario.model} ${scenario.reasoningEffort} ${scenario.serviceTier ?? defaultServiceTier(scenario.provider)} ${gameMode} ${generatedName}`);
+		} else {
+		await command('execute in minecraft:overworld run forceload add 0 0');
+		try {
+			const floor = await command('execute in minecraft:overworld run fill -8 200 -8 8 200 8 minecraft:stone');
+			if (isFailedResponse(floor.text)) throw new Error('Could not prepare the headless arena floor');
+			const clearance = await command('execute in minecraft:overworld run fill -8 201 -8 8 204 8 minecraft:air');
+			if (isFailedResponse(clearance.text)) throw new Error('Could not clear the headless arena spawn');
+			for (const block of scenario.setupBlocks ?? []) {
+				const setup = await command(`execute in minecraft:overworld run setblock ${block.x} ${block.y} ${block.z} ${block.blockId}`);
+				if (isFailedResponse(setup.text)) throw new Error('Could not place a headless arena fixture block');
+			}
+			summon = await command(`execute in minecraft:overworld positioned 0.5 201 0.5 run codex summon-configured ${scenario.provider} ${scenario.model} ${scenario.reasoningEffort} ${scenario.serviceTier ?? defaultServiceTier(scenario.provider)} survival ${generatedName}`);
+		} finally {
+			const removalDeadline = cleanupDeadline();
+			await command('execute in minecraft:overworld run forceload remove 0 0', { deadlineMs: removalDeadline });
+		}
+		}
+		if (isSkippedResponse(summon.text)) classification = 'SKIPPED_PROFILE';
+		if (classification === null && isFailedResponse(summon.text)) {
+			classification = 'ERROR';
+			diagnostics = summon.text;
+		}
+		if (classification === null && !isAcceptedResponse(summon.text)) {
+			classification = 'ERROR';
+			diagnostics = summon.text;
+		}
+		if (isAcceptedResponse(summon.text)) summoned = true;
+		if (classification === null) {
+			if (isPendingJoinResponse(summon.text)) {
+				await waitForAgentReady({ generatedName, command, poll, deadline, now, startedAt });
+			}
+			if (naturalWorld !== null) {
+				spawnPosition = parsePlayerPosition((await command(`data get entity ${generatedName} Pos`, { readOnly: true, recordEvidence: false })).text);
+				if (!/entity data:\s*\[\s*\]\s*$/i.test((await command(`data get entity ${generatedName} Inventory`, { readOnly: true, recordEvidence: false })).text)) throw new Error('NATURAL_INVENTORY: newly spawned evaluation player must have an empty inventory');
+				await releaseSpawnTicket();
+			}
+			if (scenario.qualitySetup) {
+				const setup = await applyQualitySetup(scenario.qualitySetup, command, generatedName);
+				await activateQualitySetup(setup, command, {stage:'goal-start'});
+				if(scenario.qualitySetup.generality) await new Promise(resolve=>setTimeout(resolve,1000));
+				await writeFile(path.join(directory, 'quality-setup.json'), JSON.stringify(setup, null, 2));
+			}
+			const start = await command(`codex start ${generatedName} ${scenario.task}`, { attempt: 0 });
+			if (isFailedResponse(start.text)) {
+				classification = 'ERROR';
+				diagnostics = start.text;
+			}
+		}
+		if (classification === null) {
+			let attempts = 0;
+			while (terminalState === null) {
+				// The evaluator has already frozen its pass; finish the runner and drain capture normally.
+				if (scenario.qualitySetup && await readFile(path.join(directory, 'quality-stop.json'), 'utf8').then(() => true, error => { if (error.code === 'ENOENT') return false; throw error; })) {
+					classification = 'EVALUATOR_STOP'; break;
+				}
+				if (scenario.playWindowMs !== undefined && goalStartedAt === null) {
+					let rows;
+					if (typeof protocolAudit === 'string') {
+						rows = [];
+						await scanEvidenceFile(protocolAudit, evidenceOffsets.protocol, evidenceOffsets.readRows ?? readFile, row => {
+							const e = unwrapAuditRow(row);
+							if (isAuthoritativeAgentIdentityRow(e) || e?.type === 'goal_control' && e.payload?.operation === 'start') rows.push(row);
+						}, () => now() >= deadline);
+					} else rows = auditRows(protocolAudit).slice(protocolAuditOffset);
+					const envelopes = rows.map(unwrapAuditRow).filter(Boolean);
+					const ids = new Set(envelopes.filter(row => ['agent_registered', 'agent_snapshot'].includes(row.type) && row.payload?.name === generatedName).map(row => row.agentId ?? row.payload?.agentId));
+					let start = envelopes.find(row => row.type === 'goal_control' && row.payload?.operation === 'start' && ids.has(row.agentId));
+					// A dropped registration row must not hide a goal start that carries this scenario's exact task.
+					if (start === undefined && ids.size === 0) {
+						const byTask = envelopes.filter(row => row.type === 'goal_control' && row.payload?.operation === 'start' && row.payload?.goal === scenario.task);
+						if (new Set(byTask.map(row => row.agentId)).size === 1) start = byTask[0];
+					}
+					goalScan = { registrations: ids.size, starts: envelopes.filter(row => row.type === 'goal_control' && row.payload?.operation === 'start').length };
+					const at = start?.payload?.updatedAtEpochMs;
+					if (Number.isFinite(at) && at >= startedAt && at <= now()) { goalStartedAt = at; deadline = at + scenario.playWindowMs; }
+				}
+				if (logicalNow(now, startedAt, attempts) >= deadline) { classification = 'TIMEOUT'; break; }
+				let status;
+				try { status = await command(`codex status ${generatedName}`, { attempt: attempts }); }
+				catch (error) {
+					if (error?.code === 'HEADLESS_TIMEOUT') { classification = 'TIMEOUT'; break; }
+					throw error;
+				}
+				const parsedState = parseLifecycle(status.text);
+				terminalState = parsedState === 'DEAD' && scenario.continueAfterDeath === true ? null : LIFECYCLE_STATES.has(parsedState) ? parsedState : null;
+				if (terminalState !== null) break;
+				try {
+					await withinDeadline(() => poll({ phase: 'status', attempt: attempts, deadline, status: status.text, readStatus: () => command(`codex status ${generatedName}`, { attempt: attempts }), now }), deadline, () => logicalNow(now, startedAt, attempts), 'HEADLESS_TIMEOUT');
+				} catch (error) {
+					if (error?.code === 'HEADLESS_TIMEOUT') { classification = 'TIMEOUT'; break; }
+					throw error;
+				}
+				attempts += 1;
+			}
+			if (terminalState === null && classification === null) classification = 'TIMEOUT';
+		}
+		if (scenario.playWindowMs !== undefined && goalStartedAt === null && classification === 'TIMEOUT' && diagnostics === '') {
+			diagnostics = `GOAL_START_NOT_RECOGNIZED: no authoritative goal start was found, so the ${scenario.playWindowMs}ms play window never began and the run ended at the ${scenario.preparationTimeoutMs}ms preparation limit (agent registrations seen: ${goalScan.registrations}, goal starts seen: ${goalScan.starts})`;
+		}
+		if (classification === null && terminalState === 'ERROR') classification = 'ERROR';
+		if (classification === null && terminalState === 'DEAD') classification = 'DEAD';
+		if (classification === null && terminalState === null) classification = 'TIMEOUT';
+		try { minecraftMspt = parseMinecraftMspt((await command('tick query', { attempt: 0 })).text); } catch { /* optional server metric */ }
+		const taskElapsedMs = Math.max(0, Number(now()) - startedAt);
+		await enterCleanup({ classification: classification ?? 'PENDING_EVIDENCE', taskElapsedMs });
+		const postRunStartedAt = Number(now());
+		const postRunDeadline = onCleanup !== null ? cleanupBoundary : classification === 'TIMEOUT' ? Math.max(deadline, postRunStartedAt + POST_RUN_EVIDENCE_TIMEOUT_MS) : deadline;
+		let postRunEvidence = null;
+		let cleanupStopError = null;
+		if (classification === 'TIMEOUT' && summoned) {
+			try {
+				const stop = await command(`codex stop ${generatedName}`, { deadlineMs: postRunDeadline });
+				if (!isStopAcknowledged(stop.text, generatedName)) throw new Error('Could not confirm stop of the timed-out headless scenario agent');
+				postRunEvidence = { snapshot: 'post_stop', status: 'STOPPED', delayMs: Math.max(0, Number(now()) - deadline) };
+			} catch (error) {
+				if (onCleanup !== null) cleanupStopError = error;
+				postRunEvidence = { snapshot: 'post_stop', status: 'UNAVAILABLE', delayMs: Math.max(0, Number(now()) - deadline) };
+			}
+		}
+		const evidenceResult = await collectHeadlessEvidence({
+			directory, readFile, tailReader, protocolAudit, providerTurnsPath, evidenceOffsets, protocolAuditOffset, assertions, terminalState, rconEvidence,
+			readOnlyCommand: (value, readDeadline = deadline) => command(value, { readOnly: true, deadlineMs: readDeadline, attempt: 0 }),
+			deadline: onCleanup !== null ? cleanupBoundary : deadline, postRunDeadline: onCleanup !== null || postRunEvidence?.status === 'STOPPED' ? postRunDeadline : deadline,
+			allowRconReads: classification !== 'TIMEOUT' || postRunEvidence?.status === 'STOPPED',
+			now, startedAt, poll, scenario, generatedName, spawnPosition, withinDeadline, waitForEvidence: classification === null,
+		});
+		const { scopedEvidence, scopedAudit, identity, assertionResult } = evidenceResult;
+		const attestation = summarizeProviderAttestation([...(scopedEvidence.usage ?? []).flatMap((row) => row.attestations), ...(scopedEvidence.providerTurnSummaries ?? []), ...(scopedEvidence.traceRows ?? [])].map((row) => ({ executionSettings: safeExecutionSettings(row.executionSettings) })), profile);
+		const factualAssertions = assertions.filter((assertion) => assertion.type === 'rcon');
+		const factualSuccess = factualAssertions.length > 0
+			&& assertionResult.results.filter((result) => result.type === 'rcon').every((result) => result.passed);
+		const resolvedAgentId = identity.agentId;
+		if (identity.error !== null && classification === null) {
+			classification = naturalWorld !== null ? 'PROFILE_MISMATCH' : 'ERROR';
+			diagnostics = identity.error;
+		}
+		if (naturalWorld !== null && !identity.authoritative && classification === null) {
+			classification = 'PROFILE_MISMATCH';
+			diagnostics = 'Natural evaluation requires an authoritative snapshot with the exact requested model settings';
+		}
+		// Preserve the measured gameplay result even when explicit provider evidence
+		// makes this execution ineligible for the requested-profile comparison.
+		if (classification === null && !assertionResult.passed) classification = 'ASSERTION_MISMATCH';
+		if (classification === null && scenario.requireFactualSuccess && !factualSuccess) classification = 'FAILED_USER_OBJECTIVE';
+		if (classification === null) classification = 'PASSED';
+		const gameplayClassification = classification;
+		if (naturalWorld !== null && attestation.mismatches.length > 0) {
+			classification = 'PROFILE_MISMATCH';
+			diagnostics = `Provider response reported different ${attestation.mismatches.join(', ')} settings`;
+		}
+		const status = classification === 'PASSED' ? 'PASSED' : classification === 'SKIPPED_PROFILE' ? 'SKIPPED' : 'FAILED';
+		const report = scenarioReport(status, scenario, {
+			classification, gameplayClassification, generatedName, lifecycle: terminalState, elapsedMs: taskElapsedMs,
+			...(naturalWorld === null ? {} : { world: { ...naturalWorld, spawnPosition }, settings: { requested: { ...profile }, configured: identity.effectiveProfile ?? null, configuredVerified: identity.authoritative, effective: attestation.effective, evidence: attestation.evidence }, budget: { wallClockMs: timeoutMs, ...(scenario.playWindowMs === undefined ? {} : { playWindowMs: scenario.playWindowMs, preparationTimeoutMs: scenario.preparationTimeoutMs, goalStartedAt }) }, observationMode: 'text_only' }),
+			commands, assertions: assertionResult.results, factualSuccess, evidence: evidenceSummary(directory, scopedEvidence, scopedAudit),
+			...(postRunEvidence === null ? {} : { postRunEvidence }),
+			timings: timingSummary(profile, scopedEvidence, scopedAudit, taskElapsedMs),
+			metrics: performanceMetrics(profile, scopedEvidence, scopedAudit, resolvedAgentId, { minecraftMspt }),
+			diagnostics,
+			cleanup: { status: 'PENDING' },
+		});
+		let cleanupError = cleanupStopError;
+		try {
+			await releaseSpawnTicket();
+			if (summoned) {
+				const removalDeadline = cleanupDeadline();
+				const removal = await command(`codex remove ${generatedName}`, { deadlineMs: removalDeadline });
+				if (isFailedResponse(removal.text)) throw new Error('Could not remove the headless scenario agent');
+				summoned = false;
+			}
+		} catch (error) { cleanupError = error; }
+		try { await closeResources(rcon, providerTurnRecorder, cleanupRcon); closed = true; }
+		catch (error) { cleanupError ??= error; }
+		if (cleanupError !== null) return await finishReport(scenario, report, directory, writeFile, 'CLEANUP_FAILURE', cleanupError);
+		const finished = scenarioReport(report.status, scenario, { ...report, cleanup: { status: closed ? 'CLEAN' : 'FAILED' } });
+		return await persistReportOrFailure(scenario, finished, directory, writeFile);
+	} catch (error) {
+		await enterCleanup({ classification: classification ?? (error?.code === 'HEADLESS_TIMEOUT' ? 'TIMEOUT' : 'ERROR') });
+		diagnostics = boundedText(error?.message ?? error, MAX_DIAGNOSTICS);
+		let cleanupError = null;
+		try { await releaseSpawnTicket(); } catch (errorDuringRelease) { cleanupError = errorDuringRelease; }
+		if (summoned) {
+			try {
+				const removalDeadline = cleanupDeadline();
+				const removal = await command(`codex remove ${generatedName}`, { deadlineMs: removalDeadline });
+				if (isFailedResponse(removal.text)) throw new Error('Could not remove the headless scenario agent');
+				summoned = false;
+			} catch (errorDuringRemoval) { cleanupError = errorDuringRemoval; }
+		}
+		try { await closeResources(rcon, providerTurnRecorder, cleanupRcon); }
+		catch (errorDuringCleanup) { if (cleanupError === null) cleanupError = errorDuringCleanup; }
+		const failureClassification = cleanupError !== null ? 'CLEANUP_FAILURE' : classification ?? (error?.code === 'HEADLESS_TIMEOUT' ? 'TIMEOUT' : 'ERROR');
+		const status = failureClassification === 'SKIPPED_PROFILE' ? 'SKIPPED' : 'FAILED';
+		const report = scenarioReport(status, scenario, {
+			classification: failureClassification, errorCode: error?.code ?? 'RUNNER_ERROR', diagnostics: cleanupError === null ? diagnostics : boundedText(cleanupError?.message ?? cleanupError, MAX_DIAGNOSTICS),
+			...(naturalWorld === null ? {} : { world: { ...naturalWorld, spawnPosition } }),
+			generatedName, commands, cleanup: cleanupError === null ? { status: 'CLEAN' } : { status: 'FAILED', diagnostics: cleanupError?.message ?? String(cleanupError) },
+		});
+		return await persistReportOrFailure(scenario, report, directory, writeFile);
+	}
+}
+
+async function runConcurrentHeadlessScenario({
+	scenario, directory, rcon, now, readFile, readTail, fileSize, writeFile, protocolAudit,
+	providerTurnsPath, providerTurnRecorder, poll,
+}) {
+	const assertions = scenario.assertions ?? scenario.assert ?? [];
+	const profile = {
+		provider: boundedScalar(scenario.provider), model: boundedScalar(scenario.model),
+		reasoningEffort: boundedScalar(scenario.reasoningEffort), serviceTier: boundedScalar(scenario.serviceTier),
+	};
+	if (scenario.skip === true || scenario.skipped === true || scenario.profileAvailable === false) {
+		let cleanup = { status: 'NOT_REQUIRED' };
+		try { await closeResources(rcon, providerTurnRecorder); } catch (error) { cleanup = { status: 'FAILED', diagnostics: boundedText(error?.message ?? error, MAX_DIAGNOSTICS) }; }
+		return persistReportOrFailure(scenario, scenarioReport(cleanup.status === 'FAILED' ? 'FAILED' : 'SKIPPED', scenario, {
+			classification: cleanup.status === 'FAILED' ? 'CLEANUP_FAILURE' : 'SKIPPED_PROFILE',
+			reason: scenario.skipReason ?? scenario.reason ?? 'provider profile unavailable', cleanup,
+		}), directory, writeFile);
+	}
+	const startedAt = Number(now());
+	if (!Number.isFinite(startedAt)) throw new TypeError('now must return a finite number');
+	const deadline = startedAt + scenario.timeoutMs;
+	const tailReader = readTail ?? (readFile === defaultReadFile
+		? defaultReadTail
+		: async (file, limit, offset = 0) => boundedTailText(Buffer.from(await readFile(file, 'utf8')).subarray(offset), limit));
+	const evidencePaths = resolveEvidencePaths(directory, protocolAudit, providerTurnsPath);
+	const evidenceOffsets = await captureEvidenceOffsets(evidencePaths, fileSize);
+	const protocolAuditOffset = auditRows(protocolAudit).length;
+	const members = Array.from({ length: scenario.rosterSize }, (_, index) => ({
+		index,
+		generatedName: generatedAgentName(scenario, startedAt, index),
+		agentId: null,
+		lifecycle: null,
+		classification: null,
+		diagnostics: '',
+		started: false,
+		summoned: false,
+	}));
+	evidenceOffsets.scope = { scenario, names: members.map((member) => member.generatedName) };
+	if (readTail) evidenceOffsets.readRows = (file) => readTail(file, Number.MAX_SAFE_INTEGER, 0);
+	const commands = [];
+	const command = async (value, { readOnly = false, deadlineMs = deadline, attempt = 0 } = {}) => {
+		const commandText = String(value);
+		if (readOnly && !isReadOnlyRcon(commandText)) throw new Error(`RCON assertion command is not read-only: ${commandText}`);
+		commands.push(commandText);
+		const result = await withDeadline(() => rcon.command(commandText), deadlineMs, () => logicalNow(now, startedAt, attempt), 'HEADLESS_TIMEOUT');
+		const rawText = String(result?.text ?? result);
+		const statusPoll = !readOnly && members.some(({ generatedName }) => commandText === `codex status ${generatedName}`);
+		if (result?.complete === false || result?.truncated === true || (!statusPoll && Buffer.byteLength(rawText, 'utf8') > MAX_EVIDENCE_BYTES)) {
+			throw Object.assign(new Error('RCON response evidence is incomplete'), { code: 'RCON_INCOMPLETE' });
+		}
+		const textValue = statusPoll ? rawText : boundedText(rawText, MAX_EVIDENCE_BYTES);
+		return { result, text: textValue };
+	};
+	try {
+		await command('execute in minecraft:overworld run forceload add 0 0');
+		try {
+			const floor = await command('execute in minecraft:overworld run fill -8 200 -8 8 200 8 minecraft:stone');
+			if (isFailedResponse(floor.text)) throw new Error('Could not prepare the headless arena floor');
+			const clearance = await command('execute in minecraft:overworld run fill -8 201 -8 8 204 8 minecraft:air');
+			if (isFailedResponse(clearance.text)) throw new Error('Could not clear the headless arena spawn');
+			for (const block of scenario.setupBlocks ?? []) {
+				const setup = await command(`execute in minecraft:overworld run setblock ${block.x} ${block.y} ${block.z} ${block.blockId}`);
+				if (isFailedResponse(setup.text)) throw new Error('Could not place a headless arena fixture block');
+			}
+			const summons = await Promise.allSettled(members.map((member) => {
+				const position = rosterPosition(member.index);
+				return command(`execute in minecraft:overworld positioned ${position.x} 201 ${position.z} run codex summon-configured ${scenario.provider} ${scenario.model} ${scenario.reasoningEffort} ${scenario.serviceTier ?? defaultServiceTier(scenario.provider)} survival ${member.generatedName}`);
+			}));
+			for (let index = 0; index < summons.length; index += 1) {
+				const result = summons[index];
+				const member = members[index];
+				if (result.status === 'rejected') {
+					member.classification = result.reason?.code === 'HEADLESS_TIMEOUT' ? 'TIMEOUT' : 'ERROR';
+					member.diagnostics = boundedText(result.reason?.message ?? result.reason, MAX_DIAGNOSTICS);
+				} else if (isSkippedResponse(result.value.text)) {
+					member.classification = 'SKIPPED_PROFILE';
+					member.diagnostics = result.value.text;
+				}
+				else if (!isAcceptedResponse(result.value.text)) {
+					member.classification = 'ERROR';
+					member.diagnostics = result.value.text;
+				} else {
+					member.summoned = true;
+					member.awaitReady = isPendingJoinResponse(result.value.text);
+				}
+			}
+		} finally {
+			const cleanupDeadline = Math.max(deadline, Number(now()) + 10_000);
+			await command('execute in minecraft:overworld run forceload remove 0 0', { deadlineMs: cleanupDeadline });
+		}
+
+		await resolveConcurrentAgentIds({
+			members: members.filter((member) => member.classification === null), scenario, directory, readFile, tailReader,
+			protocolAudit, providerTurnsPath, evidenceOffsets, deadline, now, startedAt, poll,
+		});
+		const startable = members.filter((member) => member.classification === null && member.agentId !== null);
+		const readiness = await Promise.allSettled(startable.map((member) => member.awaitReady
+				? waitForAgentReady({ generatedName: member.generatedName, command, poll, deadline, now, startedAt })
+				: Promise.resolve()));
+		for (let index = 0; index < readiness.length; index += 1) {
+			if (readiness[index].status === 'fulfilled') continue;
+			const member = startable[index];
+			const failure = readiness[index].reason;
+			member.classification = failure?.code === 'HEADLESS_TIMEOUT' ? 'TIMEOUT' : 'ERROR';
+			member.diagnostics = boundedText(failure?.message ?? failure, MAX_DIAGNOSTICS);
+		}
+		const readyToStart = startable.filter((member) => member.classification === null);
+		const starts = await Promise.allSettled(readyToStart.map((member) => command(`codex start ${member.generatedName} ${scenario.task}`)));
+		for (let index = 0; index < starts.length; index += 1) {
+			const member = readyToStart[index];
+			const result = starts[index];
+			if (result.status === 'rejected' || isFailedResponse(result.value?.text)) {
+				member.classification = result.status === 'rejected' && result.reason?.code === 'HEADLESS_TIMEOUT' ? 'TIMEOUT' : 'ERROR';
+				member.diagnostics = boundedText(result.status === 'rejected' ? result.reason?.message ?? result.reason : result.value.text, MAX_DIAGNOSTICS);
+			} else member.started = true;
+		}
+		let attempt = 0;
+		while (members.some((member) => member.started && member.lifecycle === null && member.classification === null)) {
+			if (logicalNow(now, startedAt, attempt) >= deadline) break;
+			const active = members.filter((member) => member.started && member.lifecycle === null && member.classification === null);
+			const statuses = await Promise.allSettled(active.map((member) => command(`codex status ${member.generatedName}`, { attempt })));
+			for (let index = 0; index < statuses.length; index += 1) {
+				const member = active[index];
+				const result = statuses[index];
+				if (result.status === 'rejected') {
+					member.classification = result.reason?.code === 'HEADLESS_TIMEOUT' ? 'TIMEOUT' : 'ERROR';
+					member.diagnostics = boundedText(result.reason?.message ?? result.reason, MAX_DIAGNOSTICS);
+					continue;
+				}
+				const state = parseLifecycle(result.value.text);
+				if (LIFECYCLE_STATES.has(state)) member.lifecycle = state;
+			}
+			if (!members.some((member) => member.started && member.lifecycle === null && member.classification === null)) break;
+			try { await withDeadline(() => poll({ phase: 'status', attempt, deadline, now }), deadline, () => logicalNow(now, startedAt, attempt), 'HEADLESS_TIMEOUT'); }
+			catch (error) { if (error?.code !== 'HEADLESS_TIMEOUT') throw error; break; }
+			attempt += 1;
+		}
+		for (const member of members) {
+			if (member.classification !== null) continue;
+			if (member.lifecycle === 'ERROR') member.classification = 'ERROR';
+			else if (member.lifecycle === 'DEAD') member.classification = 'DEAD';
+			else if (member.lifecycle === null) member.classification = 'TIMEOUT';
+		}
+		let minecraftMspt = null;
+		try { minecraftMspt = parseMinecraftMspt((await command('tick query')).text); } catch { /* optional server metric */ }
+		const evidenceResult = await collectConcurrentHeadlessEvidence({
+			members, directory, readFile, tailReader, protocolAudit, providerTurnsPath, evidenceOffsets, protocolAuditOffset,
+			assertions, readOnlyCommand: (value) => command(value, { readOnly: true }), deadline, now, startedAt, poll,
+		});
+		const exactAgentIds = members.map((member) => member.agentId).filter(Boolean);
+		const aggregateEvidence = isolateRosterFileEvidence(evidenceResult.fileEvidence, members);
+		const aggregateAudit = auditRows(protocolAudit).slice(protocolAuditOffset)
+			.filter((row) => exactAgentIds.some((agentId) => rowMatchesAgent(row, agentId)));
+		for (const member of members) {
+			const isolated = evidenceResult.byAgent.get(member.agentId);
+			if (member.classification === null && isolated !== undefined && !isolated.assertionResult.passed) member.classification = 'ASSERTION_MISMATCH';
+			if (member.classification === null) member.classification = 'PASSED';
+		}
+		const agentReports = members.map((member) => {
+			const isolated = evidenceResult.byAgent.get(member.agentId);
+			const isolatedAudit = auditRows(protocolAudit).slice(protocolAuditOffset).filter((row) => rowMatchesAgent(row, member.agentId));
+			return boundReportValue({
+				agentId: member.agentId,
+				generatedName: member.generatedName,
+				status: member.classification === 'PASSED' ? 'PASSED' : member.classification === 'SKIPPED_PROFILE' ? 'SKIPPED' : 'FAILED',
+				classification: member.classification,
+				lifecycle: member.lifecycle,
+				assertions: isolated?.assertionResult.results ?? [],
+				evidence: isolated === undefined ? null : evidenceSummary(directory, isolated.fileEvidence, protocolAudit),
+				metrics: isolated === undefined ? null : performanceMetrics(profile, isolated.fileEvidence, isolatedAudit, member.agentId),
+				diagnostics: member.diagnostics,
+			});
+		});
+		const factualAssertionCount = assertions.filter((assertion) => assertion.type === 'rcon').length;
+		const factualSuccess = factualAssertionCount > 0 && members.every((member) => {
+			const results = evidenceResult.byAgent.get(member.agentId)?.assertionResult.results
+				.filter((assertion) => assertion.type === 'rcon') ?? [];
+			return results.length === factualAssertionCount && results.every((assertion) => assertion.passed);
+		});
+		const failed = agentReports.some((member) => member.status === 'FAILED');
+		const skipped = agentReports.some((member) => member.status === 'SKIPPED');
+		const passed = agentReports.some((member) => member.status === 'PASSED');
+		const factualFailure = scenario.requireFactualSuccess && !factualSuccess;
+		const status = failed || skipped || factualFailure ? 'FAILED' : passed ? 'PASSED' : 'FAILED';
+		const classification = failed
+			? (agentReports.some((member) => member.classification === 'ASSERTION_MISMATCH') ? 'ASSERTION_MISMATCH' : 'ERROR')
+			: skipped ? 'SKIPPED_PROFILE' : factualFailure ? 'FAILED_USER_OBJECTIVE' : passed ? 'PASSED' : 'ERROR';
+		const elapsedMs = Math.max(0, Number(now()) - startedAt);
+		let report = scenarioReport(status, scenario, {
+			classification, lifecycle: members.every((member) => member.lifecycle === 'COMPLETED') ? 'COMPLETED' : null,
+			elapsedMs, commands, agents: agentReports, factualSuccess,
+			evidence: evidenceSummary(directory, evidenceResult.fileEvidence, protocolAudit),
+			timings: timingSummary(profile, aggregateEvidence, aggregateAudit, elapsedMs),
+			metrics: performanceMetrics(profile, aggregateEvidence, aggregateAudit, exactAgentIds, { minecraftMspt }),
+			cleanup: { status: 'PENDING' },
+		});
+		// Removal and closure are independent: a failed removal must not leave RCON or the recorder open.
+		let cleanupError = null;
+		try { await removeHeadlessMembers(members, command, Math.max(deadline, Number(now()) + 10_000)); }
+		catch (error) { cleanupError = error; }
+		try { await closeResources(rcon, providerTurnRecorder); }
+		catch (error) { cleanupError ??= error; }
+		if (cleanupError !== null) return finishReport(scenario, report, directory, writeFile, 'CLEANUP_FAILURE', cleanupError);
+		report = scenarioReport(report.status, scenario, { ...report, cleanup: { status: 'CLEAN' } });
+		return persistReportOrFailure(scenario, report, directory, writeFile);
+	} catch (error) {
+		let cleanupError = null;
+		try { await removeHeadlessMembers(members, command, Math.max(deadline, Number(now()) + 10_000)); }
+		catch (failure) { cleanupError = failure; }
+		try { await closeResources(rcon, providerTurnRecorder); } catch (failure) { if (cleanupError === null) cleanupError = failure; }
+		return persistReportOrFailure(scenario, scenarioReport('FAILED', scenario, {
+			classification: cleanupError === null ? (error?.code === 'HEADLESS_TIMEOUT' ? 'TIMEOUT' : 'ERROR') : 'CLEANUP_FAILURE',
+			diagnostics: cleanupError?.message ?? error?.message ?? String(error), commands,
+			agents: members.map((member) => ({ agentId: member.agentId, generatedName: member.generatedName, classification: member.classification ?? 'ERROR', lifecycle: member.lifecycle })),
+			cleanup: cleanupError === null ? { status: 'CLEAN' } : { status: 'FAILED', diagnostics: cleanupError.message },
+		}), directory, writeFile);
+	}
+}
+
+async function removeHeadlessMembers(members, command, deadlineMs) {
+	const summoned = members.filter((member) => member.summoned);
+	const removals = await Promise.allSettled(summoned.map((member) => command(`codex remove ${member.generatedName}`, { deadlineMs })));
+	let failed = false;
+	for (let index = 0; index < removals.length; index += 1) {
+		const removal = removals[index];
+		if (removal.status === 'fulfilled' && !isFailedResponse(removal.value.text)) summoned[index].summoned = false;
+		else failed = true;
+	}
+	if (failed) throw new Error('Could not remove every headless scenario agent');
+}
+
+export async function writeHeadlessReport(runDirectory, report, writeFile = defaultWriteFile) {
+	const directory = normalizeRunDirectory(runDirectory);
+	if (typeof writeFile !== 'function') throw new TypeError('writeFile must be a function');
+	await writeArtifactReport(path.join(directory, 'report.json'), boundReportValue(report), { write: writeFile, makeDirectory: writeFile === defaultWriteFile ? defaultMkdir : async () => {} });
+}
+
+const HEADLESS_CLI_USAGE = 'Usage: node src/headless-matrix.mjs --config <absolute-path> --run-directory <absolute-path> --rcon-host <host> --rcon-port <port> --rcon-password-file <absolute-path> [--scenario <id>] [--protocol-audit <absolute-path>] [--provider-turns <absolute-path>] [--world-manifest <absolute-path>] [--paired-channel <absolute-path>] [--require-all]';
+
+export function parseHeadlessCliArguments(args) {
+	if (!Array.isArray(args)) throw new TypeError('CLI arguments must be an array');
+	const result = { configPath: null, scenarioId: null, runDirectory: null, rconHost: '127.0.0.1', rconPort: null, rconPasswordFile: null, protocolAuditPath: null, providerTurnsPath: null, worldManifestPath: null, requireAll: false };
+	const valueFlags = new Map([
+		['--config', 'configPath'], ['--scenario', 'scenarioId'], ['--run-directory', 'runDirectory'],
+		['--rcon-host', 'rconHost'], ['--rcon-port', 'rconPort'], ['--rcon-password-file', 'rconPasswordFile'],
+		['--protocol-audit', 'protocolAuditPath'], ['--provider-turns', 'providerTurnsPath'],
+		['--world-manifest', 'worldManifestPath'], ['--paired-channel', 'pairedChannelPath'],
+	]);
+	for (let index = 0; index < args.length; index += 1) {
+		const flag = args[index];
+		if (flag === '--require-all') { result.requireAll = true; continue; }
+		if (flag === '--help' || flag === '-h') return { help: true };
+		const key = valueFlags.get(flag);
+		if (!key || index + 1 >= args.length || String(args[index + 1]).startsWith('--')) throw new Error(HEADLESS_CLI_USAGE);
+		const value = String(args[++index]);
+		result[key] = key === 'rconPort' ? Number(value) : value;
+	}
+	for (const key of ['configPath', 'runDirectory', 'rconPasswordFile']) {
+		if (typeof result[key] !== 'string' || !path.isAbsolute(result[key])) throw new Error(`${key} must be an absolute path\n${HEADLESS_CLI_USAGE}`);
+	}
+	if (result.pairedChannelPath !== undefined && !path.isAbsolute(result.pairedChannelPath)) throw new Error('pairedChannelPath must be absolute');
+	for (const key of ['protocolAuditPath', 'providerTurnsPath', 'worldManifestPath']) {
+		if (result[key] !== null && !path.isAbsolute(result[key])) throw new Error(`${key} must be an absolute path`);
+	}
+	if (!Number.isInteger(result.rconPort) || result.rconPort < 1 || result.rconPort > 65535) throw new Error(`rconPort must be a valid port\n${HEADLESS_CLI_USAGE}`);
+	if (typeof result.rconHost !== 'string' || result.rconHost.trim() === '') throw new Error('rconHost must be nonblank');
+	if (result.scenarioId !== null && (result.scenarioId.trim() === '' || /[\u0000-\u001f\u007f]/.test(result.scenarioId))) throw new Error('scenario must be bounded text without control characters');
+	return result;
+}
+
+/** Render a small, secret-free handoff suitable for terminals and CI logs. */
+export function formatHeadlessCliOutput(report) {
+	if (!report || typeof report !== 'object') throw new TypeError('matrix report must be an object');
+	const lines = [`Report: ${String(report.reportPath ?? '')}`, `Matrix: ${String(report.status ?? 'UNKNOWN')}`];
+	for (const scenario of Array.isArray(report.scenarios) ? report.scenarios : []) {
+		lines.push(`${String(scenario.status ?? 'UNKNOWN')} ${String(scenario.scenarioId ?? 'unknown')}`);
+	}
+	return `${lines.join('\n')}\n`;
+}
+
+export async function runHeadlessMatrix({
+	configPath, scenarioId = null, runDirectory, rconHost = '127.0.0.1', rconPort, rconPasswordFile,
+	protocolAuditPath = null, providerTurnsPath = null, worldManifestPath = null, requireAll = false,
+	pairedChannelPath = null, phaseChannel = pairedChannelPath === null ? null : runnerPhaseChannel(pairedChannelPath),
+	readFile = defaultReadFile, writeFile = defaultWriteFile, mkdir = defaultMkdir,
+	readTail = null, fileSize = defaultFileSize,
+	rconFactory = (options) => new HeadlessRconClient(options),
+} = {}) {
+	if (typeof readFile !== 'function' || typeof writeFile !== 'function' || typeof mkdir !== 'function' || typeof rconFactory !== 'function' || (readTail !== null && typeof readTail !== 'function') || typeof fileSize !== 'function') throw new TypeError('headless CLI dependencies must be functions');
+	const matrix = normalizeHeadlessMatrix(JSON.parse(await readFile(configPath, 'utf8')));
+	const scenarios = selectHeadlessScenarios(matrix, scenarioId);
+	if (scenarios.length > MAX_SCENARIOS) throw new RangeError(`selected scenario count exceeds bounded maximum of ${MAX_SCENARIOS}`);
+	if (phaseChannel !== null && (scenarios.length !== 1 || scenarios[0].repetitions !== 1 || scenarios[0].rosterSize !== 1 || scenarios[0].world.mode !== 'natural')) throw new Error('Paired phases require one natural scenario, one agent, one repetition');
+	let worldManifest = null;
+	if (scenarios.some((scenario) => scenario.world.mode === 'natural')) {
+		if (scenarios.length !== 1 || worldManifestPath === null) throw new Error('Natural evaluations require one scenario per isolated server and --world-manifest from the launcher');
+		worldManifest = JSON.parse(await readFile(worldManifestPath, 'utf8'));
+		validateNaturalWorldManifest(worldManifest, scenarios[0].world, scenarios[0].id);
+		await claimNaturalWorld(worldManifestPath, worldManifest.worldId);
+	}
+	const password = String(await readFile(rconPasswordFile, 'utf8')).trim();
+	if (password.length === 0) throw new Error('RCON password file is empty');
+	const runId = path.basename(path.resolve(runDirectory));
+	const scenarioReports = [];
+	for (const scenario of scenarios) {
+		for (let repetition = 1; repetition <= scenario.repetitions; repetition += 1) {
+		const scenarioRoot = scenarioId === null ? path.join(path.resolve(runDirectory), scenario.id) : path.resolve(runDirectory);
+		const scenarioDirectory = scenario.repetitions === 1 ? scenarioRoot : path.join(scenarioRoot, `repetition-${repetition}`);
+		let rcon = null;
+		try {
+			await mkdir(scenarioDirectory, { recursive: true });
+			// Ladder fixtures also generate remote chunks while the server thread is blocked.
+			rcon = rconFactory({ host: rconHost, port: rconPort, password, commandLock: path.join(scenarioDirectory, 'rcon-command.lock'), ...(scenario.qualitySetup ? { commandTimeoutMs: 120000 } : {}) });
+			if (!rcon || typeof rcon.connect !== 'function' || typeof rcon.command !== 'function') throw new TypeError('rconFactory must return a HeadlessRconClient-compatible object');
+			await rcon.connect();
+			const trialDeadlineMs = phaseChannel === null ? null : await phaseChannel.ready();
+			const report = await runHeadlessScenario({
+				scenario,
+				runDirectory: scenarioDirectory,
+				rcon,
+				readFile,
+				readTail,
+				fileSize,
+				writeFile,
+				protocolAudit: protocolAuditPath,
+				providerTurnsPath,
+				worldManifest, trialDeadlineMs,
+				...(phaseChannel === null ? {} : {
+					now: phaseChannel.now, onCleanup: value => phaseChannel.cleanup(value),
+					cleanupRconFactory: () => rconFactory({ host: rconHost, port: rconPort, password, commandLock: path.join(scenarioDirectory, 'rcon-command.lock') }),
+				}),
+			});
+			scenarioReports.push(scenario.repetitions === 1 ? report : { ...report, repetition });
+		} catch (error) {
+			let cleanupStatus = 'CLEAN';
+			try { await rcon?.close?.(); } catch { cleanupStatus = 'FAILED'; }
+			const failure = scenarioReport('FAILED', scenario, { classification: 'ERROR', diagnostics: error?.message ?? String(error), cleanup: { status: cleanupStatus } });
+			scenarioReports.push(scenario.repetitions === 1 ? failure : { ...failure, repetition });
+		}
+		}
+	}
+	const classifiedReports = scenarioReports.map((report) => {
+		if (requireAll && report.status === 'SKIPPED') return { ...report, status: 'FAILED', classification: 'REQUIRED_PROFILE_UNAVAILABLE' };
+		return report;
+	});
+	const failed = classifiedReports.filter((report) => report.status === 'FAILED');
+	const passed = classifiedReports.filter((report) => report.status === 'PASSED');
+	const status = failed.length > 0 ? 'FAILED' : passed.length > 0 ? 'PASSED' : 'SKIPPED';
+	const report = {
+		runId, status, requireAll: Boolean(requireAll), scenarios: classifiedReports,
+		reportPath: path.join(path.resolve(runDirectory), 'matrix-report.json'),
+	};
+	await mkdir(path.resolve(runDirectory), { recursive: true });
+	await writeArtifactReport(report.reportPath, report, { write: writeFile, makeDirectory: mkdir });
+	return { report, exitCode: failed.length > 0 ? 1 : 0 };
+}
+
+async function finishReport(scenario, report, directory, writeFile, classification, error) {
+	const finished = scenarioReport('FAILED', scenario, { ...report, classification, cleanup: { status: 'FAILED', diagnostics: boundedText(error?.message ?? error, MAX_DIAGNOSTICS) } });
+	return await persistReportOrFailure(scenario, finished, directory, writeFile);
+}
+
+async function persistReportOrFailure(scenario, report, directory, writeFile) {
+	try {
+		await writeHeadlessReport(directory, report, writeFile);
+		return report;
+	} catch (error) {
+		return scenarioReport('FAILED', scenario, {
+			...report,
+			classification: 'CLEANUP_FAILURE',
+			cleanup: { status: 'FAILED', diagnostics: boundedText(error?.message ?? error, MAX_DIAGNOSTICS) },
+		});
+	}
+}
+
+async function closeResources(rcon, providerTurnRecorder, cleanupRcon = null) {
+	let failure = null;
+	for (const resource of [rcon, cleanupRcon, providerTurnRecorder]) {
+		if (!resource || typeof resource.close !== 'function') continue;
+		try { await resource.close(); } catch (error) { failure ??= error; }
+	}
+	if (failure !== null) throw failure;
+}
+
+function evaluateAssertion(assertion, evidence, index) {
+	const type = assertion?.type;
+	let passed = false;
+	let actual = null;
+	if (type === 'lifecycle') { actual = evidence.lifecycle ?? evidence.terminalState ?? null; passed = actual === assertion.state; }
+	else if (type === 'chat') { actual = evidence.chats ?? []; passed = actual.includes(assertion.message); }
+	else if (type === 'action') {
+		actual = evidence.actions ?? [];
+		passed = actual.some((entry) => entry?.actionType === assertion.actionType
+			&& (assertion.args === undefined || objectSubset(assertion.args, entry.arguments ?? entry.args ?? {}))
+			&& (assertion.resultState === undefined || entry.result?.state === assertion.resultState));
+	}
+	else if (type === 'program') {
+		actual = evidence.program ?? [];
+		passed = actual.some((entry) => entry?.event === assertion.event && (assertion.status === undefined || entry.status === assertion.status));
+	}
+	else if (type === 'rcon') {
+		actual = (evidence.rcon ?? []).filter((entry) => entry.command === assertion.command).map((entry) => entry.text);
+		passed = actual.some((value) => value.includes(assertion.match));
+	}
+	else if (type === 'audit') {
+		// One strict parse decides: exactly one answer, naming this agent, self-consistent and autonomous.
+		const answers = (evidence.rcon ?? []).filter((entry) => entry.command === assertion.command).map((entry) => entry.text);
+		const parsed = answers.length === 1 ? parseInterventionAudit(answers[0], { agent: assertion.agent, agentId: assertion.agentId, goalRevision: assertion.goalRevision })
+			: { autonomy: 'unverifiable', reason: answers.length === 0 ? 'no audit answer' : 'more than one audit answer' };
+		actual = { ...parsed, answers };
+		passed = parsed.autonomy === assertion.autonomy;
+	}
+	return { index, type: boundedScalar(type), passed, expected: boundReportValue(assertion), actual: boundReportValue(actual) };
+}
+
+function objectSubset(expected, actual) {
+	return Object.entries(expected).every(([key, value]) => {
+		if (value && typeof value === 'object' && !Array.isArray(value)) return objectSubset(value, actual?.[key]);
+		return Object.is(value, actual?.[key]);
+	});
+}
+
+function makeEvidence({ terminalState, protocolAudit, protocolRows = [], traceRows = [], serverLog = '', rcon = [] }) {
+	const rows = [...protocolRows, ...auditRows(protocolAudit)];
+	const normalizedRows = rows.map(unwrapAuditRow).filter(Boolean);
+	const resultByActionId = new Map(normalizedRows
+			.filter((row) => row.type === 'action_result' && typeof row.payload?.actionId === 'string')
+			.map((row) => [row.payload.actionId, row.payload]));
+	const actions = [
+		...normalizedRows.filter((row) => row.type === 'action_command').map((row) => {
+			const action = row.payload ?? row;
+			return { ...action, result: resultByActionId.get(action.actionId) ?? null };
+		}),
+		...traceRows.filter((row) => row.event === 'program_step' && typeof row.actionType === 'string')
+			.map((row) => ({ actionType: row.actionType, arguments: row.arguments ?? {}, result: row.result ?? null })),
+	];
+	const chats = [...new Set([
+		...traceRows.filter((row) => row.event === 'chat').map((row) => row.message ?? row.text),
+		...normalizedRows.filter((row) => row.type === 'chat').map((row) => row.payload?.message ?? row.message),
+		// A chat action is delivered evidence only once its joined result succeeded; a requested, failed or still running
+		// chat was not delivered.
+		...actions.filter((row) => row.actionType === 'chat' && row.result?.state === 'SUCCEEDED').map((row) => row.arguments?.message ?? row.args?.message),
+		...extractChatMarkers(serverLog),
+	].filter((value) => typeof value === 'string'))];
+	const program = traceRows.filter((row) => typeof row.event === 'string' && row.event.startsWith('program_'));
+	program.push(...normalizedRows.filter((row) => typeof row.type === 'string' && row.type.startsWith('program_')).map((row) => ({ event: row.type, ...(row.payload ?? {}) })));
+	return { lifecycle: terminalState, terminalState, chats, actions, program, rcon };
+}
+
+async function collectHeadlessEvidence({ directory, readFile, tailReader, protocolAudit, providerTurnsPath, evidenceOffsets, protocolAuditOffset, assertions, terminalState, rconEvidence, readOnlyCommand, deadline, postRunDeadline = deadline, allowRconReads = true, now, startedAt, poll, scenario, generatedName, spawnPosition = null, waitForEvidence = true, withinDeadline = withDeadline }) {
+	const resolvedAssertions = resolveAgentAssertions(assertions, generatedName, spawnPosition);
+	const finalReadDeadline = Math.max(deadline, postRunDeadline);
+	for (const assertion of resolvedAssertions) {
+		if (!allowRconReads || (assertion.type !== 'rcon' && assertion.type !== 'audit') || logicalNow(now, startedAt, 0) >= finalReadDeadline) continue;
+		try { await withinDeadline(() => readOnlyCommand(assertion.command, finalReadDeadline), finalReadDeadline, () => logicalNow(now, startedAt, 0), 'HEADLESS_TIMEOUT'); }
+		catch (error) {
+			// A post-run fact that cannot be read is unknown. The gameplay deadline
+			// has already decided the run, so do not turn a bounded evidence miss
+			// into a different classification or reuse an earlier preflight read.
+			if (error?.code !== 'HEADLESS_TIMEOUT' && finalReadDeadline === deadline) throw error;
+		}
+	}
+	let attempt = 0;
+	const currentAudit = () => auditRows(protocolAudit).slice(protocolAuditOffset);
+	let fileEvidence;
+	let scopedEvidence;
+	let scopedAudit;
+	let identity;
+	let evidence;
+	let assertionResult;
+	const evaluate = async () => {
+		fileEvidence = await readEvidence(directory, readFile, tailReader, protocolAudit, providerTurnsPath, { ...evidenceOffsets, shouldStop: () => Number(now()) >= finalReadDeadline });
+		identity = resolveExactSnapshotAgentId(fileEvidence, currentAudit(), scenario, generatedName);
+		if (identity.authoritative) {
+			scopedEvidence = isolateFileEvidence(fileEvidence, identity.agentId, generatedName);
+			scopedAudit = currentAudit().filter((row) => rowMatchesAgent(row, identity.agentId));
+		} else if (identity.legacy) {
+			scopedEvidence = isolateLegacyFileEvidence(fileEvidence);
+			scopedAudit = currentAudit().filter((row) => !rowHasAgentIdentity(row));
+		} else {
+			scopedEvidence = emptyFileEvidence(fileEvidence);
+			scopedAudit = [];
+		}
+		evidence = makeEvidence({ terminalState, protocolAudit: scopedAudit, ...scopedEvidence, rcon: rconEvidence });
+		assertionResult = evaluateHeadlessAssertions(bindAuditAssertions(resolvedAssertions, identity, [...(scopedEvidence.protocolRows ?? []), ...scopedAudit]), evidence);
+	};
+	await evaluate();
+	const waitsForFiles = assertions.some((assertion) => !['lifecycle', 'rcon', 'audit'].includes(assertion.type));
+	while (waitForEvidence && !assertionResult.passed && waitsForFiles && logicalNow(now, startedAt, attempt) < deadline) {
+		try {
+			await withinDeadline(() => poll({ phase: 'evidence', attempt, deadline, evidence, now }), deadline, () => logicalNow(now, startedAt, attempt), 'HEADLESS_TIMEOUT');
+		} catch (error) { if (error?.code === 'HEADLESS_TIMEOUT') break; throw error; }
+		attempt += 1;
+		await evaluate();
+	}
+	return { fileEvidence, scopedEvidence, scopedAudit, identity, evidence, assertionResult };
+}
+
+async function resolveConcurrentAgentIds({ members, scenario, directory, readFile, tailReader, protocolAudit, providerTurnsPath, evidenceOffsets, deadline, now, startedAt, poll }) {
+	let attempt = 0;
+	while (members.some((member) => member.agentId === null && member.classification === null)) {
+		const fileEvidence = await readEvidence(directory, readFile, tailReader, protocolAudit, providerTurnsPath, evidenceOffsets);
+		const rows = [...fileEvidence.protocolRows, ...auditRows(protocolAudit)].map(unwrapAuditRow).filter(Boolean);
+		for (const member of members) {
+			if (member.agentId !== null || member.classification !== null) continue;
+			const candidates = rows.filter((row) => isAuthoritativeAgentIdentityRow(row) && row.payload?.name === member.generatedName);
+			if (candidates.length === 0) continue;
+			const exact = candidates.filter((row) => row.payload?.provider === scenario.provider
+				&& row.payload?.model === scenario.model
+				&& row.payload?.reasoningEffort === scenario.reasoningEffort
+				&& row.payload?.serviceTier === scenario.serviceTier);
+			const ids = [...new Set(exact.map(authoritativeAgentId).filter(Boolean))];
+			if (ids.length !== 1) {
+				member.classification = 'ERROR';
+				member.diagnostics = ids.length === 0 ? 'Authoritative agent snapshot did not preserve the exact requested profile' : 'Authoritative agent snapshot identity was ambiguous';
+			} else member.agentId = ids[0];
+		}
+		const assigned = new Map();
+		for (const member of members.filter((entry) => entry.agentId !== null)) {
+			const prior = assigned.get(member.agentId);
+			if (prior === undefined) assigned.set(member.agentId, member);
+			else {
+				prior.classification = 'ERROR';
+				prior.diagnostics = 'Authoritative agent snapshot identity was duplicated';
+				member.classification = 'ERROR';
+				member.diagnostics = 'Authoritative agent snapshot identity was duplicated';
+			}
+		}
+		if (!members.some((member) => member.agentId === null && member.classification === null)) break;
+		if (logicalNow(now, startedAt, attempt) >= deadline) break;
+		try { await withDeadline(() => poll({ phase: 'identity', attempt, deadline, now }), deadline, () => logicalNow(now, startedAt, attempt), 'HEADLESS_TIMEOUT'); }
+		catch (error) { if (error?.code !== 'HEADLESS_TIMEOUT') throw error; break; }
+		attempt += 1;
+	}
+	for (const member of members) {
+		if (member.agentId === null && member.classification === null) {
+			member.classification = 'ERROR';
+			member.diagnostics = 'Authoritative agent snapshot identity was unavailable before the deadline';
+		}
+	}
+}
+
+function authoritativeAgentId(row) {
+	const envelopeId = boundedAgentId(row?.agentId);
+	const payloadId = boundedAgentId(row?.payload?.agentId);
+	return envelopeId !== null && envelopeId === payloadId ? envelopeId : null;
+}
+
+function resolveExactSnapshotAgentId(fileEvidence, protocolAudit, scenario, generatedName) {
+	const rows = [...(fileEvidence.protocolRows ?? []), ...auditRows(protocolAudit)].map(unwrapAuditRow).filter(Boolean);
+	const snapshots = rows.filter(isAuthoritativeAgentIdentityRow);
+	if (snapshots.length === 0) {
+		const labelled = rows.some(rowHasAgentIdentity)
+			|| (fileEvidence.traceRows ?? []).some(rowHasAgentIdentity)
+			|| (fileEvidence.providerTurnSummaries ?? []).some(rowHasAgentIdentity);
+		return labelled
+			? { agentId: null, authoritative: false, legacy: false, error: 'Authoritative agent snapshot identity was unavailable for labelled evidence' }
+			: { agentId: null, authoritative: false, legacy: true, error: null };
+	}
+	const ids = [...new Set(snapshots.filter((row) => row.payload?.name === generatedName
+		&& row.payload?.provider === scenario.provider && row.payload?.model === scenario.model
+		&& row.payload?.reasoningEffort === scenario.reasoningEffort && row.payload?.serviceTier === scenario.serviceTier)
+		.map(authoritativeAgentId).filter(Boolean))];
+	const matchingNames = snapshots.filter((row) => row.payload?.name === generatedName);
+	const actualProfile = matchingNames.at(-1)?.payload;
+	const effectiveProfile = actualProfile ? Object.fromEntries(['provider', 'model', 'reasoningEffort', 'serviceTier'].map((field) => [field, boundedScalar(actualProfile[field])])) : null;
+	if (scenario.world?.mode === 'natural' && matchingNames.some((row) => ['provider', 'model', 'reasoningEffort', 'serviceTier'].some((field) => row.payload?.[field] !== scenario[field]))) {
+		return { agentId: null, authoritative: false, legacy: false, effectiveProfile, error: 'Authoritative snapshots did not preserve the exact requested model settings throughout the evaluation' };
+	}
+	if (ids.length === 1) return { agentId: ids[0], authoritative: true, legacy: false, error: null, effectiveProfile };
+	return {
+		agentId: null,
+		authoritative: false, legacy: false,
+		effectiveProfile,
+		error: ids.length > 1 ? 'Authoritative agent snapshot identity was ambiguous' : 'Authoritative agent snapshot identity was unavailable for the exact requested profile',
+	};
+}
+
+function boundedAgentId(value) {
+	return typeof value === 'string' && value.length > 0 && value.length <= 128 && !/[\u0000-\u001f\u007f]/.test(value) ? value : null;
+}
+
+async function collectConcurrentHeadlessEvidence({ members, directory, readFile, tailReader, protocolAudit, providerTurnsPath, evidenceOffsets, protocolAuditOffset, assertions, readOnlyCommand, deadline, now, startedAt, poll }) {
+	const rconEvidenceByAgent = new Map();
+	await Promise.all(members.filter((member) => member.agentId !== null).map(async (member) => {
+		const evidence = [];
+		rconEvidenceByAgent.set(member.agentId, evidence);
+		for (const assertion of resolveAgentAssertions(assertions, member.generatedName)) {
+			if ((assertion.type !== 'rcon' && assertion.type !== 'audit') || logicalNow(now, startedAt, 0) >= deadline) continue;
+			try {
+				const result = await withDeadline(() => readOnlyCommand(assertion.command), deadline, () => logicalNow(now, startedAt, 0), 'HEADLESS_TIMEOUT');
+				evidence.push({ command: assertion.command, text: result.text });
+			} catch (error) {
+				if (error?.code !== 'HEADLESS_TIMEOUT') throw error;
+			}
+		}
+	}));
+	let attempt = 0;
+	const currentAudit = () => auditRows(protocolAudit).slice(protocolAuditOffset);
+	let fileEvidence;
+	let byAgent;
+	const evaluate = async () => {
+		fileEvidence = await readEvidence(directory, readFile, tailReader, protocolAudit, providerTurnsPath, { ...evidenceOffsets, shouldStop: () => Number(now()) >= deadline });
+		byAgent = new Map();
+		for (const member of members.filter((entry) => entry.agentId !== null)) {
+			const isolated = isolateFileEvidence(fileEvidence, member.agentId, member.generatedName);
+			const audit = currentAudit().filter((row) => rowMatchesAgent(row, member.agentId));
+			const evidence = makeEvidence({ terminalState: member.lifecycle, protocolAudit: audit, ...isolated, rcon: rconEvidenceByAgent.get(member.agentId) ?? [] });
+			const resolvedAssertions = bindAuditAssertions(resolveAgentAssertions(assertions, member.generatedName), { authoritative: true, agentId: member.agentId }, [...(isolated.protocolRows ?? []), ...audit]);
+			byAgent.set(member.agentId, { fileEvidence: isolated, evidence, assertionResult: evaluateHeadlessAssertions(resolvedAssertions, evidence) });
+		}
+	};
+	await evaluate();
+	const waitsForFiles = assertions.some((assertion) => !['lifecycle', 'rcon', 'audit'].includes(assertion.type));
+	while (waitsForFiles && [...byAgent.values()].some((entry) => !entry.assertionResult.passed) && logicalNow(now, startedAt, attempt) < deadline) {
+		try { await withDeadline(() => poll({ phase: 'evidence', attempt, deadline, now }), deadline, () => logicalNow(now, startedAt, attempt), 'HEADLESS_TIMEOUT'); }
+		catch (error) { if (error?.code === 'HEADLESS_TIMEOUT') break; throw error; }
+		attempt += 1;
+		await evaluate();
+	}
+	return { fileEvidence, byAgent };
+}
+
+function isolateFileEvidence(fileEvidence, agentId, generatedName) {
+	const providerTurnSummaries = (fileEvidence.providerTurnSummaries ?? []).filter((row) => row.agentId === agentId).slice(-256);
+	const lines = String(fileEvidence.serverLog ?? '').split(/\r?\n/).filter((line) => line.includes(agentId) || line.includes(generatedName)).slice(-256);
+	return {
+		protocolRows: (fileEvidence.protocolRows ?? []).filter((row) => rowMatchesAgent(row, agentId)),
+		traceRows: (fileEvidence.traceRows ?? []).filter((row) => rowMatchesAgent(row, agentId)).slice(-256),
+		serverLog: lines.join('\n'), paths: fileEvidence.paths,
+		providerTurnsRows: (fileEvidence.usage ?? []).filter((row) => row.agentId === agentId).reduce((sum, row) => sum + row.count, 0), providerTurnSummaries,
+		usage: (fileEvidence.usage ?? []).filter((row) => row.agentId === agentId), coverage: fileEvidence.coverage,
+	};
+}
+
+function isolateRosterFileEvidence(fileEvidence, members) {
+	const ids = new Set(members.map((member) => member.agentId).filter(Boolean));
+	const labels = [...ids, ...members.map((member) => member.generatedName)];
+	const matches = (row) => [...ids].some((agentId) => rowMatchesAgent(row, agentId));
+	const limit = 256 * Math.max(1, ids.size);
+	const providerTurnSummaries = (fileEvidence.providerTurnSummaries ?? []).filter((row) => ids.has(row.agentId)).slice(-limit);
+	const lines = String(fileEvidence.serverLog ?? '').split(/\r?\n/).filter((line) => labels.some((value) => line.includes(value))).slice(-limit);
+	return {
+		protocolRows: (fileEvidence.protocolRows ?? []).filter(matches),
+		traceRows: (fileEvidence.traceRows ?? []).filter(matches).slice(-limit),
+		serverLog: lines.join('\n'), paths: fileEvidence.paths,
+		providerTurnsRows: (fileEvidence.usage ?? []).filter((row) => ids.has(row.agentId)).reduce((sum, row) => sum + row.count, 0), providerTurnSummaries,
+		usage: (fileEvidence.usage ?? []).filter((row) => ids.has(row.agentId)), coverage: fileEvidence.coverage,
+	};
+}
+
+function isolateLegacyFileEvidence(fileEvidence) {
+	const providerTurnSummaries = (fileEvidence.providerTurnSummaries ?? []).filter((row) => !rowHasAgentIdentity(row)).slice(-256);
+	return {
+		protocolRows: (fileEvidence.protocolRows ?? []).filter((row) => !rowHasAgentIdentity(row)),
+		traceRows: (fileEvidence.traceRows ?? []).filter((row) => !rowHasAgentIdentity(row)).slice(-256),
+		serverLog: fileEvidence.serverLog, paths: fileEvidence.paths,
+		providerTurnsRows: (fileEvidence.usage ?? []).filter((row) => row.agentId === null).reduce((sum, row) => sum + row.count, 0), providerTurnSummaries,
+		usage: (fileEvidence.usage ?? []).filter((row) => row.agentId === null), coverage: fileEvidence.coverage,
+	};
+}
+
+function emptyFileEvidence(fileEvidence) {
+	return { protocolRows: [], traceRows: [], serverLog: '', paths: fileEvidence.paths, providerTurnsRows: 0, providerTurnSummaries: [], usage: [], coverage: fileEvidence.coverage };
+}
+
+function rowMatchesAgent(row, agentId) {
+	if (!row || typeof row !== 'object') return false;
+	return row.agentId === agentId || row.envelope?.agentId === agentId || row.payload?.agentId === agentId || row.envelope?.payload?.agentId === agentId;
+}
+
+function rowHasAgentIdentity(row) {
+	const agentId = boundedAgentId(row?.agentId ?? row?.envelope?.agentId ?? row?.payload?.agentId ?? row?.envelope?.payload?.agentId);
+	return agentId !== null && agentId !== 'server';
+}
+
+function isAuthoritativeAgentIdentityRow(row) {
+	return row?.type === 'agent_registered' || row?.type === 'agent_snapshot';
+}
+
+async function readEvidence(directory, readFile, tailReader, protocolAudit, providerTurnsPath = null, offsets = {}) {
+	readFile = offsets.readRows ?? readFile;
+	const { protocol: protocolPath, coordinator: coordinatorPath, server: serverPath, providerTurns } = resolveEvidencePaths(directory, protocolAudit, providerTurnsPath);
+	const protocol = createProtocolEvidenceCollector(offsets.scope);
+	const protocolCoverage = await scanEvidenceFile(protocolPath, offsets.protocol, readFile, protocol.accept, offsets.shouldStop);
+	await protocol.recover(async (accept) => {
+		const coverage = await scanEvidenceFile(protocolPath, offsets.protocol, readFile, accept, offsets.shouldStop);
+		protocolCoverage.complete &&= coverage.complete;
+		protocolCoverage.reasons = [...new Set([...protocolCoverage.reasons, ...coverage.reasons])];
+	});
+	const protocolRows = protocol.rows();
+	const identities = [...protocolRows, ...auditRows(protocolAudit)].map(unwrapAuditRow).filter(isAuthoritativeAgentIdentityRow);
+	const ids = new Set(identities.filter((row) => offsets.scope?.names.includes(row.payload?.name)).map(authoritativeAgentId).filter(Boolean));
+	const runIds = new Set([...protocolRows, ...auditRows(protocolAudit)].filter((row) => offsets.scope?.names.includes(unwrapAuditRow(row)?.payload?.name)).map((row) => row.runId).filter((value) => typeof value === 'string'));
+	const providerTurnSummaries = [];
+	const usageByAgent = new Map();
+	const scenario = offsets.scope?.scenario;
+	const acceptTurn = (row) => {
+		if (row?.scenarioId != null && scenario && row.scenarioId !== scenario.id) return;
+		if (row?.runId != null && runIds.size > 0 && !runIds.has(row.runId)) return;
+		const summary = providerTurnSummary(row);
+		if (!summary) return;
+		if (ids.size > 0 && !ids.has(summary.agentId)) return;
+		if (ids.size === 0 && summary.agentId !== undefined) {
+			// Preserve labelled-evidence detection without accumulating unrelated agents.
+			if (providerTurnSummaries.length === 0) providerTurnSummaries.push(summary);
+			return;
+		}
+		if (scenario && !providerProfileMatches(summary, scenario)) return;
+		const key = summary.agentId ?? null;
+		let usage = usageByAgent.get(key);
+		if (!usage) { usage = { agentId: key, count: 0, tokens: Object.fromEntries(TOKEN_CATEGORIES.map((key) => [key, 0])), retries: 0, rateLimits: 0, compactions: 0, attestations: [], observedCounterDelta: false, usageStatuses: {} }; usageByAgent.set(key, usage); }
+		usage.observedCounterDelta ||= summary.usage?.scope === 'observed_thread_counter_delta';
+		if (summary.usage) usage.usageStatuses[summary.usage.status] = (usage.usageStatuses[summary.usage.status] ?? 0) + 1;
+		if (summary.executionSettings) {
+			const mismatch = summarizeProviderAttestation([summary], scenario).mismatches.length > 0;
+			if (mismatch && !usage.attestations[0]) usage.attestations[0] = summary;
+			usage.attestations[1] = summary;
+		}
+		usage.count += 1;
+		for (const category of TOKEN_CATEGORIES) {
+			const value = summary.tokens?.[category];
+			const total = usage.tokens[category] + value;
+			usage.tokens[category] = usage.tokens[category] !== null && Number.isSafeInteger(value) && value >= 0 && Number.isSafeInteger(total) ? total : null;
+		}
+		usage.retries += Number(summary.retry);
+		usage.rateLimits += Number(summary.rateLimited || /RATE.?LIMIT|\b429\b/i.test(summary.error?.code ?? ''));
+		usage.compactions += Number(summary.compaction === true);
+		// The diagnostic/latency window is separate from run-wide usage counters.
+		retainBounded(providerTurnSummaries, summary, 256 * Math.max(1, ids.size));
+	};
+	const [coordinatorText, serverLog, providerCoverage] = await Promise.all([
+		readBoundedTail(tailReader, coordinatorPath, evidenceOffset(offsets.coordinator)), readBoundedTail(tailReader, serverPath, evidenceOffset(offsets.server)),
+		providerTurns === null ? { complete: false, reasons: ['not_configured'] } : scanEvidenceFile(providerTurns, offsets.providerTurns, readFile, acceptTurn, offsets.shouldStop),
+	]);
+	if (protocol.captureIncomplete) { providerCoverage.complete = false; providerCoverage.reasons.push('provider_capture_incomplete'); }
+	providerCoverage.captureComplete = protocol.captureIncomplete ? false : null;
+	return {
+		protocolRows, traceRows: parseJsonl(coordinatorText), serverLog,
+		paths: { protocol: protocolPath, coordinator: coordinatorPath, server: serverPath, ...(providerTurns === null ? {} : { providerTurns }) },
+		providerTurnsRows: [...usageByAgent.values()].reduce((sum, usage) => sum + usage.count, 0),
+		providerTurnSummaries, usage: [...usageByAgent.values()], coverage: { protocol: protocolCoverage, provider: providerCoverage },
+	};
+}
+
+const TOKEN_CATEGORIES = ['input', 'output', 'reasoning', 'cached', 'cacheWrite'];
+
+function providerProfileMatches(turn, profile) {
+	return turn.provider === profile.provider && turn.model === profile.model
+		&& (turn.reasoningEffort == null || turn.reasoningEffort === profile.reasoningEffort)
+		&& (turn.serviceTier == null || turn.serviceTier === profile.serviceTier);
+}
+
+function evidenceOffset(value) { return typeof value === 'object' ? value?.size ?? 0 : value ?? 0; }
+function fileIdentity(metadata) { return `${metadata.dev}:${metadata.ino}:${metadata.birthtimeMs}`; }
+
+// Scan each retained generation oldest-first, starting at the exact pre-run inode
+// and offset. Never treat an unreadable/missing prefix as a complete usage total.
+async function scanEvidenceFile(file, baseline, readFile, accept, shouldStop = () => false) {
+	const reasons = new Set();
+	const expired = () => {
+		if (!shouldStop()) return false;
+		reasons.add('evidence_deadline_exceeded'); return true;
+	};
+	if (expired()) return { complete: false, reasons: [...reasons] };
+	const consume = async (line) => {
+		if (!line.trim()) return;
+		if (Buffer.byteLength(line, 'utf8') > MAX_EVIDENCE_RECORD_BYTES) { reasons.add('oversized_record'); return; }
+		try { await accept(JSON.parse(line)); } catch { reasons.add('invalid_or_partial_record'); }
+	};
+	if (readFile !== defaultReadFile) {
+		try { for (const line of Buffer.from(await readFile(file, 'utf8')).subarray(evidenceOffset(baseline)).toString('utf8').split(/\r?\n/)) { if (expired()) break; await consume(line); } }
+		catch { reasons.add('unreadable_file'); }
+		return { complete: reasons.size === 0, reasons: [...reasons] };
+	}
+	let entries;
+	try { entries = await readdir(path.dirname(file)); } catch { return { complete: false, reasons: ['unreadable_directory'] }; }
+	const base = path.basename(file);
+	const candidates = entries.flatMap((name) => name === base ? [{ file: path.join(path.dirname(file), name), generation: 0 }]
+		: name.startsWith(`${base}.`) && /^[1-9]\d*$/.test(name.slice(base.length + 1)) ? [{ file: path.join(path.dirname(file), name), generation: Number(name.slice(base.length + 1)) }] : [])
+		.sort((left, right) => right.generation - left.generation);
+	for (const candidate of candidates) {
+		try { candidate.identity = fileIdentity(await stat(candidate.file)); } catch { reasons.add('unreadable_or_rotated_file'); }
+	}
+	const baselineRetained = candidates.some((candidate) => candidate.identity === baseline?.identity);
+	if (baseline?.identity != null && !baselineRetained) reasons.add('run_start_not_retained');
+	let started = baseline?.identity == null || !baselineRetained;
+	if (started && candidates.some((entry) => entry.generation > 0)) reasons.add('rotation_start_unverified');
+	if (candidates.length === 0) reasons.add('missing_file');
+	let previousGeneration = null;
+	for (const candidate of candidates) {
+		if (expired()) break;
+		let handle;
+		try {
+			handle = await defaultOpen(candidate.file, 'r');
+			const metadata = await handle.stat();
+			if (candidate.identity !== fileIdentity(metadata)) { reasons.add('unreadable_or_rotated_file'); continue; }
+			const atBaseline = fileIdentity(metadata) === baseline?.identity;
+			if (!started && !atBaseline) continue;
+			started = true;
+			if (previousGeneration !== null && candidate.generation !== previousGeneration - 1) reasons.add('missing_rotation_generation');
+			previousGeneration = candidate.generation;
+			let position = atBaseline || (baseline?.identity == null && candidate.generation === 0) ? evidenceOffset(baseline) : 0;
+			if (position > metadata.size) { reasons.add('truncated_file'); position = 0; }
+			const buffer = Buffer.allocUnsafe(64 * 1024);
+			const decoder = new TextDecoder();
+			let carry = '';
+			let skippingOversized = false;
+			while (position < metadata.size) {
+				if (expired()) break;
+				const { bytesRead } = await handle.read(buffer, 0, Math.min(buffer.length, metadata.size - position), position);
+				if (bytesRead === 0) { reasons.add('truncated_file'); break; }
+				position += bytesRead;
+				if (expired()) break;
+				const lines = (carry + decoder.decode(buffer.subarray(0, bytesRead), { stream: position < metadata.size })).split(/\r?\n/);
+				carry = lines.pop() ?? '';
+				for (const line of lines) {
+					if (expired()) break;
+					if (skippingOversized) skippingOversized = false;
+					else await consume(line);
+				}
+				if (skippingOversized || Buffer.byteLength(carry, 'utf8') > MAX_EVIDENCE_RECORD_BYTES) {
+					reasons.add('oversized_record'); carry = ''; skippingOversized = true;
+				}
+			}
+			if (!expired() && carry.trim()) await consume(carry);
+		} catch { reasons.add('unreadable_or_rotated_file'); }
+		finally { await handle?.close().catch(() => {}); }
+	}
+	return { complete: reasons.size === 0, reasons: [...reasons] };
+}
+
+function createProtocolEvidenceCollector(scope) {
+	const identities = new Map();
+	const relevantIds = new Set();
+	const recent = [];
+	const witnesses = new Map();
+	const pending = new Map();
+	let rescanActions = false;
+	let successfulResult = false;
+	const assertions = scope?.scenario.assertions ?? scope?.scenario.assert ?? [];
+	let captureIncomplete = false;
+	return {
+		get captureIncomplete() { return captureIncomplete; },
+		accept(raw) {
+			const row = unwrapAuditRow(raw);
+			if (!row) return;
+			if (row.type === 'coordinator_status' && Array.isArray(row.payload?.components)) {
+				captureIncomplete ||= row.payload.components.some((component) => component.component === 'provider_audit'
+					&& (component.incompleteCapture === true || component.droppedCount > 0 || component.failedOperationCount > 0));
+			}
+			if (isAuthoritativeAgentIdentityRow(row)) {
+				// Keep profile transitions and ambiguous identities, independently of
+				// event volume. One unrelated row preserves fail-closed legacy detection.
+				const name = row.payload?.name;
+				const relevant = scope?.names.includes(name);
+				if (!relevant) identities.set('unrelated', raw);
+				else {
+					const exact = ['provider', 'model', 'reasoningEffort', 'serviceTier'].every((field) => row.payload?.[field] === scope.scenario[field]);
+					const id = authoritativeAgentId(row);
+					if (id !== null && exact) {
+						const first = identities.get(`${name}:first`);
+						if (!first) { identities.set(`${name}:first`, raw); relevantIds.add(id); }
+						else if (authoritativeAgentId(unwrapAuditRow(first)) !== id) identities.set(`${name}:ambiguous`, raw);
+					} else if (!exact) identities.set(`${name}:mismatch`, raw);
+					identities.delete(`${name}:latest`);
+					identities.set(`${name}:latest`, raw);
+				}
+				return;
+			}
+			retainBounded(recent, raw, 4096);
+			const agentId = row.agentId ?? row.payload?.agentId ?? '';
+			if (agentId && !relevantIds.has(agentId)) return;
+			for (const [index, assertion] of assertions.entries()) {
+				const key = `${agentId}:${index}`;
+				if (witnesses.has(key)) continue;
+				if (assertion.type === 'action' && row.type === 'action_command') {
+					const action = row.payload ?? row;
+					if (action.actionType !== assertion.actionType || (assertion.args !== undefined && !objectSubset(assertion.args, action.arguments ?? action.args ?? {}))) continue;
+					if (!assertion.resultState) witnesses.set(key, [raw]);
+					else if (!rescanActions) {
+						pending.set(`${agentId}:${action.actionId}:${index}`, raw);
+						// Bound the join working set, not evidence coverage. Missing result
+						// records can accumulate indefinitely; recover exact pairs by scans.
+						if (pending.size > 256) { pending.clear(); rescanActions = true; }
+					}
+				} else if (assertion.type === 'action' && row.type === 'action_result') {
+					successfulResult ||= row.payload?.state === assertion.resultState;
+					const actionKey = `${agentId}:${row.payload?.actionId}:${index}`;
+					const command = pending.get(actionKey);
+					if (command && row.payload?.state === assertion.resultState) witnesses.set(key, [command, raw]);
+					pending.delete(actionKey);
+				} else if (evaluateHeadlessAssertions([assertion], makeEvidence({ protocolRows: [raw] })).passed) witnesses.set(key, [raw]);
+			}
+		},
+		async recover(scan) {
+			if (!rescanActions || !successfulResult) return;
+			const matchCommand = (raw, add) => {
+				const row = unwrapAuditRow(raw);
+				if (row?.type !== 'action_command') return;
+				const agentId = row.agentId ?? row.payload?.agentId ?? '';
+				if (agentId && !relevantIds.has(agentId)) return;
+				const action = row.payload ?? row;
+				for (const [index, assertion] of assertions.entries()) {
+					const key = `${agentId}:${index}`;
+					if (witnesses.has(key) || assertion.type !== 'action' || !assertion.resultState || action.actionType !== assertion.actionType
+						|| (assertion.args !== undefined && !objectSubset(assertion.args, action.arguments ?? action.args ?? {}))) continue;
+					add(`${agentId}:${action.actionId}:${index}`, { raw, key, state: assertion.resultState });
+				}
+			};
+			const matchResult = (raw, batch) => {
+				const row = unwrapAuditRow(raw);
+				if (row?.type !== 'action_result') return;
+				const agentId = row.agentId ?? row.payload?.agentId ?? '';
+				for (const [index] of assertions.entries()) {
+					const candidate = batch.get(`${agentId}:${row.payload?.actionId}:${index}`);
+					if (candidate && row.payload?.state === candidate.state) witnesses.set(candidate.key, [candidate.raw, raw]);
+				}
+			};
+			// Most overflows still fit in the existing diagnostic window. Join it
+			// first without rereading files; older evidence remains recoverable.
+			const window = new Map();
+			for (const raw of recent) matchCommand(raw, (key, value) => window.set(key, value));
+			for (const raw of recent) matchResult(raw, window);
+			// Bounded batches preserve complete rotated history while replacing
+			// one full result scan per candidate with one scan per 256 candidates.
+			const batch = new Map();
+			const flush = async () => {
+				if (!batch.size) return;
+				await scan((raw) => matchResult(raw, batch));
+				batch.clear();
+			};
+			// A complete recent window needs no recovery scan for witnessed keys.
+			const witnessedAll = [...relevantIds].every((id) => assertions.every((assertion, index) => assertion.type !== 'action' || !assertion.resultState || witnesses.has(`${id}:${index}`)));
+			if (witnessedAll && relevantIds.size > 0) return;
+			await scan(async (raw) => {
+				const matches = [];
+				matchCommand(raw, (key, value) => matches.push([key, value]));
+				for (const [key, value] of matches) {
+					if (witnesses.has(value.key)) continue;
+					batch.set(key, value);
+					if (batch.size >= 256) await flush();
+				}
+			});
+			await flush();
+		},
+		rows() {
+			const retained = [...new Set([...identities.values(), ...recent])];
+			for (const witness of [...witnesses.values()].flat()) {
+				if (!retained.includes(witness) && !retained.some((row) => JSON.stringify(row) === JSON.stringify(witness))) retained.push(witness);
+			}
+			return retained;
+		},
+	};
+}
+
+function retainBounded(rows, row, limit) {
+	rows.push(row);
+	if (rows.length > limit) rows.splice(0, rows.length - limit);
+}
+
+function resolveEvidencePaths(directory, protocolAudit, providerTurnsPath) {
+	return {
+		protocol: typeof protocolAudit === 'string' ? protocolAudit : path.join(directory, 'protocol.jsonl'),
+		coordinator: path.join(directory, 'coordinator.jsonl'),
+		server: path.join(directory, 'server.log'),
+		providerTurns: typeof providerTurnsPath === 'string' ? providerTurnsPath : null,
+	};
+}
+
+async function captureEvidenceOffsets(paths, fileSize) {
+	const entries = await Promise.all(Object.entries(paths).map(async ([key, file]) => {
+		if (file === null) return [key, 0];
+		try {
+			const metadata = fileSize === defaultFileSize ? await stat(file) : null;
+			const size = Number(metadata?.size ?? await fileSize(file));
+			return [key, { size: Number.isSafeInteger(size) && size >= 0 ? size : 0, identity: metadata === null ? null : fileIdentity(metadata) }];
+		} catch { return [key, 0]; }
+	}));
+	return Object.fromEntries(entries);
+}
+
+function evidenceSummary(directory, fileEvidence, protocolAudit) {
+	const paths = fileEvidence.paths ?? { protocol: path.join(directory, 'protocol.jsonl'), coordinator: path.join(directory, 'coordinator.jsonl'), server: path.join(directory, 'server.log') };
+	return { paths, excerpts: { server: boundedText(fileEvidence.serverLog ?? '', 1024) }, auditRows: fileEvidence.protocolRows?.length ?? auditRows(protocolAudit).length, providerTurnsRows: fileEvidence.providerTurnsRows ?? 0, coverage: fileEvidence.coverage };
+}
+
+function timingSummary(profile, fileEvidence, protocolAudit, scenarioElapsedMs) {
+	const rows = [...(fileEvidence.protocolRows ?? []), ...auditRows(protocolAudit)].map(unwrapAuditRow).filter(Boolean);
+	const healthByOperation = new Map();
+	let control = [];
+	for (const row of rows) {
+		if (row.type !== 'coordinator_status' || !row.payload || typeof row.payload !== 'object') continue;
+		for (const circuit of Array.isArray(row.payload.circuits) ? row.payload.circuits : []) {
+			if (circuit?.provider !== profile.provider || circuit?.model !== profile.model || typeof circuit.operation !== 'string') continue;
+			healthByOperation.set(circuit.operation, metricSummary(circuit, ['operation', 'count', 'p50Ms', 'p95Ms', 'failureRate', 'circuit']));
+		}
+		if (Array.isArray(row.payload.latencies) && row.payload.latencies.length > 0) {
+			control = row.payload.latencies.slice(0, 32).map((entry) => metricSummary(entry, ['operation', 'count', 'p50Ms', 'p95Ms']));
+		}
+	}
+	return {
+		scenarioElapsedMs: finiteMetric(scenarioElapsedMs),
+		turns: (fileEvidence.providerTurnSummaries ?? []).filter((turn) => turn.provider === profile.provider && turn.model === profile.model).slice(0, 64),
+		health: [...healthByOperation.values()].slice(0, 32),
+		control,
+	};
+}
+
+function performanceMetrics(profile, fileEvidence, protocolAudit, agentId = null, runtimeResources = {}) {
+	const agentIds = Array.isArray(agentId) ? new Set(agentId) : null;
+	const turns = (fileEvidence.providerTurnSummaries ?? []).filter((turn) => providerProfileMatches(turn, profile)
+		&& (agentIds === null ? (agentId === null ? turn.agentId === undefined : turn.agentId === agentId) : agentIds.has(turn.agentId)));
+	const rawRows = [...(fileEvidence.protocolRows ?? []), ...auditRows(protocolAudit)];
+	const envelopes = rawRows.map(unwrapAuditRow).filter(Boolean);
+	const queue = turns.map((turn) => turn.queueWaitMs).filter(Number.isFinite);
+	// Native turn duration includes tool execution. Only an explicitly reported
+	// provider/API duration is inference; a missing value stays unknown.
+	const inference = turns.map((turn) => turn.apiDurationMs).filter(Number.isFinite);
+	const nativeTiming = latestNativeDecisionTiming(profile, fileEvidence, protocolAudit, agentId);
+	const unknownInference = turns.filter((turn) => !Number.isFinite(turn.apiDurationMs));
+	const nativeUnknownInference = unknownInference.filter((turn) => turn.operation === 'native_turn'
+		|| nativeTiming.summaries.some((summary) => nativeTimingMatchesTurn(summary, turn))).length;
+	const observation = envelopes.flatMap((row) => {
+		const value = row.type === 'observation' ? row.payload?.metrics?.collectionMs ?? row.payload?.metrics?.observationMs : null;
+		return Number.isFinite(value) && value >= 0 ? [value] : [];
+	});
+	const authoritativeResult = actionResultObservationLatencies(rawRows);
+	const result = authoritativeResult.length > 0 ? authoritativeResult : (fileEvidence.traceRows ?? []).flatMap((row) => {
+		const value = row?.event === 'program_step' && row?.result !== null ? row?.timing?.bridgeSendToCompletionMs : null;
+		return Number.isFinite(value) && value >= 0 ? [value] : [];
+	});
+	const usageRows = fileEvidence.usage ?? [];
+	const completeUsage = fileEvidence.coverage?.provider?.complete === true;
+	const usageCount = usageRows.reduce((sum, row) => sum + row.count, 0);
+	const observedCounterDelta = usageRows.some((row) => row.observedCounterDelta);
+	const tokenStatuses = Object.fromEntries(['available', 'missing', 'baseline_unknown', 'counter_reset'].map((status) => [status, usageRows.reduce((sum, row) => sum + (row.usageStatuses[status] ?? 0), 0)]));
+	const recordedTokens = Object.fromEntries(TOKEN_CATEGORIES.map((category) => [category, completeUsage ? completeTokenTotal(usageRows.map((row) => row.tokens), category) : null]));
+	const modelWait = nativeTiming.summaries.length === 1 ? nativeModelWaitMetric(nativeTiming.summaries[0]) : null;
+	return {
+		latencyMs: {
+			queue: latencyPercentiles(queue), inference: latencyPercentiles(inference),
+			inferenceUnknown: { count: unknownInference.length, nativeCount: nativeUnknownInference },
+			nativeModelWait: modelWait,
+			observation: latencyPercentiles(observation), result: latencyPercentiles(result),
+		},
+		// A roster aggregate cannot combine percentiles from separate bounded
+		// windows. Preserve each latest per-agent/profile snapshot instead.
+		...(agentIds === null || nativeTiming.summaries.length === 0 ? {} : { nativeModelWaitByAgent: nativeTiming.summaries.map(nativeModelWaitMetric) }),
+		...(nativeTiming.summaries.length === 0 ? {} : { nativeDecisionTiming: nativeTiming.summaries }),
+		tokens: observedCounterDelta ? Object.fromEntries(TOKEN_CATEGORIES.map((category) => [category, null])) : recordedTokens,
+		...(observedCounterDelta ? { observedTokens: recordedTokens } : {}),
+		retries: completeUsage ? usageRows.reduce((sum, row) => sum + row.retries, 0) : null,
+		rateLimits: completeUsage ? usageRows.reduce((sum, row) => sum + row.rateLimits, 0) : null,
+		compactions: completeUsage ? usageRows.reduce((sum, row) => sum + row.compactions, 0) : null,
+		usageEvidence: { scope: 'recorded_turns_since_run_start', complete: completeUsage, captureComplete: fileEvidence.coverage?.provider?.captureComplete ?? null,
+			billingComplete: null, measurementScope: observedCounterDelta ? 'observed_thread_counter_delta' : 'recorded_turn_usage',
+			...(observedCounterDelta ? { attributionComplete: false, measurementStatuses: tokenStatuses } : {}),
+			recordedTurns: usageCount, reasons: fileEvidence.coverage?.provider?.reasons ?? ['unavailable'], latencySampleCount: turns.length },
+		resources: { ...resourceMetrics(envelopes),
+			...(Number.isFinite(runtimeResources.minecraftMspt) && runtimeResources.minecraftMspt >= 0 ? { minecraftMspt: finiteMetric(runtimeResources.minecraftMspt) } : {}) },
+	};
+}
+
+/**
+ * Read the latest bounded native timing snapshot for each exact agent/profile.
+ * The snapshot's retained count is intentionally kept separate from its
+ * lifetime count; diagnostic rotation cannot reconstruct missing samples.
+ */
+function latestNativeDecisionTiming(profile, fileEvidence, protocolAudit, agentId = null) {
+	const agentIds = Array.isArray(agentId) ? new Set(agentId) : null;
+	const latest = new Map();
+	const rows = [
+		...(fileEvidence.traceRows ?? []),
+		...auditRows(protocolAudit),
+	].map(unwrapAuditRow).filter(Boolean);
+	for (let index = 0; index < rows.length; index += 1) {
+		const summary = nativeDecisionTimingSummary(rows[index]);
+		if (summary === null || !nativeTimingProfileMatches(summary, profile)) continue;
+		if (agentIds !== null) {
+			if (summary.agentId === null || !agentIds.has(summary.agentId)) continue;
+		} else if (agentId === null ? summary.agentId !== null : summary.agentId !== agentId) continue;
+		const key = nativeTimingIdentityKey(summary);
+		latest.set(key, summary);
+	}
+	return { summaries: [...latest.values()] };
+}
+
+function nativeDecisionTimingSummary(row) {
+	if (!row || typeof row !== 'object' || Array.isArray(row)) return null;
+	const event = row.event ?? row.type ?? row.stage ?? row.payload?.event ?? row.payload?.type;
+	if (event !== 'native_decision_timing') return null;
+	const source = row.payload && typeof row.payload === 'object' && !Array.isArray(row.payload) ? row.payload : row;
+	const identity = source.identity && typeof source.identity === 'object' && !Array.isArray(source.identity) ? source.identity : {};
+	const agentId = boundedAgentId(row.agentId ?? source.agentId ?? identity.agentId);
+	const provider = boundedScalar(row.provider ?? source.provider ?? identity.provider);
+	const model = boundedScalar(row.model ?? source.model ?? identity.model);
+	const reasoningEffort = boundedScalar(row.reasoningEffort ?? source.reasoningEffort ?? identity.reasoningEffort);
+	const serviceTier = boundedScalar(row.serviceTier ?? source.serviceTier ?? identity.serviceTier);
+	const profileFingerprint = boundedScalar(row.profileFingerprint ?? source.profileFingerprint ?? identity.profileFingerprint);
+	const metric = (value) => Number.isFinite(value) && value >= 0 ? Math.round(value * 1000) / 1000 : null;
+	const count = (value) => Number.isSafeInteger(value) && value >= 0 ? value : null;
+	const timingCount = count(row.timingCount ?? source.timingCount);
+	const timingLifetimeCount = count(row.timingLifetimeCount ?? source.timingLifetimeCount);
+	const timingP50Ms = metric(row.timingP50Ms ?? source.timingP50Ms);
+	const timingP95Ms = metric(row.timingP95Ms ?? source.timingP95Ms);
+	const timingSampleWindowSize = count(row.timingSampleWindowSize ?? source.timingSampleWindowSize);
+	const timingLifetimeSegmentCount = count(row.timingLifetimeSegmentCount ?? source.timingLifetimeSegmentCount);
+	const failedSegmentCount = count(row.failedSegmentCount ?? source.failedSegmentCount);
+	const cancelledSegmentCount = count(row.cancelledSegmentCount ?? source.cancelledSegmentCount);
+	if ([timingCount, timingLifetimeCount, timingP50Ms, timingP95Ms, timingSampleWindowSize, timingLifetimeSegmentCount, failedSegmentCount, cancelledSegmentCount].every((value) => value === null)) return null;
+	return {
+		agentId, profile: { provider, model, reasoningEffort, serviceTier },
+		...(profileFingerprint === null ? {} : { profileFingerprint }),
+		timingCount, timingLifetimeCount, timingP50Ms, timingP95Ms, timingSampleWindowSize,
+		timingLifetimeSegmentCount, failedSegmentCount, cancelledSegmentCount,
+	};
+}
+
+function nativeTimingProfileMatches(summary, profile) {
+	return ['provider', 'model', 'reasoningEffort', 'serviceTier'].every((field) => summary.profile[field] === profile[field]);
+}
+
+function nativeTimingIdentityKey(value) {
+	const profile = value?.profile ?? value;
+	return [value?.agentId ?? null, profile?.provider ?? null, profile?.model ?? null,
+		profile?.reasoningEffort ?? null, profile?.serviceTier ?? null, value?.profileFingerprint ?? null].join('\u0000');
+}
+
+function nativeTimingMatchesTurn(summary, turn) {
+	if (summary.agentId !== null && summary.agentId !== turn.agentId) return false;
+	return ['provider', 'model', 'reasoningEffort', 'serviceTier'].every((field) => {
+		const expected = summary.profile[field];
+		return expected === null || turn[field] === undefined || turn[field] === null || expected === turn[field];
+	});
+}
+
+function nativeModelWaitMetric(summary) {
+	return {
+		agentId: summary.agentId,
+		profile: { ...summary.profile },
+		count: summary.timingCount,
+		p50: summary.timingP50Ms,
+		p95: summary.timingP95Ms,
+		p99: null,
+		sampleWindowSize: summary.timingSampleWindowSize,
+		lifetimeCount: summary.timingLifetimeCount,
+		lifetimeSegmentCount: summary.timingLifetimeSegmentCount,
+		failedSegmentCount: summary.failedSegmentCount,
+		cancelledSegmentCount: summary.cancelledSegmentCount,
+	};
+}
+
+function latencyPercentiles(values) {
+	const sorted = values.filter((value) => Number.isFinite(value) && value >= 0).map(finiteMetric).sort((left, right) => left - right);
+	return {
+		count: sorted.length,
+		p50: sorted.length === 0 ? null : nearestRank(sorted, 0.5),
+		p95: sorted.length === 0 ? null : nearestRank(sorted, 0.95),
+		p99: sorted.length === 0 ? null : nearestRank(sorted, 0.99),
+	};
+}
+
+function nearestRank(sorted, fraction) {
+	return sorted[Math.max(0, Math.ceil(sorted.length * fraction) - 1)];
+}
+
+function completeTokenTotal(rows, category) {
+	if (rows.length === 0 || rows.some((row) => row === null || !Number.isSafeInteger(row[category]) || row[category] < 0)) return null;
+	const total = rows.reduce((sum, row) => sum + row[category], 0);
+	return Number.isSafeInteger(total) ? total : null;
+}
+
+function actionResultObservationLatencies(rows) {
+	const events = rows.flatMap((row) => {
+		const envelope = unwrapAuditRow(row);
+		const timestamp = finiteTimestamp(row?.timestamp ?? envelope?.timestamp);
+		const agentId = boundedAgentId(envelope?.agentId ?? envelope?.payload?.agentId);
+		return timestamp === null || agentId === null || !['action_result', 'observation'].includes(envelope?.type) ? [] : [{ timestamp, agentId, type: envelope.type }];
+	}).sort((left, right) => left.timestamp - right.timestamp);
+	const values = [];
+	for (let index = 0; index < events.length; index += 1) {
+		const event = events[index];
+		if (event.type !== 'action_result') continue;
+		const next = events.slice(index + 1).find((candidate) => candidate.agentId === event.agentId && candidate.type === 'observation' && candidate.timestamp >= event.timestamp);
+		if (next !== undefined) values.push(next.timestamp - event.timestamp);
+	}
+	return values;
+}
+
+function finiteTimestamp(value) {
+	return Number.isFinite(value) && value >= 0 ? value : null;
+}
+
+function resourceMetrics(rows) {
+	const candidates = rows.flatMap((row) => {
+		const value = row.type === 'headless_resource_metrics' ? row.payload : row.payload?.resources;
+		return value && typeof value === 'object' && !Array.isArray(value) ? [value] : [];
+	});
+	return {
+		processCount: maximumMetric(candidates, 'processCount', true),
+		peakRssBytes: maximumMetric(candidates, 'peakRssBytes', true),
+		minecraftMspt: maximumMetric(candidates, 'minecraftMspt', false),
+	};
+}
+
+function maximumMetric(rows, key, integer) {
+	const values = rows.map((row) => row[key]).filter((value) => Number.isFinite(value) && value >= 0 && (!integer || Number.isSafeInteger(value)));
+	return values.length === 0 ? null : finiteMetric(Math.max(...values));
+}
+
+function parseMinecraftMspt(value) {
+	const match = String(value ?? '').match(/([0-9]+(?:\.[0-9]+)?)\s*(?:mspt|ms\s+per\s+tick)/i);
+	return match === null ? null : finiteMetric(Number(match[1]));
+}
+
+function providerTurnSummary(row) {
+	if (!row || typeof row !== 'object' || Array.isArray(row)) return null;
+	const summary = {
+		provider: boundedScalar(row.provider), model: boundedScalar(row.model), reasoningEffort: boundedScalar(row.reasoningEffort),
+		...(row.serviceTier == null && row.executionSettings?.requested?.serviceTier == null ? {} : { serviceTier: boundedScalar(row.serviceTier ?? row.executionSettings?.requested?.serviceTier) }),
+		...(row.operation === undefined ? {} : { operation: boundedScalar(row.operation) }),
+		attempt: Number.isSafeInteger(row.attempt) ? row.attempt : null, retry: row.retry === true,
+		timestamp: Number.isFinite(row.timestamp) ? Math.round(row.timestamp) : null, outcome: boundedScalar(row.outcome),
+	};
+	const agentId = boundedAgentId(row.agentId);
+	if (agentId !== null) summary.agentId = agentId;
+	if (row.timing && typeof row.timing === 'object' && !Array.isArray(row.timing)) {
+		summary.durationMs = finiteMetric(row.timing.durationMs);
+		summary.apiDurationMs = finiteMetric(row.timing.apiDurationMs);
+		if (Number.isFinite(row.timing.queueWaitMs) && row.timing.queueWaitMs >= 0) summary.queueWaitMs = finiteMetric(row.timing.queueWaitMs);
+	}
+	if (row.tokens && typeof row.tokens === 'object' && !Array.isArray(row.tokens)) {
+		summary.tokens = Object.fromEntries(['input', 'output', 'reasoning', 'cached', 'cacheWrite'].map((category) => [category,
+			Number.isSafeInteger(row.tokens[category]) && row.tokens[category] >= 0 ? row.tokens[category] : null]));
+	}
+	if (row.rateLimited !== undefined) summary.rateLimited = row.rateLimited === true;
+	if (row.compaction !== undefined) summary.compaction = row.compaction === true;
+	if (row.error && typeof row.error === 'object' && !Array.isArray(row.error)) summary.error = safeProviderError(row.error);
+	if (row.executionSettings !== undefined) summary.executionSettings = safeExecutionSettings(row.executionSettings);
+	if (row.usage?.scope === 'observed_thread_counter_delta') summary.usage = { scope: row.usage.scope,
+		status: ['available', 'missing', 'baseline_unknown', 'counter_reset'].includes(row.usage.status) ? row.usage.status : 'missing', attributionComplete: false };
+	return summary;
+}
+
+function safeExecutionSettings(value) {
+	if (!value || typeof value !== 'object' || !value.effective || !value.evidence) return null;
+	return {
+		effective: Object.fromEntries(['provider', 'model', 'reasoningEffort', 'serviceTier', 'thinkingMode'].map((key) => [key, boundedScalar(value.effective[key])])),
+		evidence: Object.fromEntries(['model', 'reasoningEffort', 'serviceTier'].map((key) => [key, ['provider_reported', 'submitted', 'process_environment', 'launch_argument', 'not_supported', 'unreported'].includes(value.evidence[key]) ? value.evidence[key] : null])),
+	};
+}
+
+const PROVIDER_ERROR_CATEGORIES = new Set(['decision_parse', 'rate_limit', 'timeout', 'cancelled', 'transport', 'provider']);
+
+function safeProviderError(value) {
+	const rawCode = typeof value?.code === 'string' && /^[A-Z0-9_]{1,128}$/.test(value.code) ? value.code : 'PROVIDER_ERROR';
+	const category = PROVIDER_ERROR_CATEGORIES.has(value?.category) ? value.category : providerErrorCategory(rawCode);
+	return { code: rawCode, category };
+}
+
+function providerErrorCategory(code) {
+	if (/DECISION|PLANNER_OUTPUT/.test(code)) return 'decision_parse';
+	if (/RATE|LIMIT/.test(code)) return 'rate_limit';
+	if (/TIMEOUT/.test(code)) return 'timeout';
+	if (/CANCEL|STALE/.test(code)) return 'cancelled';
+	if (/RPC|TRANSPORT|PROCESS|SPAWN/.test(code)) return 'transport';
+	return 'provider';
+}
+
+function metricSummary(value, keys) {
+	const summary = {};
+	for (const key of keys) {
+		if (key === 'operation' || key === 'circuit') summary[key] = boundedScalar(value?.[key]);
+		else summary[key] = finiteMetric(value?.[key]);
+	}
+	return summary;
+}
+
+function finiteMetric(value) {
+	return Number.isFinite(value) && value >= 0 ? Math.round(value * 1000) / 1000 : null;
+}
+
+async function readBoundedTail(readTail, file, offset = 0) {
+	try { return boundedTailText(await readTail(file, MAX_EVIDENCE_TAIL_BYTES, offset), MAX_EVIDENCE_TAIL_BYTES); } catch { return ''; }
+}
+
+function parseJsonl(value) {
+	return String(value ?? '').split(/\r?\n/).filter(Boolean).flatMap((line) => { try { return [JSON.parse(line)]; } catch { return []; } });
+}
+
+function auditRows(source) {
+	if (Array.isArray(source)) return source;
+	if (source && Array.isArray(source.rows)) return source.rows;
+	return [];
+}
+
+function unwrapAuditRow(row) {
+	if (!row || typeof row !== 'object') return null;
+	return row.envelope && typeof row.envelope === 'object' ? row.envelope : row;
+}
+
+function extractChatMarkers(value) {
+	return String(value ?? '').split(/\r?\n/).flatMap((line) => {
+		const match = line.match(/(?:chat|message)\s*[:=]\s*(.*)$/i);
+		return match ? [match[1].trim()] : [];
+	});
+}
+
+function normalizeRunDirectory(value) {
+	if (typeof value !== 'string' || value.trim() === '') throw new TypeError('runDirectory must be a nonblank path');
+	return path.resolve(value);
+}
+
+function generatedAgentName(scenario, timestamp, rosterIndex = null) {
+	const rosterSuffix = rosterIndex === null ? '' : `_${String(rosterIndex + 1).padStart(2, '0')}`;
+	// Identity must survive the server's player-name canonicalization. Keep
+	// fractional monotonic time everywhere else, including phase deadlines.
+	const clockSuffix = Math.floor(Math.abs(Number(timestamp) || 0)).toString(36).slice(-5).padStart(5, '0');
+	const idBudget = Math.max(1, 16 - 3 - 1 - clockSuffix.length - rosterSuffix.length);
+	const id = String(scenario.id ?? 'scenario').replace(/[^A-Za-z0-9_]/g, '_').slice(0, idBudget) || 's';
+	return `ha_${id}_${clockSuffix}${rosterSuffix}`;
+}
+
+function resolveAgentAssertions(assertions, generatedName, spawnPosition = null) {
+	return assertions.map((assertion) => assertion.type === 'audit' ? { ...assertion, command: `codex audit ${generatedName}`, agent: generatedName } : assertion.type === 'rcon'
+		? { ...assertion, command: assertion.command.replaceAll('{agent}', generatedName).replace(/\{spawn([XYZ])\}/g, (_, axis) => {
+			if (spawnPosition === null) throw new Error('Spawn-relative assertions require natural-world authoritative spawn evidence');
+			return String(spawnPosition[axis.toLowerCase()]);
+		}) }
+		: assertion);
+}
+
+/**
+ * The audit must answer for the measured run: this agent's authoritative id and the latest goal revision its own
+ * protocol rows carry. Without either the audit assertion cannot pass.
+ */
+function bindAuditAssertions(assertions, identity, rows) {
+	const revisions = rows.map(unwrapAuditRow).filter(Boolean).map((row) => row.payload?.goalRevision).filter((value) => Number.isSafeInteger(value) && value >= 0);
+	const goalRevision = revisions.length === 0 ? null : Math.max(...revisions);
+	const agentId = identity?.authoritative ? identity.agentId : null;
+	return assertions.map((assertion) => assertion.type === 'audit' ? { ...assertion, agentId, goalRevision } : assertion);
+}
+
+function isStopAcknowledged(value, generatedName) {
+	const response = String(value ?? '').trim();
+	const escapedName = String(generatedName).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+	return new RegExp(`^(?:Paused|Stopped)\\s+${escapedName}\\.?$`, 'i').test(response);
+}
+
+function rosterPosition(index) {
+	const column = index % 4;
+	const row = Math.floor(index / 4);
+	return { x: -5.5 + column * 4, z: -5.5 + row * 4 };
+}
+
+function parseLifecycle(value) {
+	const textValue = String(value ?? '').toUpperCase().trim();
+	if (LIFECYCLE_STATES.has(textValue)) return textValue;
+	// The server reply is "<name> | <state label>. Current task: <goal>. ...": the goal echoes free text, so only the
+	// state segment before it is authoritative. Field syntax (state=...) must be the whole reply.
+	const taskAt = textValue.indexOf('. CURRENT TASK:');
+	const stateSegment = taskAt >= 0 ? textValue.slice(0, taskAt + 1) : textValue;
+	if (/^[^|]*\|\s*TASK COMPLETE\s*\./.test(stateSegment)) return 'COMPLETED';
+	if (/^[^|]*\|\s*NEEDS ATTENTION\s*\./.test(stateSegment)) return 'ERROR';
+	if (/^[^|]*\|\s*DEAD\s*-\s*(?:AWAITING MODEL|READY TO RESPAWN)\s*\./.test(stateSegment)) return 'DEAD';
+	const match = textValue.match(/^(?:STATE|STATUS|LIFECYCLE)\s*[:=]\s*(COMPLETED|ERROR|DEAD|RUNNING|STARTING|IDLE|STOPPED)$/);
+	return match ? match[1] : null;
+}
+
+async function waitForAgentReady({ generatedName, command, poll, deadline, now, startedAt }) {
+	let attempt = 0;
+	while (logicalNow(now, startedAt, attempt) < deadline) {
+		const status = await command(`codex status ${generatedName}`, { attempt });
+		if (/\|\s*READY\s*\./i.test(status.text)) return;
+		const lifecycle = parseLifecycle(status.text);
+		if (lifecycle === 'ERROR' || lifecycle === 'DEAD') {
+			throw new Error(`Agent became ${lifecycle.toLowerCase()} before its goal could start`);
+		}
+		await withDeadline(
+				() => poll({ phase: 'readiness', attempt, deadline, status: status.text, now }),
+				deadline, () => logicalNow(now, startedAt, attempt), 'HEADLESS_TIMEOUT');
+		attempt += 1;
+	}
+	throw headlessTimeout();
+}
+
+function isFailedResponse(value) {
+	const textValue = String(value ?? '');
+	return /(?:\bERROR\b|\bFAILED\b|unknown agent|unable to|rejected)/i.test(textValue)
+			|| /\b[A-Z][A-Z0-9_]{2,}:/.test(textValue);
+}
+function isSkippedResponse(value) { return /(?:SKIP|unavailable|not logged in|not installed|profile unavailable|catalog unavailable|catalog\s+rejected)/i.test(String(value ?? '')); }
+function isAcceptedResponse(value) {
+	return /^(?:Created .+\. It is ready for a task\.|Creating .+\. It will be ready when its player joins\.)$/i.test(String(value ?? '').trim());
+}
+function isPendingJoinResponse(value) {
+	return /^Creating .+\. It will be ready when its player joins\.$/i.test(String(value ?? '').trim());
+}
+function isReadOnlyRcon(value) {
+	const source = String(value ?? '');
+	if (/[\u0000-\u001f\u007f;&|`]/.test(source)) return false;
+	const command = source.trim().replace(/^\/+/, '').replace(/\s+/g, ' ');
+	return /^(?:list(?:\s+.*)?|seed|difficulty|data\s+get(?:\s+.*)?|time\s+query\s+(?:day|daytime|gametime)|weather\s+query|gamerule\s+[A-Za-z0-9_:.-]+)$/.test(command)
+		|| /^execute if block -?\d+ -?\d+ -?\d+ [a-z0-9_.-]+:[a-z0-9_./-]+ run data get entity [A-Za-z0-9_.-]{1,64}(?: [A-Za-z0-9_.\[\]-]{1,128})?$/.test(command)
+		|| /^execute if items entity [A-Za-z0-9_]{1,16} (?:(?:inventory|container)\.\*|weapon\.(?:mainhand|offhand)|armor\.\*) #?[a-z0-9_.-]+:[a-z0-9_./-]+ run data get entity [A-Za-z0-9_]{1,16} (?:Pos|Inventory)$/.test(command)
+		|| /^execute if entity @a\[name=[A-Za-z0-9_]{1,16},advancements=\{[a-z0-9_.-]+:[a-z0-9_./-]+=true\}\] run data get entity [A-Za-z0-9_]{1,16} Pos$/.test(command)
+		|| /^execute positioned -?\d+(?:\.\d+)? -?\d+(?:\.\d+)? -?\d+(?:\.\d+)? if entity @a\[name=[A-Za-z0-9_]{1,16},distance=\d+(?:\.\d+)?\.\.\] run data get entity [A-Za-z0-9_]{1,16} Pos$/.test(command)
+		// The intervention audit only reports what the server observed during the agent's goal.
+		|| /^codex audit [A-Za-z0-9_]{1,16}$/.test(command);
+}
+function validateRunnerScenario(scenario, assertions) {
+	for (const field of ['id', 'provider', 'model', 'reasoningEffort', 'serviceTier', 'task']) {
+		const value = scenario[field];
+		if (typeof value !== 'string' || value.trim() === '' || value.length > MAX_TEXT || /[\u0000-\u001f\u007f]/.test(value)) throw new TypeError(`scenario.${field} must be bounded text without control characters`);
+	}
+	if (!Number.isSafeInteger(scenario.timeoutMs) || scenario.timeoutMs <= 0 || scenario.timeoutMs > (scenario.world?.mode === 'natural' ? MAX_NATURAL_TIMEOUT_MS : MAX_TIMEOUT_MS)) throw new RangeError('scenario.timeoutMs is out of bounds');
+	if (![1, 8, 16].includes(scenario.rosterSize ?? 1)) throw new RangeError('scenario.rosterSize is out of bounds');
+	if (!Array.isArray(assertions) || assertions.length === 0) throw new TypeError('scenario requires assertions');
+	if (scenario.world?.mode === 'natural' && ((scenario.rosterSize ?? 1) !== 1 || (scenario.repetitions ?? 1) !== 1 || (scenario.setupBlocks ?? []).length > 0 || !scenario.requireFactualSuccess || !assertions.some((assertion) => assertion.type === 'rcon'))) throw new TypeError('natural evaluations require one agent, one fresh world, no planted blocks, and factual assertions');
+}
+function boundedPositiveInteger(value, field) {
+	if (!Number.isSafeInteger(value) || value < 1) throw new RangeError(`${field} must be a positive safe integer`);
+	return value;
+}
+function boundedScalar(value) { return value === null || value === undefined ? null : String(value).slice(0, MAX_TEXT); }
+function boundedText(value, limit) {
+	const textValue = Buffer.isBuffer(value) ? value.toString('utf8') : String(value ?? '');
+	if (Buffer.byteLength(textValue, 'utf8') <= limit) return textValue;
+	let end = Math.min(textValue.length, limit);
+	while (end > 0 && Buffer.byteLength(textValue.slice(0, end), 'utf8') > limit) end -= 1;
+	return textValue.slice(0, end);
+}
+
+function boundedTailText(value, limit) {
+	const textValue = Buffer.isBuffer(value) ? value.toString('utf8') : String(value ?? '');
+	if (Buffer.byteLength(textValue, 'utf8') <= limit) return textValue;
+	return Buffer.from(textValue, 'utf8').subarray(-limit).toString('utf8');
+}
+
+function redactReportText(value, limit) {
+	const textValue = Buffer.isBuffer(value) ? value.toString('utf8') : value;
+	return sanitizeDiagnosticText(textValue, { maxBytes: limit, redactPaths: true });
+}
+
+function logicalNow(now, startedAt, attempt) {
+	const observed = Number(now());
+	return Math.max(Number.isFinite(observed) ? observed : startedAt, startedAt + attempt * POLL_INTERVAL_MS);
+}
+
+function headlessTimeout() {
+	const error = new Error('headless scenario deadline exceeded');
+	error.code = 'HEADLESS_TIMEOUT';
+	return error;
+}
+
+async function withDeadline(operation, deadline, currentTime, code = 'HEADLESS_TIMEOUT') {
+	const remaining = deadline - currentTime();
+	if (!(remaining > 0)) throw Object.assign(headlessTimeout(), { code });
+	let timer;
+	const timeout = new Promise((_, reject) => { timer = setTimeout(() => reject(Object.assign(headlessTimeout(), { code })), remaining); });
+	try { return await Promise.race([Promise.resolve().then(operation), timeout]); }
+	finally { clearTimeout(timer); }
+}
+
+async function defaultFileSize(file) {
+	const handle = await defaultOpen(file, 'r');
+	try { return Number((await handle.stat()).size); }
+	finally { await handle.close(); }
+}
+
+async function defaultReadTail(file, maxBytes, startOffset = 0) {
+	const handle = await defaultOpen(file, 'r');
+	try {
+		const stats = await handle.stat();
+		const end = Number(stats.size);
+		const requested = Number.isSafeInteger(startOffset) && startOffset >= 0 ? startOffset : 0;
+		const minimum = requested <= end ? requested : 0;
+		const position = Math.max(minimum, end - maxBytes);
+		const size = end - position;
+		const buffer = Buffer.alloc(size);
+		if (size > 0) await handle.read(buffer, 0, size, position);
+		return buffer.toString('utf8');
+	} finally { await handle.close(); }
+}
+
+async function defaultPoll() { await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL_MS)); }
+
+async function runHeadlessCli() {
+	const parsed = parseHeadlessCliArguments(process.argv.slice(2));
+	if (parsed.help) { process.stdout.write(`${HEADLESS_CLI_USAGE}\n`); return; }
+	const result = await runHeadlessMatrix(parsed);
+	process.stdout.write(formatHeadlessCliOutput(result.report));
+	process.exitCode = result.exitCode;
+}
+
+export function writeHeadlessCliFailure(error, write = (line) => process.stderr.write(line)) {
+	if (typeof write !== 'function') throw new TypeError('headless CLI diagnostic writer must be a function');
+	write(`${sanitizeDiagnosticErrorStack(error, { maxBytes: 4_096 })}\n`);
+}
+
+if (process.argv[1] !== undefined && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+	runHeadlessCli().catch((error) => {
+		writeHeadlessCliFailure(error);
+		process.exitCode = 1;
+	});
+}
+
+// Closing RCON cancels its pending transport work. Await the operation itself
+// before returning; the launcher still owns server/provider process teardown.
+async function settledRconOperation(rcon, operation, deadline, now, onExpiry = () => {}) {
+ if (now() >= deadline) throw Object.assign(new Error('Phase deadline expired'), { code: 'HEADLESS_TIMEOUT' });
+ let expired = false;
+ const timer = setTimeout(() => { expired = true; onExpiry(); void Promise.resolve(rcon.close()).catch(() => {}); }, Math.max(0, deadline - now()));
+ try { const result = await operation(); if (expired) throw Object.assign(new Error('Phase deadline expired'), { code: 'HEADLESS_TIMEOUT' }); return result; }
+ catch (error) { if (expired) throw Object.assign(new Error('Phase deadline expired'), { code: 'HEADLESS_TIMEOUT' }); throw error; }
+ finally { clearTimeout(timer); }
+}
+
+async function settledOperation(operation, deadline, now, code = 'HEADLESS_TIMEOUT') {
+ if (now() >= deadline) throw Object.assign(new Error('Phase deadline expired'), { code });
+ const value = await operation();
+ if (now() > deadline) throw Object.assign(new Error('Phase deadline expired'), { code });
+ return value;
+}

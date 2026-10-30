@@ -1,0 +1,17 @@
+{
+  "baselineSource": "112d8be8f18d7c45a22a8890b2d586ee9b511a91",
+  "candidateBuildSource": "95ba29a47356421d45c125c1371a888da787eeb4",
+  "integration": "9203dd1e7414129e248d10ce900ac1b1130cdc24",
+  "baseJarSha256": "f566af7502ed2cbc73311e649d2ddfefd254eb74538504bb7e7518bd2c3571de",
+  "candidateJarSha256": "56db66290757383bdbf6368d98a6f4f9114d74d99483ba59b96fe078afb85578",
+  "baseClasses": 1564,
+  "candidateClasses": 1564,
+  "classHashesEqual": false,
+  "differentClasses": [
+    "dev/agaminggod/arenaagents/server/runtime/ServerActionExecutor$3.class"
+  ],
+  "comparedBy": "streamed SHA-256 of every class entry, without loading whole jars",
+  "differingClassInstructionsEqual": true,
+  "differenceExplanation": "The only class difference is LocalVariableTable constructor parameter names (minY/height versus arg0/arg1). javap -v identifies the debug-only difference; complete javap -c -p output hashes match.",
+  "bodySourcesEqual": true
+}

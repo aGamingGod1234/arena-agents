@@ -1,0 +1,69 @@
+{
+  "purpose": "Provider-free real server setup and controlled predicate transitions; not model performance.",
+  "startedAt": "2026-10-18T05:20:30.982Z",
+  "endedAt": "2026-10-18T05:21:42.792Z",
+  "pass": true,
+  "jar": "rx-fight/jars/96c76f8e.jar",
+  "jarSha256": "43f8b089c72d277088dfc7f06e53fc7489a9b329b4cc194c822b3304e2772e7e",
+  "fixtureSha256": "45c23bdb72d426250d7a723dc0527296291d814956524a497088a43ee0aaa134",
+  "rawEvidence": "/home/agaminggod/Desktop/Projects/arena-beat-game/reflex/rx-fight/rooms-validation/validation.json",
+  "fixtureResults": [
+    {
+      "id": "R-BLAZE",
+      "pass": true,
+      "checksPassed": 15,
+      "checksTotal": 15,
+      "failedChecks": []
+    },
+    {
+      "id": "R-GHAST",
+      "pass": true,
+      "checksPassed": 16,
+      "checksTotal": 16,
+      "failedChecks": []
+    },
+    {
+      "id": "R-CREEPER",
+      "pass": true,
+      "checksPassed": 17,
+      "checksTotal": 17,
+      "failedChecks": []
+    },
+    {
+      "id": "R-SKELETON",
+      "pass": true,
+      "checksPassed": 17,
+      "checksTotal": 17,
+      "failedChecks": []
+    },
+    {
+      "id": "R-FLOOD",
+      "pass": true,
+      "checksPassed": 10,
+      "checksTotal": 10,
+      "failedChecks": []
+    },
+    {
+      "id": "R-VOID",
+      "pass": true,
+      "checksPassed": 17,
+      "checksTotal": 17,
+      "failedChecks": []
+    },
+    {
+      "id": "R-TOOLBREAK",
+      "pass": true,
+      "checksPassed": 9,
+      "checksTotal": 9,
+      "failedChecks": []
+    },
+    {
+      "id": "R-PIGLIN",
+      "pass": true,
+      "checksPassed": 18,
+      "checksTotal": 18,
+      "failedChecks": []
+    }
+  ],
+  "predicatePolicy": "requireSampledSuccess is additionally covered by coordinator/test/quality-reflex-rooms.test.mjs; rx-fight moved R-CREEPER and R-GHAST mobs (fair start) and revalidated every room on a real server."
+}

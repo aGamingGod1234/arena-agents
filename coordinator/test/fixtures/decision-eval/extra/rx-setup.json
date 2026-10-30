@@ -1,0 +1,6089 @@
+{
+  "cases": [
+    {
+      "id": "rx-fortress",
+      "family": "rx-fortress",
+      "causeClass": "reflex-setup",
+      "split": "train",
+      "quick": false,
+      "rationale": "A blaze and its spawner are ahead on a broad nether-brick platform. No projectile is in flight yet. Pre-raise the equipped shield with a hostile-near stance before entering or fighting; an incoming-projectile trigger alone is too late. Bound the rule to this encounter. Cover and supported approach remain necessary.",
+      "source": {
+        "trace": ".t3/worktrees/agents arena/t3-ba7399a1/runtime/headless-runs/run-1792221047917-2898d71e/q-c24yn0-45e0-LONG-r1-92ff4596",
+        "atMs": 1792224715031,
+        "sourceMomentId": "sm-83db94772914077c",
+        "derived": {
+          "scope": "observation",
+          "from": {
+            "trace": ".t3/worktrees/agents arena/t3-ba7399a1/runtime/headless-runs/run-1792221047917-2898d71e/q-c24yn0-45e0-LONG-r1-92ff4596",
+            "line": 36911,
+            "atMs": 1792224715031,
+            "messageId": "server-27908",
+            "runId": "run-1792221047917-2898d71e",
+            "scenarioId": "q-c24yn0-45e0-LONG-r1",
+            "agentId": "8079f9df-5436-45bc-9f1c-f80f5c29e8c3",
+            "observationSha256": "bbadc424782d6642435d37dd0408b31e7286bf7ae6e50dc8065c2ce6ad77d539",
+            "protocolFile": "quality-protocol.jsonl",
+            "taskPlan": "last recorded plan definitions; checked steps pending (renderer re-evaluates checks)",
+            "sourceMomentId": "sm-83db94772914077c",
+            "derived": {
+              "scope": "observation",
+              "from": {
+                "trace": ".t3/worktrees/agents arena/t3-ba7399a1/runtime/headless-runs/run-1792221047917-2898d71e/q-c24yn0-45e0-LONG-r1-92ff4596",
+                "line": 36911,
+                "observationSha256": "11d50c9aaf43ff6e2aa78d8ff2491a4e90e785b9ccff541a6f939f86fce806ca"
+              },
+              "edits": [
+                "Set world.dayTime to 86000 (night) in this recorded daylight bed-preparation moment; physical inventory, blocks, entities and health unchanged.",
+                "Dropped earlier daylight observations; retained recorded latest plan definitions with checks re-evaluated; no authored intent replayed. Restored original complete server goalSpec."
+              ]
+            }
+          },
+          "edits": [
+            "Synthetic setup variant of the recorded inventory/standing snapshot; replaced position, geometry, entities, gear, time, dimension and goal. Removed stale results and perception. A blaze and its spawner are ahead on a broad nether-brick platform. No projectile is in flight yet.",
+            "Use a biome consistent with the derived dimension and include iron chestplate/boots matching the eight armor points."
+          ]
+        }
+      },
+      "state": {
+        "observation": {
+          "observedAtEpochMs": 1792224715031,
+          "ready": true,
+          "status": "RUNNING",
+          "eventSequence": 11329,
+          "attention": true,
+          "changedFacts": [],
+          "position": {
+            "x": 0,
+            "y": 64,
+            "z": 0
+          },
+          "velocity": {
+            "x": 0,
+            "y": -0.0784000015258789,
+            "z": 0
+          },
+          "view": {
+            "yaw": -90,
+            "pitch": 0
+          },
+          "player": {
+            "pose": "standing",
+            "underWater": false,
+            "swimming": false,
+            "gliding": false,
+            "sprinting": false,
+            "crouching": false,
+            "onClimbable": false,
+            "inLava": false,
+            "horizontalCollision": false,
+            "verticalCollision": true,
+            "passenger": false,
+            "skyOpen": true,
+            "groundAhead": {
+              "status": "clear",
+              "at": 8
+            },
+            "health": 20,
+            "maxHealth": 20,
+            "armor": 8,
+            "foodLevel": 20,
+            "saturation": 0.8000001907348633,
+            "gameMode": "survival",
+            "onGround": true,
+            "inWater": false,
+            "onFire": false,
+            "air": 300,
+            "maxAir": 300,
+            "suffocating": false,
+            "fallDistance": 0,
+            "effects": []
+          },
+          "inventory": {
+            "selectedItem": "minecraft:stone_pickaxe",
+            "selectedSlot": 4,
+            "items": [
+              {
+                "itemId": "minecraft:stone_pickaxe",
+                "count": 1,
+                "slot": 4,
+                "hotbar": true,
+                "damage": 10,
+                "maxDamage": 131
+              },
+              {
+                "itemId": "minecraft:iron_pickaxe",
+                "count": 1,
+                "slot": 5,
+                "hotbar": true,
+                "damage": 0,
+                "maxDamage": 250
+              },
+              {
+                "itemId": "minecraft:shield",
+                "count": 1,
+                "slot": "offhand"
+              },
+              {
+                "itemId": "minecraft:iron_sword",
+                "count": 1,
+                "slot": 6,
+                "hotbar": true
+              },
+              {
+                "itemId": "minecraft:cooked_beef",
+                "count": 8,
+                "slot": 8,
+                "hotbar": true
+              },
+              {
+                "itemId": "minecraft:cobblestone",
+                "count": 64,
+                "slot": 3,
+                "hotbar": true
+              },
+              {
+                "itemId": "minecraft:iron_chestplate",
+                "count": 1,
+                "slot": "chest"
+              },
+              {
+                "itemId": "minecraft:iron_boots",
+                "count": 1,
+                "slot": "feet"
+              }
+            ]
+          },
+          "entities": [
+            {
+              "uuid": "00000000-0000-4000-8000-000000000001",
+              "type": "minecraft:blaze",
+              "name": "blaze",
+              "distance": 12,
+              "position": {
+                "x": 12,
+                "y": 64,
+                "z": 0
+              },
+              "alive": true,
+              "health": 20,
+              "maxHealth": 20,
+              "hostile": true,
+              "targetingAgent": true,
+              "pickable": true,
+              "perceivedBy": "sight",
+              "visible": true
+            }
+          ],
+          "blocks": [
+            {
+              "x": -3,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -3,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -3,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -3,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -3,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 10,
+              "y": 64,
+              "z": 0,
+              "blockId": "minecraft:spawner"
+            }
+          ],
+          "world": {
+            "worldId": "46a496eb-1d0f-4578-abea-5337df19d5bd",
+            "dimension": "minecraft:the_nether",
+            "biome": "minecraft:nether_wastes",
+            "gameTime": 72864,
+            "dayTime": 6000,
+            "raining": false,
+            "thundering": false,
+            "difficulty": "normal",
+            "naturalRegeneration": true
+          },
+          "coverage": {
+            "mode": "sampled_visible",
+            "complete": false,
+            "blocksRadius": 6,
+            "landmarkDistanceLimit": 256,
+            "entitiesDistanceLimit": 128,
+            "sections": {
+              "entities": {
+                "returned": 4,
+                "complete": false
+              },
+              "blocks": {
+                "returned": 24,
+                "complete": false,
+                "placeableFacesFor": "minecraft:cobblestone",
+                "placeableFacesStandIn": true
+              },
+              "landmarks": {
+                "returned": 9,
+                "complete": false
+              },
+              "nearbyContainers": {
+                "returned": 1,
+                "complete": false
+              }
+            }
+          }
+        },
+        "agent": {
+          "goal": "Beat the game",
+          "intent": {
+            "step": "Collect blaze rods from the fortress ahead",
+            "why": "A blaze and its spawner are ahead on a broad nether-brick platform. No projectile is in flight yet.",
+            "via": "Choose safe supported actions from current facts",
+            "until": "Finish this bounded task",
+            "unless": "New danger or failed defense"
+          },
+          "goalSpec": {
+            "originalRequest": "Beat the game",
+            "predicate": {
+              "type": "entity_killed_by_agent",
+              "entityType": "minecraft:ender_dragon",
+              "afterGoalStart": true
+            },
+            "createdAtTick": 132,
+            "fingerprint": "1c76f7dd7a04a42b6c14335733d2c6be544d442ea3f2bc70bb4c2dd17dffd39b"
+          }
+        }
+      },
+      "expect": {
+        "good": [],
+        "bad": [
+          {
+            "index": 0,
+            "tool": [
+              "programStatus",
+              "capabilities",
+              "observe",
+              "taskPlan",
+              "finish"
+            ]
+          },
+          {
+            "none": true
+          }
+        ],
+        "judge": {
+          "rubric": "Grade only the FIRST call. Bad: lookup/status/capabilities/observe first, no useful reflex installation, empty/list-only reflexes, invalid or invented vocabulary, unavailable gear, or a rule unrelated to the evidenced risk. Good requires a first call that installs at least one valid situation-specific reflex: runProgram reflexes alone or with live-authored source, or reflexes carried by an act/sequence alongside a fitting direct action. Judge actual condition/action, thresholds, priority, lifetime and geometry; a token reflex is insufficient. No named or saved rule sets. Pre-raise the equipped shield with a hostile-near stance before entering or fighting; an incoming-projectile trigger alone is too late. Bound the rule to this encounter. Cover and supported approach remain necessary."
+        },
+        "threshold": 0.67
+      }
+    },
+    {
+      "id": "rx-ghast",
+      "family": "rx-ghast",
+      "causeClass": "reflex-setup",
+      "split": "train",
+      "quick": false,
+      "rationale": "A ghast faces you across open solid netherrack; shelter is at x=7,y=64,z=0. No projectile yet. Arm a shield stance for the ghast before crossing; appropriate fireball triggers may supplement it. A shield is available. Use cover/route with rules grounded in current facts.",
+      "source": {
+        "trace": ".t3/worktrees/agents arena/t3-ba7399a1/runtime/headless-runs/run-1792221047917-2898d71e/q-c24yn0-45e0-LONG-r1-92ff4596",
+        "atMs": 1792224715031,
+        "sourceMomentId": "sm-83db94772914077c",
+        "derived": {
+          "scope": "observation",
+          "from": {
+            "trace": ".t3/worktrees/agents arena/t3-ba7399a1/runtime/headless-runs/run-1792221047917-2898d71e/q-c24yn0-45e0-LONG-r1-92ff4596",
+            "line": 36911,
+            "atMs": 1792224715031,
+            "messageId": "server-27908",
+            "runId": "run-1792221047917-2898d71e",
+            "scenarioId": "q-c24yn0-45e0-LONG-r1",
+            "agentId": "8079f9df-5436-45bc-9f1c-f80f5c29e8c3",
+            "observationSha256": "bbadc424782d6642435d37dd0408b31e7286bf7ae6e50dc8065c2ce6ad77d539",
+            "protocolFile": "quality-protocol.jsonl",
+            "taskPlan": "last recorded plan definitions; checked steps pending (renderer re-evaluates checks)",
+            "sourceMomentId": "sm-83db94772914077c",
+            "derived": {
+              "scope": "observation",
+              "from": {
+                "trace": ".t3/worktrees/agents arena/t3-ba7399a1/runtime/headless-runs/run-1792221047917-2898d71e/q-c24yn0-45e0-LONG-r1-92ff4596",
+                "line": 36911,
+                "observationSha256": "11d50c9aaf43ff6e2aa78d8ff2491a4e90e785b9ccff541a6f939f86fce806ca"
+              },
+              "edits": [
+                "Set world.dayTime to 86000 (night) in this recorded daylight bed-preparation moment; physical inventory, blocks, entities and health unchanged.",
+                "Dropped earlier daylight observations; retained recorded latest plan definitions with checks re-evaluated; no authored intent replayed. Restored original complete server goalSpec."
+              ]
+            }
+          },
+          "edits": [
+            "Synthetic setup variant of the recorded inventory/standing snapshot; replaced position, geometry, entities, gear, time, dimension and goal. Removed stale results and perception. A ghast faces you across open solid netherrack; shelter is at x=7,y=64,z=0. No projectile yet.",
+            "Use a biome consistent with the derived dimension and include iron chestplate/boots matching the eight armor points."
+          ]
+        }
+      },
+      "state": {
+        "observation": {
+          "observedAtEpochMs": 1792224715031,
+          "ready": true,
+          "status": "RUNNING",
+          "eventSequence": 11329,
+          "attention": true,
+          "changedFacts": [],
+          "position": {
+            "x": 0,
+            "y": 64,
+            "z": 0
+          },
+          "velocity": {
+            "x": 0,
+            "y": -0.0784000015258789,
+            "z": 0
+          },
+          "view": {
+            "yaw": -90,
+            "pitch": 0
+          },
+          "player": {
+            "pose": "standing",
+            "underWater": false,
+            "swimming": false,
+            "gliding": false,
+            "sprinting": false,
+            "crouching": false,
+            "onClimbable": false,
+            "inLava": false,
+            "horizontalCollision": false,
+            "verticalCollision": true,
+            "passenger": false,
+            "skyOpen": true,
+            "groundAhead": {
+              "status": "clear",
+              "at": 8
+            },
+            "health": 20,
+            "maxHealth": 20,
+            "armor": 8,
+            "foodLevel": 20,
+            "saturation": 0.8000001907348633,
+            "gameMode": "survival",
+            "onGround": true,
+            "inWater": false,
+            "onFire": false,
+            "air": 300,
+            "maxAir": 300,
+            "suffocating": false,
+            "fallDistance": 0,
+            "effects": []
+          },
+          "inventory": {
+            "selectedItem": "minecraft:stone_pickaxe",
+            "selectedSlot": 4,
+            "items": [
+              {
+                "itemId": "minecraft:stone_pickaxe",
+                "count": 1,
+                "slot": 4,
+                "hotbar": true,
+                "damage": 10,
+                "maxDamage": 131
+              },
+              {
+                "itemId": "minecraft:iron_pickaxe",
+                "count": 1,
+                "slot": 5,
+                "hotbar": true,
+                "damage": 0,
+                "maxDamage": 250
+              },
+              {
+                "itemId": "minecraft:shield",
+                "count": 1,
+                "slot": "offhand"
+              },
+              {
+                "itemId": "minecraft:iron_sword",
+                "count": 1,
+                "slot": 6,
+                "hotbar": true
+              },
+              {
+                "itemId": "minecraft:cooked_beef",
+                "count": 8,
+                "slot": 8,
+                "hotbar": true
+              },
+              {
+                "itemId": "minecraft:cobblestone",
+                "count": 64,
+                "slot": 3,
+                "hotbar": true
+              },
+              {
+                "itemId": "minecraft:iron_chestplate",
+                "count": 1,
+                "slot": "chest"
+              },
+              {
+                "itemId": "minecraft:iron_boots",
+                "count": 1,
+                "slot": "feet"
+              }
+            ]
+          },
+          "entities": [
+            {
+              "uuid": "00000000-0000-4000-8000-000000000011",
+              "type": "minecraft:ghast",
+              "name": "ghast",
+              "distance": 24,
+              "position": {
+                "x": 24,
+                "y": 64,
+                "z": 0
+              },
+              "alive": true,
+              "health": 20,
+              "maxHealth": 20,
+              "hostile": true,
+              "targetingAgent": true,
+              "pickable": true,
+              "perceivedBy": "sight",
+              "visible": true
+            }
+          ],
+          "blocks": [
+            {
+              "x": -3,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -3,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -3,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -3,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -3,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            }
+          ],
+          "world": {
+            "worldId": "46a496eb-1d0f-4578-abea-5337df19d5bd",
+            "dimension": "minecraft:the_nether",
+            "biome": "minecraft:nether_wastes",
+            "gameTime": 72864,
+            "dayTime": 6000,
+            "raining": false,
+            "thundering": false,
+            "difficulty": "normal",
+            "naturalRegeneration": true
+          },
+          "coverage": {
+            "mode": "sampled_visible",
+            "complete": false,
+            "blocksRadius": 6,
+            "landmarkDistanceLimit": 256,
+            "entitiesDistanceLimit": 128,
+            "sections": {
+              "entities": {
+                "returned": 4,
+                "complete": false
+              },
+              "blocks": {
+                "returned": 24,
+                "complete": false,
+                "placeableFacesFor": "minecraft:cobblestone",
+                "placeableFacesStandIn": true
+              },
+              "landmarks": {
+                "returned": 9,
+                "complete": false
+              },
+              "nearbyContainers": {
+                "returned": 1,
+                "complete": false
+              }
+            }
+          }
+        },
+        "agent": {
+          "goal": "Beat the game",
+          "intent": {
+            "step": "Cross the open Nether basin to the visible shelt",
+            "why": "A ghast faces you across open solid netherrack; shelter is at x=7,y=64,z=0. No projectile yet.",
+            "via": "Choose safe supported actions from current facts",
+            "until": "Finish this bounded task",
+            "unless": "New danger or failed defense"
+          },
+          "goalSpec": {
+            "originalRequest": "Beat the game",
+            "predicate": {
+              "type": "entity_killed_by_agent",
+              "entityType": "minecraft:ender_dragon",
+              "afterGoalStart": true
+            },
+            "createdAtTick": 132,
+            "fingerprint": "1c76f7dd7a04a42b6c14335733d2c6be544d442ea3f2bc70bb4c2dd17dffd39b"
+          }
+        }
+      },
+      "expect": {
+        "good": [],
+        "bad": [
+          {
+            "index": 0,
+            "tool": [
+              "programStatus",
+              "capabilities",
+              "observe",
+              "taskPlan",
+              "finish"
+            ]
+          },
+          {
+            "none": true
+          }
+        ],
+        "judge": {
+          "rubric": "Grade only the FIRST call. Bad: lookup/status/capabilities/observe first, no useful reflex installation, empty/list-only reflexes, invalid or invented vocabulary, unavailable gear, or a rule unrelated to the evidenced risk. Good requires a first call that installs at least one valid situation-specific reflex: runProgram reflexes alone or with live-authored source, or reflexes carried by an act/sequence alongside a fitting direct action. Judge actual condition/action, thresholds, priority, lifetime and geometry; a token reflex is insufficient. No named or saved rule sets. Arm a shield stance for the ghast before crossing; appropriate fireball triggers may supplement it. A shield is available. Use cover/route with rules grounded in current facts."
+        },
+        "threshold": 0.67
+      }
+    },
+    {
+      "id": "rx-night",
+      "family": "rx-night",
+      "causeClass": "reflex-setup",
+      "split": "train",
+      "quick": false,
+      "rationale": "It is night. A skeleton and creeper are approaching while the player prepares a bounded stone-mining job on wide level ground. Cover skeleton shots with a pre-raised shield stance and account for the approaching creeper with a bounded safe retreat/important wake. Shield alone is not sufficient creeper safety. Work must not ignore either threat.",
+      "source": {
+        "trace": ".t3/worktrees/agents arena/t3-ba7399a1/runtime/headless-runs/run-1792221047917-2898d71e/q-c24yn0-45e0-LONG-r1-92ff4596",
+        "atMs": 1792224715031,
+        "sourceMomentId": "sm-83db94772914077c",
+        "derived": {
+          "scope": "observation",
+          "from": {
+            "trace": ".t3/worktrees/agents arena/t3-ba7399a1/runtime/headless-runs/run-1792221047917-2898d71e/q-c24yn0-45e0-LONG-r1-92ff4596",
+            "line": 36911,
+            "atMs": 1792224715031,
+            "messageId": "server-27908",
+            "runId": "run-1792221047917-2898d71e",
+            "scenarioId": "q-c24yn0-45e0-LONG-r1",
+            "agentId": "8079f9df-5436-45bc-9f1c-f80f5c29e8c3",
+            "observationSha256": "bbadc424782d6642435d37dd0408b31e7286bf7ae6e50dc8065c2ce6ad77d539",
+            "protocolFile": "quality-protocol.jsonl",
+            "taskPlan": "last recorded plan definitions; checked steps pending (renderer re-evaluates checks)",
+            "sourceMomentId": "sm-83db94772914077c",
+            "derived": {
+              "scope": "observation",
+              "from": {
+                "trace": ".t3/worktrees/agents arena/t3-ba7399a1/runtime/headless-runs/run-1792221047917-2898d71e/q-c24yn0-45e0-LONG-r1-92ff4596",
+                "line": 36911,
+                "observationSha256": "11d50c9aaf43ff6e2aa78d8ff2491a4e90e785b9ccff541a6f939f86fce806ca"
+              },
+              "edits": [
+                "Set world.dayTime to 86000 (night) in this recorded daylight bed-preparation moment; physical inventory, blocks, entities and health unchanged.",
+                "Dropped earlier daylight observations; retained recorded latest plan definitions with checks re-evaluated; no authored intent replayed. Restored original complete server goalSpec."
+              ]
+            }
+          },
+          "edits": [
+            "Synthetic setup variant of the recorded inventory/standing snapshot; replaced position, geometry, entities, gear, time, dimension and goal. Removed stale results and perception. It is night. A skeleton and creeper are approaching while the player prepares a bounded stone-mining job on wide level ground.",
+            "Use a biome consistent with the derived dimension and include iron chestplate/boots matching the eight armor points."
+          ]
+        }
+      },
+      "state": {
+        "observation": {
+          "observedAtEpochMs": 1792224715031,
+          "ready": true,
+          "status": "RUNNING",
+          "eventSequence": 11329,
+          "attention": true,
+          "changedFacts": [],
+          "position": {
+            "x": 0,
+            "y": 64,
+            "z": 0
+          },
+          "velocity": {
+            "x": 0,
+            "y": -0.0784000015258789,
+            "z": 0
+          },
+          "view": {
+            "yaw": -90,
+            "pitch": 0
+          },
+          "player": {
+            "pose": "standing",
+            "underWater": false,
+            "swimming": false,
+            "gliding": false,
+            "sprinting": false,
+            "crouching": false,
+            "onClimbable": false,
+            "inLava": false,
+            "horizontalCollision": false,
+            "verticalCollision": true,
+            "passenger": false,
+            "skyOpen": true,
+            "groundAhead": {
+              "status": "clear",
+              "at": 8
+            },
+            "health": 20,
+            "maxHealth": 20,
+            "armor": 8,
+            "foodLevel": 20,
+            "saturation": 0.8000001907348633,
+            "gameMode": "survival",
+            "onGround": true,
+            "inWater": false,
+            "onFire": false,
+            "air": 300,
+            "maxAir": 300,
+            "suffocating": false,
+            "fallDistance": 0,
+            "effects": []
+          },
+          "inventory": {
+            "selectedItem": "minecraft:stone_pickaxe",
+            "selectedSlot": 4,
+            "items": [
+              {
+                "itemId": "minecraft:stone_pickaxe",
+                "count": 1,
+                "slot": 4,
+                "hotbar": true,
+                "damage": 10,
+                "maxDamage": 131
+              },
+              {
+                "itemId": "minecraft:iron_pickaxe",
+                "count": 1,
+                "slot": 5,
+                "hotbar": true,
+                "damage": 0,
+                "maxDamage": 250
+              },
+              {
+                "itemId": "minecraft:shield",
+                "count": 1,
+                "slot": "offhand"
+              },
+              {
+                "itemId": "minecraft:iron_sword",
+                "count": 1,
+                "slot": 6,
+                "hotbar": true
+              },
+              {
+                "itemId": "minecraft:cooked_beef",
+                "count": 8,
+                "slot": 8,
+                "hotbar": true
+              },
+              {
+                "itemId": "minecraft:cobblestone",
+                "count": 64,
+                "slot": 3,
+                "hotbar": true
+              },
+              {
+                "itemId": "minecraft:iron_chestplate",
+                "count": 1,
+                "slot": "chest"
+              },
+              {
+                "itemId": "minecraft:iron_boots",
+                "count": 1,
+                "slot": "feet"
+              }
+            ]
+          },
+          "entities": [
+            {
+              "uuid": "00000000-0000-4000-8000-000000000021",
+              "type": "minecraft:skeleton",
+              "name": "skeleton",
+              "distance": 14,
+              "position": {
+                "x": 14,
+                "y": 64,
+                "z": 0
+              },
+              "alive": true,
+              "health": 20,
+              "maxHealth": 20,
+              "hostile": true,
+              "targetingAgent": true,
+              "pickable": true,
+              "perceivedBy": "sight",
+              "visible": true
+            },
+            {
+              "uuid": "00000000-0000-4000-8000-000000000022",
+              "type": "minecraft:creeper",
+              "name": "creeper",
+              "distance": 11,
+              "position": {
+                "x": 11,
+                "y": 64,
+                "z": 0
+              },
+              "alive": true,
+              "health": 20,
+              "maxHealth": 20,
+              "hostile": true,
+              "targetingAgent": true,
+              "pickable": true,
+              "perceivedBy": "sight",
+              "visible": true
+            }
+          ],
+          "blocks": [
+            {
+              "x": -3,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -3,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -3,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -3,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -3,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            }
+          ],
+          "world": {
+            "worldId": "46a496eb-1d0f-4578-abea-5337df19d5bd",
+            "dimension": "minecraft:overworld",
+            "biome": "minecraft:plains",
+            "gameTime": 72864,
+            "dayTime": 18000,
+            "raining": false,
+            "thundering": false,
+            "difficulty": "normal",
+            "naturalRegeneration": true
+          },
+          "coverage": {
+            "mode": "sampled_visible",
+            "complete": false,
+            "blocksRadius": 6,
+            "landmarkDistanceLimit": 256,
+            "entitiesDistanceLimit": 128,
+            "sections": {
+              "entities": {
+                "returned": 4,
+                "complete": false
+              },
+              "blocks": {
+                "returned": 24,
+                "complete": false,
+                "placeableFacesFor": "minecraft:cobblestone",
+                "placeableFacesStandIn": true
+              },
+              "landmarks": {
+                "returned": 9,
+                "complete": false
+              },
+              "nearbyContainers": {
+                "returned": 1,
+                "complete": false
+              }
+            }
+          }
+        },
+        "agent": {
+          "goal": "Beat the game",
+          "intent": {
+            "step": "Finish mining the exposed stone at this work sit",
+            "why": "It is night. A skeleton and creeper are approaching while the player prepares a bounded stone-mining job on wide level ground.",
+            "via": "Choose safe supported actions from current facts",
+            "until": "Finish this bounded task",
+            "unless": "New danger or failed defense"
+          },
+          "goalSpec": {
+            "originalRequest": "Beat the game",
+            "predicate": {
+              "type": "entity_killed_by_agent",
+              "entityType": "minecraft:ender_dragon",
+              "afterGoalStart": true
+            },
+            "createdAtTick": 132,
+            "fingerprint": "1c76f7dd7a04a42b6c14335733d2c6be544d442ea3f2bc70bb4c2dd17dffd39b"
+          }
+        }
+      },
+      "expect": {
+        "good": [],
+        "bad": [
+          {
+            "index": 0,
+            "tool": [
+              "programStatus",
+              "capabilities",
+              "observe",
+              "taskPlan",
+              "finish"
+            ]
+          },
+          {
+            "none": true
+          }
+        ],
+        "judge": {
+          "rubric": "Grade only the FIRST call. Bad: lookup/status/capabilities/observe first, no useful reflex installation, empty/list-only reflexes, invalid or invented vocabulary, unavailable gear, or a rule unrelated to the evidenced risk. Good requires a first call that installs at least one valid situation-specific reflex: runProgram reflexes alone or with live-authored source, or reflexes carried by an act/sequence alongside a fitting direct action. Judge actual condition/action, thresholds, priority, lifetime and geometry; a token reflex is insufficient. No named or saved rule sets. Cover skeleton shots with a pre-raised shield stance and account for the approaching creeper with a bounded safe retreat/important wake. Shield alone is not sufficient creeper safety. Work must not ignore either threat."
+        },
+        "threshold": 0.67
+      }
+    },
+    {
+      "id": "rx-water",
+      "family": "rx-water",
+      "causeClass": "reflex-setup",
+      "split": "train",
+      "quick": false,
+      "rationale": "Water fills the next tunnel cells; the surface is directly overhead, two blocks up with clear headroom. Air is full before entry. Before underwater work arm air_below with swim_up, a chosen conservative air threshold, useful priority and important wake. Do not wait for drowning or assume fire protection solves water.",
+      "source": {
+        "trace": ".t3/worktrees/agents arena/t3-ba7399a1/runtime/headless-runs/run-1792221047917-2898d71e/q-c24yn0-45e0-LONG-r1-92ff4596",
+        "atMs": 1792224715031,
+        "sourceMomentId": "sm-83db94772914077c",
+        "derived": {
+          "scope": "observation",
+          "from": {
+            "trace": ".t3/worktrees/agents arena/t3-ba7399a1/runtime/headless-runs/run-1792221047917-2898d71e/q-c24yn0-45e0-LONG-r1-92ff4596",
+            "line": 36911,
+            "atMs": 1792224715031,
+            "messageId": "server-27908",
+            "runId": "run-1792221047917-2898d71e",
+            "scenarioId": "q-c24yn0-45e0-LONG-r1",
+            "agentId": "8079f9df-5436-45bc-9f1c-f80f5c29e8c3",
+            "observationSha256": "bbadc424782d6642435d37dd0408b31e7286bf7ae6e50dc8065c2ce6ad77d539",
+            "protocolFile": "quality-protocol.jsonl",
+            "taskPlan": "last recorded plan definitions; checked steps pending (renderer re-evaluates checks)",
+            "sourceMomentId": "sm-83db94772914077c",
+            "derived": {
+              "scope": "observation",
+              "from": {
+                "trace": ".t3/worktrees/agents arena/t3-ba7399a1/runtime/headless-runs/run-1792221047917-2898d71e/q-c24yn0-45e0-LONG-r1-92ff4596",
+                "line": 36911,
+                "observationSha256": "11d50c9aaf43ff6e2aa78d8ff2491a4e90e785b9ccff541a6f939f86fce806ca"
+              },
+              "edits": [
+                "Set world.dayTime to 86000 (night) in this recorded daylight bed-preparation moment; physical inventory, blocks, entities and health unchanged.",
+                "Dropped earlier daylight observations; retained recorded latest plan definitions with checks re-evaluated; no authored intent replayed. Restored original complete server goalSpec."
+              ]
+            }
+          },
+          "edits": [
+            "Synthetic setup variant of the recorded inventory/standing snapshot; replaced position, geometry, entities, gear, time, dimension and goal. Removed stale results and perception. Water fills the next tunnel cells; the surface is directly overhead, two blocks up with clear headroom. Air is full before entry.",
+            "Place the exposed iron in the tunnel wall at 2,64,1, separate from the flooded passage cells.",
+            "Use a biome consistent with the derived dimension and include iron chestplate/boots matching the eight armor points."
+          ]
+        }
+      },
+      "state": {
+        "observation": {
+          "observedAtEpochMs": 1792224715031,
+          "ready": true,
+          "status": "RUNNING",
+          "eventSequence": 11329,
+          "attention": true,
+          "changedFacts": [],
+          "position": {
+            "x": 0,
+            "y": 64,
+            "z": 0
+          },
+          "velocity": {
+            "x": 0,
+            "y": -0.0784000015258789,
+            "z": 0
+          },
+          "view": {
+            "yaw": -90,
+            "pitch": 0
+          },
+          "player": {
+            "pose": "standing",
+            "underWater": false,
+            "swimming": false,
+            "gliding": false,
+            "sprinting": false,
+            "crouching": false,
+            "onClimbable": false,
+            "inLava": false,
+            "horizontalCollision": false,
+            "verticalCollision": true,
+            "passenger": false,
+            "skyOpen": true,
+            "groundAhead": {
+              "status": "clear",
+              "at": 8
+            },
+            "health": 20,
+            "maxHealth": 20,
+            "armor": 8,
+            "foodLevel": 20,
+            "saturation": 0.8000001907348633,
+            "gameMode": "survival",
+            "onGround": true,
+            "inWater": false,
+            "onFire": false,
+            "air": 300,
+            "maxAir": 300,
+            "suffocating": false,
+            "fallDistance": 0,
+            "effects": []
+          },
+          "inventory": {
+            "selectedItem": "minecraft:stone_pickaxe",
+            "selectedSlot": 4,
+            "items": [
+              {
+                "itemId": "minecraft:stone_pickaxe",
+                "count": 1,
+                "slot": 4,
+                "hotbar": true,
+                "damage": 10,
+                "maxDamage": 131
+              },
+              {
+                "itemId": "minecraft:iron_pickaxe",
+                "count": 1,
+                "slot": 5,
+                "hotbar": true,
+                "damage": 0,
+                "maxDamage": 250
+              },
+              {
+                "itemId": "minecraft:shield",
+                "count": 1,
+                "slot": "offhand"
+              },
+              {
+                "itemId": "minecraft:iron_sword",
+                "count": 1,
+                "slot": 6,
+                "hotbar": true
+              },
+              {
+                "itemId": "minecraft:cooked_beef",
+                "count": 8,
+                "slot": 8,
+                "hotbar": true
+              },
+              {
+                "itemId": "minecraft:cobblestone",
+                "count": 64,
+                "slot": 3,
+                "hotbar": true
+              },
+              {
+                "itemId": "minecraft:iron_chestplate",
+                "count": 1,
+                "slot": "chest"
+              },
+              {
+                "itemId": "minecraft:iron_boots",
+                "count": 1,
+                "slot": "feet"
+              }
+            ]
+          },
+          "entities": [],
+          "blocks": [
+            {
+              "x": -3,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -3,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -3,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -3,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -3,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 64,
+              "z": 0,
+              "blockId": "minecraft:water"
+            },
+            {
+              "x": 1,
+              "y": 64,
+              "z": 0,
+              "blockId": "minecraft:water"
+            },
+            {
+              "x": 1,
+              "y": 65,
+              "z": 0,
+              "blockId": "minecraft:water"
+            },
+            {
+              "x": 2,
+              "y": 65,
+              "z": 0,
+              "blockId": "minecraft:water"
+            },
+            {
+              "x": 3,
+              "y": 64,
+              "z": 0,
+              "blockId": "minecraft:water"
+            },
+            {
+              "x": 3,
+              "y": 65,
+              "z": 0,
+              "blockId": "minecraft:water"
+            },
+            {
+              "x": 4,
+              "y": 64,
+              "z": 0,
+              "blockId": "minecraft:water"
+            },
+            {
+              "x": 4,
+              "y": 65,
+              "z": 0,
+              "blockId": "minecraft:water"
+            },
+            {
+              "x": 2,
+              "y": 64,
+              "z": 1,
+              "blockId": "minecraft:iron_ore"
+            }
+          ],
+          "world": {
+            "worldId": "46a496eb-1d0f-4578-abea-5337df19d5bd",
+            "dimension": "minecraft:overworld",
+            "biome": "minecraft:plains",
+            "gameTime": 72864,
+            "dayTime": 6000,
+            "raining": false,
+            "thundering": false,
+            "difficulty": "normal",
+            "naturalRegeneration": true
+          },
+          "coverage": {
+            "mode": "sampled_visible",
+            "complete": false,
+            "blocksRadius": 6,
+            "landmarkDistanceLimit": 256,
+            "entitiesDistanceLimit": 128,
+            "sections": {
+              "entities": {
+                "returned": 4,
+                "complete": false
+              },
+              "blocks": {
+                "returned": 24,
+                "complete": false,
+                "placeableFacesFor": "minecraft:cobblestone",
+                "placeableFacesStandIn": true
+              },
+              "landmarks": {
+                "returned": 9,
+                "complete": false
+              },
+              "nearbyContainers": {
+                "returned": 1,
+                "complete": false
+              }
+            }
+          }
+        },
+        "agent": {
+          "goal": "Beat the game",
+          "intent": {
+            "step": "Mine the iron in the shallow flooded tunnel",
+            "why": "Water fills the next tunnel cells; the surface is directly overhead, two blocks up with clear headroom. Air is full before entry.",
+            "via": "Choose safe supported actions from current facts",
+            "until": "Finish this bounded task",
+            "unless": "New danger or failed defense"
+          },
+          "goalSpec": {
+            "originalRequest": "Beat the game",
+            "predicate": {
+              "type": "entity_killed_by_agent",
+              "entityType": "minecraft:ender_dragon",
+              "afterGoalStart": true
+            },
+            "createdAtTick": 132,
+            "fingerprint": "1c76f7dd7a04a42b6c14335733d2c6be544d442ea3f2bc70bb4c2dd17dffd39b"
+          }
+        }
+      },
+      "expect": {
+        "good": [],
+        "bad": [
+          {
+            "index": 0,
+            "tool": [
+              "programStatus",
+              "capabilities",
+              "observe",
+              "taskPlan",
+              "finish"
+            ]
+          },
+          {
+            "none": true
+          }
+        ],
+        "judge": {
+          "rubric": "Grade only the FIRST call. Bad: lookup/status/capabilities/observe first, no useful reflex installation, empty/list-only reflexes, invalid or invented vocabulary, unavailable gear, or a rule unrelated to the evidenced risk. Good requires a first call that installs at least one valid situation-specific reflex: runProgram reflexes alone or with live-authored source, or reflexes carried by an act/sequence alongside a fitting direct action. Judge actual condition/action, thresholds, priority, lifetime and geometry; a token reflex is insufficient. No named or saved rule sets. Before underwater work arm air_below with swim_up, a chosen conservative air threshold, useful priority and important wake. Do not wait for drowning or assume fire protection solves water."
+        },
+        "threshold": 0.67
+      }
+    },
+    {
+      "id": "rx-lava",
+      "family": "rx-lava",
+      "causeClass": "reflex-setup",
+      "split": "train",
+      "quick": false,
+      "rationale": "An exposed lava pocket is at x=3,y=63,z=0. The player stands dry at x=0,y=64,z=0 with clear safe footing behind. Arm a supported hazard response for fire/lava or health that fits this footing, together with safe mining/containment choices. No automatic water placement action exists in reflex vocabulary. Eating alone while staying in lava is not a sufficient response.",
+      "source": {
+        "trace": ".t3/worktrees/agents arena/t3-ba7399a1/runtime/headless-runs/run-1792221047917-2898d71e/q-c24yn0-45e0-LONG-r1-92ff4596",
+        "atMs": 1792224715031,
+        "sourceMomentId": "sm-83db94772914077c",
+        "derived": {
+          "scope": "observation",
+          "from": {
+            "trace": ".t3/worktrees/agents arena/t3-ba7399a1/runtime/headless-runs/run-1792221047917-2898d71e/q-c24yn0-45e0-LONG-r1-92ff4596",
+            "line": 36911,
+            "atMs": 1792224715031,
+            "messageId": "server-27908",
+            "runId": "run-1792221047917-2898d71e",
+            "scenarioId": "q-c24yn0-45e0-LONG-r1",
+            "agentId": "8079f9df-5436-45bc-9f1c-f80f5c29e8c3",
+            "observationSha256": "bbadc424782d6642435d37dd0408b31e7286bf7ae6e50dc8065c2ce6ad77d539",
+            "protocolFile": "quality-protocol.jsonl",
+            "taskPlan": "last recorded plan definitions; checked steps pending (renderer re-evaluates checks)",
+            "sourceMomentId": "sm-83db94772914077c",
+            "derived": {
+              "scope": "observation",
+              "from": {
+                "trace": ".t3/worktrees/agents arena/t3-ba7399a1/runtime/headless-runs/run-1792221047917-2898d71e/q-c24yn0-45e0-LONG-r1-92ff4596",
+                "line": 36911,
+                "observationSha256": "11d50c9aaf43ff6e2aa78d8ff2491a4e90e785b9ccff541a6f939f86fce806ca"
+              },
+              "edits": [
+                "Set world.dayTime to 86000 (night) in this recorded daylight bed-preparation moment; physical inventory, blocks, entities and health unchanged.",
+                "Dropped earlier daylight observations; retained recorded latest plan definitions with checks re-evaluated; no authored intent replayed. Restored original complete server goalSpec."
+              ]
+            }
+          },
+          "edits": [
+            "Synthetic setup variant of the recorded inventory/standing snapshot; replaced position, geometry, entities, gear, time, dimension and goal. Removed stale results and perception. An exposed lava pocket is at x=3,y=63,z=0. The player stands dry at x=0,y=64,z=0 with clear safe footing behind.",
+            "Use a biome consistent with the derived dimension and include iron chestplate/boots matching the eight armor points."
+          ]
+        }
+      },
+      "state": {
+        "observation": {
+          "observedAtEpochMs": 1792224715031,
+          "ready": true,
+          "status": "RUNNING",
+          "eventSequence": 11329,
+          "attention": true,
+          "changedFacts": [],
+          "position": {
+            "x": 0,
+            "y": 64,
+            "z": 0
+          },
+          "velocity": {
+            "x": 0,
+            "y": -0.0784000015258789,
+            "z": 0
+          },
+          "view": {
+            "yaw": -90,
+            "pitch": 0
+          },
+          "player": {
+            "pose": "standing",
+            "underWater": false,
+            "swimming": false,
+            "gliding": false,
+            "sprinting": false,
+            "crouching": false,
+            "onClimbable": false,
+            "inLava": false,
+            "horizontalCollision": false,
+            "verticalCollision": true,
+            "passenger": false,
+            "skyOpen": true,
+            "groundAhead": {
+              "status": "clear",
+              "at": 8
+            },
+            "health": 20,
+            "maxHealth": 20,
+            "armor": 8,
+            "foodLevel": 20,
+            "saturation": 0.8000001907348633,
+            "gameMode": "survival",
+            "onGround": true,
+            "inWater": false,
+            "onFire": false,
+            "air": 300,
+            "maxAir": 300,
+            "suffocating": false,
+            "fallDistance": 0,
+            "effects": []
+          },
+          "inventory": {
+            "selectedItem": "minecraft:stone_pickaxe",
+            "selectedSlot": 4,
+            "items": [
+              {
+                "itemId": "minecraft:stone_pickaxe",
+                "count": 1,
+                "slot": 4,
+                "hotbar": true,
+                "damage": 10,
+                "maxDamage": 131
+              },
+              {
+                "itemId": "minecraft:iron_pickaxe",
+                "count": 1,
+                "slot": 5,
+                "hotbar": true,
+                "damage": 0,
+                "maxDamage": 250
+              },
+              {
+                "itemId": "minecraft:shield",
+                "count": 1,
+                "slot": "offhand"
+              },
+              {
+                "itemId": "minecraft:iron_sword",
+                "count": 1,
+                "slot": 6,
+                "hotbar": true
+              },
+              {
+                "itemId": "minecraft:cooked_beef",
+                "count": 8,
+                "slot": 8,
+                "hotbar": true
+              },
+              {
+                "itemId": "minecraft:cobblestone",
+                "count": 64,
+                "slot": 3,
+                "hotbar": true
+              },
+              {
+                "itemId": "minecraft:iron_chestplate",
+                "count": 1,
+                "slot": "chest"
+              },
+              {
+                "itemId": "minecraft:iron_boots",
+                "count": 1,
+                "slot": "feet"
+              }
+            ]
+          },
+          "entities": [],
+          "blocks": [
+            {
+              "x": -3,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -3,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -3,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -3,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -3,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:lava"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 64,
+              "z": 0,
+              "blockId": "minecraft:iron_ore"
+            }
+          ],
+          "world": {
+            "worldId": "46a496eb-1d0f-4578-abea-5337df19d5bd",
+            "dimension": "minecraft:overworld",
+            "biome": "minecraft:plains",
+            "gameTime": 72864,
+            "dayTime": 6000,
+            "raining": false,
+            "thundering": false,
+            "difficulty": "normal",
+            "naturalRegeneration": true
+          },
+          "coverage": {
+            "mode": "sampled_visible",
+            "complete": false,
+            "blocksRadius": 6,
+            "landmarkDistanceLimit": 256,
+            "entitiesDistanceLimit": 128,
+            "sections": {
+              "entities": {
+                "returned": 4,
+                "complete": false
+              },
+              "blocks": {
+                "returned": 24,
+                "complete": false,
+                "placeableFacesFor": "minecraft:cobblestone",
+                "placeableFacesStandIn": true
+              },
+              "landmarks": {
+                "returned": 9,
+                "complete": false
+              },
+              "nearbyContainers": {
+                "returned": 1,
+                "complete": false
+              }
+            }
+          }
+        },
+        "agent": {
+          "goal": "Beat the game",
+          "intent": {
+            "step": "Mine the iron beside the open lava pocket",
+            "why": "An exposed lava pocket is at x=3,y=63,z=0. The player stands dry at x=0,y=64,z=0 with clear safe footing behind.",
+            "via": "Choose safe supported actions from current facts",
+            "until": "Finish this bounded task",
+            "unless": "New danger or failed defense"
+          },
+          "goalSpec": {
+            "originalRequest": "Beat the game",
+            "predicate": {
+              "type": "entity_killed_by_agent",
+              "entityType": "minecraft:ender_dragon",
+              "afterGoalStart": true
+            },
+            "createdAtTick": 132,
+            "fingerprint": "1c76f7dd7a04a42b6c14335733d2c6be544d442ea3f2bc70bb4c2dd17dffd39b"
+          }
+        }
+      },
+      "expect": {
+        "good": [],
+        "bad": [
+          {
+            "index": 0,
+            "tool": [
+              "programStatus",
+              "capabilities",
+              "observe",
+              "taskPlan",
+              "finish"
+            ]
+          },
+          {
+            "none": true
+          }
+        ],
+        "judge": {
+          "rubric": "Grade only the FIRST call. Bad: lookup/status/capabilities/observe first, no useful reflex installation, empty/list-only reflexes, invalid or invented vocabulary, unavailable gear, or a rule unrelated to the evidenced risk. Good requires a first call that installs at least one valid situation-specific reflex: runProgram reflexes alone or with live-authored source, or reflexes carried by an act/sequence alongside a fitting direct action. Judge actual condition/action, thresholds, priority, lifetime and geometry; a token reflex is insufficient. No named or saved rule sets. Arm a supported hazard response for fire/lava or health that fits this footing, together with safe mining/containment choices. No automatic water placement action exists in reflex vocabulary. Eating alone while staying in lava is not a sufficient response."
+        },
+        "threshold": 0.67
+      }
+    },
+    {
+      "id": "rx-pickaxe",
+      "family": "rx-pickaxe",
+      "causeClass": "reflex-setup",
+      "split": "train",
+      "quick": false,
+      "rationale": "The held stone pickaxe has only 3 durability remaining; a fresh iron pickaxe is in hotbar slot 5. Arm tool_broke -> select of the available spare/tool, with an important wake and bounded lifetime, before the long job. Selecting the spare up front is sensible but alone misses the requested protection of long work.",
+      "source": {
+        "trace": ".t3/worktrees/agents arena/t3-ba7399a1/runtime/headless-runs/run-1792221047917-2898d71e/q-c24yn0-45e0-LONG-r1-92ff4596",
+        "atMs": 1792224715031,
+        "sourceMomentId": "sm-83db94772914077c",
+        "derived": {
+          "scope": "observation",
+          "from": {
+            "trace": ".t3/worktrees/agents arena/t3-ba7399a1/runtime/headless-runs/run-1792221047917-2898d71e/q-c24yn0-45e0-LONG-r1-92ff4596",
+            "line": 36911,
+            "atMs": 1792224715031,
+            "messageId": "server-27908",
+            "runId": "run-1792221047917-2898d71e",
+            "scenarioId": "q-c24yn0-45e0-LONG-r1",
+            "agentId": "8079f9df-5436-45bc-9f1c-f80f5c29e8c3",
+            "observationSha256": "bbadc424782d6642435d37dd0408b31e7286bf7ae6e50dc8065c2ce6ad77d539",
+            "protocolFile": "quality-protocol.jsonl",
+            "taskPlan": "last recorded plan definitions; checked steps pending (renderer re-evaluates checks)",
+            "sourceMomentId": "sm-83db94772914077c",
+            "derived": {
+              "scope": "observation",
+              "from": {
+                "trace": ".t3/worktrees/agents arena/t3-ba7399a1/runtime/headless-runs/run-1792221047917-2898d71e/q-c24yn0-45e0-LONG-r1-92ff4596",
+                "line": 36911,
+                "observationSha256": "11d50c9aaf43ff6e2aa78d8ff2491a4e90e785b9ccff541a6f939f86fce806ca"
+              },
+              "edits": [
+                "Set world.dayTime to 86000 (night) in this recorded daylight bed-preparation moment; physical inventory, blocks, entities and health unchanged.",
+                "Dropped earlier daylight observations; retained recorded latest plan definitions with checks re-evaluated; no authored intent replayed. Restored original complete server goalSpec."
+              ]
+            }
+          },
+          "edits": [
+            "Synthetic setup variant of the recorded inventory/standing snapshot; replaced position, geometry, entities, gear, time, dimension and goal. Removed stale results and perception. The held stone pickaxe has only 3 durability remaining; a fresh iron pickaxe is in hotbar slot 5.",
+            "Use a biome consistent with the derived dimension and include iron chestplate/boots matching the eight armor points."
+          ]
+        }
+      },
+      "state": {
+        "observation": {
+          "observedAtEpochMs": 1792224715031,
+          "ready": true,
+          "status": "RUNNING",
+          "eventSequence": 11329,
+          "attention": true,
+          "changedFacts": [],
+          "position": {
+            "x": 0,
+            "y": 64,
+            "z": 0
+          },
+          "velocity": {
+            "x": 0,
+            "y": -0.0784000015258789,
+            "z": 0
+          },
+          "view": {
+            "yaw": -90,
+            "pitch": 0
+          },
+          "player": {
+            "pose": "standing",
+            "underWater": false,
+            "swimming": false,
+            "gliding": false,
+            "sprinting": false,
+            "crouching": false,
+            "onClimbable": false,
+            "inLava": false,
+            "horizontalCollision": false,
+            "verticalCollision": true,
+            "passenger": false,
+            "skyOpen": true,
+            "groundAhead": {
+              "status": "clear",
+              "at": 8
+            },
+            "health": 20,
+            "maxHealth": 20,
+            "armor": 8,
+            "foodLevel": 20,
+            "saturation": 0.8000001907348633,
+            "gameMode": "survival",
+            "onGround": true,
+            "inWater": false,
+            "onFire": false,
+            "air": 300,
+            "maxAir": 300,
+            "suffocating": false,
+            "fallDistance": 0,
+            "effects": []
+          },
+          "inventory": {
+            "selectedItem": "minecraft:stone_pickaxe",
+            "selectedSlot": 4,
+            "items": [
+              {
+                "itemId": "minecraft:stone_pickaxe",
+                "count": 1,
+                "slot": 4,
+                "hotbar": true,
+                "damage": 128,
+                "maxDamage": 131
+              },
+              {
+                "itemId": "minecraft:iron_pickaxe",
+                "count": 1,
+                "slot": 5,
+                "hotbar": true,
+                "damage": 0,
+                "maxDamage": 250
+              },
+              {
+                "itemId": "minecraft:shield",
+                "count": 1,
+                "slot": "offhand"
+              },
+              {
+                "itemId": "minecraft:iron_sword",
+                "count": 1,
+                "slot": 6,
+                "hotbar": true
+              },
+              {
+                "itemId": "minecraft:cooked_beef",
+                "count": 8,
+                "slot": 8,
+                "hotbar": true
+              },
+              {
+                "itemId": "minecraft:cobblestone",
+                "count": 64,
+                "slot": 3,
+                "hotbar": true
+              },
+              {
+                "itemId": "minecraft:iron_chestplate",
+                "count": 1,
+                "slot": "chest"
+              },
+              {
+                "itemId": "minecraft:iron_boots",
+                "count": 1,
+                "slot": "feet"
+              }
+            ]
+          },
+          "entities": [],
+          "blocks": [
+            {
+              "x": -3,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -3,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -3,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -3,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -3,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            }
+          ],
+          "world": {
+            "worldId": "46a496eb-1d0f-4578-abea-5337df19d5bd",
+            "dimension": "minecraft:overworld",
+            "biome": "minecraft:plains",
+            "gameTime": 72864,
+            "dayTime": 6000,
+            "raining": false,
+            "thundering": false,
+            "difficulty": "normal",
+            "naturalRegeneration": true
+          },
+          "coverage": {
+            "mode": "sampled_visible",
+            "complete": false,
+            "blocksRadius": 6,
+            "landmarkDistanceLimit": 256,
+            "entitiesDistanceLimit": 128,
+            "sections": {
+              "entities": {
+                "returned": 4,
+                "complete": false
+              },
+              "blocks": {
+                "returned": 24,
+                "complete": false,
+                "placeableFacesFor": "minecraft:cobblestone",
+                "placeableFacesStandIn": true
+              },
+              "landmarks": {
+                "returned": 9,
+                "complete": false
+              },
+              "nearbyContainers": {
+                "returned": 1,
+                "complete": false
+              }
+            }
+          }
+        },
+        "agent": {
+          "goal": "Beat the game",
+          "intent": {
+            "step": "Mine 80 stone blocks from the dry quarry",
+            "why": "The held stone pickaxe has only 3 durability remaining; a fresh iron pickaxe is in hotbar slot 5.",
+            "via": "Choose safe supported actions from current facts",
+            "until": "Finish this bounded task",
+            "unless": "New danger or failed defense"
+          },
+          "goalSpec": {
+            "originalRequest": "Beat the game",
+            "predicate": {
+              "type": "entity_killed_by_agent",
+              "entityType": "minecraft:ender_dragon",
+              "afterGoalStart": true
+            },
+            "createdAtTick": 132,
+            "fingerprint": "1c76f7dd7a04a42b6c14335733d2c6be544d442ea3f2bc70bb4c2dd17dffd39b"
+          }
+        }
+      },
+      "expect": {
+        "good": [],
+        "bad": [
+          {
+            "index": 0,
+            "tool": [
+              "programStatus",
+              "capabilities",
+              "observe",
+              "taskPlan",
+              "finish"
+            ]
+          },
+          {
+            "none": true
+          }
+        ],
+        "judge": {
+          "rubric": "Grade only the FIRST call. Bad: lookup/status/capabilities/observe first, no useful reflex installation, empty/list-only reflexes, invalid or invented vocabulary, unavailable gear, or a rule unrelated to the evidenced risk. Good requires a first call that installs at least one valid situation-specific reflex: runProgram reflexes alone or with live-authored source, or reflexes carried by an act/sequence alongside a fitting direct action. Judge actual condition/action, thresholds, priority, lifetime and geometry; a token reflex is insufficient. No named or saved rule sets. Arm tool_broke -> select of the available spare/tool, with an important wake and bounded lifetime, before the long job. Selecting the spare up front is sensible but alone misses the requested protection of long work."
+        },
+        "threshold": 0.67
+      }
+    },
+    {
+      "id": "rx-bridge-lava",
+      "family": "rx-bridge-lava",
+      "causeClass": "reflex-setup",
+      "split": "train",
+      "quick": false,
+      "rationale": "The one-block-wide bridge extends along +x over lava, with no side rail. A ghast is visible ahead. Arm suitable projectile/shield protection before travel and preserve the bridge with supported sneaking/cover or repair in source. step_back can knock the player off if chosen without safe footing; shield alone does not secure the ledge. Do not invent edge conditions or sneak reflex actions absent from the control vocabulary.",
+      "source": {
+        "trace": ".t3/worktrees/agents arena/t3-ba7399a1/runtime/headless-runs/run-1792221047917-2898d71e/q-c24yn0-45e0-LONG-r1-92ff4596",
+        "atMs": 1792224715031,
+        "sourceMomentId": "sm-83db94772914077c",
+        "derived": {
+          "scope": "observation",
+          "from": {
+            "trace": ".t3/worktrees/agents arena/t3-ba7399a1/runtime/headless-runs/run-1792221047917-2898d71e/q-c24yn0-45e0-LONG-r1-92ff4596",
+            "line": 36911,
+            "atMs": 1792224715031,
+            "messageId": "server-27908",
+            "runId": "run-1792221047917-2898d71e",
+            "scenarioId": "q-c24yn0-45e0-LONG-r1",
+            "agentId": "8079f9df-5436-45bc-9f1c-f80f5c29e8c3",
+            "observationSha256": "bbadc424782d6642435d37dd0408b31e7286bf7ae6e50dc8065c2ce6ad77d539",
+            "protocolFile": "quality-protocol.jsonl",
+            "taskPlan": "last recorded plan definitions; checked steps pending (renderer re-evaluates checks)",
+            "sourceMomentId": "sm-83db94772914077c",
+            "derived": {
+              "scope": "observation",
+              "from": {
+                "trace": ".t3/worktrees/agents arena/t3-ba7399a1/runtime/headless-runs/run-1792221047917-2898d71e/q-c24yn0-45e0-LONG-r1-92ff4596",
+                "line": 36911,
+                "observationSha256": "11d50c9aaf43ff6e2aa78d8ff2491a4e90e785b9ccff541a6f939f86fce806ca"
+              },
+              "edits": [
+                "Set world.dayTime to 86000 (night) in this recorded daylight bed-preparation moment; physical inventory, blocks, entities and health unchanged.",
+                "Dropped earlier daylight observations; retained recorded latest plan definitions with checks re-evaluated; no authored intent replayed. Restored original complete server goalSpec."
+              ]
+            }
+          },
+          "edits": [
+            "Synthetic setup variant of the recorded inventory/standing snapshot; replaced position, geometry, entities, gear, time, dimension and goal. Removed stale results and perception. The one-block-wide bridge extends along +x over lava, with no side rail. A ghast is visible ahead.",
+            "Use a biome consistent with the derived dimension and include iron chestplate/boots matching the eight armor points."
+          ]
+        }
+      },
+      "state": {
+        "observation": {
+          "observedAtEpochMs": 1792224715031,
+          "ready": true,
+          "status": "RUNNING",
+          "eventSequence": 11329,
+          "attention": true,
+          "changedFacts": [],
+          "position": {
+            "x": 0,
+            "y": 64,
+            "z": 0
+          },
+          "velocity": {
+            "x": 0,
+            "y": -0.0784000015258789,
+            "z": 0
+          },
+          "view": {
+            "yaw": -90,
+            "pitch": 0
+          },
+          "player": {
+            "pose": "standing",
+            "underWater": false,
+            "swimming": false,
+            "gliding": false,
+            "sprinting": false,
+            "crouching": false,
+            "onClimbable": false,
+            "inLava": false,
+            "horizontalCollision": false,
+            "verticalCollision": true,
+            "passenger": false,
+            "skyOpen": true,
+            "groundAhead": {
+              "status": "clear",
+              "at": 8
+            },
+            "health": 20,
+            "maxHealth": 20,
+            "armor": 8,
+            "foodLevel": 20,
+            "saturation": 0.8000001907348633,
+            "gameMode": "survival",
+            "onGround": true,
+            "inWater": false,
+            "onFire": false,
+            "air": 300,
+            "maxAir": 300,
+            "suffocating": false,
+            "fallDistance": 0,
+            "effects": []
+          },
+          "inventory": {
+            "selectedItem": "minecraft:stone_pickaxe",
+            "selectedSlot": 4,
+            "items": [
+              {
+                "itemId": "minecraft:stone_pickaxe",
+                "count": 1,
+                "slot": 4,
+                "hotbar": true,
+                "damage": 10,
+                "maxDamage": 131
+              },
+              {
+                "itemId": "minecraft:iron_pickaxe",
+                "count": 1,
+                "slot": 5,
+                "hotbar": true,
+                "damage": 0,
+                "maxDamage": 250
+              },
+              {
+                "itemId": "minecraft:shield",
+                "count": 1,
+                "slot": "offhand"
+              },
+              {
+                "itemId": "minecraft:iron_sword",
+                "count": 1,
+                "slot": 6,
+                "hotbar": true
+              },
+              {
+                "itemId": "minecraft:cooked_beef",
+                "count": 8,
+                "slot": 8,
+                "hotbar": true
+              },
+              {
+                "itemId": "minecraft:cobblestone",
+                "count": 64,
+                "slot": 3,
+                "hotbar": true
+              },
+              {
+                "itemId": "minecraft:iron_chestplate",
+                "count": 1,
+                "slot": "chest"
+              },
+              {
+                "itemId": "minecraft:iron_boots",
+                "count": 1,
+                "slot": "feet"
+              }
+            ]
+          },
+          "entities": [
+            {
+              "uuid": "00000000-0000-4000-8000-000000000061",
+              "type": "minecraft:ghast",
+              "name": "ghast",
+              "distance": 22,
+              "position": {
+                "x": 22,
+                "y": 64,
+                "z": 0
+              },
+              "alive": true,
+              "health": 20,
+              "maxHealth": 20,
+              "hostile": true,
+              "targetingAgent": true,
+              "pickable": true,
+              "perceivedBy": "sight",
+              "visible": true
+            }
+          ],
+          "blocks": [
+            {
+              "x": -3,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            }
+          ],
+          "world": {
+            "worldId": "46a496eb-1d0f-4578-abea-5337df19d5bd",
+            "dimension": "minecraft:the_nether",
+            "biome": "minecraft:nether_wastes",
+            "gameTime": 72864,
+            "dayTime": 6000,
+            "raining": false,
+            "thundering": false,
+            "difficulty": "normal",
+            "naturalRegeneration": true
+          },
+          "coverage": {
+            "mode": "sampled_visible",
+            "complete": false,
+            "blocksRadius": 6,
+            "landmarkDistanceLimit": 256,
+            "entitiesDistanceLimit": 128,
+            "sections": {
+              "entities": {
+                "returned": 4,
+                "complete": false
+              },
+              "blocks": {
+                "returned": 24,
+                "complete": false,
+                "placeableFacesFor": "minecraft:cobblestone",
+                "placeableFacesStandIn": true
+              },
+              "landmarks": {
+                "returned": 9,
+                "complete": false
+              },
+              "nearbyContainers": {
+                "returned": 1,
+                "complete": false
+              }
+            }
+          }
+        },
+        "agent": {
+          "goal": "Beat the game",
+          "intent": {
+            "step": "Cross the narrow Nether bridge",
+            "why": "The one-block-wide bridge extends along +x over lava, with no side rail. A ghast is visible ahead.",
+            "via": "Choose safe supported actions from current facts",
+            "until": "Finish this bounded task",
+            "unless": "New danger or failed defense"
+          },
+          "goalSpec": {
+            "originalRequest": "Beat the game",
+            "predicate": {
+              "type": "entity_killed_by_agent",
+              "entityType": "minecraft:ender_dragon",
+              "afterGoalStart": true
+            },
+            "createdAtTick": 132,
+            "fingerprint": "1c76f7dd7a04a42b6c14335733d2c6be544d442ea3f2bc70bb4c2dd17dffd39b"
+          }
+        }
+      },
+      "expect": {
+        "good": [],
+        "bad": [
+          {
+            "index": 0,
+            "tool": [
+              "programStatus",
+              "capabilities",
+              "observe",
+              "taskPlan",
+              "finish"
+            ]
+          },
+          {
+            "none": true
+          }
+        ],
+        "judge": {
+          "rubric": "Grade only the FIRST call. Bad: lookup/status/capabilities/observe first, no useful reflex installation, empty/list-only reflexes, invalid or invented vocabulary, unavailable gear, or a rule unrelated to the evidenced risk. Good requires a first call that installs at least one valid situation-specific reflex: runProgram reflexes alone or with live-authored source, or reflexes carried by an act/sequence alongside a fitting direct action. Judge actual condition/action, thresholds, priority, lifetime and geometry; a token reflex is insufficient. No named or saved rule sets. Arm suitable projectile/shield protection before travel and preserve the bridge with supported sneaking/cover or repair in source. step_back can knock the player off if chosen without safe footing; shield alone does not secure the ledge. Do not invent edge conditions or sneak reflex actions absent from the control vocabulary."
+        },
+        "threshold": 0.67
+      }
+    },
+    {
+      "id": "rx-bridge-void",
+      "family": "rx-bridge-void",
+      "causeClass": "reflex-setup",
+      "split": "train",
+      "quick": false,
+      "rationale": "A one-block-wide player-built bridge extends along +x over the void. A skeleton is visible on the island ahead. Arm pre-raised shield protection and choose supported sneak/cover/bridge repair in source. No unsupported edge/sneak reflex vocabulary; a blind sidestep or backward movement off the bridge is bad.",
+      "source": {
+        "trace": ".t3/worktrees/agents arena/t3-ba7399a1/runtime/headless-runs/run-1792221047917-2898d71e/q-c24yn0-45e0-LONG-r1-92ff4596",
+        "atMs": 1792224715031,
+        "sourceMomentId": "sm-83db94772914077c",
+        "derived": {
+          "scope": "observation",
+          "from": {
+            "trace": ".t3/worktrees/agents arena/t3-ba7399a1/runtime/headless-runs/run-1792221047917-2898d71e/q-c24yn0-45e0-LONG-r1-92ff4596",
+            "line": 36911,
+            "atMs": 1792224715031,
+            "messageId": "server-27908",
+            "runId": "run-1792221047917-2898d71e",
+            "scenarioId": "q-c24yn0-45e0-LONG-r1",
+            "agentId": "8079f9df-5436-45bc-9f1c-f80f5c29e8c3",
+            "observationSha256": "bbadc424782d6642435d37dd0408b31e7286bf7ae6e50dc8065c2ce6ad77d539",
+            "protocolFile": "quality-protocol.jsonl",
+            "taskPlan": "last recorded plan definitions; checked steps pending (renderer re-evaluates checks)",
+            "sourceMomentId": "sm-83db94772914077c",
+            "derived": {
+              "scope": "observation",
+              "from": {
+                "trace": ".t3/worktrees/agents arena/t3-ba7399a1/runtime/headless-runs/run-1792221047917-2898d71e/q-c24yn0-45e0-LONG-r1-92ff4596",
+                "line": 36911,
+                "observationSha256": "11d50c9aaf43ff6e2aa78d8ff2491a4e90e785b9ccff541a6f939f86fce806ca"
+              },
+              "edits": [
+                "Set world.dayTime to 86000 (night) in this recorded daylight bed-preparation moment; physical inventory, blocks, entities and health unchanged.",
+                "Dropped earlier daylight observations; retained recorded latest plan definitions with checks re-evaluated; no authored intent replayed. Restored original complete server goalSpec."
+              ]
+            }
+          },
+          "edits": [
+            "Synthetic setup variant of the recorded inventory/standing snapshot; replaced position, geometry, entities, gear, time, dimension and goal. Removed stale results and perception. A one-block-wide player-built bridge extends along +x over the void. A skeleton is visible on the island ahead.",
+            "Use a biome consistent with the derived dimension and include iron chestplate/boots matching the eight armor points."
+          ]
+        }
+      },
+      "state": {
+        "observation": {
+          "observedAtEpochMs": 1792224715031,
+          "ready": true,
+          "status": "RUNNING",
+          "eventSequence": 11329,
+          "attention": true,
+          "changedFacts": [],
+          "position": {
+            "x": 0,
+            "y": 64,
+            "z": 0
+          },
+          "velocity": {
+            "x": 0,
+            "y": -0.0784000015258789,
+            "z": 0
+          },
+          "view": {
+            "yaw": -90,
+            "pitch": 0
+          },
+          "player": {
+            "pose": "standing",
+            "underWater": false,
+            "swimming": false,
+            "gliding": false,
+            "sprinting": false,
+            "crouching": false,
+            "onClimbable": false,
+            "inLava": false,
+            "horizontalCollision": false,
+            "verticalCollision": true,
+            "passenger": false,
+            "skyOpen": true,
+            "groundAhead": {
+              "status": "clear",
+              "at": 8
+            },
+            "health": 20,
+            "maxHealth": 20,
+            "armor": 8,
+            "foodLevel": 20,
+            "saturation": 0.8000001907348633,
+            "gameMode": "survival",
+            "onGround": true,
+            "inWater": false,
+            "onFire": false,
+            "air": 300,
+            "maxAir": 300,
+            "suffocating": false,
+            "fallDistance": 0,
+            "effects": []
+          },
+          "inventory": {
+            "selectedItem": "minecraft:stone_pickaxe",
+            "selectedSlot": 4,
+            "items": [
+              {
+                "itemId": "minecraft:stone_pickaxe",
+                "count": 1,
+                "slot": 4,
+                "hotbar": true,
+                "damage": 10,
+                "maxDamage": 131
+              },
+              {
+                "itemId": "minecraft:iron_pickaxe",
+                "count": 1,
+                "slot": 5,
+                "hotbar": true,
+                "damage": 0,
+                "maxDamage": 250
+              },
+              {
+                "itemId": "minecraft:shield",
+                "count": 1,
+                "slot": "offhand"
+              },
+              {
+                "itemId": "minecraft:iron_sword",
+                "count": 1,
+                "slot": 6,
+                "hotbar": true
+              },
+              {
+                "itemId": "minecraft:cooked_beef",
+                "count": 8,
+                "slot": 8,
+                "hotbar": true
+              },
+              {
+                "itemId": "minecraft:cobblestone",
+                "count": 64,
+                "slot": 3,
+                "hotbar": true
+              },
+              {
+                "itemId": "minecraft:iron_chestplate",
+                "count": 1,
+                "slot": "chest"
+              },
+              {
+                "itemId": "minecraft:iron_boots",
+                "count": 1,
+                "slot": "feet"
+              }
+            ]
+          },
+          "entities": [
+            {
+              "uuid": "00000000-0000-4000-8000-000000000071",
+              "type": "minecraft:skeleton",
+              "name": "skeleton",
+              "distance": 14,
+              "position": {
+                "x": 14,
+                "y": 64,
+                "z": 0
+              },
+              "alive": true,
+              "health": 20,
+              "maxHealth": 20,
+              "hostile": true,
+              "targetingAgent": true,
+              "pickable": true,
+              "perceivedBy": "sight",
+              "visible": true
+            }
+          ],
+          "blocks": [
+            {
+              "x": -3,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            }
+          ],
+          "world": {
+            "worldId": "46a496eb-1d0f-4578-abea-5337df19d5bd",
+            "dimension": "minecraft:the_end",
+            "biome": "minecraft:end_highlands",
+            "gameTime": 72864,
+            "dayTime": 6000,
+            "raining": false,
+            "thundering": false,
+            "difficulty": "normal",
+            "naturalRegeneration": true
+          },
+          "coverage": {
+            "mode": "sampled_visible",
+            "complete": false,
+            "blocksRadius": 6,
+            "landmarkDistanceLimit": 256,
+            "entitiesDistanceLimit": 128,
+            "sections": {
+              "entities": {
+                "returned": 4,
+                "complete": false
+              },
+              "blocks": {
+                "returned": 24,
+                "complete": false,
+                "placeableFacesFor": "minecraft:cobblestone",
+                "placeableFacesStandIn": true
+              },
+              "landmarks": {
+                "returned": 9,
+                "complete": false
+              },
+              "nearbyContainers": {
+                "returned": 1,
+                "complete": false
+              }
+            }
+          }
+        },
+        "agent": {
+          "goal": "Beat the game",
+          "intent": {
+            "step": "Cross the narrow bridge to the End island",
+            "why": "A one-block-wide player-built bridge extends along +x over the void. A skeleton is visible on the island ahead.",
+            "via": "Choose safe supported actions from current facts",
+            "until": "Finish this bounded task",
+            "unless": "New danger or failed defense"
+          },
+          "goalSpec": {
+            "originalRequest": "Beat the game",
+            "predicate": {
+              "type": "entity_killed_by_agent",
+              "entityType": "minecraft:ender_dragon",
+              "afterGoalStart": true
+            },
+            "createdAtTick": 132,
+            "fingerprint": "1c76f7dd7a04a42b6c14335733d2c6be544d442ea3f2bc70bb4c2dd17dffd39b"
+          }
+        }
+      },
+      "expect": {
+        "good": [],
+        "bad": [
+          {
+            "index": 0,
+            "tool": [
+              "programStatus",
+              "capabilities",
+              "observe",
+              "taskPlan",
+              "finish"
+            ]
+          },
+          {
+            "none": true
+          }
+        ],
+        "judge": {
+          "rubric": "Grade only the FIRST call. Bad: lookup/status/capabilities/observe first, no useful reflex installation, empty/list-only reflexes, invalid or invented vocabulary, unavailable gear, or a rule unrelated to the evidenced risk. Good requires a first call that installs at least one valid situation-specific reflex: runProgram reflexes alone or with live-authored source, or reflexes carried by an act/sequence alongside a fitting direct action. Judge actual condition/action, thresholds, priority, lifetime and geometry; a token reflex is insufficient. No named or saved rule sets. Arm pre-raised shield protection and choose supported sneak/cover/bridge repair in source. No unsupported edge/sneak reflex vocabulary; a blind sidestep or backward movement off the bridge is bad."
+        },
+        "threshold": 0.67
+      }
+    },
+    {
+      "id": "rx-bastion",
+      "family": "rx-bastion",
+      "causeClass": "reflex-setup",
+      "split": "train",
+      "quick": false,
+      "rationale": "A bastion entrance contains a crossbow piglin and an axe-wielding brute. No gold armor is equipped; broad safe retreat ground is behind. Arm shield stance and appropriate survival response before approach, with important wake and bounded encounter scope. Distinguish brute danger from bartering; avoid an attack stance that needlessly provokes neutral piglins. Gold does not pacify a brute.",
+      "source": {
+        "trace": ".t3/worktrees/agents arena/t3-ba7399a1/runtime/headless-runs/run-1792221047917-2898d71e/q-c24yn0-45e0-LONG-r1-92ff4596",
+        "atMs": 1792224715031,
+        "sourceMomentId": "sm-83db94772914077c",
+        "derived": {
+          "scope": "observation",
+          "from": {
+            "trace": ".t3/worktrees/agents arena/t3-ba7399a1/runtime/headless-runs/run-1792221047917-2898d71e/q-c24yn0-45e0-LONG-r1-92ff4596",
+            "line": 36911,
+            "atMs": 1792224715031,
+            "messageId": "server-27908",
+            "runId": "run-1792221047917-2898d71e",
+            "scenarioId": "q-c24yn0-45e0-LONG-r1",
+            "agentId": "8079f9df-5436-45bc-9f1c-f80f5c29e8c3",
+            "observationSha256": "bbadc424782d6642435d37dd0408b31e7286bf7ae6e50dc8065c2ce6ad77d539",
+            "protocolFile": "quality-protocol.jsonl",
+            "taskPlan": "last recorded plan definitions; checked steps pending (renderer re-evaluates checks)",
+            "sourceMomentId": "sm-83db94772914077c",
+            "derived": {
+              "scope": "observation",
+              "from": {
+                "trace": ".t3/worktrees/agents arena/t3-ba7399a1/runtime/headless-runs/run-1792221047917-2898d71e/q-c24yn0-45e0-LONG-r1-92ff4596",
+                "line": 36911,
+                "observationSha256": "11d50c9aaf43ff6e2aa78d8ff2491a4e90e785b9ccff541a6f939f86fce806ca"
+              },
+              "edits": [
+                "Set world.dayTime to 86000 (night) in this recorded daylight bed-preparation moment; physical inventory, blocks, entities and health unchanged.",
+                "Dropped earlier daylight observations; retained recorded latest plan definitions with checks re-evaluated; no authored intent replayed. Restored original complete server goalSpec."
+              ]
+            }
+          },
+          "edits": [
+            "Synthetic setup variant of the recorded inventory/standing snapshot; replaced position, geometry, entities, gear, time, dimension and goal. Removed stale results and perception. A bastion entrance contains a crossbow piglin and an axe-wielding brute. No gold armor is equipped; broad safe retreat ground is behind.",
+            "Use a biome consistent with the derived dimension and include iron chestplate/boots matching the eight armor points."
+          ]
+        }
+      },
+      "state": {
+        "observation": {
+          "observedAtEpochMs": 1792224715031,
+          "ready": true,
+          "status": "RUNNING",
+          "eventSequence": 11329,
+          "attention": true,
+          "changedFacts": [],
+          "position": {
+            "x": 0,
+            "y": 64,
+            "z": 0
+          },
+          "velocity": {
+            "x": 0,
+            "y": -0.0784000015258789,
+            "z": 0
+          },
+          "view": {
+            "yaw": -90,
+            "pitch": 0
+          },
+          "player": {
+            "pose": "standing",
+            "underWater": false,
+            "swimming": false,
+            "gliding": false,
+            "sprinting": false,
+            "crouching": false,
+            "onClimbable": false,
+            "inLava": false,
+            "horizontalCollision": false,
+            "verticalCollision": true,
+            "passenger": false,
+            "skyOpen": true,
+            "groundAhead": {
+              "status": "clear",
+              "at": 8
+            },
+            "health": 20,
+            "maxHealth": 20,
+            "armor": 8,
+            "foodLevel": 20,
+            "saturation": 0.8000001907348633,
+            "gameMode": "survival",
+            "onGround": true,
+            "inWater": false,
+            "onFire": false,
+            "air": 300,
+            "maxAir": 300,
+            "suffocating": false,
+            "fallDistance": 0,
+            "effects": []
+          },
+          "inventory": {
+            "selectedItem": "minecraft:stone_pickaxe",
+            "selectedSlot": 4,
+            "items": [
+              {
+                "itemId": "minecraft:stone_pickaxe",
+                "count": 1,
+                "slot": 4,
+                "hotbar": true,
+                "damage": 10,
+                "maxDamage": 131
+              },
+              {
+                "itemId": "minecraft:iron_pickaxe",
+                "count": 1,
+                "slot": 5,
+                "hotbar": true,
+                "damage": 0,
+                "maxDamage": 250
+              },
+              {
+                "itemId": "minecraft:shield",
+                "count": 1,
+                "slot": "offhand"
+              },
+              {
+                "itemId": "minecraft:iron_sword",
+                "count": 1,
+                "slot": 6,
+                "hotbar": true
+              },
+              {
+                "itemId": "minecraft:cooked_beef",
+                "count": 8,
+                "slot": 8,
+                "hotbar": true
+              },
+              {
+                "itemId": "minecraft:cobblestone",
+                "count": 64,
+                "slot": 3,
+                "hotbar": true
+              },
+              {
+                "itemId": "minecraft:iron_chestplate",
+                "count": 1,
+                "slot": "chest"
+              },
+              {
+                "itemId": "minecraft:iron_boots",
+                "count": 1,
+                "slot": "feet"
+              }
+            ]
+          },
+          "entities": [
+            {
+              "uuid": "00000000-0000-4000-8000-000000000081",
+              "type": "minecraft:piglin",
+              "name": "piglin",
+              "distance": 10,
+              "position": {
+                "x": 10,
+                "y": 64,
+                "z": 0
+              },
+              "alive": true,
+              "health": 20,
+              "maxHealth": 20,
+              "hostile": false,
+              "targetingAgent": false,
+              "pickable": true,
+              "perceivedBy": "sight",
+              "visible": true
+            },
+            {
+              "uuid": "00000000-0000-4000-8000-000000000082",
+              "type": "minecraft:piglin_brute",
+              "name": "piglin_brute",
+              "distance": 15,
+              "position": {
+                "x": 15,
+                "y": 64,
+                "z": 0
+              },
+              "alive": true,
+              "health": 20,
+              "maxHealth": 20,
+              "hostile": true,
+              "targetingAgent": true,
+              "pickable": true,
+              "perceivedBy": "sight",
+              "visible": true
+            }
+          ],
+          "blocks": [
+            {
+              "x": -3,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -3,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -3,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -3,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -3,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            }
+          ],
+          "world": {
+            "worldId": "46a496eb-1d0f-4578-abea-5337df19d5bd",
+            "dimension": "minecraft:the_nether",
+            "biome": "minecraft:nether_wastes",
+            "gameTime": 72864,
+            "dayTime": 6000,
+            "raining": false,
+            "thundering": false,
+            "difficulty": "normal",
+            "naturalRegeneration": true
+          },
+          "coverage": {
+            "mode": "sampled_visible",
+            "complete": false,
+            "blocksRadius": 6,
+            "landmarkDistanceLimit": 256,
+            "entitiesDistanceLimit": 128,
+            "sections": {
+              "entities": {
+                "returned": 4,
+                "complete": false
+              },
+              "blocks": {
+                "returned": 24,
+                "complete": false,
+                "placeableFacesFor": "minecraft:cobblestone",
+                "placeableFacesStandIn": true
+              },
+              "landmarks": {
+                "returned": 9,
+                "complete": false
+              },
+              "nearbyContainers": {
+                "returned": 1,
+                "complete": false
+              }
+            }
+          }
+        },
+        "agent": {
+          "goal": "Beat the game",
+          "intent": {
+            "step": "Approach the bastion piglins to barter for pearl",
+            "why": "A bastion entrance contains a crossbow piglin and an axe-wielding brute. No gold armor is equipped; broad safe retreat ground is behind.",
+            "via": "Choose safe supported actions from current facts",
+            "until": "Finish this bounded task",
+            "unless": "New danger or failed defense"
+          },
+          "goalSpec": {
+            "originalRequest": "Beat the game",
+            "predicate": {
+              "type": "entity_killed_by_agent",
+              "entityType": "minecraft:ender_dragon",
+              "afterGoalStart": true
+            },
+            "createdAtTick": 132,
+            "fingerprint": "1c76f7dd7a04a42b6c14335733d2c6be544d442ea3f2bc70bb4c2dd17dffd39b"
+          }
+        }
+      },
+      "expect": {
+        "good": [],
+        "bad": [
+          {
+            "index": 0,
+            "tool": [
+              "programStatus",
+              "capabilities",
+              "observe",
+              "taskPlan",
+              "finish"
+            ]
+          },
+          {
+            "none": true
+          }
+        ],
+        "judge": {
+          "rubric": "Grade only the FIRST call. Bad: lookup/status/capabilities/observe first, no useful reflex installation, empty/list-only reflexes, invalid or invented vocabulary, unavailable gear, or a rule unrelated to the evidenced risk. Good requires a first call that installs at least one valid situation-specific reflex: runProgram reflexes alone or with live-authored source, or reflexes carried by an act/sequence alongside a fitting direct action. Judge actual condition/action, thresholds, priority, lifetime and geometry; a token reflex is insufficient. No named or saved rule sets. Arm shield stance and appropriate survival response before approach, with important wake and bounded encounter scope. Distinguish brute danger from bartering; avoid an attack stance that needlessly provokes neutral piglins. Gold does not pacify a brute."
+        },
+        "threshold": 0.67
+      }
+    },
+    {
+      "id": "rx-armed",
+      "family": "rx-maintenance",
+      "causeClass": "reflex-maintenance",
+      "split": "train",
+      "quick": false,
+      "rationale": "The already authored fortress-cover stance is still armed and has blocked three hits. Good: continue useful supported fortress work/fighting/cover with existing protection. Do not re-arm, duplicate or replace working rules merely because a new program starts. Bad: any redundant reflex install, list/status/capabilities first, or waiting without useful purpose. Rules persist across programs.",
+      "source": {
+        "trace": ".t3/worktrees/agents arena/t3-ba7399a1/runtime/headless-runs/run-1792221047917-2898d71e/q-c24yn0-45e0-LONG-r1-92ff4596",
+        "atMs": 1792224715031,
+        "sourceMomentId": "sm-83db94772914077c",
+        "derived": {
+          "scope": "observation",
+          "from": {
+            "trace": ".t3/worktrees/agents arena/t3-ba7399a1/runtime/headless-runs/run-1792221047917-2898d71e/q-c24yn0-45e0-LONG-r1-92ff4596",
+            "line": 36911,
+            "atMs": 1792224715031,
+            "messageId": "server-27908",
+            "runId": "run-1792221047917-2898d71e",
+            "scenarioId": "q-c24yn0-45e0-LONG-r1",
+            "agentId": "8079f9df-5436-45bc-9f1c-f80f5c29e8c3",
+            "observationSha256": "bbadc424782d6642435d37dd0408b31e7286bf7ae6e50dc8065c2ce6ad77d539",
+            "protocolFile": "quality-protocol.jsonl",
+            "taskPlan": "last recorded plan definitions; checked steps pending (renderer re-evaluates checks)",
+            "sourceMomentId": "sm-83db94772914077c",
+            "derived": {
+              "scope": "observation",
+              "from": {
+                "trace": ".t3/worktrees/agents arena/t3-ba7399a1/runtime/headless-runs/run-1792221047917-2898d71e/q-c24yn0-45e0-LONG-r1-92ff4596",
+                "line": 36911,
+                "observationSha256": "11d50c9aaf43ff6e2aa78d8ff2491a4e90e785b9ccff541a6f939f86fce806ca"
+              },
+              "edits": [
+                "Set world.dayTime to 86000 (night) in this recorded daylight bed-preparation moment; physical inventory, blocks, entities and health unchanged.",
+                "Dropped earlier daylight observations; retained recorded latest plan definitions with checks re-evaluated; no authored intent replayed. Restored original complete server goalSpec."
+              ]
+            }
+          },
+          "edits": [
+            "Synthetic setup variant of the recorded inventory/standing snapshot; replaced position, geometry, entities, gear, time, dimension and goal. Removed stale results and perception. A blaze and its spawner are ahead on a broad nether-brick platform. No projectile is in flight yet.",
+            "Seeded prior live-authored rule and mod firing status; The already authored fortress-cover stance is still armed and has blocked three hits. Good: continue useful supported fortress work/fighting/cover with existing protection. Do not re-arm, duplicate or replace working rules merely because a new program starts. Bad: any redundant reflex install, list/status/capabilities first, or waiting without useful purpose. Rules persist across programs.",
+            "Use a biome consistent with the derived dimension and include iron chestplate/boots matching the eight armor points."
+          ]
+        }
+      },
+      "state": {
+        "observation": {
+          "observedAtEpochMs": 1792224715031,
+          "ready": true,
+          "status": "RUNNING",
+          "eventSequence": 11329,
+          "attention": true,
+          "changedFacts": [],
+          "position": {
+            "x": 0,
+            "y": 64,
+            "z": 0
+          },
+          "velocity": {
+            "x": 0,
+            "y": -0.0784000015258789,
+            "z": 0
+          },
+          "view": {
+            "yaw": -90,
+            "pitch": 0
+          },
+          "player": {
+            "pose": "standing",
+            "underWater": false,
+            "swimming": false,
+            "gliding": false,
+            "sprinting": false,
+            "crouching": false,
+            "onClimbable": false,
+            "inLava": false,
+            "horizontalCollision": false,
+            "verticalCollision": true,
+            "passenger": false,
+            "skyOpen": true,
+            "groundAhead": {
+              "status": "clear",
+              "at": 8
+            },
+            "health": 20,
+            "maxHealth": 20,
+            "armor": 8,
+            "foodLevel": 20,
+            "saturation": 0.8000001907348633,
+            "gameMode": "survival",
+            "onGround": true,
+            "inWater": false,
+            "onFire": false,
+            "air": 300,
+            "maxAir": 300,
+            "suffocating": false,
+            "fallDistance": 0,
+            "effects": []
+          },
+          "inventory": {
+            "selectedItem": "minecraft:stone_pickaxe",
+            "selectedSlot": 4,
+            "items": [
+              {
+                "itemId": "minecraft:stone_pickaxe",
+                "count": 1,
+                "slot": 4,
+                "hotbar": true,
+                "damage": 10,
+                "maxDamage": 131
+              },
+              {
+                "itemId": "minecraft:iron_pickaxe",
+                "count": 1,
+                "slot": 5,
+                "hotbar": true,
+                "damage": 0,
+                "maxDamage": 250
+              },
+              {
+                "itemId": "minecraft:shield",
+                "count": 1,
+                "slot": "offhand"
+              },
+              {
+                "itemId": "minecraft:iron_sword",
+                "count": 1,
+                "slot": 6,
+                "hotbar": true
+              },
+              {
+                "itemId": "minecraft:cooked_beef",
+                "count": 8,
+                "slot": 8,
+                "hotbar": true
+              },
+              {
+                "itemId": "minecraft:cobblestone",
+                "count": 64,
+                "slot": 3,
+                "hotbar": true
+              },
+              {
+                "itemId": "minecraft:iron_chestplate",
+                "count": 1,
+                "slot": "chest"
+              },
+              {
+                "itemId": "minecraft:iron_boots",
+                "count": 1,
+                "slot": "feet"
+              }
+            ]
+          },
+          "entities": [
+            {
+              "uuid": "00000000-0000-4000-8000-000000000001",
+              "type": "minecraft:blaze",
+              "name": "blaze",
+              "distance": 12,
+              "position": {
+                "x": 12,
+                "y": 64,
+                "z": 0
+              },
+              "alive": true,
+              "health": 20,
+              "maxHealth": 20,
+              "hostile": true,
+              "targetingAgent": true,
+              "pickable": true,
+              "perceivedBy": "sight",
+              "visible": true
+            }
+          ],
+          "blocks": [
+            {
+              "x": -3,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -3,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -3,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -3,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -3,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 10,
+              "y": 64,
+              "z": 0,
+              "blockId": "minecraft:spawner"
+            }
+          ],
+          "world": {
+            "worldId": "46a496eb-1d0f-4578-abea-5337df19d5bd",
+            "dimension": "minecraft:the_nether",
+            "biome": "minecraft:nether_wastes",
+            "gameTime": 72864,
+            "dayTime": 6000,
+            "raining": false,
+            "thundering": false,
+            "difficulty": "normal",
+            "naturalRegeneration": true
+          },
+          "coverage": {
+            "mode": "sampled_visible",
+            "complete": false,
+            "blocksRadius": 6,
+            "landmarkDistanceLimit": 256,
+            "entitiesDistanceLimit": 128,
+            "sections": {
+              "entities": {
+                "returned": 4,
+                "complete": false
+              },
+              "blocks": {
+                "returned": 24,
+                "complete": false,
+                "placeableFacesFor": "minecraft:cobblestone",
+                "placeableFacesStandIn": true
+              },
+              "landmarks": {
+                "returned": 9,
+                "complete": false
+              },
+              "nearbyContainers": {
+                "returned": 1,
+                "complete": false
+              }
+            }
+          },
+          "reflexes": {
+            "revision": 1,
+            "rules": [
+              {
+                "id": "fortress-cover",
+                "kind": "stance",
+                "state": "armed",
+                "fired": 1,
+                "expiresInS": 160
+              }
+            ],
+            "events": [
+              {
+                "seq": 1,
+                "id": "fortress-cover",
+                "outcome": "done",
+                "ms": 1600,
+                "detail": "blocked 3 hit(s)"
+              }
+            ]
+          }
+        },
+        "agent": {
+          "goal": "Beat the game",
+          "intent": {
+            "step": "Collect blaze rods from the fortress ahead",
+            "why": "A blaze and its spawner are ahead on a broad nether-brick platform. No projectile is in flight yet.",
+            "via": "Choose safe supported actions from current facts",
+            "until": "Finish this bounded task",
+            "unless": "New danger or failed defense"
+          },
+          "reflexes": [
+            {
+              "id": "fortress-cover",
+              "kind": "stance",
+              "priority": 7,
+              "when": {
+                "type": "hostile_near",
+                "within": 20,
+                "mobs": [
+                  "blaze"
+                ]
+              },
+              "do": {
+                "type": "shield"
+              },
+              "ttlS": 180,
+              "wake": true
+            }
+          ],
+          "goalSpec": {
+            "originalRequest": "Beat the game",
+            "predicate": {
+              "type": "entity_killed_by_agent",
+              "entityType": "minecraft:ender_dragon",
+              "afterGoalStart": true
+            },
+            "createdAtTick": 132,
+            "fingerprint": "1c76f7dd7a04a42b6c14335733d2c6be544d442ea3f2bc70bb4c2dd17dffd39b"
+          }
+        }
+      },
+      "expect": {
+        "good": [],
+        "bad": [
+          {
+            "index": 0,
+            "tool": [
+              "programStatus",
+              "capabilities",
+              "observe",
+              "finish"
+            ]
+          },
+          {
+            "none": true
+          }
+        ],
+        "judge": {
+          "rubric": "The already authored fortress-cover stance is still armed and has blocked three hits. Good: continue useful supported fortress work/fighting/cover with existing protection. Do not re-arm, duplicate or replace working rules merely because a new program starts. Bad: any redundant reflex install, list/status/capabilities first, or waiting without useful purpose. Rules persist across programs."
+        },
+        "threshold": 0.67
+      }
+    },
+    {
+      "id": "rx-adjust",
+      "family": "rx-maintenance",
+      "causeClass": "reflex-maintenance",
+      "split": "train",
+      "quick": false,
+      "rationale": "A shield stance has failed and is disabled because the shield broke; current inventory has no shield. Good: replace or remove that rule by its existing id and author a viable retreat/cover/other defense from current gear, using the firing report. Bad: reinstall the same shield rule, duplicate it under a new id, or trust the disabled rule. Lookups first are bad.",
+      "source": {
+        "trace": ".t3/worktrees/agents arena/t3-ba7399a1/runtime/headless-runs/run-1792221047917-2898d71e/q-c24yn0-45e0-LONG-r1-92ff4596",
+        "atMs": 1792224715031,
+        "sourceMomentId": "sm-83db94772914077c",
+        "derived": {
+          "scope": "observation",
+          "from": {
+            "trace": ".t3/worktrees/agents arena/t3-ba7399a1/runtime/headless-runs/run-1792221047917-2898d71e/q-c24yn0-45e0-LONG-r1-92ff4596",
+            "line": 36911,
+            "atMs": 1792224715031,
+            "messageId": "server-27908",
+            "runId": "run-1792221047917-2898d71e",
+            "scenarioId": "q-c24yn0-45e0-LONG-r1",
+            "agentId": "8079f9df-5436-45bc-9f1c-f80f5c29e8c3",
+            "observationSha256": "bbadc424782d6642435d37dd0408b31e7286bf7ae6e50dc8065c2ce6ad77d539",
+            "protocolFile": "quality-protocol.jsonl",
+            "taskPlan": "last recorded plan definitions; checked steps pending (renderer re-evaluates checks)",
+            "sourceMomentId": "sm-83db94772914077c",
+            "derived": {
+              "scope": "observation",
+              "from": {
+                "trace": ".t3/worktrees/agents arena/t3-ba7399a1/runtime/headless-runs/run-1792221047917-2898d71e/q-c24yn0-45e0-LONG-r1-92ff4596",
+                "line": 36911,
+                "observationSha256": "11d50c9aaf43ff6e2aa78d8ff2491a4e90e785b9ccff541a6f939f86fce806ca"
+              },
+              "edits": [
+                "Set world.dayTime to 86000 (night) in this recorded daylight bed-preparation moment; physical inventory, blocks, entities and health unchanged.",
+                "Dropped earlier daylight observations; retained recorded latest plan definitions with checks re-evaluated; no authored intent replayed. Restored original complete server goalSpec."
+              ]
+            }
+          },
+          "edits": [
+            "Synthetic setup variant of the recorded inventory/standing snapshot; replaced position, geometry, entities, gear, time, dimension and goal. Removed stale results and perception. A blaze and its spawner are ahead on a broad nether-brick platform. No projectile is in flight yet.",
+            "Seeded prior live-authored rule and mod firing status; A shield stance has failed and is disabled because the shield broke; current inventory has no shield. Good: replace or remove that rule by its existing id and author a viable retreat/cover/other defense from current gear, using the firing report. Bad: reinstall the same shield rule, duplicate it under a new id, or trust the disabled rule. Lookups first are bad.",
+            "Use a biome consistent with the derived dimension and include iron chestplate/boots matching the eight armor points."
+          ]
+        }
+      },
+      "state": {
+        "observation": {
+          "observedAtEpochMs": 1792224715031,
+          "ready": true,
+          "status": "RUNNING",
+          "eventSequence": 11329,
+          "attention": true,
+          "changedFacts": [],
+          "position": {
+            "x": 0,
+            "y": 64,
+            "z": 0
+          },
+          "velocity": {
+            "x": 0,
+            "y": -0.0784000015258789,
+            "z": 0
+          },
+          "view": {
+            "yaw": -90,
+            "pitch": 0
+          },
+          "player": {
+            "pose": "standing",
+            "underWater": false,
+            "swimming": false,
+            "gliding": false,
+            "sprinting": false,
+            "crouching": false,
+            "onClimbable": false,
+            "inLava": false,
+            "horizontalCollision": false,
+            "verticalCollision": true,
+            "passenger": false,
+            "skyOpen": true,
+            "groundAhead": {
+              "status": "clear",
+              "at": 8
+            },
+            "health": 20,
+            "maxHealth": 20,
+            "armor": 8,
+            "foodLevel": 20,
+            "saturation": 0.8000001907348633,
+            "gameMode": "survival",
+            "onGround": true,
+            "inWater": false,
+            "onFire": false,
+            "air": 300,
+            "maxAir": 300,
+            "suffocating": false,
+            "fallDistance": 0,
+            "effects": []
+          },
+          "inventory": {
+            "selectedItem": "minecraft:stone_pickaxe",
+            "selectedSlot": 4,
+            "items": [
+              {
+                "itemId": "minecraft:stone_pickaxe",
+                "count": 1,
+                "slot": 4,
+                "hotbar": true,
+                "damage": 10,
+                "maxDamage": 131
+              },
+              {
+                "itemId": "minecraft:iron_pickaxe",
+                "count": 1,
+                "slot": 5,
+                "hotbar": true,
+                "damage": 0,
+                "maxDamage": 250
+              },
+              {
+                "itemId": "minecraft:iron_sword",
+                "count": 1,
+                "slot": 6,
+                "hotbar": true
+              },
+              {
+                "itemId": "minecraft:cooked_beef",
+                "count": 8,
+                "slot": 8,
+                "hotbar": true
+              },
+              {
+                "itemId": "minecraft:cobblestone",
+                "count": 64,
+                "slot": 3,
+                "hotbar": true
+              },
+              {
+                "itemId": "minecraft:iron_chestplate",
+                "count": 1,
+                "slot": "chest"
+              },
+              {
+                "itemId": "minecraft:iron_boots",
+                "count": 1,
+                "slot": "feet"
+              }
+            ]
+          },
+          "entities": [
+            {
+              "uuid": "00000000-0000-4000-8000-000000000001",
+              "type": "minecraft:blaze",
+              "name": "blaze",
+              "distance": 12,
+              "position": {
+                "x": 12,
+                "y": 64,
+                "z": 0
+              },
+              "alive": true,
+              "health": 20,
+              "maxHealth": 20,
+              "hostile": true,
+              "targetingAgent": true,
+              "pickable": true,
+              "perceivedBy": "sight",
+              "visible": true
+            }
+          ],
+          "blocks": [
+            {
+              "x": -3,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -3,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -3,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -3,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -3,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -2,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": -1,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 0,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 1,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 2,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 3,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 4,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 5,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 6,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": -2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": -1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": 0,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": 1,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 7,
+              "y": 63,
+              "z": 2,
+              "blockId": "minecraft:stone"
+            },
+            {
+              "x": 10,
+              "y": 64,
+              "z": 0,
+              "blockId": "minecraft:spawner"
+            }
+          ],
+          "world": {
+            "worldId": "46a496eb-1d0f-4578-abea-5337df19d5bd",
+            "dimension": "minecraft:the_nether",
+            "biome": "minecraft:nether_wastes",
+            "gameTime": 72864,
+            "dayTime": 6000,
+            "raining": false,
+            "thundering": false,
+            "difficulty": "normal",
+            "naturalRegeneration": true
+          },
+          "coverage": {
+            "mode": "sampled_visible",
+            "complete": false,
+            "blocksRadius": 6,
+            "landmarkDistanceLimit": 256,
+            "entitiesDistanceLimit": 128,
+            "sections": {
+              "entities": {
+                "returned": 4,
+                "complete": false
+              },
+              "blocks": {
+                "returned": 24,
+                "complete": false,
+                "placeableFacesFor": "minecraft:cobblestone",
+                "placeableFacesStandIn": true
+              },
+              "landmarks": {
+                "returned": 9,
+                "complete": false
+              },
+              "nearbyContainers": {
+                "returned": 1,
+                "complete": false
+              }
+            }
+          },
+          "reflexes": {
+            "revision": 1,
+            "rules": [
+              {
+                "id": "fortress-cover",
+                "kind": "stance",
+                "state": "disabled",
+                "fired": 4,
+                "expiresInS": 160,
+                "disabled": "four firings without progress"
+              }
+            ],
+            "events": [
+              {
+                "seq": 1,
+                "id": "fortress-cover",
+                "outcome": "failed",
+                "ms": 50,
+                "detail": "no shield equipped",
+                "wake": true
+              }
+            ]
+          }
+        },
+        "agent": {
+          "goal": "Beat the game",
+          "intent": {
+            "step": "Collect blaze rods from the fortress ahead",
+            "why": "A blaze and its spawner are ahead on a broad nether-brick platform. No projectile is in flight yet.",
+            "via": "Choose safe supported actions from current facts",
+            "until": "Finish this bounded task",
+            "unless": "New danger or failed defense"
+          },
+          "reflexes": [
+            {
+              "id": "fortress-cover",
+              "kind": "stance",
+              "priority": 7,
+              "when": {
+                "type": "hostile_near",
+                "within": 20,
+                "mobs": [
+                  "blaze"
+                ]
+              },
+              "do": {
+                "type": "shield"
+              },
+              "ttlS": 180,
+              "wake": true
+            }
+          ],
+          "goalSpec": {
+            "originalRequest": "Beat the game",
+            "predicate": {
+              "type": "entity_killed_by_agent",
+              "entityType": "minecraft:ender_dragon",
+              "afterGoalStart": true
+            },
+            "createdAtTick": 132,
+            "fingerprint": "1c76f7dd7a04a42b6c14335733d2c6be544d442ea3f2bc70bb4c2dd17dffd39b"
+          }
+        }
+      },
+      "expect": {
+        "good": [],
+        "bad": [
+          {
+            "index": 0,
+            "tool": [
+              "programStatus",
+              "capabilities",
+              "observe",
+              "finish"
+            ]
+          },
+          {
+            "none": true
+          }
+        ],
+        "judge": {
+          "rubric": "A shield stance has failed and is disabled because the shield broke; current inventory has no shield. Good: replace or remove that rule by its existing id and author a viable retreat/cover/other defense from current gear, using the firing report. Bad: reinstall the same shield rule, duplicate it under a new id, or trust the disabled rule. Lookups first are bad."
+        },
+        "threshold": 0.67
+      }
+    }
+  ]
+}

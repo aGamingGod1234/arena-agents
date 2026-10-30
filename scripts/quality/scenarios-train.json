@@ -1,0 +1,2309 @@
+{
+  "version": 1,
+  "split": "train",
+  "scenarios": [
+    {
+      "id": "T01",
+      "version": 2,
+      "name": "plains-gather-v2-1",
+      "seed": "20261010",
+      "goal": "Gather four oak logs.",
+      "durationBudgetMs": 300000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": true
+      },
+      "categories": {
+        "biome": "plains",
+        "dimension": "overworld",
+        "time": "day",
+        "weather": "clear",
+        "condition": "full",
+        "gear": "none",
+        "threat": "none",
+        "place": "open",
+        "goalType": "gather"
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          0.5,
+          100,
+          0.5
+        ],
+        "surface": true,
+        "time": 1000,
+        "weather": "clear",
+        "commands": [
+          "gamerule spawn_mobs false",
+          "execute at {agent} run fill ~-5 ~ ~3 ~-5 ~4 ~3 minecraft:oak_log"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 8
+          }
+        ],
+        "armour": {},
+        "effects": [],
+        "mobs": [],
+        "freezeUntilGoalStart": true,
+        "finalCommands": [],
+        "groundBelowCanopy": true,
+        "naturalGround": true,
+        "locate": {
+          "type": "biome",
+          "id": "minecraft:plains"
+        },
+        "expectedBiome": "minecraft:plains",
+        "respawnAtStart": true,
+        "generality": true
+      },
+      "objective": {
+        "type": "inventory",
+        "items": [
+          {
+            "item": "minecraft:oak_log",
+            "count": 4
+          }
+        ]
+      },
+      "fixtureKind": "natural-biome-with-declared-resource-patch",
+      "worldRules": {
+        "send_command_feedback": false
+      }
+    },
+    {
+      "id": "T02",
+      "version": 2,
+      "name": "birch-forest-progression-v2-2",
+      "seed": "20261010",
+      "goal": "Smelt the raw iron and craft an iron pickaxe.",
+      "durationBudgetMs": 300000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": true
+      },
+      "categories": {
+        "biome": "birch_forest",
+        "dimension": "overworld",
+        "time": "day",
+        "weather": "clear",
+        "condition": "full",
+        "gear": "stone",
+        "threat": "none",
+        "place": "camp",
+        "goalType": "progression"
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          0.5,
+          100,
+          0.5
+        ],
+        "surface": true,
+        "time": 1000,
+        "weather": "clear",
+        "commands": [
+          "gamerule spawn_mobs false",
+          "execute at {agent} run setblock ~-3 ~ ~2 minecraft:furnace",
+          "execute at {agent} run setblock ~2 ~ ~-3 minecraft:crafting_table"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:stone_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:raw_iron",
+            "count": 3
+          },
+          {
+            "item": "minecraft:coal",
+            "count": 3
+          },
+          {
+            "item": "minecraft:stick",
+            "count": 2
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 8
+          }
+        ],
+        "armour": {},
+        "effects": [],
+        "mobs": [],
+        "freezeUntilGoalStart": true,
+        "finalCommands": [],
+        "groundBelowCanopy": true,
+        "naturalGround": true,
+        "locate": {
+          "type": "biome",
+          "id": "minecraft:birch_forest"
+        },
+        "expectedBiome": "minecraft:birch_forest",
+        "respawnAtStart": true,
+        "generality": true
+      },
+      "objective": {
+        "type": "inventory",
+        "items": [
+          {
+            "item": "minecraft:iron_pickaxe",
+            "count": 1
+          }
+        ]
+      },
+      "fixtureKind": "natural-biome-with-declared-resource-patch",
+      "worldRules": {
+        "send_command_feedback": false
+      }
+    },
+    {
+      "id": "T03",
+      "version": 2,
+      "name": "the-end-recover-v2-3",
+      "seed": "20261010",
+      "goal": "Recover your dropped diamond on this End island and keep it. The dragon has already been defeated; avoid looking at endermen.",
+      "durationBudgetMs": 300000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": true
+      },
+      "categories": {
+        "biome": "the_end",
+        "dimension": "end",
+        "time": "day",
+        "weather": "clear",
+        "condition": "full",
+        "gear": "none",
+        "threat": "enderman",
+        "place": "island",
+        "goalType": "recover"
+      },
+      "setup": {
+        "dimension": "minecraft:the_end",
+        "position": [
+          42.5,
+          65,
+          36.5
+        ],
+        "surface": true,
+        "time": 1000,
+        "weather": "clear",
+        "commands": [
+          "gamerule spawn_mobs false",
+          "execute in minecraft:the_end run kill @e[type=minecraft:ender_dragon]",
+          "execute at {agent} run summon minecraft:item ~-8 ~1 ~-5 {Item:{id:\"minecraft:diamond\",count:1},PickupDelay:0s,Age:0s}"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 8
+          },
+          {
+            "item": "minecraft:cobblestone",
+            "count": 32
+          }
+        ],
+        "armour": {},
+        "effects": [],
+        "mobs": [
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              -12,
+              0,
+              7
+            ],
+            "naturalGround": true,
+            "nbt": "{PersistenceRequired:1b}"
+          }
+        ],
+        "freezeUntilGoalStart": true,
+        "finalCommands": [],
+        "groundBelowCanopy": true,
+        "naturalGround": true,
+        "respawnAtStart": true,
+        "generality": true
+      },
+      "objective": {
+        "type": "inventory",
+        "items": [
+          {
+            "item": "minecraft:diamond",
+            "count": 1
+          }
+        ]
+      },
+      "fixtureKind": "natural-end-island-with-lost-item",
+      "worldRules": {
+        "send_command_feedback": false
+      }
+    },
+    {
+      "id": "T04",
+      "version": 2,
+      "name": "forest-shelter-v2-4",
+      "seed": "20261010",
+      "goal": "Build a small shelter with solid walls and a solid roof, then stand inside it.",
+      "durationBudgetMs": 300000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": true
+      },
+      "categories": {
+        "biome": "forest",
+        "dimension": "overworld",
+        "time": "day",
+        "weather": "clear",
+        "condition": "full",
+        "gear": "none",
+        "threat": "none",
+        "place": "open",
+        "goalType": "shelter"
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          0.5,
+          100,
+          0.5
+        ],
+        "surface": true,
+        "time": 1000,
+        "weather": "clear",
+        "commands": [],
+        "inventory": [
+          {
+            "item": "minecraft:oak_planks",
+            "count": 48
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 8
+          }
+        ],
+        "armour": {},
+        "effects": [],
+        "mobs": [],
+        "freezeUntilGoalStart": true,
+        "finalCommands": [],
+        "locate": {
+          "type": "biome",
+          "id": "minecraft:forest"
+        },
+        "expectedBiome": "minecraft:forest",
+        "groundBelowCanopy": true,
+        "naturalGround": true,
+        "respawnAtStart": true,
+        "generality": true
+      },
+      "objective": {
+        "type": "shelter"
+      },
+      "fixtureKind": "natural-biome-location",
+      "worldRules": {
+        "send_command_feedback": false
+      }
+    },
+    {
+      "id": "T05",
+      "version": 2,
+      "name": "desert-gather-v2-5",
+      "seed": "20261010",
+      "goal": "Gather six sand.",
+      "durationBudgetMs": 300000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": true
+      },
+      "categories": {
+        "biome": "desert",
+        "dimension": "overworld",
+        "time": "day",
+        "weather": "thunder",
+        "condition": "hungry",
+        "gear": "none",
+        "threat": "none",
+        "place": "open",
+        "goalType": "gather"
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          0.5,
+          100,
+          0.5
+        ],
+        "surface": true,
+        "time": 1000,
+        "weather": "thunder",
+        "commands": [],
+        "inventory": [
+          {
+            "item": "minecraft:stone_shovel",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 8
+          }
+        ],
+        "armour": {},
+        "effects": [],
+        "mobs": [],
+        "freezeUntilGoalStart": true,
+        "finalCommands": [],
+        "locate": {
+          "type": "biome",
+          "id": "minecraft:desert"
+        },
+        "expectedBiome": "minecraft:desert",
+        "foodLevelTarget": 8,
+        "naturalGround": true,
+        "respawnAtStart": true,
+        "generality": true,
+        "groundBelowCanopy": true
+      },
+      "objective": {
+        "type": "inventory",
+        "items": [
+          {
+            "item": "minecraft:sand",
+            "count": 6
+          }
+        ]
+      },
+      "fixtureKind": "natural-biome-location",
+      "worldRules": {
+        "send_command_feedback": false
+      }
+    },
+    {
+      "id": "T06",
+      "version": 2,
+      "name": "snowy-plains-survive-v2-6",
+      "seed": "20261010",
+      "goal": "Survive the night until sunrise.",
+      "durationBudgetMs": 600000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": true
+      },
+      "categories": {
+        "biome": "snowy_plains",
+        "dimension": "overworld",
+        "time": "night",
+        "weather": "clear",
+        "condition": "full",
+        "gear": "none",
+        "threat": "none",
+        "place": "open",
+        "goalType": [
+          "survive",
+          "long-goal"
+        ]
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          0.5,
+          100,
+          0.5
+        ],
+        "surface": true,
+        "time": 13000,
+        "weather": "clear",
+        "commands": [],
+        "inventory": [
+          {
+            "item": "minecraft:oak_planks",
+            "count": 32
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 8
+          }
+        ],
+        "armour": {},
+        "effects": [],
+        "mobs": [],
+        "freezeUntilGoalStart": true,
+        "finalCommands": [],
+        "locate": {
+          "type": "biome",
+          "id": "minecraft:snowy_plains"
+        },
+        "expectedBiome": "minecraft:snowy_plains",
+        "naturalGround": true,
+        "respawnAtStart": true,
+        "generality": true,
+        "groundBelowCanopy": true
+      },
+      "objective": {
+        "type": "daylight"
+      },
+      "fixtureKind": "natural-biome-location",
+      "worldRules": {
+        "send_command_feedback": false
+      }
+    },
+    {
+      "id": "T07",
+      "version": 2,
+      "name": "jungle-farm-v2-7",
+      "seed": "20261010",
+      "goal": "Gather four cocoa beans.",
+      "durationBudgetMs": 300000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": true
+      },
+      "categories": {
+        "biome": "jungle",
+        "dimension": "overworld",
+        "time": "day",
+        "weather": "clear",
+        "condition": "full",
+        "gear": "none",
+        "threat": "none",
+        "place": "open",
+        "goalType": "farm"
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          1248.5,
+          100,
+          -639.5
+        ],
+        "surface": true,
+        "time": 1000,
+        "weather": "clear",
+        "commands": [
+          "execute at {agent} run setblock ~-4 ~ ~3 minecraft:jungle_log",
+          "execute at {agent} run setblock ~-4 ~ ~2 minecraft:cocoa[age=2,facing=south]",
+          "execute at {agent} run setblock ~-4 ~1 ~2 minecraft:cocoa[age=2,facing=south]"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:stone_axe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 8
+          }
+        ],
+        "armour": {},
+        "effects": [],
+        "mobs": [],
+        "freezeUntilGoalStart": true,
+        "finalCommands": [],
+        "expectedBiome": "minecraft:jungle",
+        "groundBelowCanopy": true,
+        "naturalGround": true,
+        "respawnAtStart": true,
+        "generality": true
+      },
+      "objective": {
+        "type": "inventory",
+        "items": [
+          {
+            "item": "minecraft:cocoa_beans",
+            "count": 4
+          }
+        ]
+      },
+      "fixtureKind": "seeded-natural-jungle-ground-verified",
+      "worldRules": {
+        "send_command_feedback": false
+      }
+    },
+    {
+      "id": "T08",
+      "version": 2,
+      "name": "swamp-gather-v2-8",
+      "seed": "20261010",
+      "goal": "Gather eight clay balls.",
+      "durationBudgetMs": 300000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": true
+      },
+      "categories": {
+        "biome": "swamp",
+        "dimension": "overworld",
+        "time": "day",
+        "weather": "rain",
+        "condition": "full",
+        "gear": "none",
+        "threat": "none",
+        "place": "open",
+        "goalType": "gather"
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          0.5,
+          100,
+          0.5
+        ],
+        "surface": true,
+        "time": 1000,
+        "weather": "rain",
+        "commands": [],
+        "inventory": [
+          {
+            "item": "minecraft:stone_shovel",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 8
+          }
+        ],
+        "armour": {},
+        "effects": [],
+        "mobs": [],
+        "freezeUntilGoalStart": true,
+        "finalCommands": [],
+        "locate": {
+          "type": "biome",
+          "id": "minecraft:swamp"
+        },
+        "expectedBiome": "minecraft:swamp",
+        "groundBelowCanopy": true,
+        "respawnAtStart": true,
+        "naturalGround": true,
+        "generality": true
+      },
+      "objective": {
+        "type": "inventory",
+        "items": [
+          {
+            "item": "minecraft:clay_ball",
+            "count": 8
+          }
+        ]
+      },
+      "fixtureKind": "natural-biome-location",
+      "worldRules": {
+        "send_command_feedback": false
+      }
+    },
+    {
+      "id": "T09",
+      "version": 2,
+      "name": "ocean-shelter-v2-9",
+      "seed": "20261010",
+      "goal": "Build a small shelter with solid walls and a solid roof on this island, then stand inside it.",
+      "durationBudgetMs": 300000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": true
+      },
+      "categories": {
+        "biome": "ocean",
+        "dimension": "overworld",
+        "time": "day",
+        "weather": "clear",
+        "condition": "full",
+        "gear": "none",
+        "threat": "none",
+        "place": "island",
+        "goalType": "shelter"
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          0.5,
+          64,
+          0.5
+        ],
+        "surface": false,
+        "time": 1000,
+        "weather": "clear",
+        "commands": [
+          "gamerule spawn_mobs false",
+          "execute at {agent} run fill ~-6 ~-5 ~-5 ~6 ~-2 ~5 minecraft:sand",
+          "execute at {agent} run fill ~-4 ~-1 ~-3 ~4 ~-1 ~3 minecraft:grass_block",
+          "execute at {agent} run fill ~-2 ~-1 ~-5 ~2 ~-1 ~5 minecraft:grass_block",
+          "execute at {agent} run fill ~-5 ~ ~-5 ~5 ~4 ~5 minecraft:air"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:oak_planks",
+            "count": 64
+          },
+          {
+            "item": "minecraft:dirt",
+            "count": 32
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 8
+          }
+        ],
+        "armour": {},
+        "effects": [],
+        "mobs": [],
+        "freezeUntilGoalStart": true,
+        "finalCommands": [],
+        "locate": {
+          "type": "biome",
+          "id": "minecraft:ocean"
+        },
+        "expectedBiome": "minecraft:ocean",
+        "naturalGround": true,
+        "respawnAtStart": true,
+        "generality": true
+      },
+      "objective": {
+        "type": "shelter"
+      },
+      "fixtureKind": "natural-ocean-with-built-sea-level-island",
+      "worldRules": {
+        "send_command_feedback": false
+      }
+    },
+    {
+      "id": "T10",
+      "version": 2,
+      "name": "windswept-hills-navigate-v2-10",
+      "seed": "20261010",
+      "goal": "Return to your home lookout, marked by the tall blue wool pillar to the northeast. Find a safe route through the hills.",
+      "durationBudgetMs": 300000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": true
+      },
+      "categories": {
+        "biome": "windswept_hills",
+        "dimension": "overworld",
+        "time": "day",
+        "weather": "clear",
+        "condition": "full",
+        "gear": "none",
+        "threat": "none",
+        "place": "mountain",
+        "goalType": "navigate"
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          0.5,
+          100,
+          0.5
+        ],
+        "surface": true,
+        "time": 1000,
+        "weather": "clear",
+        "commands": [
+          "gamerule spawn_mobs false",
+          "execute at {agent} positioned ~32 ~ ~-20 positioned over world_surface run summon minecraft:armor_stand ~2 ~ ~ {Tags:[\"qo_home\"],Marker:1b,Invisible:1b,Invulnerable:1b}",
+          "execute at {agent} positioned ~32 ~ ~-20 positioned over world_surface run fill ~-1 ~-1 ~-1 ~1 ~-1 ~1 minecraft:cobblestone",
+          "execute at {agent} positioned ~32 ~ ~-20 positioned over world_surface run fill ~ ~ ~ ~ ~5 ~ minecraft:blue_wool"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 8
+          }
+        ],
+        "armour": {},
+        "effects": [],
+        "mobs": [],
+        "freezeUntilGoalStart": true,
+        "finalCommands": [],
+        "groundBelowCanopy": true,
+        "naturalGround": true,
+        "locate": {
+          "type": "biome",
+          "id": "minecraft:windswept_hills"
+        },
+        "expectedBiome": "minecraft:windswept_hills",
+        "respawnAtStart": true,
+        "generality": true
+      },
+      "objective": {
+        "type": "rcon",
+        "rcon": "execute at {agent} if entity @e[type=minecraft:armor_stand,tag=qo_home,distance=..4] run time query gametime"
+      },
+      "fixtureKind": "natural-biome-with-declared-resource-patch",
+      "worldRules": {
+        "send_command_feedback": false
+      }
+    },
+    {
+      "id": "T11",
+      "version": 3,
+      "name": "lush-caves-gather-v3-11",
+      "seed": "20261010",
+      "goal": "When darkness falls, mine four raw iron in this cave. Use your torches to find your way safely.",
+      "durationBudgetMs": 300000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": true
+      },
+      "categories": {
+        "biome": "lush_caves",
+        "dimension": "overworld",
+        "time": "day",
+        "weather": "clear",
+        "condition": "darkness",
+        "gear": "stone",
+        "threat": "none",
+        "place": "natural-cave",
+        "goalType": "gather"
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          0.5,
+          20,
+          0.5
+        ],
+        "surface": false,
+        "time": 1000,
+        "weather": "clear",
+        "commands": [
+          "gamerule spawn_mobs false",
+          "execute at {agent} run fill ~-3 ~-1 ~2 ~-3 ~-1 ~5 minecraft:iron_ore"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:stone_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:torch",
+            "count": 16
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 8
+          }
+        ],
+        "armour": {},
+        "effects": [
+          {
+            "id": "minecraft:darkness",
+            "seconds": 35
+          }
+        ],
+        "mobs": [],
+        "freezeUntilGoalStart": true,
+        "finalCommands": [],
+        "groundBelowCanopy": true,
+        "naturalGround": true,
+        "locate": {
+          "type": "biome",
+          "id": "minecraft:lush_caves"
+        },
+        "expectedBiome": "minecraft:lush_caves",
+        "naturalCave": true,
+        "respawnAtStart": true,
+        "generality": true,
+        "activation": "first-decision"
+      },
+      "objective": {
+        "type": "inventory",
+        "items": [
+          {
+            "item": "minecraft:raw_iron",
+            "count": 4
+          }
+        ]
+      },
+      "fixtureKind": "natural-lush-cave-with-declared-ore-patch",
+      "worldRules": {
+        "send_command_feedback": false
+      }
+    },
+    {
+      "id": "T12",
+      "version": 2,
+      "name": "meadow-recover-v2-12",
+      "seed": "20261010",
+      "goal": "Recover to at least eight hearts.",
+      "durationBudgetMs": 300000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": true
+      },
+      "categories": {
+        "biome": "meadow",
+        "dimension": "overworld",
+        "time": "day",
+        "weather": "clear",
+        "condition": [
+          "low-health",
+          "hungry"
+        ],
+        "gear": "none",
+        "threat": "none",
+        "place": "mountain",
+        "goalType": "recover"
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          0.5,
+          100,
+          0.5
+        ],
+        "surface": true,
+        "time": 1000,
+        "weather": "clear",
+        "commands": [
+          "gamerule spawn_mobs false"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 8
+          }
+        ],
+        "armour": {},
+        "effects": [],
+        "mobs": [],
+        "freezeUntilGoalStart": true,
+        "finalCommands": [
+          "damage {agent} 14 minecraft:generic"
+        ],
+        "groundBelowCanopy": true,
+        "naturalGround": true,
+        "locate": {
+          "type": "biome",
+          "id": "minecraft:meadow"
+        },
+        "expectedBiome": "minecraft:meadow",
+        "foodLevelTarget": 12,
+        "respawnAtStart": true,
+        "generality": true
+      },
+      "objective": {
+        "type": "health",
+        "minimum": 16
+      },
+      "fixtureKind": "natural-biome-location",
+      "worldRules": {
+        "send_command_feedback": false
+      }
+    },
+    {
+      "id": "T13",
+      "version": 2,
+      "name": "warped-forest-craft-v2-13",
+      "seed": "20261010",
+      "goal": "Make room in your full inventory and craft a stone axe from the resources you have.",
+      "durationBudgetMs": 300000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": true
+      },
+      "categories": {
+        "biome": "warped_forest",
+        "dimension": "nether",
+        "time": "day",
+        "weather": "clear",
+        "condition": "full-inventory",
+        "gear": "wood",
+        "threat": "none",
+        "place": "nether-terrain",
+        "goalType": "craft"
+      },
+      "setup": {
+        "dimension": "minecraft:the_nether",
+        "position": [
+          0.5,
+          70,
+          0.5
+        ],
+        "surface": false,
+        "time": 1000,
+        "weather": "clear",
+        "commands": [
+          "gamerule spawn_mobs false",
+          "execute at {agent} run setblock ~-4 ~ ~-3 minecraft:crafting_table"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:dirt",
+            "count": 2048
+          },
+          {
+            "item": "minecraft:cobblestone",
+            "count": 12
+          },
+          {
+            "item": "minecraft:stick",
+            "count": 5
+          },
+          {
+            "item": "minecraft:oak_planks",
+            "count": 16
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 8
+          }
+        ],
+        "armour": {},
+        "effects": [],
+        "mobs": [],
+        "freezeUntilGoalStart": true,
+        "finalCommands": [],
+        "groundBelowCanopy": false,
+        "naturalGround": true,
+        "locate": {
+          "type": "biome",
+          "id": "minecraft:warped_forest"
+        },
+        "expectedBiome": "minecraft:warped_forest",
+        "respawnAtStart": true,
+        "naturalCave": true,
+        "generality": true
+      },
+      "objective": {
+        "type": "inventory",
+        "items": [
+          {
+            "item": "minecraft:stone_axe",
+            "count": 1
+          }
+        ]
+      },
+      "fixtureKind": "natural-biome-with-declared-resource-patch",
+      "worldRules": {
+        "send_command_feedback": false
+      }
+    },
+    {
+      "id": "T14",
+      "version": 3,
+      "name": "savanna-survive-v3-14",
+      "seed": "20261010",
+      "goal": "When the fire starts around you, extinguish it and get to safety without dying.",
+      "durationBudgetMs": 300000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": true
+      },
+      "categories": {
+        "biome": "savanna",
+        "dimension": "overworld",
+        "time": "day",
+        "weather": "clear",
+        "condition": "on-fire",
+        "gear": "none",
+        "threat": "none",
+        "place": "open",
+        "goalType": "survive"
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          0.5,
+          100,
+          0.5
+        ],
+        "surface": true,
+        "time": 1000,
+        "weather": "clear",
+        "commands": [
+          "gamerule spawn_mobs false"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:water_bucket",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 8
+          }
+        ],
+        "armour": {},
+        "effects": [],
+        "mobs": [],
+        "freezeUntilGoalStart": true,
+        "finalCommands": [
+          "execute at {agent} run setblock ~ ~ ~ minecraft:fire"
+        ],
+        "groundBelowCanopy": true,
+        "naturalGround": true,
+        "locate": {
+          "type": "biome",
+          "id": "minecraft:savanna"
+        },
+        "expectedBiome": "minecraft:savanna",
+        "respawnAtStart": true,
+        "activation": "first-decision",
+        "generality": true
+      },
+      "objective": {
+        "type": "survival",
+        "minimumMs": 270000,
+        "endState": {
+          "onFire": false,
+          "inLava": false
+        }
+      },
+      "fixtureKind": "natural-biome-location",
+      "worldRules": {
+        "send_command_feedback": false
+      }
+    },
+    {
+      "id": "T15",
+      "version": 3,
+      "name": "river-survive-v3-15",
+      "seed": "20261010",
+      "goal": "When this area floods, reach breathable air and get to safety without dying.",
+      "durationBudgetMs": 300000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": true
+      },
+      "categories": {
+        "biome": "river",
+        "dimension": "overworld",
+        "time": "day",
+        "weather": "clear",
+        "condition": "underwater",
+        "gear": "none",
+        "threat": "none",
+        "place": "river",
+        "goalType": "survive"
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          0.5,
+          60,
+          0.5
+        ],
+        "surface": false,
+        "time": 1000,
+        "weather": "clear",
+        "commands": [
+          "gamerule spawn_mobs false",
+          "execute at {agent} run fill ~-3 ~-1 ~-3 ~3 ~-1 ~3 minecraft:gravel",
+          "execute at {agent} run fill ~-3 ~ ~-3 ~3 ~3 ~3 minecraft:air"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 8
+          }
+        ],
+        "armour": {},
+        "effects": [],
+        "mobs": [],
+        "freezeUntilGoalStart": true,
+        "finalCommands": [
+          "execute at {agent} run fill ~-3 ~ ~-3 ~3 ~3 ~3 minecraft:water"
+        ],
+        "groundBelowCanopy": false,
+        "naturalGround": true,
+        "locate": {
+          "type": "biome",
+          "id": "minecraft:river"
+        },
+        "expectedBiome": "minecraft:river",
+        "respawnAtStart": true,
+        "activation": "first-decision",
+        "generality": true
+      },
+      "objective": {
+        "type": "survival",
+        "minimumMs": 270000,
+        "endState": {
+          "underWater": false,
+          "inLava": false
+        }
+      },
+      "fixtureKind": "natural-river-with-declared-water-depth",
+      "worldRules": {
+        "send_command_feedback": false
+      }
+    },
+    {
+      "id": "T16",
+      "version": 3,
+      "name": "stony-peaks-survive-v3-16",
+      "seed": "20261010",
+      "goal": "When you are thrown from the ledge, land safely and recover without dying.",
+      "durationBudgetMs": 300000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": true
+      },
+      "categories": {
+        "biome": "stony_peaks",
+        "dimension": "overworld",
+        "time": "day",
+        "weather": "clear",
+        "condition": "falling",
+        "gear": "none",
+        "threat": "none",
+        "place": "mountain",
+        "goalType": "survive"
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          0.5,
+          100,
+          0.5
+        ],
+        "surface": true,
+        "time": 1000,
+        "weather": "clear",
+        "commands": [
+          "gamerule spawn_mobs false"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:water_bucket",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 8
+          }
+        ],
+        "armour": {},
+        "effects": [],
+        "mobs": [],
+        "freezeUntilGoalStart": true,
+        "finalCommands": [
+          "execute at {agent} run tp {agent} ~ ~18 ~"
+        ],
+        "groundBelowCanopy": true,
+        "naturalGround": true,
+        "locate": {
+          "type": "biome",
+          "id": "minecraft:stony_peaks"
+        },
+        "expectedBiome": "minecraft:stony_peaks",
+        "respawnAtStart": true,
+        "activation": "first-decision",
+        "generality": true
+      },
+      "objective": {
+        "type": "survival",
+        "minimumMs": 270000,
+        "endState": {
+          "onGround": true,
+          "onFire": false,
+          "inLava": false
+        }
+      },
+      "fixtureKind": "natural-biome-location",
+      "worldRules": {
+        "send_command_feedback": false
+      }
+    },
+    {
+      "id": "T17",
+      "version": 3,
+      "name": "basalt-deltas-survive-v3-17",
+      "seed": "20261010",
+      "goal": "When lava arrives around you, escape onto solid ground before your short fire resistance wears off, and survive.",
+      "durationBudgetMs": 300000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": true
+      },
+      "categories": {
+        "biome": "basalt_deltas",
+        "dimension": "nether",
+        "time": "day",
+        "weather": "clear",
+        "condition": "in-lava",
+        "gear": "diamond",
+        "threat": "none",
+        "place": "nether-terrain",
+        "goalType": "survive"
+      },
+      "setup": {
+        "dimension": "minecraft:the_nether",
+        "position": [
+          0.5,
+          70,
+          0.5
+        ],
+        "surface": false,
+        "time": 1000,
+        "weather": "clear",
+        "commands": [
+          "gamerule spawn_mobs false",
+          "execute at {agent} run fill ~-2 ~-1 ~-2 ~2 ~-1 ~2 minecraft:basalt"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:cobblestone",
+            "count": 32
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 8
+          }
+        ],
+        "armour": {
+          "head": "minecraft:diamond_helmet",
+          "chest": "minecraft:diamond_chestplate",
+          "legs": "minecraft:diamond_leggings",
+          "feet": "minecraft:diamond_boots"
+        },
+        "effects": [
+          {
+            "id": "minecraft:fire_resistance",
+            "seconds": 25
+          }
+        ],
+        "mobs": [],
+        "freezeUntilGoalStart": true,
+        "finalCommands": [
+          "execute at {agent} run fill ~-1 ~ ~-1 ~1 ~ ~1 minecraft:lava"
+        ],
+        "groundBelowCanopy": false,
+        "naturalGround": true,
+        "locate": {
+          "type": "biome",
+          "id": "minecraft:basalt_deltas"
+        },
+        "expectedBiome": "minecraft:basalt_deltas",
+        "naturalCave": true,
+        "respawnAtStart": true,
+        "activation": "first-decision",
+        "generality": true
+      },
+      "objective": {
+        "type": "survival",
+        "minimumMs": 270000,
+        "endState": {
+          "onGround": true,
+          "inLava": false,
+          "onFire": false
+        }
+      },
+      "fixtureKind": "natural-biome-with-declared-resource-patch",
+      "worldRules": {
+        "send_command_feedback": false
+      }
+    },
+    {
+      "id": "T18",
+      "version": 2,
+      "name": "taiga-fight-v2-18",
+      "seed": "20261010",
+      "goal": "Defeat the three approaching zombies without dying.",
+      "durationBudgetMs": 300000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": true
+      },
+      "categories": {
+        "biome": "taiga",
+        "dimension": "overworld",
+        "time": "dusk",
+        "weather": "rain",
+        "condition": "full",
+        "gear": "iron",
+        "threat": "group",
+        "place": "open",
+        "goalType": "fight"
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          0.5,
+          100,
+          0.5
+        ],
+        "surface": true,
+        "time": 12000,
+        "weather": "rain",
+        "commands": [
+          "gamerule spawn_mobs false",
+          "scoreboard objectives add qo_kill minecraft.killed:minecraft.zombie"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:iron_sword",
+            "count": 1
+          },
+          {
+            "item": "minecraft:shield",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 8
+          }
+        ],
+        "armour": {
+          "chest": "minecraft:iron_chestplate",
+          "feet": "minecraft:iron_boots"
+        },
+        "effects": [],
+        "mobs": [
+          {
+            "id": "minecraft:zombie",
+            "offset": [
+              -8,
+              0,
+              4
+            ],
+            "naturalGround": true,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:zombie",
+            "offset": [
+              6,
+              0,
+              -7
+            ],
+            "naturalGround": true,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:zombie",
+            "offset": [
+              10,
+              0,
+              3
+            ],
+            "naturalGround": true,
+            "nbt": "{PersistenceRequired:1b}"
+          }
+        ],
+        "freezeUntilGoalStart": true,
+        "finalCommands": [],
+        "groundBelowCanopy": true,
+        "naturalGround": true,
+        "locate": {
+          "type": "biome",
+          "id": "minecraft:taiga"
+        },
+        "expectedBiome": "minecraft:taiga",
+        "respawnAtStart": true,
+        "generality": true
+      },
+      "objective": {
+        "type": "rcon",
+        "rcon": "execute if score {agent} qo_kill matches 3.. run time query gametime"
+      },
+      "fixtureKind": "natural-biome-with-declared-resource-patch",
+      "worldRules": {
+        "send_command_feedback": false
+      }
+    },
+    {
+      "id": "T19",
+      "version": 2,
+      "name": "forest-fight-v2-19",
+      "seed": "20261010",
+      "goal": "Defeat the two skeletons without dying. Use cover against their arrows.",
+      "durationBudgetMs": 300000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": true
+      },
+      "categories": {
+        "biome": "forest",
+        "dimension": "overworld",
+        "time": "night",
+        "weather": "thunder",
+        "condition": "full",
+        "gear": "iron",
+        "threat": [
+          "ranged",
+          "group"
+        ],
+        "place": "open",
+        "goalType": "fight"
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          0.5,
+          100,
+          0.5
+        ],
+        "surface": true,
+        "time": 16000,
+        "weather": "thunder",
+        "commands": [
+          "gamerule spawn_mobs false",
+          "scoreboard objectives add qo_kill minecraft.killed:minecraft.skeleton"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:iron_sword",
+            "count": 1
+          },
+          {
+            "item": "minecraft:shield",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 8
+          }
+        ],
+        "armour": {
+          "chest": "minecraft:iron_chestplate"
+        },
+        "effects": [],
+        "mobs": [
+          {
+            "id": "minecraft:skeleton",
+            "offset": [
+              -9,
+              0,
+              -5
+            ],
+            "naturalGround": true,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:skeleton",
+            "offset": [
+              7,
+              0,
+              8
+            ],
+            "naturalGround": true,
+            "nbt": "{PersistenceRequired:1b}"
+          }
+        ],
+        "freezeUntilGoalStart": true,
+        "finalCommands": [],
+        "groundBelowCanopy": true,
+        "naturalGround": true,
+        "locate": {
+          "type": "biome",
+          "id": "minecraft:forest"
+        },
+        "expectedBiome": "minecraft:forest",
+        "respawnAtStart": true,
+        "generality": true
+      },
+      "objective": {
+        "type": "rcon",
+        "rcon": "execute if score {agent} qo_kill matches 2.. run time query gametime"
+      },
+      "fixtureKind": "natural-biome-with-declared-resource-patch",
+      "worldRules": {
+        "send_command_feedback": false
+      }
+    },
+    {
+      "id": "T20",
+      "version": 3,
+      "name": "plains-survive-v3-20",
+      "seed": "20261010",
+      "goal": "Survive the nearby creeper encounter and get to safety.",
+      "durationBudgetMs": 300000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": true
+      },
+      "categories": {
+        "biome": "plains",
+        "dimension": "overworld",
+        "time": "night",
+        "weather": "clear",
+        "condition": "full",
+        "gear": "iron",
+        "threat": "creeper",
+        "place": "open",
+        "goalType": "survive"
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          0.5,
+          100,
+          0.5
+        ],
+        "surface": true,
+        "time": 13000,
+        "weather": "clear",
+        "commands": [
+          "gamerule spawn_mobs false"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:iron_sword",
+            "count": 1
+          },
+          {
+            "item": "minecraft:shield",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 8
+          }
+        ],
+        "armour": {},
+        "effects": [],
+        "mobs": [
+          {
+            "id": "minecraft:creeper",
+            "offset": [
+              -7,
+              0,
+              -5
+            ],
+            "nbt": "{PersistenceRequired:1b}",
+            "naturalGround": true
+          }
+        ],
+        "freezeUntilGoalStart": true,
+        "finalCommands": [],
+        "groundBelowCanopy": true,
+        "naturalGround": true,
+        "locate": {
+          "type": "biome",
+          "id": "minecraft:plains"
+        },
+        "expectedBiome": "minecraft:plains",
+        "respawnAtStart": true,
+        "generality": true
+      },
+      "objective": {
+        "type": "survival",
+        "minimumMs": 270000,
+        "endState": {
+          "onGround": true,
+          "onFire": false,
+          "inLava": false,
+          "creeperNearby": false
+        }
+      },
+      "fixtureKind": "natural-biome-location",
+      "worldRules": {
+        "send_command_feedback": false
+      }
+    },
+    {
+      "id": "T21",
+      "version": 2,
+      "name": "structure-dependent-trade-v2-21",
+      "seed": "20261010",
+      "goal": "Trade with a villager at least once.",
+      "durationBudgetMs": 300000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": true
+      },
+      "categories": {
+        "biome": "structure-dependent",
+        "dimension": "overworld",
+        "time": "day",
+        "weather": "clear",
+        "condition": "full",
+        "gear": "none",
+        "threat": "none",
+        "place": "village",
+        "goalType": "trade"
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          0.5,
+          100,
+          0.5
+        ],
+        "surface": true,
+        "time": 1000,
+        "weather": "clear",
+        "commands": [
+          "gamerule spawn_mobs false",
+          "scoreboard objectives add qo_trade minecraft.custom:minecraft.traded_with_villager",
+          "execute at {agent} run fill ~2 ~-1 ~-1 ~4 ~-1 ~1 minecraft:grass_block",
+          "execute at {agent} run summon minecraft:villager ~3 ~ ~ {PersistenceRequired:1b,VillagerData:{type:\"minecraft:plains\",profession:\"minecraft:farmer\",level:1},Offers:{Recipes:[{buy:{id:\"minecraft:emerald\",count:1},sell:{id:\"minecraft:bread\",count:6},maxUses:20}]}}",
+          "execute at {agent} run setblock ~4 ~ ~ minecraft:composter"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:emerald",
+            "count": 12
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 8
+          }
+        ],
+        "armour": {},
+        "effects": [],
+        "mobs": [],
+        "freezeUntilGoalStart": true,
+        "finalCommands": [],
+        "locate": {
+          "type": "structure",
+          "id": "minecraft:village_plains"
+        },
+        "groundBelowCanopy": true,
+        "naturalGround": true,
+        "respawnAtStart": true,
+        "generality": true
+      },
+      "objective": {
+        "type": "rcon",
+        "rcon": "execute if score {agent} qo_trade matches 1.. run time query gametime"
+      },
+      "fixtureKind": "located-natural-village-with-trade-fixture",
+      "worldRules": {
+        "send_command_feedback": false
+      }
+    },
+    {
+      "id": "T22",
+      "version": 2,
+      "name": "sunflower-plains-farm-v2-22",
+      "seed": "20261010",
+      "goal": "Harvest the ripe wheat, craft three bread, and keep it for food.",
+      "durationBudgetMs": 300000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": true
+      },
+      "categories": {
+        "biome": "sunflower_plains",
+        "dimension": "overworld",
+        "time": "day",
+        "weather": "clear",
+        "condition": "full",
+        "gear": "none",
+        "threat": "none",
+        "place": "open",
+        "goalType": [
+          "farm",
+          "craft"
+        ]
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          0.5,
+          100,
+          0.5
+        ],
+        "surface": true,
+        "time": 1000,
+        "weather": "clear",
+        "commands": [
+          "gamerule spawn_mobs false",
+          "execute at {agent} run fill ~-5 ~-1 ~-3 ~-3 ~-1 ~-1 minecraft:farmland",
+          "execute at {agent} run fill ~-5 ~ ~-3 ~-3 ~ ~-1 minecraft:wheat[age=7]",
+          "execute at {agent} run setblock ~2 ~ ~4 minecraft:crafting_table"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:stone_hoe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 8
+          }
+        ],
+        "armour": {},
+        "effects": [],
+        "mobs": [],
+        "freezeUntilGoalStart": true,
+        "finalCommands": [],
+        "groundBelowCanopy": true,
+        "naturalGround": true,
+        "locate": {
+          "type": "biome",
+          "id": "minecraft:sunflower_plains"
+        },
+        "expectedBiome": "minecraft:sunflower_plains",
+        "foodLevelTarget": 10,
+        "respawnAtStart": true,
+        "generality": true
+      },
+      "objective": {
+        "type": "inventory",
+        "items": [
+          {
+            "item": "minecraft:bread",
+            "count": 3
+          }
+        ]
+      },
+      "fixtureKind": "natural-biome-with-declared-resource-patch",
+      "worldRules": {
+        "send_command_feedback": false
+      }
+    },
+    {
+      "id": "T23",
+      "version": 2,
+      "name": "crimson-forest-trade-v2-23",
+      "seed": "20261010",
+      "goal": "Barter gold with the nearby piglin and keep at least one item it gives you. Wear your gold helmet to avoid provoking it.",
+      "durationBudgetMs": 300000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": true
+      },
+      "categories": {
+        "biome": "crimson_forest",
+        "dimension": "nether",
+        "time": "day",
+        "weather": "clear",
+        "condition": "full",
+        "gear": "gold",
+        "threat": "piglin",
+        "place": "nether-terrain",
+        "goalType": "trade"
+      },
+      "setup": {
+        "dimension": "minecraft:the_nether",
+        "position": [
+          0.5,
+          70,
+          0.5
+        ],
+        "surface": false,
+        "time": 1000,
+        "weather": "clear",
+        "commands": [
+          "gamerule spawn_mobs false",
+          "execute at {agent} run fill ~-8 ~-1 ~4 ~-6 ~-1 ~6 minecraft:netherrack",
+          "execute at {agent} run fill ~-8 ~ ~4 ~-6 ~2 ~6 minecraft:air"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:gold_ingot",
+            "count": 16
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 8
+          }
+        ],
+        "armour": {
+          "head": "minecraft:golden_helmet"
+        },
+        "effects": [],
+        "mobs": [
+          {
+            "id": "minecraft:piglin",
+            "offset": [
+              -7,
+              0,
+              5
+            ],
+            "nbt": "{PersistenceRequired:1b}",
+            "naturalGround": false
+          }
+        ],
+        "freezeUntilGoalStart": true,
+        "finalCommands": [],
+        "groundBelowCanopy": false,
+        "naturalGround": true,
+        "locate": {
+          "type": "biome",
+          "id": "minecraft:crimson_forest"
+        },
+        "expectedBiome": "minecraft:crimson_forest",
+        "naturalCave": true,
+        "respawnAtStart": true,
+        "generality": true
+      },
+      "objective": {
+        "type": "inventory-any",
+        "items": [
+          {
+            "item": "minecraft:enchanted_book",
+            "count": 1
+          },
+          {
+            "item": "minecraft:iron_boots",
+            "count": 1
+          },
+          {
+            "item": "minecraft:potion",
+            "count": 1
+          },
+          {
+            "item": "minecraft:splash_potion",
+            "count": 1
+          },
+          {
+            "item": "minecraft:iron_nugget",
+            "count": 1
+          },
+          {
+            "item": "minecraft:ender_pearl",
+            "count": 1
+          },
+          {
+            "item": "minecraft:string",
+            "count": 1
+          },
+          {
+            "item": "minecraft:quartz",
+            "count": 1
+          },
+          {
+            "item": "minecraft:obsidian",
+            "count": 1
+          },
+          {
+            "item": "minecraft:crying_obsidian",
+            "count": 1
+          },
+          {
+            "item": "minecraft:fire_charge",
+            "count": 1
+          },
+          {
+            "item": "minecraft:leather",
+            "count": 1
+          },
+          {
+            "item": "minecraft:soul_sand",
+            "count": 1
+          },
+          {
+            "item": "minecraft:nether_brick",
+            "count": 1
+          },
+          {
+            "item": "minecraft:spectral_arrow",
+            "count": 1
+          },
+          {
+            "item": "minecraft:gravel",
+            "count": 1
+          },
+          {
+            "item": "minecraft:blackstone",
+            "count": 1
+          }
+        ]
+      },
+      "fixtureKind": "natural-biome-location",
+      "worldRules": {
+        "send_command_feedback": false
+      }
+    },
+    {
+      "id": "T24",
+      "version": 2,
+      "name": "the-end-end-basics-v2-24",
+      "seed": "20261010",
+      "goal": "On this End island, gather sixteen end stone and stay alive. The dragon is already defeated; avoid angering the endermen.",
+      "durationBudgetMs": 300000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": true
+      },
+      "categories": {
+        "biome": "the_end",
+        "dimension": "end",
+        "time": "day",
+        "weather": "clear",
+        "condition": "full",
+        "gear": "iron",
+        "threat": "enderman",
+        "place": "open",
+        "goalType": "end-basics"
+      },
+      "setup": {
+        "dimension": "minecraft:the_end",
+        "position": [
+          20.5,
+          65,
+          20.5
+        ],
+        "surface": true,
+        "time": 1000,
+        "weather": "clear",
+        "commands": [
+          "gamerule spawn_mobs false",
+          "execute in minecraft:the_end run kill @e[type=minecraft:ender_dragon]"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:iron_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:water_bucket",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 8
+          }
+        ],
+        "armour": {},
+        "effects": [],
+        "mobs": [
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              -7,
+              0,
+              6
+            ],
+            "nbt": "{PersistenceRequired:1b}",
+            "naturalGround": true
+          }
+        ],
+        "freezeUntilGoalStart": true,
+        "finalCommands": [],
+        "groundBelowCanopy": true,
+        "naturalGround": true,
+        "respawnAtStart": true,
+        "generality": true
+      },
+      "objective": {
+        "type": "inventory",
+        "items": [
+          {
+            "item": "minecraft:end_stone",
+            "count": 16
+          }
+        ]
+      },
+      "fixtureKind": "natural-end-island-dragon-removed",
+      "worldRules": {
+        "send_command_feedback": false
+      }
+    },
+    {
+      "id": "T25",
+      "version": 2,
+      "name": "plains-help-agent-v2-25",
+      "seed": "20261010",
+      "goal": "Give Helper your three bread by dropping it close enough for Helper to pick up.",
+      "durationBudgetMs": 300000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": true
+      },
+      "categories": {
+        "biome": "plains",
+        "dimension": "overworld",
+        "time": "day",
+        "weather": "clear",
+        "condition": "full",
+        "gear": "none",
+        "threat": "none",
+        "place": "open",
+        "goalType": "help-agent"
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          0.5,
+          100,
+          0.5
+        ],
+        "surface": true,
+        "time": 1000,
+        "weather": "clear",
+        "commands": [
+          "gamerule spawn_mobs false",
+          "player Helper spawn",
+          "execute at {agent} run fill ~-6 ~-1 ~5 ~-4 ~-1 ~7 minecraft:grass_block",
+          "execute at {agent} run fill ~-6 ~ ~5 ~-4 ~2 ~7 minecraft:air",
+          "execute at {agent} run tp Helper ~-5 ~ ~6",
+          "clear Helper",
+          "gamemode survival Helper"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:bread",
+            "count": 3
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 8
+          }
+        ],
+        "armour": {},
+        "effects": [],
+        "mobs": [],
+        "freezeUntilGoalStart": true,
+        "finalCommands": [],
+        "groundBelowCanopy": true,
+        "naturalGround": true,
+        "locate": {
+          "type": "biome",
+          "id": "minecraft:plains"
+        },
+        "expectedBiome": "minecraft:plains",
+        "respawnAtStart": true,
+        "generality": true
+      },
+      "objective": {
+        "type": "rcon",
+        "rcon": "execute if entity @a[name=Helper,nbt={Inventory:[{id:\"minecraft:bread\",count:3}]}] run time query gametime"
+      },
+      "fixtureKind": "natural-biome-with-declared-resource-patch",
+      "worldRules": {
+        "send_command_feedback": false
+      }
+    },
+    {
+      "id": "T26",
+      "version": 2,
+      "name": "structure-dependent-explore-v2-26",
+      "seed": "20261010",
+      "goal": "Find the nearby ruined portal to the west, repair and light it with your supplies, then enter the Nether.",
+      "durationBudgetMs": 600000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": true
+      },
+      "categories": {
+        "biome": "structure-dependent",
+        "dimension": "overworld",
+        "time": "day",
+        "weather": "clear",
+        "condition": "full",
+        "gear": "none",
+        "threat": "none",
+        "place": "ruined-portal",
+        "goalType": [
+          "explore",
+          "portal-travel"
+        ]
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          0.5,
+          100,
+          0.5
+        ],
+        "surface": true,
+        "time": 1000,
+        "weather": "clear",
+        "commands": [],
+        "inventory": [
+          {
+            "item": "minecraft:obsidian",
+            "count": 14
+          },
+          {
+            "item": "minecraft:flint_and_steel",
+            "count": 1
+          },
+          {
+            "item": "minecraft:iron_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 8
+          },
+          {
+            "item": "minecraft:cobblestone",
+            "count": 32
+          }
+        ],
+        "armour": {},
+        "effects": [],
+        "mobs": [],
+        "freezeUntilGoalStart": true,
+        "finalCommands": [],
+        "locate": {
+          "type": "structure",
+          "id": "minecraft:ruined_portal",
+          "offset": [
+            48,
+            0
+          ]
+        },
+        "groundBelowCanopy": true,
+        "naturalGround": true,
+        "respawnAtStart": true,
+        "generality": true
+      },
+      "objective": {
+        "type": "dimension",
+        "dimension": "minecraft:the_nether"
+      },
+      "fixtureKind": "located-natural-structure-with-offset",
+      "worldRules": {
+        "send_command_feedback": false
+      }
+    },
+    {
+      "id": "T27",
+      "version": 2,
+      "name": "taiga-progression-v2-27",
+      "seed": "20261010",
+      "goal": "Starting with food only, gather wood and stone, make your tools and stations, mine and smelt iron, then craft and keep an iron pickaxe and a shield.",
+      "durationBudgetMs": 600000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": true
+      },
+      "categories": {
+        "biome": "taiga",
+        "dimension": "overworld",
+        "time": "day",
+        "weather": "clear",
+        "condition": "full",
+        "gear": "none",
+        "threat": "none",
+        "place": "hillside",
+        "goalType": [
+          "progression",
+          "long-goal"
+        ]
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          0.5,
+          100,
+          0.5
+        ],
+        "surface": true,
+        "time": 1000,
+        "weather": "clear",
+        "commands": [
+          "gamerule spawn_mobs false",
+          "execute at {agent} run fill ~4 ~ ~-4 ~4 ~2 ~-2 minecraft:iron_ore",
+          "execute at {agent} run fill ~-3 ~-1 ~2 ~-1 ~-1 ~4 minecraft:stone"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 8
+          }
+        ],
+        "armour": {},
+        "effects": [],
+        "mobs": [],
+        "freezeUntilGoalStart": true,
+        "finalCommands": [],
+        "groundBelowCanopy": true,
+        "naturalGround": true,
+        "locate": {
+          "type": "biome",
+          "id": "minecraft:taiga"
+        },
+        "expectedBiome": "minecraft:taiga",
+        "respawnAtStart": true,
+        "generality": true
+      },
+      "objective": {
+        "type": "inventory",
+        "items": [
+          {
+            "item": "minecraft:iron_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:shield",
+            "count": 1
+          }
+        ]
+      },
+      "fixtureKind": "natural-biome-with-declared-resource-patch",
+      "worldRules": {
+        "send_command_feedback": false
+      }
+    },
+    {
+      "id": "T28",
+      "version": 2,
+      "name": "plains-unsupported-v2-28",
+      "seed": "20261010",
+      "goal": "Craft a command block in survival using ordinary crafting. If this is impossible, explain why and suggest a useful achievable alternative. Do not use administrator commands.",
+      "durationBudgetMs": 300000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": true
+      },
+      "categories": {
+        "biome": "plains",
+        "dimension": "overworld",
+        "time": "day",
+        "weather": "clear",
+        "condition": "full",
+        "gear": "none",
+        "threat": "none",
+        "place": "open",
+        "goalType": "unsupported"
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          0.5,
+          100,
+          0.5
+        ],
+        "surface": true,
+        "time": 1000,
+        "weather": "clear",
+        "commands": [
+          "gamerule spawn_mobs false"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:oak_planks",
+            "count": 16
+          },
+          {
+            "item": "minecraft:cobblestone",
+            "count": 16
+          },
+          {
+            "item": "minecraft:redstone",
+            "count": 16
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 8
+          }
+        ],
+        "armour": {},
+        "effects": [],
+        "mobs": [],
+        "freezeUntilGoalStart": true,
+        "finalCommands": [],
+        "groundBelowCanopy": true,
+        "naturalGround": true,
+        "locate": {
+          "type": "biome",
+          "id": "minecraft:plains"
+        },
+        "expectedBiome": "minecraft:plains",
+        "respawnAtStart": true,
+        "generality": true
+      },
+      "objective": {
+        "type": "unsupported",
+        "reason": "Command blocks have no survival crafting recipe."
+      },
+      "fixtureKind": "natural-biome-with-deliberately-impossible-goal",
+      "worldRules": {
+        "send_command_feedback": false
+      }
+    }
+  ]
+}

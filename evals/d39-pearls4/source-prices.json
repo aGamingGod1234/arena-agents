@@ -1,0 +1,546 @@
+{
+  "assumptions": {
+    "walkingBlocksPerSecond": 4.317,
+    "ironPickBreakAndDelaySeconds": 1,
+    "oreNuggetsExpected": 4,
+    "pickupSecondsPerPatch": 2
+  },
+  "limits": "Optimistic geometry/timing estimates for a player who already knows the route. Ore cluster estimates omit search, turns, other veins and hazards; the closest sight point need not see every cluster cell at once. Bastion figures omit safe access, wall removal, guarding mobs, chests, lava and collection, so are upper bounds on yield rate, NOT measured player yields. Actual body-window measurements are separate.",
+  "seeds": [
+    {
+      "seed": "123456789",
+      "oreCountMappedReachable": 133,
+      "oreExpectedIngots": 59.111111111111114,
+      "nearestOrePatches": [
+        {
+          "count": 5,
+          "at": [
+            -9,
+            62,
+            -3
+          ],
+          "walkSteps": 14,
+          "expectedIngots": 2.2222222222222223,
+          "idealAccessAndMiningSeconds": 10.242992819087329,
+          "idealIngotsPerMinute": 13.01702887898867
+        },
+        {
+          "count": 4,
+          "at": [
+            13,
+            65,
+            12
+          ],
+          "walkSteps": 25,
+          "expectedIngots": 1.7777777777777777,
+          "idealAccessAndMiningSeconds": 11.791058605513086,
+          "idealIngotsPerMinute": 9.046402891831363
+        },
+        {
+          "count": 1,
+          "at": [
+            3,
+            53,
+            6
+          ],
+          "walkSteps": 37,
+          "expectedIngots": 0.4444444444444444,
+          "idealAccessAndMiningSeconds": 11.570766736159369,
+          "idealIngotsPerMinute": 2.3046585653940865
+        },
+        {
+          "count": 1,
+          "at": [
+            -7,
+            53,
+            36
+          ],
+          "walkSteps": 38,
+          "expectedIngots": 0.4444444444444444,
+          "idealAccessAndMiningSeconds": 11.802409080379894,
+          "idealIngotsPerMinute": 2.259425722753233
+        },
+        {
+          "count": 6,
+          "at": [
+            27,
+            60,
+            0
+          ],
+          "walkSteps": 38,
+          "expectedIngots": 2.6666666666666665,
+          "idealAccessAndMiningSeconds": 16.802409080379896,
+          "idealIngotsPerMinute": 9.522444027793094
+        },
+        {
+          "count": 3,
+          "at": [
+            5,
+            52,
+            6
+          ],
+          "walkSteps": 39,
+          "expectedIngots": 1.3333333333333333,
+          "idealAccessAndMiningSeconds": 14.034051424600417,
+          "idealIngotsPerMinute": 5.70042089626145
+        },
+        {
+          "count": 1,
+          "at": [
+            6,
+            52,
+            5
+          ],
+          "walkSteps": 48,
+          "expectedIngots": 0.4444444444444444,
+          "idealAccessAndMiningSeconds": 14.118832522585128,
+          "idealIngotsPerMinute": 1.8887302915456678
+        },
+        {
+          "count": 1,
+          "at": [
+            26,
+            57,
+            -12
+          ],
+          "walkSteps": 53,
+          "expectedIngots": 0.4444444444444444,
+          "idealAccessAndMiningSeconds": 15.277044243687746,
+          "idealIngotsPerMinute": 1.7455383542326879
+        }
+      ],
+      "bastions": [
+        {
+          "type": "units",
+          "bounds": [
+            271,
+            32,
+            -5,
+            320,
+            87,
+            61
+          ],
+          "goldBlocks": 19,
+          "blockIngots": 171,
+          "chests": 8,
+          "chestExpectedIngots": 21.196581196581196,
+          "closestGold": [
+            279,
+            48,
+            12
+          ],
+          "straightLineAccessLowerBoundSeconds": 64.65000467054251,
+          "blockMiningLowerBoundSeconds": 19,
+          "optimisticBlockIngotsPerMinute": 122.6539082742344
+        }
+      ]
+    },
+    {
+      "seed": "20261024",
+      "oreCountMappedReachable": 25,
+      "oreExpectedIngots": 11.11111111111111,
+      "nearestOrePatches": [
+        {
+          "count": 1,
+          "at": [
+            10,
+            89,
+            -6
+          ],
+          "walkSteps": 21,
+          "expectedIngots": 0.4444444444444444,
+          "idealAccessAndMiningSeconds": 7.864489228630994,
+          "idealIngotsPerMinute": 3.3907690495125324
+        },
+        {
+          "count": 3,
+          "at": [
+            -16,
+            79,
+            10
+          ],
+          "walkSteps": 25,
+          "expectedIngots": 1.3333333333333333,
+          "idealAccessAndMiningSeconds": 10.791058605513086,
+          "idealIngotsPerMinute": 7.413545132553398
+        },
+        {
+          "count": 1,
+          "at": [
+            62,
+            52,
+            -18
+          ],
+          "walkSteps": 163,
+          "expectedIngots": 0.4444444444444444,
+          "idealAccessAndMiningSeconds": 40.75770210794533,
+          "idealIngotsPerMinute": 0.6542730646600474
+        },
+        {
+          "count": 3,
+          "at": [
+            -7,
+            34,
+            -95
+          ],
+          "walkSteps": 199,
+          "expectedIngots": 1.3333333333333333,
+          "idealAccessAndMiningSeconds": 51.09682649988418,
+          "idealIngotsPerMinute": 1.5656549629394563
+        },
+        {
+          "count": 4,
+          "at": [
+            -4,
+            36,
+            -101
+          ],
+          "walkSteps": 204,
+          "expectedIngots": 1.7777777777777777,
+          "idealAccessAndMiningSeconds": 53.2550382209868,
+          "idealIngotsPerMinute": 2.002940383293751
+        },
+        {
+          "count": 4,
+          "at": [
+            -93,
+            55,
+            70
+          ],
+          "walkSteps": 371,
+          "expectedIngots": 1.7777777777777777,
+          "idealAccessAndMiningSeconds": 91.93930970581422,
+          "idealIngotsPerMinute": 1.160185637764486
+        },
+        {
+          "count": 2,
+          "at": [
+            -84,
+            55,
+            85
+          ],
+          "walkSteps": 378,
+          "expectedIngots": 0.8888888888888888,
+          "idealAccessAndMiningSeconds": 91.56080611535788,
+          "idealIngotsPerMinute": 0.5824908669560905
+        },
+        {
+          "count": 2,
+          "at": [
+            -33,
+            55,
+            99
+          ],
+          "walkSteps": 381,
+          "expectedIngots": 0.8888888888888888,
+          "idealAccessAndMiningSeconds": 92.25573314801946,
+          "idealIngotsPerMinute": 0.578103186798839
+        }
+      ],
+      "bastions": [
+        {
+          "type": "units",
+          "bounds": [
+            -304,
+            32,
+            -685,
+            -255,
+            87,
+            -619
+          ],
+          "goldBlocks": 19,
+          "blockIngots": 171,
+          "chests": 12,
+          "chestExpectedIngots": 31.794871794871796,
+          "closestGold": [
+            -263,
+            35,
+            -628
+          ],
+          "straightLineAccessLowerBoundSeconds": 157.6004866978589,
+          "blockMiningLowerBoundSeconds": 19,
+          "optimisticBlockIngotsPerMinute": 58.09723513137063
+        }
+      ]
+    },
+    {
+      "seed": "8675309",
+      "oreCountMappedReachable": 73,
+      "oreExpectedIngots": 32.44444444444444,
+      "nearestOrePatches": [
+        {
+          "count": 1,
+          "at": [
+            19,
+            75,
+            0
+          ],
+          "walkSteps": 14,
+          "expectedIngots": 0.4444444444444444,
+          "idealAccessAndMiningSeconds": 6.242992819087329,
+          "idealIngotsPerMinute": 4.2714556046157846
+        },
+        {
+          "count": 1,
+          "at": [
+            15,
+            71,
+            -15
+          ],
+          "walkSteps": 19,
+          "expectedIngots": 0.4444444444444444,
+          "idealAccessAndMiningSeconds": 7.401204540189947,
+          "idealIngotsPerMinute": 3.603017119964946
+        },
+        {
+          "count": 1,
+          "at": [
+            27,
+            63,
+            12
+          ],
+          "walkSteps": 42,
+          "expectedIngots": 0.4444444444444444,
+          "idealAccessAndMiningSeconds": 12.728978457261988,
+          "idealIngotsPerMinute": 2.094957325617368
+        },
+        {
+          "count": 1,
+          "at": [
+            27,
+            64,
+            11
+          ],
+          "walkSteps": 43,
+          "expectedIngots": 0.4444444444444444,
+          "idealAccessAndMiningSeconds": 12.960620801482511,
+          "idealIngotsPerMinute": 2.05751461099891
+        },
+        {
+          "count": 1,
+          "at": [
+            18,
+            57,
+            22
+          ],
+          "walkSteps": 55,
+          "expectedIngots": 0.4444444444444444,
+          "idealAccessAndMiningSeconds": 15.740328932128792,
+          "idealIngotsPerMinute": 1.694161969654604
+        },
+        {
+          "count": 1,
+          "at": [
+            -3,
+            65,
+            24
+          ],
+          "walkSteps": 84,
+          "expectedIngots": 0.4444444444444444,
+          "idealAccessAndMiningSeconds": 22.457956914523976,
+          "idealIngotsPerMinute": 1.1874039463234003
+        },
+        {
+          "count": 1,
+          "at": [
+            -12,
+            62,
+            16
+          ],
+          "walkSteps": 85,
+          "expectedIngots": 0.4444444444444444,
+          "idealAccessAndMiningSeconds": 22.689599258744497,
+          "idealIngotsPerMinute": 1.1752815183101757
+        },
+        {
+          "count": 2,
+          "at": [
+            -13,
+            68,
+            14
+          ],
+          "walkSteps": 87,
+          "expectedIngots": 0.8888888888888888,
+          "idealAccessAndMiningSeconds": 24.152883947185543,
+          "idealIngotsPerMinute": 2.208155905934707
+        }
+      ],
+      "bastions": [
+        {
+          "type": "units",
+          "bounds": [
+            192,
+            32,
+            -445,
+            241,
+            87,
+            -379
+          ],
+          "goldBlocks": 21,
+          "blockIngots": 189,
+          "chests": 11,
+          "chestExpectedIngots": 29.145299145299145,
+          "closestGold": [
+            217,
+            36,
+            -386
+          ],
+          "straightLineAccessLowerBoundSeconds": 100.69210540073662,
+          "blockMiningLowerBoundSeconds": 21,
+          "optimisticBlockIngotsPerMinute": 93.18599561291965
+        }
+      ]
+    },
+    {
+      "seed": "987654321",
+      "oreCountMappedReachable": 37,
+      "oreExpectedIngots": 16.444444444444443,
+      "nearestOrePatches": [
+        {
+          "count": 7,
+          "at": [
+            -5,
+            54,
+            10
+          ],
+          "walkSteps": 16,
+          "expectedIngots": 3.111111111111111,
+          "idealAccessAndMiningSeconds": 12.706277507528377,
+          "idealIngotsPerMinute": 14.690901135762857
+        },
+        {
+          "count": 1,
+          "at": [
+            -23,
+            57,
+            -6
+          ],
+          "walkSteps": 23,
+          "expectedIngots": 0.4444444444444444,
+          "idealAccessAndMiningSeconds": 8.32777391707204,
+          "idealIngotsPerMinute": 3.202136240994687
+        },
+        {
+          "count": 3,
+          "at": [
+            -22,
+            58,
+            -5
+          ],
+          "walkSteps": 26,
+          "expectedIngots": 1.3333333333333333,
+          "idealAccessAndMiningSeconds": 11.022700949733611,
+          "idealIngotsPerMinute": 7.257749290742881
+        },
+        {
+          "count": 1,
+          "at": [
+            5,
+            41,
+            14
+          ],
+          "walkSteps": 32,
+          "expectedIngots": 0.4444444444444444,
+          "idealAccessAndMiningSeconds": 10.412555015056753,
+          "idealIngotsPerMinute": 2.5610108785121573
+        },
+        {
+          "count": 3,
+          "at": [
+            -21,
+            54,
+            14
+          ],
+          "walkSteps": 34,
+          "expectedIngots": 1.3333333333333333,
+          "idealAccessAndMiningSeconds": 12.8758397034978,
+          "idealIngotsPerMinute": 6.213187010884231
+        },
+        {
+          "count": 1,
+          "at": [
+            -16,
+            54,
+            22
+          ],
+          "walkSteps": 37,
+          "expectedIngots": 0.4444444444444444,
+          "idealAccessAndMiningSeconds": 11.570766736159369,
+          "idealIngotsPerMinute": 2.3046585653940865
+        },
+        {
+          "count": 2,
+          "at": [
+            -23,
+            55,
+            15
+          ],
+          "walkSteps": 37,
+          "expectedIngots": 0.8888888888888888,
+          "idealAccessAndMiningSeconds": 12.570766736159369,
+          "idealIngotsPerMinute": 4.242647600796049
+        },
+        {
+          "count": 1,
+          "at": [
+            -15,
+            54,
+            21
+          ],
+          "walkSteps": 39,
+          "expectedIngots": 0.4444444444444444,
+          "idealAccessAndMiningSeconds": 12.034051424600417,
+          "idealIngotsPerMinute": 2.215934245731555
+        }
+      ],
+      "bastions": [
+        {
+          "type": "hoglin_stable",
+          "bounds": [
+            305,
+            31,
+            -372,
+            352,
+            86,
+            -323
+          ],
+          "goldBlocks": 26,
+          "blockIngots": 234,
+          "chests": 9,
+          "chestExpectedIngots": 29.274102564102567,
+          "closestGold": [
+            346,
+            33,
+            -325
+          ],
+          "straightLineAccessLowerBoundSeconds": 109.67243719207202,
+          "blockMiningLowerBoundSeconds": 26,
+          "optimisticBlockIngotsPerMinute": 103.4845418168726
+        },
+        {
+          "type": "units",
+          "bounds": [
+            -80,
+            32,
+            -29,
+            -31,
+            87,
+            37
+          ],
+          "goldBlocks": 17,
+          "blockIngots": 153,
+          "chests": 7,
+          "chestExpectedIngots": 18.547008547008545,
+          "closestGold": [
+            -39,
+            48,
+            20
+          ],
+          "straightLineAccessLowerBoundSeconds": 10.952298920054739,
+          "blockMiningLowerBoundSeconds": 17,
+          "optimisticBlockIngotsPerMinute": 328.41663672298847
+        }
+      ]
+    }
+  ]
+}

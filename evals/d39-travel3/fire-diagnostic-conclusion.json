@@ -1,0 +1,21 @@
+{
+  "at": "2026-10-26T00:03:08.281534",
+  "mainStudy": {
+    "source": "6345839e",
+    "pair": 2,
+    "fireSamples": 15,
+    "deaths": 0,
+    "lavaSamples": 0,
+    "firstContact": "Immediately after piglin-arrow damage handback",
+    "cause": "Unresolved: burning projectile vs knockback into nearby fire. Original incident world was cleaned by the standard course harness."
+  },
+  "diagnostic": {
+    "durationSeconds": 240.6,
+    "damage": 0,
+    "fireSamples": 0,
+    "lavaSamples": 0,
+    "deaths": 0,
+    "route": "Different from original; no causal attribution established."
+  },
+  "decision": "Keep main-study failure and candidate source unchanged; finish the six matched pairs and two requested live games. No poor outcome is resampled or replaced."
+}

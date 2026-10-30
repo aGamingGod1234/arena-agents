@@ -1,0 +1,79 @@
+{
+    "version":  1,
+    "scenarios":  [
+                      {
+                          "id":  "feel-sol",
+                          "provider":  "codex",
+                          "model":  "gpt-6.1-sol",
+                          "reasoningEffort":  "low",
+                          "serviceTier":  "priority",
+                          "task":  "beat the game.",
+                          "timeoutMs":  2100000,
+                          "scenarioTimeoutMs":  2100000,
+                          "rosterSize":  1,
+                          "repetitions":  1,
+                          "playWindowMs":  1800000,
+                          "preparationTimeoutMs":  300000,
+                          "continueAfterDeath":  true,
+                          "requireFactualSuccess":  true,
+                          "assert":  [
+                                         {
+                                             "match":  "has the following entity data",
+                                             "command":  "data get entity {agent} Pos",
+                                             "type":  "rcon"
+                                         }
+                                     ],
+                          "world":  {
+                                        "mode":  "natural",
+                                        "seed":  "7476144985864540143",
+                                        "generator":  "minecraft:normal",
+                                        "difficulty":  "normal",
+                                        "gameMode":  "survival",
+                                        "rules":  {
+                                                      "advance_time":  true,
+                                                      "spawn_mobs":  true
+                                                  },
+                                        "spawn":  {
+                                                      "policy":  "world_spawn"
+                                                  }
+                                    }
+                      },
+                      {
+                          "id":  "feel-opus",
+                          "provider":  "claude",
+                          "model":  "claude-opus-5-5",
+                          "reasoningEffort":  "low",
+                          "serviceTier":  "priority",
+                          "task":  "beat the game.",
+                          "timeoutMs":  2100000,
+                          "scenarioTimeoutMs":  2100000,
+                          "rosterSize":  1,
+                          "repetitions":  1,
+                          "playWindowMs":  1800000,
+                          "preparationTimeoutMs":  300000,
+                          "continueAfterDeath":  true,
+                          "requireFactualSuccess":  true,
+                          "assert":  [
+                                         {
+                                             "match":  "has the following entity data",
+                                             "command":  "data get entity {agent} Pos",
+                                             "type":  "rcon"
+                                         }
+                                     ],
+                          "world":  {
+                                        "mode":  "natural",
+                                        "seed":  "7476144985864540143",
+                                        "generator":  "minecraft:normal",
+                                        "difficulty":  "normal",
+                                        "gameMode":  "survival",
+                                        "rules":  {
+                                                      "advance_time":  true,
+                                                      "spawn_mobs":  true
+                                                  },
+                                        "spawn":  {
+                                                      "policy":  "world_spawn"
+                                                  }
+                                    }
+                      }
+                  ]
+}

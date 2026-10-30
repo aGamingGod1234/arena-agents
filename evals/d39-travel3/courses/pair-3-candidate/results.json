@@ -1,0 +1,89 @@
+{
+  "mode": "travel",
+  "jar": "/home/agaminggod/Desktop/Projects/arena-beat-game/jars/d25-6345839e.jar",
+  "results": [
+    {
+      "id": "high110-fortress",
+      "mode": "travel",
+      "checkpoint": "7-nether-real.json",
+      "target": {
+        "x": -591.5,
+        "z": -415.5,
+        "located": "The nearest minecraft:fortress is at [-592, ~, -416] (672 blocks away)"
+      },
+      "start": [
+        -48.5,
+        102,
+        -18.52
+      ],
+      "startDistance": 672.6,
+      "legChoices": {
+        "landmark": 0,
+        "bearing": 0
+      },
+      "bearingTries": 0,
+      "detours": 0,
+      "stopWhenSeen": null,
+      "results": {
+        "FAILED OUT_OF_BLOCKS": 4
+      },
+      "actions": 4,
+      "failures": 4,
+      "damage": 0,
+      "actionDamage": 0,
+      "actionDamageEvents": 0,
+      "minHealth": 20,
+      "fireSamples": 0,
+      "lavaSamples": 0,
+      "deaths": 0,
+      "path": 815.5987088079008,
+      "stops": [
+        {
+          "at": 527.5,
+          "state": "FAILED",
+          "reasonCode": "OUT_OF_BLOCKS",
+          "message": "No seen way on toward the target, and building cannot continue: a gap at -526,80,-350 needs a block and no plain block is on the hotbar; last leg: MISSED_LANDING toward -326,89,-140: Landed below the planned landing at -324.5,90.00,-136.5; navigation stopped before choosing another route; health 20.0; onGround=true; footing below center: minecraft:crimson_nylium at -326,88,-137; at -525.5,81.0,-348.5; 94 blocks left to the target (yaw 135); covered 579 blocks toward it in 527 s (66 blocks/min, 841 walked); 33 legs, bridged 551, pillared 2, tunnelled 112; 0 plain blocks carried; footing {\"drop\""
+        },
+        {
+          "at": 528.3,
+          "state": "FAILED",
+          "reasonCode": "OUT_OF_BLOCKS",
+          "message": "No seen way on toward the target, and building cannot continue: a gap at -526,80,-350 needs a block and no plain block is on the hotbar; at -525.6,81.0,-348.5; 94 blocks left to the target (yaw 135); covered 0 blocks toward it in 1 s (1 blocks/min, 0 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 0 plain blocks carried; footing {\"drop\":50,\"into\":\"lava\",\"yaw\":137}"
+        },
+        {
+          "at": 528.9,
+          "state": "FAILED",
+          "reasonCode": "OUT_OF_BLOCKS",
+          "message": "No seen way on toward the target, and building cannot continue: a gap at -526,80,-350 needs a block and no plain block is on the hotbar; at -525.6,81.0,-348.5; 94 blocks left to the target (yaw 135); covered 0 blocks toward it in 1 s (0 blocks/min, 0 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 0 plain blocks carried; footing {\"drop\":50,\"into\":\"lava\",\"yaw\":137}"
+        },
+        {
+          "at": 529.6,
+          "state": "FAILED",
+          "reasonCode": "OUT_OF_BLOCKS",
+          "message": "No seen way on toward the target, and building cannot continue: a gap at -526,80,-350 needs a block and no plain block is on the hotbar; at -525.6,81.0,-348.5; 94 blocks left to the target (yaw 135); covered 0 blocks toward it in 1 s (0 blocks/min, 0 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 0 plain blocks carried; footing {\"drop\":50,\"into\":\"lava\",\"yaw\":137}"
+        }
+      ],
+      "gaveUp": "no progress over 3 actions",
+      "damageLowerBound": 0,
+      "end": [
+        -525.58,
+        81,
+        -348.5
+      ],
+      "endDistance": 94,
+      "arrived": false,
+      "wallSeconds": 530,
+      "progressBlocks": 578.6,
+      "blocksPerMinute": 65.5,
+      "startedAtEpochMs": 1792944227118,
+      "endedAtEpochMs": 1792944757098,
+      "gameTicks": 10605,
+      "gameSeconds": 530.25,
+      "observedTicksPerSecond": 20.01,
+      "blocksPerGameMinute": 65.5,
+      "gameClockSource": "ready observation world.gameTime",
+      "pathBlocks": 815.6,
+      "blocksPerMinuteWithModel5s": 63.1
+    }
+  ]
+}

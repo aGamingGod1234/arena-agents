@@ -1,0 +1,2718 @@
+{
+ "build": "claude/d34-descent f4793935 (final jar v6); builds per run in each row: v2 e744ce25+67bb978d, v3/v4 +afa93519/00719bc8 (shaft douses before the generic lava stop; crouched cave look), v5 +0ec4dc53 (cave look 64 blocks), v6 +f4793935 (snow by hand, plant at the feet). Pace is the same in all; v2/v4 runs had no lava drop or slide.",
+ "date": "2026-10-24",
+ "method": "Provider-free: scripts/quality/test-dig-live.mjs, one fresh server per run under slot.sh live; the same kit for every variant (iron pickaxe, stone pickaxe, water bucket in the hotbar, 32 cobblestone, 8 cooked beef). Between calls a stand-in plays the model: HOSTILE_NEAR removes the sensed monsters (a fight), TOOL_WORN gives a stone pickaxe or turns away from an ore only the worn pickaxe harvests, a lake or aquifer gets a 16-block tunnel round it, two calls with no progress get the same tunnel, other no-progress stops get a short steep_down leg on a turned heading; a body under water ends the run (the model swims out). shaft: dig_to shaft to y-55 (steep_down from y-20 in the same call). steep: dig_to steep_down to y-55. cave: shaft with throughCaves:false; each CAVE_OPENING look round is followed by travel_to to the lava seen (tolerance 8) or the lowest floor seen (tolerance 2, stopWhenSeen minecraft:lava), else digging goes on; the run ends once lava is within 16 blocks. Times are the sum of action seconds (model turns between calls not included). lavaWithin16 = first lava the eye saw within 16 blocks (dig result or travel_to TARGET_SEEN), as minutes into the run. Up to 12 calls per run.",
+ "summary": {
+  "paceSecondsPerLevel": {
+   "shaftLegs": {
+    "n": 17,
+    "median": 1.0,
+    "min": 0.77,
+    "max": 1.07
+   },
+   "steepLegs": {
+    "n": 19,
+    "median": 2.72
+   }
+  },
+  "bothReachedY55": [
+   {
+    "spot": "A1 +40x",
+    "shaftMin": 2.95,
+    "steepMin": 11.3,
+    "ratio": 3.83
+   },
+   {
+    "spot": "A1 iron-pickaxe checkpoint",
+    "shaftMin": 3.55,
+    "steepMin": 7.22,
+    "ratio": 2.03
+   },
+   {
+    "spot": "A2 lava-pool x/z",
+    "shaftMin": 3.07,
+    "steepMin": 6.23,
+    "ratio": 2.03
+   },
+   {
+    "spot": "C1 12345 100,100",
+    "shaftMin": 3.85,
+    "steepMin": 7.38,
+    "ratio": 1.92
+   },
+   {
+    "spot": "N3 12345 400,-300",
+    "shaftMin": 4.52,
+    "steepMin": 8.9,
+    "ratio": 1.97
+   },
+   {
+    "spot": "N5 -8891 -250,350",
+    "shaftMin": 3.13,
+    "steepMin": 6.97,
+    "ratio": 2.23
+   }
+  ],
+  "medianRatio": 2.03,
+  "reachedY55": {
+   "shaft": 7,
+   "steep": 9,
+   "cave": 4
+  },
+  "endedUnderWater": {
+   "shaft": 4,
+   "steep": 3,
+   "cave": 5
+  },
+  "lavaWithin16": {
+   "shaft": [
+    {
+     "spot": "A1 iron-pickaxe checkpoint",
+     "minute": 1.21,
+     "at": [
+      15,
+      0,
+      102
+     ],
+     "distance": 8.3,
+     "how": "dig_to"
+    }
+   ],
+   "steep": [
+    {
+     "spot": "A2 lava-pool x/z",
+     "minute": 3.81,
+     "at": [
+      14,
+      -2,
+      107
+     ],
+     "distance": 6.2,
+     "how": "dig_to"
+    },
+    {
+     "spot": "A3 340,-200",
+     "minute": 3.14,
+     "at": [
+      395,
+      23,
+      -195
+     ],
+     "distance": 15.2,
+     "how": "dig_to"
+    }
+   ],
+   "cave": [
+    {
+     "spot": "A3 300,-200",
+     "minute": 2.26,
+     "at": [
+      270,
+      -36,
+      -214
+     ],
+     "distance": 11.1,
+     "how": "travel_to"
+    },
+    {
+     "spot": "N5 -8891 -250,350",
+     "minute": 3.31,
+     "at": [
+      -237,
+      -55,
+      387
+     ],
+     "distance": 4,
+     "how": "dig_to"
+    }
+   ]
+  },
+  "deaths": {
+   "shaft": 0,
+   "steep": 0,
+   "cave": 0
+  },
+  "fallsIntoLava": {
+   "shaft": 0,
+   "steep": 0,
+   "cave": 0
+  },
+  "healthLost": {
+   "shaft": 3,
+   "steep": 6,
+   "cave": 0
+  },
+  "caveWalks": {
+   "calls": 18,
+   "codes": {
+    "ARRIVED": 7,
+    "HOSTILE_NEAR": 3,
+    "NO_ROUTE": 6,
+    "TARGET_SEEN": 2
+   }
+  }
+ },
+ "spots": {
+  "A1 +40x": {
+   "cave": {
+    "build": "v5",
+    "reachedY55": false,
+    "minutesToY55": null,
+    "callsToY55": null,
+    "actionMinutes": 6.48,
+    "calls": 12,
+    "lowestY": -34,
+    "blocks": 129,
+    "blocksPerMinute": 20,
+    "lavaWithin16": null,
+    "healthLost": 0,
+    "deaths": 0,
+    "fallsIntoLava": 0,
+    "standIns": 2,
+    "endedUnderWater": false,
+    "legs": [
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "HOSTILE_NEAR",
+      "seconds": 63,
+      "fromY": 74,
+      "toY": 13,
+      "blocks": 61,
+      "healthLost": 0,
+      "message": "Stopped: minecraft:creeper 3ad45f6b-ff2e-4f75-9899-5e63d3a89347 at 44,17,109, 11.4 blocks away. At 54,13,107, shaft heading east; 61 blocks mined in 61 steps over 62 s (y74 to y13); mined stone 32, diorite 14, granite 6, andesite 5, dirt 3, grass_block 1; ores seen copper_ore 2, iron_ore 2 (first at copper_ore 53,34,107, iron_ore 55,32,107); tool iron_pickax"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "CAVE_OPENING",
+      "seconds": 74,
+      "fromY": 13,
+      "toY": -34,
+      "blocks": 64,
+      "healthLost": 0,
+      "message": "Stopped: The step opened into a cave at 62,-35,108 (5 open cells beside the cut); not stepping in (throughCaves:false); looked round the cave: no lava in sight; lowest floor seen 65,-43,108 (4.1 blocks across, dy-9); travel_to with that x, y and z walks down the cave (drops of up to 3 blocks; stopWhenSeen minecraft:lava stops at the first lava in view). At 6"
+     },
+     {
+      "call": "travel_to",
+      "heading": "east",
+      "code": "HOSTILE_NEAR",
+      "seconds": 1,
+      "fromY": -34,
+      "toY": -34,
+      "blocks": null,
+      "healthLost": 0,
+      "message": "minecraft:skeleton 175e1276-b65c-461e-9e79-179508fcfe6f 9.8 blocks away at 62.8,-43.0,111.2; at 61.9,-34.0,107.5; 7 blocks left to the target (yaw -81), -9 above; covered 0 blocks toward it in 1 s (4 blocks/min, 1 walked); 1 legs, bridged 0, pillared 0, tunnelled 0; 93 plain blocks on the hotbar; footing {\"drop\":8,\"yaw\":-92}"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "CAVE_OPENING",
+      "seconds": 1,
+      "fromY": -34,
+      "toY": -34,
+      "blocks": 0,
+      "healthLost": 0,
+      "message": "Stopped: The floor under the next step at 62,-37,107 is open: a drop of 8 blocks onto minecraft:deepslate; not stepping in (throughCaves:false); looked round the cave: no lava in sight; lowest floor seen 65,-43,110 (5.0 blocks across, dy-9); travel_to with that x, y and z walks down the cave (drops of up to 3 blocks; stopWhenSeen minecraft:lava stops at the "
+     },
+     {
+      "call": "travel_to",
+      "heading": "east",
+      "code": "NO_ROUTE",
+      "seconds": 60,
+      "fromY": -34,
+      "toY": -34,
+      "blocks": null,
+      "healthLost": 0,
+      "message": "No closer to the target for 60 s; last leg: NO_SEEN_ROUTE toward 65,-43,110: No seen continuation after 3 observation replans; Destination not reached; seen path ends at 61,-34,107; beyond unseen. Observe beyond the edge or choose another route before retrying; at 63.2,-34.0,107.5; 7 blocks left to the target (yaw -35), -9 above; covered 0 blocks toward it i"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "CAVE_OPENING",
+      "seconds": 2,
+      "fromY": -34,
+      "toY": -34,
+      "blocks": 1,
+      "healthLost": 0,
+      "message": "Stopped: The step opened into a cave at 64,-37,107 (3 open cells beside the cut); not stepping in (throughCaves:false); looked round the cave: no lava in sight; lowest floor seen 67,-43,108 (4.1 blocks across, dy-9); travel_to with that x, y and z walks down the cave (drops of up to 3 blocks; stopWhenSeen minecraft:lava stops at the first lava in view). At 6"
+     },
+     {
+      "call": "travel_to",
+      "heading": "east",
+      "code": "NO_ROUTE",
+      "seconds": 60,
+      "fromY": -34,
+      "toY": -34,
+      "blocks": null,
+      "healthLost": 0,
+      "message": "No closer to the target for 60 s; last leg: REACHED_FRONTIER toward 67,-43,108: Destination not reached; seen path ends at 62,-34,107; beyond unseen. Observe beyond the edge or choose another route before retrying; selected continuation gets no closer; other routes unverified; at 62.7,-34.0,107.5; 7 blocks left to the target (yaw -83), -9 above; covered -0 b"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "CAVE_OPENING",
+      "seconds": 2,
+      "fromY": -34,
+      "toY": -34,
+      "blocks": 1,
+      "healthLost": 0,
+      "message": "Stopped: The step opened into a cave at 63,-37,107 (3 open cells beside the cut); not stepping in (throughCaves:false); looked round the cave: no lava in sight; lowest floor seen 67,-43,108 (5.1 blocks across, dy-9); travel_to with that x, y and z walks down the cave (drops of up to 3 blocks; stopWhenSeen minecraft:lava stops at the first lava in view). At 6"
+     },
+     {
+      "call": "travel_to",
+      "heading": "east",
+      "code": "NO_ROUTE",
+      "seconds": 60,
+      "fromY": -34,
+      "toY": -34,
+      "blocks": null,
+      "healthLost": 0,
+      "message": "No closer to the target for 60 s; last leg: REACHED_FRONTIER toward 67,-43,108: Destination not reached; seen path ends at 61,-34,107; beyond unseen. Observe beyond the edge or choose another route before retrying; selected continuation gets no closer; other routes unverified; at 69.2,-34.0,107.5; 6 blocks left to the target (yaw 77), -9 above; covered 1 blo"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "CAVE_OPENING",
+      "seconds": 3,
+      "fromY": -34,
+      "toY": -34,
+      "blocks": 1,
+      "healthLost": 0,
+      "message": "Stopped: The floor under the next step at 70,-37,107 is open: a drop of 8 blocks onto minecraft:deepslate; not stepping in (throughCaves:false); looked round the cave: no lava in sight; lowest floor seen 73,-43,109 (4.5 blocks across, dy-9); travel_to with that x, y and z walks down the cave (drops of up to 3 blocks; stopWhenSeen minecraft:lava stops at the "
+     },
+     {
+      "call": "travel_to",
+      "heading": "east",
+      "code": "NO_ROUTE",
+      "seconds": 60,
+      "fromY": -34,
+      "toY": -34,
+      "blocks": null,
+      "healthLost": 0,
+      "message": "No closer to the target for 60 s; last leg: REACHED_FRONTIER toward 73,-43,109: Destination not reached; seen path ends at 68,-34,107; beyond unseen. Observe beyond the edge or choose another route before retrying; selected continuation gets no closer; other routes unverified; at 70.5,-34.0,107.5; 7 blocks left to the target (yaw -59), -9 above; covered 0 bl"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "CAVE_OPENING",
+      "seconds": 3,
+      "fromY": -34,
+      "toY": -34,
+      "blocks": 1,
+      "healthLost": 0,
+      "message": "Stopped: The floor under the next step at 71,-37,107 is open: a drop of 8 blocks onto minecraft:deepslate; not stepping in (throughCaves:false); looked round the cave: no lava in sight; lowest floor seen 75,-43,108 (5.1 blocks across, dy-9); travel_to with that x, y and z walks down the cave (drops of up to 3 blocks; stopWhenSeen minecraft:lava stops at the "
+     }
+    ]
+   },
+   "shaft": {
+    "build": "v2",
+    "reachedY55": true,
+    "minutesToY55": 2.95,
+    "callsToY55": 1,
+    "actionMinutes": 2.95,
+    "calls": 1,
+    "lowestY": -55,
+    "blocks": 156,
+    "blocksPerMinute": 53,
+    "lavaWithin16": null,
+    "healthLost": 0,
+    "deaths": 0,
+    "fallsIntoLava": 0,
+    "standIns": 0,
+    "endedUnderWater": false,
+    "legs": [
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "DIG_GOAL_REACHED",
+      "seconds": 177,
+      "fromY": 74,
+      "toY": -55,
+      "blocks": 156,
+      "healthLost": 0,
+      "message": "Reached y-55. At 61,-55,99, shaft to y-20 then steep_down heading north; 156 blocks mined in 109 steps over 177 s (y74 to y-55); mined deepslate 62, stone 40, tuff 24, diorite 14, granite 6, andesite 5; ores seen copper_ore 2, iron_ore 2, redstone_ore 2, deepslate_redstone_ore 1 (first at copper_ore 53,34,107, iron_ore 55,32,107, redstone_ore 54,7,107, deeps"
+     }
+    ]
+   },
+   "steep": {
+    "build": "v6",
+    "reachedY55": true,
+    "minutesToY55": 11.3,
+    "callsToY55": 7,
+    "actionMinutes": 11.3,
+    "calls": 7,
+    "lowestY": -55,
+    "blocks": 453,
+    "blocksPerMinute": 40,
+    "lavaWithin16": null,
+    "healthLost": 0,
+    "deaths": 0,
+    "fallsIntoLava": 0,
+    "standIns": 2,
+    "endedUnderWater": false,
+    "legs": [
+     {
+      "call": "dig_to steep_down",
+      "heading": "east",
+      "code": "TOOL_WORN",
+      "seconds": 298,
+      "fromY": 74,
+      "toY": 8,
+      "blocks": 255,
+      "healthLost": 0,
+      "message": "Stopped: Every hotbar tool for minecraft:redstone_ore has 2 or fewer uses left. At 110,8,107, steep_down heading east; 255 blocks mined in 56 steps over 298 s (y74 to y8); mined stone 177, diorite 22, andesite 21, granite 16, gravel 9, dirt 6; ores seen iron_ore 4, lapis_ore 3, redstone_ore 2 (first at lapis_ore 63,59,107, iron_ore 76,31,108, redstone_ore 11"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "south",
+      "code": "TOOL_WORN",
+      "seconds": 7,
+      "fromY": 8,
+      "toY": 8,
+      "blocks": 4,
+      "healthLost": 0,
+      "message": "Stopped: Every hotbar tool for minecraft:redstone_ore has 2 or fewer uses left. At 110,8,107, steep_down heading east; 4 blocks mined in 0 steps over 6 s (y8 to y8); mined diorite 2, granite 1, cobblestone 1; tool stone_pickaxe 120 uses left; dug past caves at 110,5,108 (y5), 109,5,107 (y5); turned west along a cave at y8; turned east along a cave at y8"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "west",
+      "code": "HOSTILE_NEAR",
+      "seconds": 37,
+      "fromY": 8,
+      "toY": 8,
+      "blocks": 12,
+      "healthLost": 0,
+      "message": "Stopped: minecraft:skeleton 4da65ab1-369e-4e8c-9802-497a24ee1510 at 90,3,102, 11.8 blocks away. At 100,8,107, steep_down heading west; 12 blocks mined in 10 steps over 36 s (y8 to y8); mined cobblestone 6, diorite 4, stone 2; ores seen redstone_ore 1, copper_ore 1 (first at redstone_ore 111,8,106, copper_ore 110,6,105); tool stone_pickaxe; dug past caves at "
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "west",
+      "code": "TOOL_WORN",
+      "seconds": 194,
+      "fromY": 8,
+      "toY": -34,
+      "blocks": 106,
+      "healthLost": 0,
+      "message": "Stopped: Every hotbar tool for minecraft:tuff has 2 or fewer uses left. At 70,-34,107, steep_down heading west; 106 blocks mined in 30 steps over 193 s (y8 to y-34); mined deepslate 95, tuff 9, deepslate_iron_ore 2; ores seen deepslate_iron_ore 5 (first at deepslate_iron_ore 93,-2,107); tool stone_pickaxe 2 uses left; dug past caves at 77,-37,107 (y-37), 78,"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "west",
+      "code": "CAVE_OPENING",
+      "seconds": 79,
+      "fromY": -34,
+      "toY": -34,
+      "blocks": 41,
+      "healthLost": 0,
+      "message": "Stopped: The floor under the next step at 57,-37,107 is open: a drop of 8 blocks onto minecraft:deepslate; not stepping in; no other heading here has a floor (tried west), no seen landing within 7 blocks and 12 level steps across the cave found no floor below; looked round the cave: no lava in sight; lowest floor seen 54,-43,110 (5.0 blocks across, dy-9); tr"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "north",
+      "code": "DIG_GOAL_REACHED",
+      "seconds": 23,
+      "fromY": -34,
+      "toY": -43,
+      "blocks": 11,
+      "healthLost": 0,
+      "message": "Reached y-43. At 58,-43,104, steep_down heading north; 11 blocks mined in 3 steps over 23 s (y-34 to y-43); mined deepslate 8, tuff 2, cobblestone 1; tool stone_pickaxe 79 uses left; dug past caves at 58,-37,106 (y-37), 59,-35,108 (y-35); dropped 7 blocks onto deepslate at 58,-42,105; 1 level steps across cave tops; turned east along a cave at y-34; turned w"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "north",
+      "code": "DIG_GOAL_REACHED",
+      "seconds": 40,
+      "fromY": -43,
+      "toY": -55,
+      "blocks": 24,
+      "healthLost": 0,
+      "message": "Reached y-55. At 58,-55,98, steep_down heading north; 24 blocks mined in 6 steps over 39 s (y-43 to y-55); mined deepslate 24; ores seen deepslate_redstone_ore 1 (first at deepslate_redstone_ore 58,-52,97); tool stone_pickaxe 55 uses left"
+     }
+    ]
+   }
+  },
+  "A1 iron-pickaxe checkpoint": {
+   "cave": {
+    "build": "v5",
+    "reachedY55": true,
+    "minutesToY55": 4.1,
+    "callsToY55": 8,
+    "actionMinutes": 4.12,
+    "calls": 8,
+    "lowestY": -56,
+    "blocks": 153,
+    "blocksPerMinute": 37,
+    "lavaWithin16": null,
+    "healthLost": 0,
+    "deaths": 0,
+    "fallsIntoLava": 0,
+    "standIns": 1,
+    "endedUnderWater": false,
+    "legs": [
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "CAVE_OPENING",
+      "seconds": 2,
+      "fromY": 70,
+      "toY": 68,
+      "blocks": 1,
+      "healthLost": 0,
+      "message": "Stopped: The floor at 13,69,107 opened onto a cave: dropped 2 blocks to 13,68,107 (throughCaves:false); looked round the cave: no lava in sight; lowest floor seen 6,65,108 (7.1 blocks across, dy-3); travel_to with that x, y and z walks down the cave (drops of up to 3 blocks; stopWhenSeen minecraft:lava stops at the first lava in view). At 13,68,107, shaft he"
+     },
+     {
+      "call": "travel_to",
+      "heading": "east",
+      "code": "ARRIVED",
+      "seconds": 2,
+      "fromY": 68,
+      "toY": 65,
+      "blocks": null,
+      "healthLost": 0,
+      "message": "Arrived within 2.0 blocks of the target; at 6.6,65.0,109.8; 2 blocks left to the target (yaw 161), 0 above; covered 6 blocks toward it in 2 s (139 blocks/min, 10 walked); 1 legs, bridged 0, pillared 0, tunnelled 0; 33 plain blocks on the hotbar; footing {\"drop\":7,\"into\":\"water\",\"yaw\":121,\"distance\":1.4}"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "CAVE_OPENING",
+      "seconds": 3,
+      "fromY": 65,
+      "toY": 63,
+      "blocks": 2,
+      "healthLost": 0,
+      "message": "Stopped: The shaft opened into a cave at 6,63,110 (2 open cells beside it); not going on (throughCaves:false); looked round the cave: no lava in sight; lowest floor seen 3,59,106 (4.2 blocks across, dy-4); travel_to with that x, y and z walks down the cave (drops of up to 3 blocks; stopWhenSeen minecraft:lava stops at the first lava in view). At 6,63,109, sh"
+     },
+     {
+      "call": "travel_to",
+      "heading": "east",
+      "code": "NO_ROUTE",
+      "seconds": 60,
+      "fromY": 63,
+      "toY": 65,
+      "blocks": null,
+      "healthLost": 0,
+      "message": "No closer to the target for 60 s; last leg: NO_SEEN_ROUTE toward 3,59,106: No seen continuation after 3 observation replans; Destination not reached; seen path ends at 6,63,109; beyond unseen. Observe beyond the edge or choose another route before retrying; at 7.4,65.0,103.5; 6 blocks left to the target (yaw 60), -6 above; covered -1 blocks toward it in 60 s"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "CAVE_OPENING",
+      "seconds": 41,
+      "fromY": 65,
+      "toY": 21,
+      "blocks": 39,
+      "healthLost": 0,
+      "message": "Stopped: The floor at 7,26,103 opened onto a cave: dropped 6 blocks to 7,21,103 (caught with water) (throughCaves:false); looked round the cave: no lava in sight; lowest floor seen 0,19,104 (7.1 blocks across, dy-2); travel_to with that x, y and z walks down the cave (drops of up to 3 blocks; stopWhenSeen minecraft:lava stops at the first lava in view). At 7"
+     },
+     {
+      "call": "travel_to",
+      "heading": "east",
+      "code": "ARRIVED",
+      "seconds": 3,
+      "fromY": 21,
+      "toY": 19,
+      "blocks": null,
+      "healthLost": 0,
+      "message": "Arrived within 2.0 blocks of the target; at 1.9,19.0,104.5; 2 blocks left to the target (yaw 104), 0 above; covered 5 blocks toward it in 3 s (128 blocks/min, 8 walked); 1 legs, bridged 0, pillared 0, tunnelled 0; 105 plain blocks on the hotbar"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "HOSTILE_NEAR",
+      "seconds": 0,
+      "fromY": 19,
+      "toY": 19,
+      "blocks": 0,
+      "healthLost": 0,
+      "message": "Stopped: minecraft:zombie f563abe3-5d24-4c3e-aa8a-e4791c256562 at 11,21,103, 9.8 blocks away. At 1,19,104, shaft heading east; 0 blocks mined in 0 steps over 1 s (y19 to y19)"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "DIG_GOAL_REACHED",
+      "seconds": 135,
+      "fromY": 19,
+      "toY": -56,
+      "blocks": 111,
+      "healthLost": 0,
+      "message": "Reached y-56. At 19,-56,104, shaft to y-20 then steep_down heading east; 111 blocks mined in 57 steps over 135 s (y19 to y-56); mined deepslate 89, stone 14, granite 5, tuff 3; ores seen deepslate_diamond_ore 3, iron_ore 1, deepslate_iron_ore 1 (first at iron_ore 2,3,104, deepslate_iron_ore 2,2,104, deepslate_diamond_ore 17,-52,103); tool iron_pickaxe 60 use"
+     }
+    ]
+   },
+   "shaft": {
+    "build": "v2",
+    "reachedY55": true,
+    "minutesToY55": 3.55,
+    "callsToY55": 11,
+    "actionMinutes": 3.55,
+    "calls": 11,
+    "lowestY": -56,
+    "blocks": 170,
+    "blocksPerMinute": 48,
+    "lavaWithin16": {
+     "minute": 1.21,
+     "at": [
+      15,
+      0,
+      102
+     ],
+     "distance": 8.3,
+     "how": "dig_to"
+    },
+    "healthLost": 3,
+    "deaths": 0,
+    "fallsIntoLava": 0,
+    "standIns": 1,
+    "endedUnderWater": false,
+    "legs": [
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "CAVE_OPENING",
+      "seconds": 53,
+      "fromY": 70,
+      "toY": 15,
+      "blocks": 49,
+      "healthLost": 0,
+      "message": "Stopped: The floor at 13,20,107 opened onto a cave: dropped 6 blocks to 13,15,107 (caught with water); looked round the cave: no lava in sight; no floor in sight below this one. At 13,15,107, shaft heading east; 49 blocks mined in 49 steps over 52 s (y70 to y15); mined stone 31, granite 6, diorite 6, gravel 3, coal_ore 2, grass_block 1; ores seen coal_ore 10"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "WATER_AHEAD",
+      "seconds": 10,
+      "fromY": 15,
+      "toY": 5,
+      "blocks": 10,
+      "healthLost": 0,
+      "message": "Stopped: Water at 13,5,107 fills the cut; not going further. At 13,5,107, shaft heading east; 10 blocks mined in 10 steps over 10 s (y15 to y5); mined stone 10; tool iron_pickaxe; sealed water with 1 block"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "south",
+      "code": "LAVA_AHEAD",
+      "seconds": 13,
+      "fromY": 5,
+      "toY": 5,
+      "blocks": 10,
+      "healthLost": 0,
+      "message": "Stopped: Lava at 14,-2,107 beside the opened cell 14,3,107; plugged it with cobblestone at 14,3,107. At 13,5,107, steep_down heading east; 10 blocks mined in 0 steps over 12 s (y5 to y5); mined stone 6, deepslate 3, cobblestone 1; tool iron_pickaxe; sealed water with 2 blocks; turned west along a cave at y5; turned east along a cave at y5; lava first seen at"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "west",
+      "code": "LAVA_AHEAD",
+      "seconds": 3,
+      "fromY": 5,
+      "toY": 5,
+      "blocks": 1,
+      "healthLost": 0,
+      "message": "Stopped: Lava at 13,-2,106 beside the opened cell 13,3,106; not going further. At 13,5,107, steep_down heading north; 1 blocks mined in 0 steps over 3 s (y5 to y5); mined stone 1; tool iron_pickaxe 180 uses left; turned north along a cave at y5; lava first seen at 13,4,100, 7.2 blocks away, 1 s into the dig"
+     },
+     {
+      "call": "dig_to tunnel",
+      "heading": "north",
+      "code": "LAVA_AHEAD",
+      "seconds": 0,
+      "fromY": 5,
+      "toY": 5,
+      "blocks": 0,
+      "healthLost": 0,
+      "message": "Stopped: Lava at 13,-2,106 beside the opened cell 13,5,106; plugged it with cobblestone at 13,5,106. At 13,5,107, tunnel heading north; 0 blocks mined in 0 steps over 1 s (y5 to y5)"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "north",
+      "code": "CAVE_OPENING",
+      "seconds": 3,
+      "fromY": 5,
+      "toY": -2,
+      "blocks": 1,
+      "healthLost": 0,
+      "message": "Stopped: The floor at 13,4,107 opened onto a cave: dropped 7 blocks to 13,-2,107 (caught with water); looked round the cave: lava seen at 14,-2,106, 1.8 blocks away (dy0); no floor in sight below this one; travel_to with that x, y and z walks down the cave (drops of up to 3 blocks; stopWhenSeen minecraft:lava stops at the first lava in view). At 13,-2,107, s"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "north",
+      "code": "LAVA_AHEAD",
+      "seconds": 0,
+      "fromY": -2,
+      "toY": -2,
+      "blocks": 0,
+      "healthLost": 0,
+      "message": "Stopped: Lava is heard beside this block, about 2 block(s) away; not breaking minecraft:deepslate at 13,-3,107. At 13,-2,107, shaft heading north; 0 blocks mined in 0 steps over 1 s (y-2 to y-2)"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "east",
+      "code": "LAVA_AHEAD",
+      "seconds": 0,
+      "fromY": -2,
+      "toY": -2,
+      "blocks": 0,
+      "healthLost": 0,
+      "message": "Stopped: Lava is heard beside this block, about 2 block(s) away; not breaking minecraft:cobblestone at 14,-2,107. At 13,-2,107, steep_down heading east; 0 blocks mined in 0 steps over 1 s (y-2 to y-2)"
+     },
+     {
+      "call": "dig_to tunnel",
+      "heading": "south",
+      "code": "DIG_LIMIT_REACHED",
+      "seconds": 22,
+      "fromY": -2,
+      "toY": -2,
+      "blocks": 17,
+      "healthLost": 0,
+      "message": "Mined the maxBlocks limit of 16 before the goal; call dig_to again to go on. At 13,-2,118, tunnel heading south; 17 blocks mined in 11 steps over 21 s (y-2 to y-2); mined deepslate 17; tool iron_pickaxe 162 uses left"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "south",
+      "code": "HOSTILE_NEAR",
+      "seconds": 76,
+      "fromY": -2,
+      "toY": -42,
+      "blocks": 56,
+      "healthLost": 3,
+      "message": "Stopped: minecraft:creeper 603da069-3520-4bc4-b40d-b21071e28529 at 18,-41,130, 5.5 blocks away. At 14,-42,126, shaft to y-20 then steep_down heading east; 56 blocks mined in 27 steps over 75 s (y-2 to y-42); mined deepslate 56; tool iron_pickaxe 106 uses left; dug past caves at 13,-30,125 (y-30), 13,-39,127 (y-39), 12,-39,126 (y-39); dropped 6 blocks onto de"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "south",
+      "code": "DIG_GOAL_REACHED",
+      "seconds": 33,
+      "fromY": -42,
+      "toY": -56,
+      "blocks": 26,
+      "healthLost": 0,
+      "message": "Reached y-56. At 14,-56,133, shaft to y-42 then steep_down heading south; 26 blocks mined in 7 steps over 33 s (y-42 to y-56); mined deepslate 26; tool iron_pickaxe 80 uses left"
+     }
+    ]
+   },
+   "steep": {
+    "build": "v4",
+    "reachedY55": true,
+    "minutesToY55": 7.22,
+    "callsToY55": 4,
+    "actionMinutes": 7.22,
+    "calls": 4,
+    "lowestY": -55,
+    "blocks": 333,
+    "blocksPerMinute": 46,
+    "lavaWithin16": null,
+    "healthLost": 4,
+    "deaths": 0,
+    "fallsIntoLava": 0,
+    "standIns": 3,
+    "endedUnderWater": false,
+    "legs": [
+     {
+      "call": "dig_to steep_down",
+      "heading": "east",
+      "code": "HOSTILE_NEAR",
+      "seconds": 81,
+      "fromY": 70,
+      "toY": 30,
+      "blocks": 86,
+      "healthLost": 0,
+      "message": "Stopped: minecraft:zombie d905fe25-b825-4383-ba57-1c0bb18a6144 at 25,23,112, 11.8 blocks away. At 33,30,107, steep_down heading north; 86 blocks mined in 20 steps over 81 s (y70 to y30); mined stone 74, andesite 9, grass_block 2, iron_ore 1; ores seen iron_ore 2 (first at iron_ore 14,68,107); tool iron_pickaxe 164 uses left; dug past caves at 34,29,108 (y29)"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "east",
+      "code": "HOSTILE_NEAR",
+      "seconds": 99,
+      "fromY": 30,
+      "toY": 24,
+      "blocks": 68,
+      "healthLost": 0,
+      "message": "Stopped: minecraft:spider 43fe24da-1bbf-46d0-8954-5aa28cbbdaf1 at 47,16,107, 8.4 blocks away. At 50,24,107, steep_down heading east; 68 blocks mined in 17 steps over 98 s (y30 to y24); mined stone 48, dirt 18, diorite 2; tool iron_pickaxe 113 uses left; dug past caves at 35,29,108 (y29), 39,25,107 (y25), 38,27,109 (y27), 44,23,107 (y23); 14 level steps acros"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "east",
+      "code": "HOSTILE_NEAR",
+      "seconds": 216,
+      "fromY": 24,
+      "toY": -43,
+      "blocks": 157,
+      "healthLost": 4,
+      "message": "Stopped: minecraft:creeper 69122549-5960-41e9-aa7f-c0af0ea0557d at 95,-42,106, 8.7 blocks away. At 86,-43,106, steep_down heading north; 157 blocks mined in 37 steps over 216 s (y24 to y-43); mined deepslate 116, stone 22, diorite 14, tuff 3, lapis_ore 2; ores seen lapis_ore 5, iron_ore 3, deepslate_diamond_ore 3 (first at iron_ore 56,17,107, lapis_ore 55,14"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "east",
+      "code": "DIG_GOAL_REACHED",
+      "seconds": 37,
+      "fromY": -43,
+      "toY": -55,
+      "blocks": 22,
+      "healthLost": 0,
+      "message": "Reached y-55. At 92,-55,106, steep_down heading east; 22 blocks mined in 6 steps over 37 s (y-43 to y-55); mined deepslate 22; tool stone_pickaxe 63 uses left"
+     }
+    ]
+   }
+  },
+  "A2 lava-pool x/z": {
+   "cave": {
+    "build": "v5",
+    "reachedY55": true,
+    "minutesToY55": 3.22,
+    "callsToY55": 4,
+    "actionMinutes": 3.22,
+    "calls": 4,
+    "lowestY": -56,
+    "blocks": 163,
+    "blocksPerMinute": 51,
+    "lavaWithin16": null,
+    "healthLost": 0,
+    "deaths": 0,
+    "fallsIntoLava": 0,
+    "standIns": 1,
+    "endedUnderWater": false,
+    "legs": [
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "CAVE_OPENING",
+      "seconds": 52,
+      "fromY": 78,
+      "toY": 22,
+      "blocks": 49,
+      "healthLost": 0,
+      "message": "Stopped: The floor at -8,29,97 opened onto a cave: dropped 8 blocks to -8,22,97 (caught with water) (throughCaves:false); looked round the cave: no lava in sight; lowest floor seen -7,21,97 (1.0 blocks across, dy-1); travel_to with that x, y and z walks down the cave (drops of up to 3 blocks; stopWhenSeen minecraft:lava stops at the first lava in view). At -"
+     },
+     {
+      "call": "travel_to",
+      "heading": "east",
+      "code": "ARRIVED",
+      "seconds": 0,
+      "fromY": 22,
+      "toY": 22,
+      "blocks": null,
+      "healthLost": 0,
+      "message": "Arrived within 2.0 blocks of the target; at -7.5,22.0,97.5; 1 blocks left to the target (yaw -135), -1 above; covered 0 blocks toward it in 0 s (0 blocks/min, 0 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 78 plain blocks on the hotbar"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "HOSTILE_NEAR",
+      "seconds": 0,
+      "fromY": 22,
+      "toY": 22,
+      "blocks": 0,
+      "healthLost": 0,
+      "message": "Stopped: minecraft:creeper 88798cb7-94c8-4df6-9fd2-dd47d152834f at -12,23,108, 11.8 blocks away. At -8,22,97, shaft heading east; 0 blocks mined in 0 steps over 1 s (y22 to y22); tool iron_pickaxe 201 uses left"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "DIG_GOAL_REACHED",
+      "seconds": 141,
+      "fromY": 22,
+      "toY": -56,
+      "blocks": 114,
+      "healthLost": 0,
+      "message": "Reached y-56. At 10,-56,97, shaft to y-20 then steep_down heading east; 114 blocks mined in 60 steps over 140 s (y22 to y-56); mined deepslate 91, stone 10, tuff 5, dirt 4, diorite 3, deepslate_diamond_ore 1; ores seen iron_ore 2, deepslate_diamond_ore 2 (first at iron_ore -7,12,97, deepslate_diamond_ore -3,-29,98); tool iron_pickaxe 87 uses left"
+     }
+    ]
+   },
+   "shaft": {
+    "build": "v2",
+    "reachedY55": true,
+    "minutesToY55": 3.07,
+    "callsToY55": 3,
+    "actionMinutes": 3.07,
+    "calls": 3,
+    "lowestY": -56,
+    "blocks": 163,
+    "blocksPerMinute": 53,
+    "lavaWithin16": null,
+    "healthLost": 0,
+    "deaths": 0,
+    "fallsIntoLava": 0,
+    "standIns": 1,
+    "endedUnderWater": false,
+    "legs": [
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "CAVE_OPENING",
+      "seconds": 43,
+      "fromY": 78,
+      "toY": 22,
+      "blocks": 49,
+      "healthLost": 0,
+      "message": "Stopped: The floor at -8,29,97 opened onto a cave: dropped 8 blocks to -8,22,97 (caught with water); looked round the cave: no lava in sight; lowest floor seen -7,21,97 (1.0 blocks across, dy-1); travel_to with that x, y and z walks down the cave (drops of up to 3 blocks; stopWhenSeen minecraft:lava stops at the first lava in view). At -8,22,97, shaft headin"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "HOSTILE_NEAR",
+      "seconds": 0,
+      "fromY": 22,
+      "toY": 22,
+      "blocks": 0,
+      "healthLost": 0,
+      "message": "Stopped: minecraft:creeper c201a1fb-26d1-4aed-870e-3d61055a6794 at -2,21,96, 6.3 blocks away. At -8,22,97, shaft heading east; 0 blocks mined in 0 steps over 1 s (y22 to y22); tool iron_pickaxe 201 uses left"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "DIG_GOAL_REACHED",
+      "seconds": 141,
+      "fromY": 22,
+      "toY": -56,
+      "blocks": 114,
+      "healthLost": 0,
+      "message": "Reached y-56. At 10,-56,97, shaft to y-20 then steep_down heading east; 114 blocks mined in 60 steps over 140 s (y22 to y-56); mined deepslate 91, stone 10, tuff 5, dirt 4, diorite 3, deepslate_diamond_ore 1; ores seen iron_ore 2, deepslate_diamond_ore 2 (first at iron_ore -7,12,97, deepslate_diamond_ore -3,-29,98); tool iron_pickaxe 87 uses left"
+     }
+    ]
+   },
+   "steep": {
+    "build": "v6",
+    "reachedY55": true,
+    "minutesToY55": 6.23,
+    "callsToY55": 4,
+    "actionMinutes": 6.25,
+    "calls": 4,
+    "lowestY": -55,
+    "blocks": 298,
+    "blocksPerMinute": 48,
+    "lavaWithin16": {
+     "minute": 3.81,
+     "at": [
+      14,
+      -2,
+      107
+     ],
+     "distance": 6.2,
+     "how": "dig_to"
+    },
+    "healthLost": 0,
+    "deaths": 0,
+    "fallsIntoLava": 0,
+    "standIns": 2,
+    "endedUnderWater": false,
+    "legs": [
+     {
+      "call": "dig_to steep_down",
+      "heading": "east",
+      "code": "HOSTILE_NEAR",
+      "seconds": 92,
+      "fromY": 78,
+      "toY": 26,
+      "blocks": 103,
+      "healthLost": 0,
+      "message": "Stopped: minecraft:creeper 2c621ea7-5916-47c9-b777-559b1db1c5e2 at 20,15,92, 11.9 blocks away. At 19,26,97, steep_down heading south; 103 blocks mined in 26 steps over 92 s (y78 to y26); mined stone 75, diorite 13, andesite 10, gravel 4, dirt 1; ores seen coal_ore 1 (first at coal_ore 9,47,96); tool iron_pickaxe 147 uses left; dug past caves at 18,27,96 (y27"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "east",
+      "code": "CAVE_OPENING",
+      "seconds": 59,
+      "fromY": 26,
+      "toY": 26,
+      "blocks": 32,
+      "healthLost": 0,
+      "message": "Stopped: The floor under the next step at 31,23,97 is open: a drop of 10 blocks onto minecraft:granite; not stepping in; no other heading here has a floor (tried east), no seen landing within 7 blocks and 12 level steps across the cave found no floor below; looked round the cave: no lava in sight; no floor in sight below this one. At 30,26,97, steep_down hea"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "south",
+      "code": "HOSTILE_NEAR",
+      "seconds": 3,
+      "fromY": 26,
+      "toY": 26,
+      "blocks": 3,
+      "healthLost": 0,
+      "message": "Stopped: minecraft:skeleton fdddda47-aeb7-40d1-8a77-eb25b24ae4e7 at 30,18,104, 10.8 blocks away. At 30,26,97, steep_down heading south; 3 blocks mined in 0 steps over 3 s (y26 to y26); mined dirt 3; dug past caves at 30,25,99 (y25)"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "south",
+      "code": "DIG_GOAL_REACHED",
+      "seconds": 220,
+      "fromY": 26,
+      "toY": -55,
+      "blocks": 160,
+      "healthLost": 0,
+      "message": "Reached y-55. At -7,-55,108, steep_down heading west; 160 blocks mined in 48 steps over 220 s (y26 to y-55); mined deepslate 94, stone 28, tuff 13, diorite 10, gravel 10, dirt 3; ores seen iron_ore 4, deepslate_gold_ore 1 (first at iron_ore 24,11,108, deepslate_gold_ore -7,-55,107); tool stone_pickaxe 98 uses left; dug past caves at 29,23,97 (y23), 30,25,100"
+     }
+    ]
+   }
+  },
+  "A3 300,-200": {
+   "cave": {
+    "build": "v5",
+    "reachedY55": false,
+    "minutesToY55": null,
+    "callsToY55": null,
+    "actionMinutes": 2.27,
+    "calls": 6,
+    "lowestY": -44,
+    "blocks": 99,
+    "blocksPerMinute": 44,
+    "lavaWithin16": {
+     "minute": 2.26,
+     "at": [
+      270,
+      -36,
+      -214
+     ],
+     "distance": 11.1,
+     "how": "travel_to"
+    },
+    "healthLost": 0,
+    "deaths": 0,
+    "fallsIntoLava": 0,
+    "standIns": 1,
+    "endedUnderWater": false,
+    "legs": [
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "CAVE_OPENING",
+      "seconds": 110,
+      "fromY": 120,
+      "toY": -21,
+      "blocks": 99,
+      "healthLost": 0,
+      "message": "Stopped: The floor at 300,21,-200 opened onto a cave: dropped 43 blocks to 300,-21,-200 (caught with water) (throughCaves:false); looked round the cave: no lava in sight; lowest floor seen 299,-37,-212 (12.0 blocks across, dy-16); travel_to with that x, y and z walks down the cave (drops of up to 3 blocks; stopWhenSeen minecraft:lava stops at the first lava "
+     },
+     {
+      "call": "travel_to",
+      "heading": "east",
+      "code": "HOSTILE_NEAR",
+      "seconds": 10,
+      "fromY": -21,
+      "toY": -23,
+      "blocks": null,
+      "healthLost": 0,
+      "message": "minecraft:zombie b0e2c94c-cfc3-4603-aaac-70f6104189ab 3.0 blocks away at 301.7,-24.2,-205.6, targeting you; at 300.5,-23.0,-208.1; 12 blocks left to the target (yaw 159), -14 above; covered 6 blocks toward it in 10 s (39 blocks/min, 10 walked); 2 legs, bridged 7, pillared 0, tunnelled 0; 81 plain blocks on the hotbar; footing {\"drop\":14,\"yaw\":111}"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "CAVE_OPENING",
+      "seconds": 1,
+      "fromY": -23,
+      "toY": -23,
+      "blocks": 0,
+      "healthLost": 0,
+      "message": "Stopped: The floor under the next step at 301,-26,-208 is open: a drop of 5 blocks onto minecraft:deepslate; not stepping in (throughCaves:false); looked round the cave: no lava in sight; lowest floor seen 289,-48,-213 (12.1 blocks across, dy-25); travel_to with that x, y and z walks down the cave (drops of up to 3 blocks; stopWhenSeen minecraft:lava stops a"
+     },
+     {
+      "call": "travel_to",
+      "heading": "east",
+      "code": "TARGET_SEEN",
+      "seconds": 5,
+      "fromY": -23,
+      "toY": -35,
+      "blocks": null,
+      "healthLost": 0,
+      "message": "minecraft:lava seen at 271,-36,-216, 30 blocks away; at 300.5,-35.0,-209.7; 16 blocks left to the target (yaw 106), -13 above; covered 10 blocks toward it in 5 s (118 blocks/min, 15 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 81 plain blocks on the hotbar; footing {\"drop\":4,\"yaw\":59,\"distance\":1.3}"
+     },
+     {
+      "call": "travel_to",
+      "heading": "east",
+      "code": "TARGET_SEEN",
+      "seconds": 2,
+      "fromY": -35,
+      "toY": -37,
+      "blocks": null,
+      "healthLost": 0,
+      "message": "minecraft:lava seen at 270,-36,-214, 25 blocks away; at 296.0,-37.0,-213.5; 25 blocks left to the target (yaw 96), 1 above; covered 5 blocks toward it in 2 s (151 blocks/min, 8 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 81 plain blocks on the hotbar; footing {\"drop\":4,\"yaw\":55,\"distance\":0.7}"
+     },
+     {
+      "call": "travel_to",
+      "heading": "east",
+      "code": "ARRIVED",
+      "seconds": 7,
+      "fromY": -37,
+      "toY": -44,
+      "blocks": null,
+      "healthLost": 0,
+      "message": "Arrived within 8.0 blocks of the target; at 277.7,-44.0,-213.6; 8 blocks left to the target (yaw 93), 8 above; covered 18 blocks toward it in 7 s (149 blocks/min, 21 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 81 plain blocks on the hotbar"
+     }
+    ]
+   },
+   "shaft": {
+    "build": "v2",
+    "reachedY55": false,
+    "minutesToY55": null,
+    "callsToY55": null,
+    "actionMinutes": 3.27,
+    "calls": 12,
+    "lowestY": -53,
+    "blocks": 170,
+    "blocksPerMinute": 52,
+    "lavaWithin16": null,
+    "healthLost": 0,
+    "deaths": 0,
+    "fallsIntoLava": 0,
+    "standIns": 1,
+    "endedUnderWater": false,
+    "legs": [
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "CAVE_OPENING",
+      "seconds": 111,
+      "fromY": 120,
+      "toY": -21,
+      "blocks": 99,
+      "healthLost": 0,
+      "message": "Stopped: The floor at 300,21,-200 opened onto a cave: dropped 43 blocks to 300,-21,-200 (caught with water); looked round the cave: no lava in sight; lowest floor seen 299,-37,-212 (12.0 blocks across, dy-16); travel_to with that x, y and z walks down the cave (drops of up to 3 blocks; stopWhenSeen minecraft:lava stops at the first lava in view). At 300,-21,"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "HOSTILE_NEAR",
+      "seconds": 6,
+      "fromY": -21,
+      "toY": -23,
+      "blocks": 6,
+      "healthLost": 0,
+      "message": "Stopped: minecraft:zombie d318c9ff-b31b-4f0b-b40b-d51a1e075cc1 at 303,-13,-206, 12.0 blocks away. At 301,-23,-200, shaft to y-21 then steep_down heading east; 6 blocks mined in 1 steps over 5 s (y-21 to y-23); mined tuff 6; tool iron_pickaxe 145 uses left"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "LAVA_AHEAD",
+      "seconds": 73,
+      "fromY": -23,
+      "toY": -53,
+      "blocks": 59,
+      "healthLost": 0,
+      "message": "Stopped: Lava is heard below this block, about 2 block(s) away; not breaking minecraft:tuff at 312,-53,-204. At 312,-53,-203, shaft to y-23 then steep_down heading north; 59 blocks mined in 14 steps over 73 s (y-23 to y-53); mined deepslate 53, tuff 6; ores seen deepslate_diamond_ore 2 (first at deepslate_diamond_ore 311,-51,-202); tool iron_pickaxe 86 uses "
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "south",
+      "code": "LAVA_AHEAD",
+      "seconds": 2,
+      "fromY": -53,
+      "toY": -53,
+      "blocks": 2,
+      "healthLost": 0,
+      "message": "Stopped: Lava is heard beside this block, about 2 block(s) away; not breaking minecraft:tuff at 312,-54,-202. At 312,-53,-203, steep_down heading south; 2 blocks mined in 0 steps over 1 s (y-53 to y-53); mined tuff 2; tool iron_pickaxe 84 uses left"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "west",
+      "code": "LAVA_AHEAD",
+      "seconds": 1,
+      "fromY": -53,
+      "toY": -53,
+      "blocks": 1,
+      "healthLost": 0,
+      "message": "Stopped: Lava is heard below this block, about 2 block(s) away; not breaking minecraft:tuff at 311,-53,-203. At 312,-53,-203, steep_down heading west; 1 blocks mined in 0 steps over 1 s (y-53 to y-53); mined tuff 1; tool iron_pickaxe 83 uses left"
+     },
+     {
+      "call": "dig_to tunnel",
+      "heading": "north",
+      "code": "LAVA_AHEAD",
+      "seconds": 0,
+      "fromY": -53,
+      "toY": -53,
+      "blocks": 0,
+      "healthLost": 0,
+      "message": "Stopped: Lava is heard below this block, about 2 block(s) away; not breaking minecraft:tuff at 312,-53,-204. At 312,-53,-203, tunnel heading north; 0 blocks mined in 0 steps over 1 s (y-53 to y-53)"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "north",
+      "code": "LAVA_AHEAD",
+      "seconds": 0,
+      "fromY": -53,
+      "toY": -53,
+      "blocks": 0,
+      "healthLost": 0,
+      "message": "Stopped: Lava is heard below this block, about 2 block(s) away; not breaking minecraft:tuff at 312,-53,-204. At 312,-53,-203, shaft to y-53 then steep_down heading north; 0 blocks mined in 0 steps over 1 s (y-53 to y-53)"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "east",
+      "code": "LAVA_AHEAD",
+      "seconds": 1,
+      "fromY": -53,
+      "toY": -53,
+      "blocks": 1,
+      "healthLost": 0,
+      "message": "Stopped: Lava is heard below this block, about 3 block(s) away; not breaking minecraft:tuff at 313,-53,-203. At 312,-53,-203, steep_down heading east; 1 blocks mined in 0 steps over 1 s (y-53 to y-53); mined tuff 1; tool iron_pickaxe 82 uses left"
+     },
+     {
+      "call": "dig_to tunnel",
+      "heading": "south",
+      "code": "LAVA_AHEAD",
+      "seconds": 1,
+      "fromY": -53,
+      "toY": -53,
+      "blocks": 1,
+      "healthLost": 0,
+      "message": "Stopped: Lava is heard below this block, about 2 block(s) away; not breaking minecraft:deepslate at 312,-53,-201. At 312,-53,-202, tunnel heading south; 1 blocks mined in 1 steps over 1 s (y-53 to y-53); mined deepslate 1; tool iron_pickaxe 81 uses left"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "south",
+      "code": "LAVA_AHEAD",
+      "seconds": 0,
+      "fromY": -53,
+      "toY": -53,
+      "blocks": 0,
+      "healthLost": 0,
+      "message": "Stopped: Lava is heard below this block, about 2 block(s) away; not breaking minecraft:deepslate at 312,-53,-201. At 312,-53,-202, shaft to y-53 then steep_down heading south; 0 blocks mined in 0 steps over 1 s (y-53 to y-53)"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "west",
+      "code": "LAVA_AHEAD",
+      "seconds": 1,
+      "fromY": -53,
+      "toY": -53,
+      "blocks": 1,
+      "healthLost": 0,
+      "message": "Stopped: Lava is heard below this block, about 2 block(s) away; not breaking minecraft:tuff at 311,-53,-202. At 312,-53,-202, steep_down heading west; 1 blocks mined in 0 steps over 1 s (y-53 to y-53); mined tuff 1; tool iron_pickaxe 80 uses left"
+     },
+     {
+      "call": "dig_to tunnel",
+      "heading": "north",
+      "code": "LAVA_AHEAD",
+      "seconds": 0,
+      "fromY": -53,
+      "toY": -53,
+      "blocks": 0,
+      "healthLost": 0,
+      "message": "Stopped: Lava is heard below this block, about 2 block(s) away; not breaking minecraft:tuff at 312,-53,-204. At 312,-53,-203, tunnel heading north; 0 blocks mined in 1 steps over 1 s (y-53 to y-53)"
+     }
+    ]
+   },
+   "steep": {
+    "build": "v6",
+    "reachedY55": true,
+    "minutesToY55": 8.3,
+    "callsToY55": 5,
+    "actionMinutes": 8.28,
+    "calls": 5,
+    "lowestY": -55,
+    "blocks": 408,
+    "blocksPerMinute": 49,
+    "lavaWithin16": null,
+    "healthLost": 0,
+    "deaths": 0,
+    "fallsIntoLava": 0,
+    "standIns": 2,
+    "endedUnderWater": false,
+    "legs": [
+     {
+      "call": "dig_to steep_down",
+      "heading": "east",
+      "code": "HOSTILE_NEAR",
+      "seconds": 250,
+      "fromY": 120,
+      "toY": 30,
+      "blocks": 236,
+      "healthLost": 0,
+      "message": "Stopped: minecraft:creeper 3d9dc47a-f020-489c-b6ee-7c4b1b11fd5f at 352,22,-202, 9.8 blocks away. At 357,30,-200, steep_down heading south; 236 blocks mined in 57 steps over 249 s (y120 to y30); mined stone 173, andesite 32, gravel 21, dirt 6, grass_block 2, short_grass 1; ores seen copper_ore 6, iron_ore 4 (first at copper_ore 314,92,-199, iron_ore 354,31,-2"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "east",
+      "code": "TOOL_WORN",
+      "seconds": 154,
+      "fromY": 30,
+      "toY": -23,
+      "blocks": 108,
+      "healthLost": 0,
+      "message": "Stopped: Every hotbar tool for minecraft:deepslate_diamond_ore has 2 or fewer uses left. At 355,-23,-199, steep_down heading west; 108 blocks mined in 25 steps over 154 s (y30 to y-23); mined deepslate 47, stone 26, tuff 13, andesite 12, gravel 7, diorite 3; tool stone_pickaxe 37 uses left; dug past caves at 358,20,-203 (y20), 359,20,-202 (y20), 366,6,-203 ("
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "south",
+      "code": "DIG_GOAL_REACHED",
+      "seconds": 27,
+      "fromY": -23,
+      "toY": -31,
+      "blocks": 16,
+      "healthLost": 0,
+      "message": "Reached y-31. At 355,-31,-195, steep_down heading south; 16 blocks mined in 4 steps over 26 s (y-23 to y-31); mined deepslate 16; tool stone_pickaxe 21 uses left"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "south",
+      "code": "TOOL_WORN",
+      "seconds": 31,
+      "fromY": -31,
+      "toY": -39,
+      "blocks": 19,
+      "healthLost": 0,
+      "message": "Stopped: Every hotbar tool for minecraft:deepslate has 2 or fewer uses left. At 355,-39,-191, steep_down heading south; 19 blocks mined in 4 steps over 30 s (y-31 to y-39); mined deepslate 19; tool stone_pickaxe 2 uses left"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "south",
+      "code": "DIG_GOAL_REACHED",
+      "seconds": 36,
+      "fromY": -39,
+      "toY": -55,
+      "blocks": 29,
+      "healthLost": 0,
+      "message": "Reached y-55. At 355,-55,-183, steep_down heading south; 29 blocks mined in 8 steps over 35 s (y-39 to y-55); mined deepslate 12, calcite 9, smooth_basalt 8; tool stone_pickaxe 102 uses left"
+     }
+    ]
+   }
+  },
+  "A3 340,-200": {
+   "shaft": {
+    "build": "v6",
+    "reachedY55": false,
+    "minutesToY55": null,
+    "callsToY55": null,
+    "actionMinutes": 1.87,
+    "calls": 4,
+    "lowestY": -14,
+    "blocks": 107,
+    "blocksPerMinute": 57,
+    "lavaWithin16": null,
+    "healthLost": 0,
+    "deaths": 0,
+    "fallsIntoLava": 0,
+    "standIns": 1,
+    "endedUnderWater": true,
+    "legs": [
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "CAVE_OPENING",
+      "seconds": 87,
+      "fromY": 117,
+      "toY": 17,
+      "blocks": 86,
+      "healthLost": 0,
+      "message": "Stopped: The floor at 340,32,-200 opened onto a cave: dropped 16 blocks to 340,17,-200 (caught with water); looked round the cave: no lava in sight; no floor in sight below this one. At 340,17,-200, shaft heading east; 86 blocks mined in 85 steps over 87 s (y117 to y17); mined stone 79, dirt 3, gravel 2, short_grass 1, grass_block 1; ores seen coal_ore 2 (fi"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "HOSTILE_NEAR",
+      "seconds": 0,
+      "fromY": 17,
+      "toY": 17,
+      "blocks": 0,
+      "healthLost": 0,
+      "message": "Stopped: minecraft:creeper d7d14b81-60d0-4fe7-92e4-42d7926f1087 at 341,18,-196, 4.5 blocks away. At 340,17,-200, shaft heading east; 0 blocks mined in 0 steps over 1 s (y17 to y17)"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "WATER_AHEAD",
+      "seconds": 24,
+      "fromY": 17,
+      "toY": -14,
+      "blocks": 21,
+      "healthLost": 0,
+      "message": "Stopped: Water at 340,-14,-201 beside the opened cell 340,-14,-200; not going further. At 340,-14,-200, shaft heading east; 21 blocks mined in 20 steps over 24 s (y17 to y-14); mined stone 11, deepslate 7, diorite 2, gravel 1; tool iron_pickaxe; caught a 12.0-block fall with water at 340,-14,-200; fell 11 blocks into water"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "south",
+      "code": "WATER_AHEAD",
+      "seconds": 0,
+      "fromY": -14,
+      "toY": -14,
+      "blocks": 0,
+      "healthLost": 0,
+      "message": "Stopped: The body is under water at 340,-14,-200 (air 298/300); not digging on. At 340,-14,-200, steep_down heading south; 0 blocks mined in 0 steps over 1 s (y-14 to y-14)"
+     }
+    ]
+   },
+   "steep": {
+    "build": "v4",
+    "reachedY55": true,
+    "minutesToY55": 7.3,
+    "callsToY55": 3,
+    "actionMinutes": 7.3,
+    "calls": 3,
+    "lowestY": -56,
+    "blocks": 354,
+    "blocksPerMinute": 48,
+    "lavaWithin16": {
+     "minute": 3.14,
+     "at": [
+      395,
+      23,
+      -195
+     ],
+     "distance": 15.2,
+     "how": "dig_to"
+    },
+    "healthLost": 0,
+    "deaths": 0,
+    "fallsIntoLava": 0,
+    "standIns": 0,
+    "endedUnderWater": false,
+    "legs": [
+     {
+      "call": "dig_to steep_down",
+      "heading": "east",
+      "code": "NO_FLOOR",
+      "seconds": 186,
+      "fromY": 117,
+      "toY": 31,
+      "blocks": 189,
+      "healthLost": 0,
+      "message": "Stopped: Could not fill the hole under the next step with cobblestone at 385,30,-200 (NO_PLACEMENT_SUPPORT: cause=SUPPORT_FACE_HIDDEN; destination=385,30,-200; requestedSupport=384,30,-200; requestedFace=east; repair=no usable support face into this cell is visible from here; move your eye to the destination side of the requested support face with a clear li"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "south",
+      "code": "DIG_GOAL_REACHED",
+      "seconds": 25,
+      "fromY": 31,
+      "toY": 22,
+      "blocks": 3,
+      "healthLost": 0,
+      "message": "Reached y22. At 384,22,-188, steep_down heading south; 3 blocks mined in 12 steps over 24 s (y31 to y22); mined stone 2, cobblestone 1; ores seen copper_ore 1 (first at copper_ore 384,23,-189); tool iron_pickaxe 58 uses left; dropped 7 blocks onto copper_ore at 384,23,-189; 10 level steps across cave tops; turned west along a cave at y31; turned east along a"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "south",
+      "code": "DIG_GOAL_REACHED",
+      "seconds": 227,
+      "fromY": 22,
+      "toY": -56,
+      "blocks": 162,
+      "healthLost": 0,
+      "message": "Reached y-56. At 384,-56,-149, steep_down heading south; 162 blocks mined in 39 steps over 226 s (y22 to y-56); mined deepslate 110, stone 38, gravel 10, tuff 3, diorite 1; tool stone_pickaxe 25 uses left"
+     }
+    ]
+   },
+   "cave": {
+    "build": "v6",
+    "reachedY55": false,
+    "minutesToY55": null,
+    "callsToY55": null,
+    "actionMinutes": 1.87,
+    "calls": 3,
+    "lowestY": -14,
+    "blocks": 107,
+    "blocksPerMinute": 58,
+    "lavaWithin16": null,
+    "healthLost": 0,
+    "deaths": 0,
+    "fallsIntoLava": 0,
+    "standIns": 0,
+    "endedUnderWater": true,
+    "legs": [
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "CAVE_OPENING",
+      "seconds": 87,
+      "fromY": 117,
+      "toY": 17,
+      "blocks": 86,
+      "healthLost": 0,
+      "message": "Stopped: The floor at 340,32,-200 opened onto a cave: dropped 16 blocks to 340,17,-200 (caught with water) (throughCaves:false); looked round the cave: no lava in sight; no floor in sight below this one. At 340,17,-200, shaft heading east; 86 blocks mined in 85 steps over 87 s (y117 to y17); mined stone 79, dirt 3, gravel 2, short_grass 1, grass_block 1; ore"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "WATER_AHEAD",
+      "seconds": 24,
+      "fromY": 17,
+      "toY": -14,
+      "blocks": 21,
+      "healthLost": 0,
+      "message": "Stopped: Water at 340,-14,-201 beside the opened cell 340,-14,-200; not going further. At 340,-14,-200, shaft heading east; 21 blocks mined in 20 steps over 24 s (y17 to y-14); mined stone 11, deepslate 7, diorite 2, gravel 1; tool iron_pickaxe; caught a 12.0-block fall with water at 340,-14,-200; fell 11 blocks into water"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "south",
+      "code": "WATER_AHEAD",
+      "seconds": 0,
+      "fromY": -14,
+      "toY": -14,
+      "blocks": 0,
+      "healthLost": 0,
+      "message": "Stopped: The body is under water at 340,-14,-200 (air 298/300); not digging on. At 340,-14,-200, steep_down heading south; 0 blocks mined in 0 steps over 1 s (y-14 to y-14)"
+     }
+    ]
+   }
+  },
+  "B1 stronghold-search checkpoint": {
+   "cave": {
+    "build": "v6",
+    "reachedY55": false,
+    "minutesToY55": null,
+    "callsToY55": null,
+    "actionMinutes": 0.93,
+    "calls": 2,
+    "lowestY": 7,
+    "blocks": 53,
+    "blocksPerMinute": 56,
+    "lavaWithin16": null,
+    "healthLost": 0,
+    "deaths": 0,
+    "fallsIntoLava": 0,
+    "standIns": 0,
+    "endedUnderWater": true,
+    "legs": [
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "WATER_AHEAD",
+      "seconds": 56,
+      "fromY": 63,
+      "toY": 9,
+      "blocks": 53,
+      "healthLost": 0,
+      "message": "Stopped: Water at 1049,9,2536 beside the opened cell 1048,9,2536; not going further. At 1048,9,2536, shaft heading east; 53 blocks mined in 53 steps over 55 s (y63 to y9); mined stone 44, sand 3, dirt 3, coal_ore 2, copper_ore 1; ores seen coal_ore 5, copper_ore 5, lapis_ore 1 (first at coal_ore 1048,49,2536, copper_ore 1048,44,2535, lapis_ore 1048,20,2535);"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "south",
+      "code": "WATER_AHEAD",
+      "seconds": 0,
+      "fromY": 9,
+      "toY": 7,
+      "blocks": 0,
+      "healthLost": 0,
+      "message": "Stopped: The body is under water at 1048,7,2536 (air 298/300); not digging on. At 1048,7,2536, steep_down heading south; 0 blocks mined in 0 steps over 1 s (y9 to y7)"
+     }
+    ]
+   },
+   "shaft": {
+    "build": "v4",
+    "reachedY55": false,
+    "minutesToY55": null,
+    "callsToY55": null,
+    "actionMinutes": 0.93,
+    "calls": 1,
+    "lowestY": 7,
+    "blocks": 53,
+    "blocksPerMinute": 56,
+    "lavaWithin16": null,
+    "healthLost": 0,
+    "deaths": 0,
+    "fallsIntoLava": 0,
+    "standIns": 0,
+    "endedUnderWater": true,
+    "legs": [
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "WATER_AHEAD",
+      "seconds": 56,
+      "fromY": 63,
+      "toY": 7,
+      "blocks": 53,
+      "healthLost": 0,
+      "message": "Stopped: The body is under water at 1048,7,2536 (air 298/300); not digging on. At 1048,7,2536, shaft heading east; 53 blocks mined in 53 steps over 56 s (y63 to y7); mined stone 44, sand 3, dirt 3, coal_ore 2, copper_ore 1; ores seen coal_ore 5, copper_ore 5, lapis_ore 1 (first at coal_ore 1048,49,2536, copper_ore 1048,44,2535, lapis_ore 1048,20,2535); tool "
+     }
+    ]
+   },
+   "steep": {
+    "build": "v4",
+    "reachedY55": false,
+    "minutesToY55": null,
+    "callsToY55": null,
+    "actionMinutes": 1.02,
+    "calls": 2,
+    "lowestY": 35,
+    "blocks": 57,
+    "blocksPerMinute": 57,
+    "lavaWithin16": null,
+    "healthLost": 0,
+    "deaths": 0,
+    "fallsIntoLava": 0,
+    "standIns": 0,
+    "endedUnderWater": true,
+    "legs": [
+     {
+      "call": "dig_to steep_down",
+      "heading": "east",
+      "code": "WATER_AHEAD",
+      "seconds": 60,
+      "fromY": 63,
+      "toY": 35,
+      "blocks": 57,
+      "healthLost": 0,
+      "message": "Stopped: Water at 1063,36,2535 beside the opened cell 1063,36,2536; water on 4 sides of it: a body of water (an aquifer or lake), not a trickle; not going further. At 1062,35,2536, steep_down heading east; 57 blocks mined in 14 steps over 59 s (y63 to y35); mined stone 29, granite 12, dirt 9, andesite 4, birch_log 2, grass_block 1; tool iron_pickaxe 193 uses"
+     },
+     {
+      "call": "dig_to tunnel",
+      "heading": "south",
+      "code": "WATER_AHEAD",
+      "seconds": 1,
+      "fromY": 35,
+      "toY": 35,
+      "blocks": 0,
+      "healthLost": 0,
+      "message": "Stopped: The body is under water at 1062,35,2536 (air 298/300); not digging on. At 1062,35,2536, tunnel heading south; 0 blocks mined in 0 steps over 1 s (y35 to y35); tool iron_pickaxe 193 uses left"
+     }
+    ]
+   }
+  },
+  "C1 12345 100,100": {
+   "shaft": {
+    "build": "v4",
+    "reachedY55": true,
+    "minutesToY55": 3.85,
+    "callsToY55": 4,
+    "actionMinutes": 3.85,
+    "calls": 4,
+    "lowestY": -57,
+    "blocks": 188,
+    "blocksPerMinute": 49,
+    "lavaWithin16": null,
+    "healthLost": 0,
+    "deaths": 0,
+    "fallsIntoLava": 0,
+    "standIns": 0,
+    "endedUnderWater": false,
+    "legs": [
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "DIG_STUCK",
+      "seconds": 33,
+      "fromY": 102,
+      "toY": 72,
+      "blocks": 29,
+      "healthLost": 0,
+      "message": "Stopped: No part of minecraft:moss_block at 132,71,68 is in reach and view. At 132,72,68, shaft heading east; 29 blocks mined in 30 steps over 32 s (y102 to y72); mined stone 26, dirt 2, grass_block 1; tool iron_pickaxe; dropped 2 blocks into a cave at 132,72,68; sealed water with 1 block"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "south",
+      "code": "DIG_GOAL_REACHED",
+      "seconds": 10,
+      "fromY": 72,
+      "toY": 64,
+      "blocks": 8,
+      "healthLost": 0,
+      "message": "Reached y64. At 128,64,68, steep_down heading west; 8 blocks mined in 4 steps over 9 s (y72 to y64); mined dirt 3, moss_block 2, short_grass 1, grass_block 1, stone 1; tool iron_pickaxe 220 uses left; dug past caves at 128,67,68 (y67); turned west along a cave at y72"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "south",
+      "code": "CAVE_OPENING",
+      "seconds": 35,
+      "fromY": 64,
+      "toY": 27,
+      "blocks": 32,
+      "healthLost": 0,
+      "message": "Stopped: The floor at 128,32,68 opened onto a cave: dropped 6 blocks to 128,27,68 (caught with water); looked round the cave: no lava in sight; no floor in sight below this one. At 128,27,68, shaft heading south; 32 blocks mined in 32 steps over 35 s (y64 to y27); mined stone 25, gravel 4, diorite 2, andesite 1; tool iron_pickaxe; caught a 6.0-block fall wit"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "south",
+      "code": "DIG_GOAL_REACHED",
+      "seconds": 153,
+      "fromY": 27,
+      "toY": -57,
+      "blocks": 119,
+      "healthLost": 0,
+      "message": "Reached y-57. At 128,-57,86, shaft to y-20 then steep_down heading south; 119 blocks mined in 65 steps over 153 s (y27 to y-57); mined deepslate 67, gravel 18, clay 15, granite 11, diorite 4, stone 2; ores seen copper_ore 4, iron_ore 2, deepslate_redstone_ore 1 (first at copper_ore 129,24,68, iron_ore 128,16,67, deepslate_redstone_ore 129,-39,79); tool iron_"
+     }
+    ]
+   },
+   "steep": {
+    "build": "v6",
+    "reachedY55": true,
+    "minutesToY55": 7.38,
+    "callsToY55": 2,
+    "actionMinutes": 7.38,
+    "calls": 2,
+    "lowestY": -55,
+    "blocks": 360,
+    "blocksPerMinute": 49,
+    "lavaWithin16": null,
+    "healthLost": 2,
+    "deaths": 0,
+    "fallsIntoLava": 0,
+    "standIns": 1,
+    "endedUnderWater": false,
+    "legs": [
+     {
+      "call": "dig_to steep_down",
+      "heading": "east",
+      "code": "HOSTILE_NEAR",
+      "seconds": 195,
+      "fromY": 102,
+      "toY": 7,
+      "blocks": 195,
+      "healthLost": 2,
+      "message": "Stopped: minecraft:creeper 8bf13ff7-9fb3-4d3d-81bb-caba2f05fc7f at 141,4,37, 9.6 blocks away. At 137,7,29, steep_down heading west; 195 blocks mined in 46 steps over 194 s (y102 to y7); mined stone 141, clay 25, andesite 15, diorite 8, dirt 4, grass_block 1; ores seen iron_ore 4 (first at iron_ore 137,31,37); tool iron_pickaxe 55 uses left; dug past caves at"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "east",
+      "code": "DIG_GOAL_REACHED",
+      "seconds": 248,
+      "fromY": 7,
+      "toY": -55,
+      "blocks": 165,
+      "healthLost": 0,
+      "message": "Reached y-55. At 132,-55,30, steep_down heading west; 165 blocks mined in 36 steps over 248 s (y7 to y-55); mined deepslate 125, sculk 23, andesite 9, stone 2, deepslate_lapis_ore 2, sculk_vein 2; ores seen deepslate_lapis_ore 4, deepslate_iron_ore 2 (first at deepslate_lapis_ore 145,-7,29, deepslate_iron_ore 150,-30,29); tool stone_pickaxe 22 uses left; dug"
+     }
+    ]
+   },
+   "cave": {
+    "build": "v6",
+    "reachedY55": false,
+    "minutesToY55": null,
+    "callsToY55": null,
+    "actionMinutes": 0.18,
+    "calls": 3,
+    "lowestY": 71,
+    "blocks": 6,
+    "blocksPerMinute": 31,
+    "lavaWithin16": null,
+    "healthLost": 0,
+    "deaths": 0,
+    "fallsIntoLava": 0,
+    "standIns": 0,
+    "endedUnderWater": true,
+    "legs": [
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "WATER_AHEAD",
+      "seconds": 7,
+      "fromY": 102,
+      "toY": 96,
+      "blocks": 6,
+      "healthLost": 0,
+      "message": "Stopped: Water at 133,96,68 beside the opened cell 132,96,68; not going further. At 132,96,68, shaft heading east; 6 blocks mined in 6 steps over 7 s (y102 to y96); mined stone 3, dirt 2, grass_block 1; tool iron_pickaxe 244 uses left"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "south",
+      "code": "WATER_AHEAD",
+      "seconds": 0,
+      "fromY": 96,
+      "toY": 96,
+      "blocks": 0,
+      "healthLost": 0,
+      "message": "Stopped: Water at 133,95,69 beside the opened cell 132,95,69; sealing it with cobblestone at 133,95,69 (NO_PLACEMENT_SUPPORT: cause=SUPPORT_FACE_HIDDEN; destination=133,95,69; requestedSupport=133,95,68; requestedFace=south; repair=no usable support face into this cell is visible from here; move your eye to the destination side of the requested support face "
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "west",
+      "code": "WATER_AHEAD",
+      "seconds": 4,
+      "fromY": 96,
+      "toY": 71,
+      "blocks": 0,
+      "healthLost": 0,
+      "message": "Stopped: The body is under water at 132,71,69 (air 298/300); not digging on. At 132,71,69, steep_down heading west; 0 blocks mined in 0 steps over 3 s (y96 to y71)"
+     }
+    ]
+   }
+  },
+  "N1 12345 -300,200": {
+   "shaft": {
+    "build": "v6",
+    "reachedY55": false,
+    "minutesToY55": null,
+    "callsToY55": null,
+    "actionMinutes": 0.28,
+    "calls": 1,
+    "lowestY": 53,
+    "blocks": 16,
+    "blocksPerMinute": 56,
+    "lavaWithin16": null,
+    "healthLost": 0,
+    "deaths": 0,
+    "fallsIntoLava": 0,
+    "standIns": 0,
+    "endedUnderWater": true,
+    "legs": [
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "WATER_AHEAD",
+      "seconds": 17,
+      "fromY": 69,
+      "toY": 53,
+      "blocks": 16,
+      "healthLost": 0,
+      "message": "Stopped: The body is under water at -308,53,224 (air 298/300); not digging on. At -308,53,224, shaft heading east; 16 blocks mined in 16 steps over 16 s (y69 to y53); mined stone 9, granite 5, grass_block 1, dirt 1; tool iron_pickaxe 234 uses left"
+     }
+    ]
+   },
+   "steep": {
+    "build": "v6",
+    "reachedY55": false,
+    "minutesToY55": null,
+    "callsToY55": null,
+    "actionMinutes": 0.25,
+    "calls": 1,
+    "lowestY": 63,
+    "blocks": 14,
+    "blocksPerMinute": 56,
+    "lavaWithin16": null,
+    "healthLost": 0,
+    "deaths": 0,
+    "fallsIntoLava": 0,
+    "standIns": 0,
+    "endedUnderWater": true,
+    "legs": [
+     {
+      "call": "dig_to steep_down",
+      "heading": "east",
+      "code": "WATER_AHEAD",
+      "seconds": 15,
+      "fromY": 69,
+      "toY": 63,
+      "blocks": 14,
+      "healthLost": 0,
+      "message": "Stopped: The body is under water at -305,63,224 (air 298/300); not digging on. At -305,63,224, steep_down heading east; 14 blocks mined in 3 steps over 15 s (y69 to y63); mined stone 7, dirt 6, grass_block 1; tool iron_pickaxe 236 uses left"
+     }
+    ]
+   },
+   "cave": {
+    "build": "v6",
+    "reachedY55": false,
+    "minutesToY55": null,
+    "callsToY55": null,
+    "actionMinutes": 0.28,
+    "calls": 1,
+    "lowestY": 53,
+    "blocks": 16,
+    "blocksPerMinute": 58,
+    "lavaWithin16": null,
+    "healthLost": 0,
+    "deaths": 0,
+    "fallsIntoLava": 0,
+    "standIns": 0,
+    "endedUnderWater": true,
+    "legs": [
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "WATER_AHEAD",
+      "seconds": 17,
+      "fromY": 69,
+      "toY": 53,
+      "blocks": 16,
+      "healthLost": 0,
+      "message": "Stopped: The body is under water at -308,53,224 (air 298/300); not digging on. At -308,53,224, shaft heading east; 16 blocks mined in 15 steps over 16 s (y69 to y53); mined stone 9, granite 5, grass_block 1, dirt 1; tool iron_pickaxe 234 uses left"
+     }
+    ]
+   }
+  },
+  "N2 20261009 134,488": {
+   "cave": {
+    "build": "v6",
+    "reachedY55": true,
+    "minutesToY55": 3.32,
+    "callsToY55": 5,
+    "actionMinutes": 3.33,
+    "calls": 5,
+    "lowestY": -56,
+    "blocks": 182,
+    "blocksPerMinute": 55,
+    "lavaWithin16": null,
+    "healthLost": 0,
+    "deaths": 0,
+    "fallsIntoLava": 0,
+    "standIns": 0,
+    "endedUnderWater": false,
+    "legs": [
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "WATER_AHEAD",
+      "seconds": 28,
+      "fromY": 68,
+      "toY": 37,
+      "blocks": 32,
+      "healthLost": 0,
+      "message": "Stopped: Water at 149,37,464 beside the opened cell 150,37,464; not going further. At 150,37,464, shaft heading east; 32 blocks mined in 31 steps over 28 s (y68 to y37); mined stone 21, granite 6, diorite 2, leaf_litter 1, grass_block 1, dirt 1; tool iron_pickaxe 219 uses left"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "south",
+      "code": "WATER_AHEAD",
+      "seconds": 1,
+      "fromY": 37,
+      "toY": 37,
+      "blocks": 1,
+      "healthLost": 0,
+      "message": "Stopped: Water at 149,37,465 beside the opened cell 150,37,465; sealing it with cobblestone at 149,37,465 (NO_PLACEMENT_SUPPORT: cause=SUPPORT_FACE_HIDDEN; destination=149,37,465; requestedSupport=150,37,465; requestedFace=west; repair=no usable support face into this cell is visible from here; move your eye to the destination side of the requested support f"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "west",
+      "code": "WATER_AHEAD",
+      "seconds": 0,
+      "fromY": 37,
+      "toY": 37,
+      "blocks": 0,
+      "healthLost": 0,
+      "message": "Stopped: Water at 149,37,464 beside the opened cell 149,38,464; sealing it with cobblestone at 149,37,465 (NO_PLACEMENT_SUPPORT: cause=SUPPORT_FACE_HIDDEN; destination=149,37,465; requestedSupport=150,37,465; requestedFace=west; repair=no usable support face into this cell is visible from here; move your eye to the destination side of the requested support f"
+     },
+     {
+      "call": "dig_to tunnel",
+      "heading": "north",
+      "code": "DIG_LIMIT_REACHED",
+      "seconds": 14,
+      "fromY": 37,
+      "toY": 37,
+      "blocks": 16,
+      "healthLost": 0,
+      "message": "Mined the maxBlocks limit of 16 before the goal; call dig_to again to go on. At 150,37,456, tunnel heading north; 16 blocks mined in 8 steps over 14 s (y37 to y37); mined stone 16; tool iron_pickaxe 202 uses left"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "north",
+      "code": "DIG_GOAL_REACHED",
+      "seconds": 156,
+      "fromY": 37,
+      "toY": -56,
+      "blocks": 133,
+      "healthLost": 0,
+      "message": "Reached y-56. At 150,-56,438, shaft to y-20 then steep_down heading north; 133 blocks mined in 75 steps over 156 s (y37 to y-56); mined deepslate 82, stone 30, tuff 10, diorite 7, gravel 4; ores seen deepslate_gold_ore 4, deepslate_lapis_ore 2 (first at deepslate_lapis_ore 149,-13,456, deepslate_gold_ore 151,-19,456); tool iron_pickaxe 69 uses left"
+     }
+    ]
+   },
+   "shaft": {
+    "build": "v6",
+    "reachedY55": false,
+    "minutesToY55": null,
+    "callsToY55": null,
+    "actionMinutes": 0.58,
+    "calls": 4,
+    "lowestY": 37,
+    "blocks": 35,
+    "blocksPerMinute": 60,
+    "lavaWithin16": null,
+    "healthLost": 0,
+    "deaths": 0,
+    "fallsIntoLava": 0,
+    "standIns": 0,
+    "endedUnderWater": true,
+    "legs": [
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "WATER_AHEAD",
+      "seconds": 32,
+      "fromY": 68,
+      "toY": 37,
+      "blocks": 32,
+      "healthLost": 0,
+      "message": "Stopped: Water at 150,37,464 fills the cut; not going further. At 150,37,464, shaft heading east; 32 blocks mined in 31 steps over 31 s (y68 to y37); mined stone 21, granite 6, diorite 2, leaf_litter 1, grass_block 1, dirt 1; tool iron_pickaxe; sealed water with 1 block"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "south",
+      "code": "WATER_AHEAD",
+      "seconds": 2,
+      "fromY": 37,
+      "toY": 37,
+      "blocks": 2,
+      "healthLost": 0,
+      "message": "Stopped: Water at 149,37,465 beside the opened cell 150,37,465; sealing it with cobblestone at 149,37,465 (NO_PLACEMENT_SUPPORT: cause=SUPPORT_FACE_HIDDEN; destination=149,37,465; requestedSupport=149,37,464; requestedFace=south; repair=no usable support face into this cell is visible from here; move your eye to the destination side of the requested support "
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "west",
+      "code": "WATER_AHEAD",
+      "seconds": 1,
+      "fromY": 37,
+      "toY": 37,
+      "blocks": 1,
+      "healthLost": 0,
+      "message": "Stopped: Water at 148,38,464 beside the opened cell 149,38,464; water on 4 sides of it: a body of water (an aquifer or lake), not a trickle; not going further. At 150,37,464, steep_down heading west; 1 blocks mined in 0 steps over 1 s (y37 to y37); mined stone 1; tool iron_pickaxe 216 uses left"
+     },
+     {
+      "call": "dig_to tunnel",
+      "heading": "north",
+      "code": "WATER_AHEAD",
+      "seconds": 1,
+      "fromY": 37,
+      "toY": 37,
+      "blocks": 0,
+      "healthLost": 0,
+      "message": "Stopped: The body is under water at 150,37,464 (air 298/300); not digging on. At 150,37,464, tunnel heading north; 0 blocks mined in 0 steps over 1 s (y37 to y37); tool iron_pickaxe 216 uses left"
+     }
+    ]
+   },
+   "steep": {
+    "build": "v4",
+    "reachedY55": true,
+    "minutesToY55": 4.38,
+    "callsToY55": 2,
+    "actionMinutes": 4.38,
+    "calls": 2,
+    "lowestY": -55,
+    "blocks": 242,
+    "blocksPerMinute": 55,
+    "lavaWithin16": null,
+    "healthLost": 0,
+    "deaths": 0,
+    "fallsIntoLava": 0,
+    "standIns": 1,
+    "endedUnderWater": false,
+    "legs": [
+     {
+      "call": "dig_to steep_down",
+      "heading": "east",
+      "code": "HOSTILE_NEAR",
+      "seconds": 158,
+      "fromY": 68,
+      "toY": -13,
+      "blocks": 158,
+      "healthLost": 0,
+      "message": "Stopped: minecraft:skeleton 2860a8fd-6a18-4496-bf55-99d0992ce63c at 170,-24,447, 11.8 blocks away. At 174,-13,449, steep_down heading east; 158 blocks mined in 39 steps over 157 s (y68 to y-13); mined stone 73, deepslate 33, granite 24, andesite 19, moss_block 6, dirt 2; ores seen coal_ore 1 (first at coal_ore 155,63,464); tool iron_pickaxe 92 uses left; dug"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "east",
+      "code": "DIG_GOAL_REACHED",
+      "seconds": 105,
+      "fromY": -13,
+      "toY": -55,
+      "blocks": 84,
+      "healthLost": 0,
+      "message": "Reached y-55. At 195,-55,449, steep_down heading east; 84 blocks mined in 21 steps over 105 s (y-13 to y-55); mined deepslate 84; ores seen deepslate_lapis_ore 1 (first at deepslate_lapis_ore 191,-44,450); tool iron_pickaxe 8 uses left"
+     }
+    ]
+   }
+  },
+  "N3 12345 400,-300": {
+   "cave": {
+    "build": "v6",
+    "reachedY55": false,
+    "minutesToY55": null,
+    "callsToY55": null,
+    "actionMinutes": 2.0,
+    "calls": 4,
+    "lowestY": 34,
+    "blocks": 113,
+    "blocksPerMinute": 57,
+    "lavaWithin16": null,
+    "healthLost": 0,
+    "deaths": 0,
+    "fallsIntoLava": 0,
+    "standIns": 0,
+    "endedUnderWater": true,
+    "legs": [
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "CAVE_OPENING",
+      "seconds": 33,
+      "fromY": 154,
+      "toY": 119,
+      "blocks": 30,
+      "healthLost": 0,
+      "message": "Stopped: The floor at 400,125,-308 opened onto a cave: dropped 7 blocks to 400,119,-308 (caught with water) (throughCaves:false); looked round the cave: no lava in sight; lowest floor seen 403,118,-308 (3.0 blocks across, dy-1); travel_to with that x, y and z walks down the cave (drops of up to 3 blocks; stopWhenSeen minecraft:lava stops at the first lava in"
+     },
+     {
+      "call": "travel_to",
+      "heading": "east",
+      "code": "ARRIVED",
+      "seconds": 1,
+      "fromY": 119,
+      "toY": 119,
+      "blocks": null,
+      "healthLost": 0,
+      "message": "Arrived within 2.0 blocks of the target; at 401.1,119.0,-308.1; 2 blocks left to the target (yaw -86), -1 above; covered 1 blocks toward it in 1 s (75 blocks/min, 1 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 58 plain blocks on the hotbar"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "WATER_AHEAD",
+      "seconds": 82,
+      "fromY": 119,
+      "toY": 35,
+      "blocks": 80,
+      "healthLost": 0,
+      "message": "Stopped: Water at 402,35,-309 beside the opened cell 401,35,-309; not going further. At 401,35,-309, shaft heading east; 80 blocks mined in 80 steps over 81 s (y119 to y35); mined stone 70, diorite 6, copper_ore 4; ores seen copper_ore 16 (first at copper_ore 401,82,-309); tool iron_pickaxe; caught a 5.0-block fall with water at 401,35,-309; fell 5 blocks in"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "south",
+      "code": "WATER_AHEAD",
+      "seconds": 4,
+      "fromY": 35,
+      "toY": 34,
+      "blocks": 3,
+      "healthLost": 0,
+      "message": "Stopped: The body is under water at 401,34,-308 (air 298/300); not digging on. At 401,34,-308, steep_down heading south; 3 blocks mined in 0 steps over 4 s (y35 to y34); mined stone 3; tool iron_pickaxe 137 uses left; sealed water with 1 block"
+     }
+    ]
+   },
+   "shaft": {
+    "build": "v6",
+    "reachedY55": true,
+    "minutesToY55": 4.52,
+    "callsToY55": 2,
+    "actionMinutes": 4.5,
+    "calls": 2,
+    "lowestY": -56,
+    "blocks": 245,
+    "blocksPerMinute": 54,
+    "lavaWithin16": null,
+    "healthLost": 0,
+    "deaths": 0,
+    "fallsIntoLava": 0,
+    "standIns": 0,
+    "endedUnderWater": false,
+    "legs": [
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "CAVE_OPENING",
+      "seconds": 32,
+      "fromY": 154,
+      "toY": 119,
+      "blocks": 30,
+      "healthLost": 0,
+      "message": "Stopped: The floor at 400,125,-308 opened onto a cave: dropped 7 blocks to 400,119,-308 (caught with water); looked round the cave: no lava in sight; lowest floor seen 403,118,-308 (3.0 blocks across, dy-1); travel_to with that x, y and z walks down the cave (drops of up to 3 blocks; stopWhenSeen minecraft:lava stops at the first lava in view). At 400,119,-3"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "DIG_GOAL_REACHED",
+      "seconds": 239,
+      "fromY": 119,
+      "toY": -56,
+      "blocks": 215,
+      "healthLost": 0,
+      "message": "Reached y-56. At 406,-56,-319, shaft to y-20 then steep_down heading north; 215 blocks mined in 156 steps over 238 s (y119 to y-56); mined stone 99, deepslate 81, tuff 11, sculk 8, andesite 4, granite 4; ores seen copper_ore 10, iron_ore 4 (first at copper_ore 400,81,-309, iron_ore 400,35,-307); tool iron_pickaxe 5 uses left; dug past caves at 408,-31,-308 ("
+     }
+    ]
+   },
+   "steep": {
+    "build": "v6",
+    "reachedY55": true,
+    "minutesToY55": 8.9,
+    "callsToY55": 6,
+    "actionMinutes": 8.9,
+    "calls": 6,
+    "lowestY": -56,
+    "blocks": 457,
+    "blocksPerMinute": 51,
+    "lavaWithin16": null,
+    "healthLost": 0,
+    "deaths": 0,
+    "fallsIntoLava": 0,
+    "standIns": 1,
+    "endedUnderWater": false,
+    "legs": [
+     {
+      "call": "dig_to steep_down",
+      "heading": "east",
+      "code": "NO_FLOOR",
+      "seconds": 106,
+      "fromY": 154,
+      "toY": 98,
+      "blocks": 114,
+      "healthLost": 0,
+      "message": "Stopped: Could not fill the hole under the next step with cobblestone at 429,95,-308 (TARGET_TOO_FAR: cause=OUT_OF_REACH; destination=429,95,-308; requestedSupport=429,94,-308; requestedFace=up; repair=move closer or build higher dry footing with clear headroom; eye=428.7,99.62,-307.5; requestedFaceView=the up face of 429,94,-308 is out of reach: its nearest"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "south",
+      "code": "DIG_GOAL_REACHED",
+      "seconds": 16,
+      "fromY": 98,
+      "toY": 90,
+      "blocks": 17,
+      "healthLost": 0,
+      "message": "Reached y90. At 424,90,-308, steep_down heading west; 17 blocks mined in 4 steps over 15 s (y98 to y90); mined stone 13, moss_block 4; tool iron_pickaxe 119 uses left; dug past caves at 428,95,-307 (y95), 427,96,-309 (y96); turned west along a cave at y98"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "south",
+      "code": "TOOL_WORN",
+      "seconds": 298,
+      "fromY": 90,
+      "toY": -22,
+      "blocks": 249,
+      "healthLost": 0,
+      "message": "Stopped: Every hotbar tool for minecraft:deepslate has 2 or fewer uses left. At 417,-22,-255, steep_down heading west; 249 blocks mined in 60 steps over 297 s (y90 to y-22); mined stone 148, deepslate 54, granite 12, andesite 12, moss_block 7, gravel 5; ores seen copper_ore 3, iron_ore 2, deepslate_copper_ore 2, coal_ore 1 (first at coal_ore 423,76,-300, iro"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "south",
+      "code": "TOOL_WORN",
+      "seconds": 51,
+      "fromY": -22,
+      "toY": -38,
+      "blocks": 35,
+      "healthLost": 0,
+      "message": "Stopped: Every hotbar tool for minecraft:deepslate_diamond_ore has 2 or fewer uses left. At 417,-38,-247, steep_down heading south; 35 blocks mined in 8 steps over 51 s (y-22 to y-38); mined deepslate 24, tuff 11; ores seen deepslate_diamond_ore 1 (first at deepslate_diamond_ore 417,-25,-251); tool stone_pickaxe 96 uses left"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "west",
+      "code": "DIG_GOAL_REACHED",
+      "seconds": 22,
+      "fromY": -38,
+      "toY": -46,
+      "blocks": 16,
+      "healthLost": 0,
+      "message": "Reached y-46. At 413,-46,-247, steep_down heading west; 16 blocks mined in 4 steps over 22 s (y-38 to y-46); mined gravel 6, tuff 5, deepslate 5; tool stone_pickaxe 80 uses left"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "west",
+      "code": "DIG_GOAL_REACHED",
+      "seconds": 41,
+      "fromY": -46,
+      "toY": -56,
+      "blocks": 26,
+      "healthLost": 0,
+      "message": "Reached y-56. At 408,-56,-247, steep_down heading west; 26 blocks mined in 5 steps over 40 s (y-46 to y-56); mined deepslate 18, gravel 8; tool stone_pickaxe 54 uses left"
+     }
+    ]
+   }
+  },
+  "N4 20261009 -200,-150": {
+   "cave": {
+    "build": "v6",
+    "reachedY55": true,
+    "minutesToY55": 4.05,
+    "callsToY55": 8,
+    "actionMinutes": 4.05,
+    "calls": 8,
+    "lowestY": -56,
+    "blocks": 151,
+    "blocksPerMinute": 37,
+    "lavaWithin16": null,
+    "healthLost": 0,
+    "deaths": 0,
+    "fallsIntoLava": 0,
+    "standIns": 0,
+    "endedUnderWater": false,
+    "legs": [
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "CAVE_OPENING",
+      "seconds": 71,
+      "fromY": 64,
+      "toY": -6,
+      "blocks": 68,
+      "healthLost": 0,
+      "message": "Stopped: The floor at -200,-3,-150 opened onto a cave: dropped 4 blocks to -200,-6,-150 (caught with water) (throughCaves:false); looked round the cave: no lava in sight; no floor in sight below this one. At -200,-6,-150, shaft heading east; 68 blocks mined in 67 steps over 71 s (y64 to y-6); mined stone 46, diorite 8, dirt 5, andesite 4, deepslate 3, leaf_l"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "CAVE_OPENING",
+      "seconds": 3,
+      "fromY": -6,
+      "toY": -9,
+      "blocks": 1,
+      "healthLost": 0,
+      "message": "Stopped: The floor at -200,-7,-150 opened onto a cave: dropped 3 blocks to -200,-9,-150 (throughCaves:false); looked round the cave: no lava in sight; lowest floor seen -198,-12,-147 (3.6 blocks across, dy-3); travel_to with that x, y and z walks down the cave (drops of up to 3 blocks; stopWhenSeen minecraft:lava stops at the first lava in view). At -200,-9,"
+     },
+     {
+      "call": "travel_to",
+      "heading": "east",
+      "code": "ARRIVED",
+      "seconds": 5,
+      "fromY": -9,
+      "toY": -10,
+      "blocks": null,
+      "healthLost": 0,
+      "message": "Arrived within 2.0 blocks of the target; at -198.5,-10.0,-148.9; 2 blocks left to the target (yaw -15), -2 above; covered 1 blocks toward it in 5 s (11 blocks/min, 3 walked); 1 legs, bridged 0, pillared 0, tunnelled 2; 88 plain blocks on the hotbar"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "CAVE_OPENING",
+      "seconds": 21,
+      "fromY": -10,
+      "toY": -22,
+      "blocks": 16,
+      "healthLost": 0,
+      "message": "Stopped: The step opened into a cave at -197,-23,-148 (5 open cells beside the cut); not stepping in (throughCaves:false); looked round the cave: no lava in sight; lowest floor seen -196,-26,-149 (2.0 blocks across, dy-4); travel_to with that x, y and z walks down the cave (drops of up to 3 blocks; stopWhenSeen minecraft:lava stops at the first lava in view)"
+     },
+     {
+      "call": "travel_to",
+      "heading": "east",
+      "code": "NO_ROUTE",
+      "seconds": 60,
+      "fromY": -22,
+      "toY": -22,
+      "blocks": null,
+      "healthLost": 0,
+      "message": "No closer to the target for 60 s; last leg: NO_SEEN_ROUTE toward -196,-26,-149: No seen continuation after 3 observation replans; Destination not reached; seen path ends at -198,-22,-149; beyond unseen. Observe beyond the edge or choose another route before retrying; at -195.1,-22.0,-148.5; 1 blocks left to the target (yaw 119), -4 above; covered 0 blocks to"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "CAVE_OPENING",
+      "seconds": 3,
+      "fromY": -22,
+      "toY": -22,
+      "blocks": 2,
+      "healthLost": 0,
+      "message": "Stopped: The step opened into a cave at -194,-21,-149 (4 open cells beside the cut); not stepping in (throughCaves:false); looked round the cave: no lava in sight; lowest floor seen -195,-25,-148 (1.4 blocks across, dy-3); travel_to with that x, y and z walks down the cave (drops of up to 3 blocks; stopWhenSeen minecraft:lava stops at the first lava in view)"
+     },
+     {
+      "call": "travel_to",
+      "heading": "east",
+      "code": "ARRIVED",
+      "seconds": 0,
+      "fromY": -22,
+      "toY": -22,
+      "blocks": null,
+      "healthLost": 0,
+      "message": "Arrived within 2.0 blocks of the target; at -195.1,-22.0,-148.5; 1 blocks left to the target (yaw -12), -3 above; covered 0 blocks toward it in 0 s (0 blocks/min, 0 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 87 plain blocks on the hotbar"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "DIG_GOAL_REACHED",
+      "seconds": 80,
+      "fromY": -22,
+      "toY": -56,
+      "blocks": 64,
+      "healthLost": 0,
+      "message": "Reached y-56. At -179,-56,-149, shaft to y-22 then steep_down heading east; 64 blocks mined in 17 steps over 79 s (y-22 to y-56); mined deepslate 54, tuff 7, deepslate_gold_ore 3; ores seen deepslate_gold_ore 7, deepslate_redstone_ore 2 (first at deepslate_gold_ore -192,-30,-149, deepslate_redstone_ore -181,-49,-150); tool iron_pickaxe 80 uses left"
+     }
+    ]
+   },
+   "shaft": {
+    "build": "v6",
+    "reachedY55": true,
+    "minutesToY55": 3.03,
+    "callsToY55": 2,
+    "actionMinutes": 3.03,
+    "calls": 2,
+    "lowestY": -56,
+    "blocks": 158,
+    "blocksPerMinute": 52,
+    "lavaWithin16": null,
+    "healthLost": 0,
+    "deaths": 0,
+    "fallsIntoLava": 0,
+    "standIns": 0,
+    "endedUnderWater": false,
+    "legs": [
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "CAVE_OPENING",
+      "seconds": 71,
+      "fromY": 64,
+      "toY": -6,
+      "blocks": 68,
+      "healthLost": 0,
+      "message": "Stopped: The floor at -200,-3,-150 opened onto a cave: dropped 4 blocks to -200,-6,-150 (caught with water); looked round the cave: no lava in sight; no floor in sight below this one. At -200,-6,-150, shaft heading east; 68 blocks mined in 67 steps over 71 s (y64 to y-6); mined stone 46, diorite 8, dirt 5, andesite 4, deepslate 3, leaf_litter 1; ores seen de"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "DIG_GOAL_REACHED",
+      "seconds": 111,
+      "fromY": -6,
+      "toY": -56,
+      "blocks": 90,
+      "healthLost": 0,
+      "message": "Reached y-56. At -199,-56,-167, shaft to y-20 then steep_down heading north; 90 blocks mined in 30 steps over 110 s (y-6 to y-56); mined deepslate 78, tuff 12; tool iron_pickaxe 93 uses left; dug past caves at -200,-9,-151 (y-9), -199,-10,-150 (y-10), -198,-25,-150 (y-25); dropped 3 blocks into a cave at -200,-9,-150; turned south along a cave at y-22; turne"
+     }
+    ]
+   },
+   "steep": {
+    "build": "v6",
+    "reachedY55": false,
+    "minutesToY55": null,
+    "callsToY55": null,
+    "actionMinutes": 0.43,
+    "calls": 3,
+    "lowestY": 52,
+    "blocks": 26,
+    "blocksPerMinute": 61,
+    "lavaWithin16": null,
+    "healthLost": 0,
+    "deaths": 0,
+    "fallsIntoLava": 0,
+    "standIns": 0,
+    "endedUnderWater": true,
+    "legs": [
+     {
+      "call": "dig_to steep_down",
+      "heading": "east",
+      "code": "WATER_AHEAD",
+      "seconds": 24,
+      "fromY": 64,
+      "toY": 52,
+      "blocks": 25,
+      "healthLost": 0,
+      "message": "Stopped: Water at -193,52,-149 beside the opened cell -193,52,-150; sealing it with cobblestone at -193,52,-149 (NO_PLACEMENT_SUPPORT: cause=SUPPORT_FACE_HIDDEN; destination=-193,52,-149; requestedSupport=-194,52,-149; requestedFace=east; repair=no usable support face into this cell is visible from here; move your eye to the destination side of the requested"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "south",
+      "code": "WATER_AHEAD",
+      "seconds": 1,
+      "fromY": 52,
+      "toY": 52,
+      "blocks": 1,
+      "healthLost": 0,
+      "message": "Stopped: Water at -194,53,-148 beside the opened cell -194,53,-149; water on 3 sides of it: a body of water (an aquifer or lake), not a trickle; not going further. At -194,52,-150, steep_down heading south; 1 blocks mined in 0 steps over 1 s (y52 to y52); mined granite 1; tool iron_pickaxe 225 uses left"
+     },
+     {
+      "call": "dig_to tunnel",
+      "heading": "west",
+      "code": "WATER_AHEAD",
+      "seconds": 1,
+      "fromY": 52,
+      "toY": 52,
+      "blocks": 0,
+      "healthLost": 0,
+      "message": "Stopped: The body is under water at -194,52,-150 (air 298/300); not digging on. At -194,52,-150, tunnel heading west; 0 blocks mined in 0 steps over 1 s (y52 to y52); tool iron_pickaxe 225 uses left"
+     }
+    ]
+   }
+  },
+  "N5 -8891 -250,350": {
+   "cave": {
+    "build": "v6",
+    "reachedY55": false,
+    "minutesToY55": null,
+    "callsToY55": null,
+    "actionMinutes": 3.33,
+    "calls": 9,
+    "lowestY": -52,
+    "blocks": 139,
+    "blocksPerMinute": 42,
+    "lavaWithin16": {
+     "minute": 3.31,
+     "at": [
+      -237,
+      -55,
+      387
+     ],
+     "distance": 4,
+     "how": "dig_to"
+    },
+    "healthLost": 0,
+    "deaths": 0,
+    "fallsIntoLava": 0,
+    "standIns": 2,
+    "endedUnderWater": false,
+    "legs": [
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "CAVE_OPENING",
+      "seconds": 72,
+      "fromY": 68,
+      "toY": 0,
+      "blocks": 68,
+      "healthLost": 0,
+      "message": "Stopped: The shaft opened into a cave at -241,0,350 (2 open cells beside it); not going on (throughCaves:false); looked round the cave: no lava in sight; lowest floor seen -234,-18,367 (18.8 blocks across, dy-18); travel_to with that x, y and z walks down the cave (drops of up to 3 blocks; stopWhenSeen minecraft:lava stops at the first lava in view). At -242"
+     },
+     {
+      "call": "travel_to",
+      "heading": "east",
+      "code": "HOSTILE_NEAR",
+      "seconds": 25,
+      "fromY": 0,
+      "toY": -6,
+      "blocks": null,
+      "healthLost": 0,
+      "message": "minecraft:creeper 2dc1fd52-d04b-4a63-ba07-4b5c6941f834 15.8 blocks away at -239.3,-20.2,370.0; at -237.5,-6.0,363.4; 10 blocks left to the target (yaw -44), -12 above; covered 13 blocks toward it in 25 s (32 blocks/min, 21 walked); 3 legs, bridged 9, pillared 0, tunnelled 3; 80 plain blocks on the hotbar; footing {\"drop\":16,\"into\":\"water\",\"yaw\":131}"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "WATER_AHEAD",
+      "seconds": 0,
+      "fromY": -6,
+      "toY": -6,
+      "blocks": 0,
+      "healthLost": 0,
+      "message": "Stopped: Water seen at -238,-22,363 under the floor at -238,-7,363; not breaking it. At -238,-6,363, shaft heading east; 0 blocks mined in 0 steps over 1 s (y-6 to y-6)"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "south",
+      "code": "HOSTILE_NEAR",
+      "seconds": 14,
+      "fromY": -6,
+      "toY": -6,
+      "blocks": 0,
+      "healthLost": 0,
+      "message": "Stopped: minecraft:zombie ec368d52-e11b-4508-a807-aa86900a1162 at -238,-17,372, 11.1 blocks away. At -238,-6,370, steep_down heading south; 0 blocks mined in 6 steps over 13 s (y-6 to y-6); 6 level steps across cave tops; turned west along a cave at y-6; turned east along a cave at y-6; crossed a cave top south from y-6"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "south",
+      "code": "CAVE_OPENING",
+      "seconds": 0,
+      "fromY": -6,
+      "toY": -7,
+      "blocks": 0,
+      "healthLost": 0,
+      "message": "Stopped: Breaking the floor at -238,-7,370 drops 14 blocks into a cave onto deepslate at -238,-21,370; not breaking it. At -238,-6,370, shaft heading south; 0 blocks mined in 0 steps over 1 s (y-6 to y-6)"
+     },
+     {
+      "call": "dig_to shaft",
+      "heading": "south",
+      "code": "LAVA_AHEAD",
+      "seconds": 82,
+      "fromY": -7,
+      "toY": -52,
+      "blocks": 65,
+      "healthLost": 0,
+      "message": "Stopped: Lava at -238,-55,387 beside the opened cell -238,-54,387; not going further. At -238,-52,386, shaft to y-20 then steep_down heading south; 65 blocks mined in 16 steps over 82 s (y-7 to y-52); mined deepslate 65; ores seen deepslate_gold_ore 2, deepslate_redstone_ore 2 (first at deepslate_gold_ore -237,-23,373, deepslate_redstone_ore -239,-41,381); t"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "west",
+      "code": "LAVA_AHEAD",
+      "seconds": 2,
+      "fromY": -52,
+      "toY": -52,
+      "blocks": 2,
+      "healthLost": 0,
+      "message": "Stopped: Lava is heard below this block, about 2 block(s) away; not breaking minecraft:deepslate at -239,-53,386. At -238,-52,386, steep_down heading west; 2 blocks mined in 0 steps over 2 s (y-52 to y-52); mined deepslate 2; tool iron_pickaxe 112 uses left"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "north",
+      "code": "LAVA_AHEAD",
+      "seconds": 2,
+      "fromY": -52,
+      "toY": -52,
+      "blocks": 2,
+      "healthLost": 0,
+      "message": "Stopped: Lava is heard below this block, about 2 block(s) away; not breaking minecraft:deepslate at -238,-53,385. At -238,-52,386, steep_down heading north; 2 blocks mined in 0 steps over 2 s (y-52 to y-52); mined deepslate 2; tool iron_pickaxe 110 uses left"
+     },
+     {
+      "call": "dig_to tunnel",
+      "heading": "east",
+      "code": "LAVA_AHEAD",
+      "seconds": 2,
+      "fromY": -52,
+      "toY": -52,
+      "blocks": 2,
+      "healthLost": 0,
+      "message": "Stopped: Lava at -237,-55,386 beside the opened cell -237,-52,386; plugged it with cobblestone at -237,-52,386. At -238,-52,386, tunnel heading east; 2 blocks mined in 0 steps over 2 s (y-52 to y-52); mined deepslate 2; tool iron_pickaxe; lava first seen at -237,-55,387, 4.0 blocks away, 1 s into the dig"
+     }
+    ]
+   },
+   "shaft": {
+    "build": "v4",
+    "reachedY55": true,
+    "minutesToY55": 3.13,
+    "callsToY55": 1,
+    "actionMinutes": 3.13,
+    "calls": 1,
+    "lowestY": -56,
+    "blocks": 160,
+    "blocksPerMinute": 51,
+    "lavaWithin16": null,
+    "healthLost": 0,
+    "deaths": 0,
+    "fallsIntoLava": 0,
+    "standIns": 0,
+    "endedUnderWater": false,
+    "legs": [
+     {
+      "call": "dig_to shaft",
+      "heading": "east",
+      "code": "DIG_GOAL_REACHED",
+      "seconds": 188,
+      "fromY": 68,
+      "toY": -56,
+      "blocks": 160,
+      "healthLost": 0,
+      "message": "Reached y-56. At -224,-56,350, shaft to y-20 then steep_down heading east; 160 blocks mined in 106 steps over 188 s (y68 to y-56); mined deepslate 89, stone 55, gravel 9, diorite 5, andesite 2; ores seen deepslate_iron_ore 1, iron_ore 1 (first at deepslate_iron_ore -241,6,350, iron_ore -241,5,350); tool iron_pickaxe 90 uses left; dug past caves at -241,0,350"
+     }
+    ]
+   },
+   "steep": {
+    "build": "v6",
+    "reachedY55": true,
+    "minutesToY55": 6.97,
+    "callsToY55": 2,
+    "actionMinutes": 6.98,
+    "calls": 2,
+    "lowestY": -56,
+    "blocks": 306,
+    "blocksPerMinute": 44,
+    "lavaWithin16": null,
+    "healthLost": 0,
+    "deaths": 0,
+    "fallsIntoLava": 0,
+    "standIns": 0,
+    "endedUnderWater": false,
+    "legs": [
+     {
+      "call": "dig_to steep_down",
+      "heading": "east",
+      "code": "CAVE_OPENING",
+      "seconds": 248,
+      "fromY": 68,
+      "toY": -20,
+      "blocks": 207,
+      "healthLost": 0,
+      "message": "Stopped: The floor under the next step at -216,-23,320 is open: a drop of 12 blocks onto minecraft:gravel; not stepping in; no other heading here has a floor (tried north), no seen landing within 7 blocks and 12 level steps across the cave found no floor below; looked round the cave: no lava in sight; lowest floor seen -208,-39,349 (29.1 blocks across, dy-19"
+     },
+     {
+      "call": "dig_to steep_down",
+      "heading": "east",
+      "code": "DIG_GOAL_REACHED",
+      "seconds": 170,
+      "fromY": -20,
+      "toY": -56,
+      "blocks": 99,
+      "healthLost": 0,
+      "message": "Reached y-56. At -187,-56,321, steep_down heading east; 99 blocks mined in 29 steps over 170 s (y-20 to y-56); mined deepslate 98, cobblestone 1; tool stone_pickaxe 73 uses left; dug past caves at -210,-21,322 (y-21), -209,-22,322 (y-22), -208,-22,320 (y-22), -204,-25,321 (y-25); 11 level steps across cave tops; turned south along a cave at y-20; turned nort"
+     }
+    ]
+   }
+  }
+ },
+ "fixtures": [
+  {
+   "name": "F1 shaft hidden 13-block drop fixture",
+   "build": "v3",
+   "fixture": [
+    "Successfully filled 99 block(s)",
+    "Successfully filled 13 block(s)"
+   ],
+   "healthLost": 0,
+   "deaths": 0,
+   "healthAfter": "Probe has the following entity data: 20.0f",
+   "legs": [
+    {
+     "call": "dig_to shaft",
+     "heading": "east",
+     "code": "CAVE_OPENING",
+     "seconds": 3,
+     "fromY": 30,
+     "toY": 16,
+     "blocks": 1,
+     "healthLost": 0,
+     "message": "Stopped: The floor at 134,29,488 opened onto a cave: dropped 14 blocks to 134,16,488 (caught with water); looked round the cave: no lava in sight; no floor in sight below this one. At 134,16,488, shaft heading east; 1 blocks mined in 1 steps over 2 s (y30 to y16); mined deepslate 1; tool iron_pickaxe; caught a 14.0-block fall with water at 134,16,488; fell 1"
+    }
+   ]
+  },
+  {
+   "name": "F2 shaft hidden drop into a lava pool fixture",
+   "build": "v3",
+   "fixture": [
+    "Successfully filled 160 block(s)",
+    "Successfully filled 4 block(s)",
+    "Successfully filled 9 block(s)"
+   ],
+   "healthLost": 0,
+   "deaths": 0,
+   "healthAfter": "Probe has the following entity data: 20.0f",
+   "legs": [
+    {
+     "call": "dig_to shaft",
+     "heading": "east",
+     "code": "CAVE_OPENING",
+     "seconds": 3,
+     "fromY": 30,
+     "toY": 24,
+     "blocks": 1,
+     "healthLost": 0,
+     "message": "Stopped: The floor at 134,29,488 opened onto a cave: dropped 6 blocks to 134,24,488 (caught with water); looked round the cave: no lava in sight; no floor in sight below this one. At 134,24,488, shaft heading east; 1 blocks mined in 1 steps over 2 s (y30 to y24); mined deepslate 1; tool iron_pickaxe; caught a 6.0-block fall with water at 134,24,488; fell 6 b"
+    }
+   ]
+  },
+  {
+   "name": "F3 shaft lava right under the floor fixture",
+   "build": "v3",
+   "fixture": [
+    "Successfully filled 26 block(s)",
+    "Changed the block at 134, 28, 488"
+   ],
+   "healthLost": 4,
+   "deaths": 0,
+   "healthAfter": "Probe has the following entity data: 16.0f",
+   "legs": [
+    {
+     "call": "dig_to shaft",
+     "heading": "east",
+     "code": "IN_LAVA",
+     "seconds": 1,
+     "fromY": 30,
+     "toY": 28,
+     "blocks": 1,
+     "healthLost": 4,
+     "message": "Stopped: Dropped into lava at 134,28,488; poured the water bucket down (water on lava sources makes obsidian, on flowing lava cobblestone); health 16.0. The body entered lava (raw 8 HP/s); this action stopped. Burning 15s after exit, raw 1 HP/s. Exits: none seen within 3 blocks. At 134,28,488, shaft heading east; 1 blocks mined in 0 steps over 1 s (y30 to y2"
+    }
+   ]
+  },
+  {
+   "name": "F3 shaft lava right under the floor fixture (before the hazard-stop fix)",
+   "build": "v2",
+   "healthLost": 4,
+   "deaths": 0,
+   "legs": [
+    {
+     "call": "dig_to shaft",
+     "heading": "east",
+     "code": "IN_LAVA",
+     "seconds": 1,
+     "fromY": 30,
+     "toY": 28,
+     "blocks": null,
+     "healthLost": 4,
+     "message": "The body entered lava (raw 8 HP/s); this action stopped. Burning 15s after exit, raw 1 HP/s. Exits: none seen within 3 blocks"
+    }
+   ]
+  },
+  {
+   "name": "F4 shaft without a water bucket fixture",
+   "build": "v6",
+   "fixture": [
+    "Successfully filled 26 block(s)"
+   ],
+   "healthLost": 0,
+   "deaths": 0,
+   "legs": [
+    {
+     "call": "dig_to shaft",
+     "code": "NO_WATER_BUCKET",
+     "seconds": 0,
+     "fromY": 30,
+     "toY": 30,
+     "healthLost": 0,
+     "message": "A shaft needs a water bucket in the hotbar or offhand (it catches a fall into a cave and puts out lava the body drops into); fill a bucket at any water, or dig steep_down or stairs_down instead"
+    }
+   ]
+  },
+  {
+   "name": "F5 steep_down stopWhenSeen lava fixture",
+   "build": "v6",
+   "fixture": [
+    "Successfully filled 23 block(s)",
+    "Successfully filled 16 block(s)",
+    "Changed the block at 143, 30, 488"
+   ],
+   "healthLost": 0,
+   "deaths": 0,
+   "legs": [
+    {
+     "call": "dig_to steep_down",
+     "code": "TARGET_SEEN",
+     "seconds": 1,
+     "fromY": 30,
+     "toY": 30,
+     "healthLost": 0,
+     "message": "minecraft:lava seen at 143,30,488, 8.5 blocks away (dy0). At 135,30,488, steep_down heading east; 2 blocks mined in 0 steps over 1 s (y30 to y30); mined stone 1, diorite 1; tool iron_pickaxe 248 uses left; dug past caves at 136,31,488 (y31); lava first seen at 143,30,488, 8.5 blocks away, 1 s into the dig"
+    }
+   ]
+  }
+ ]
+}

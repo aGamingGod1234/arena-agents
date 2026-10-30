@@ -1,0 +1,14 @@
+{
+  "tag": "d39-travel3-987654321-r2",
+  "profile": {
+    "provider": "codex",
+    "model": "gpt-6.1-sol",
+    "reasoningEffort": "low",
+    "serviceTier": "default"
+  },
+  "seed": "987654321",
+  "windowMs": 5400000,
+  "goalStartedAt": 1792959559781,
+  "manifestProfileMatches": true,
+  "checkpointSha256": "9206cf27c8c1924a99a8940fa306c277e0262b7fbfdf81e9a64240fb3c79e9dc"
+}

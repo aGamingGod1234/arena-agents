@@ -1,0 +1,113 @@
+{
+  "mode": "travel",
+  "jar": "/home/agaminggod/Desktop/Projects/arena-beat-game/jars/d25-4682f12e.jar",
+  "results": [
+    {
+      "id": "y55-fortress",
+      "mode": "travel",
+      "checkpoint": "2b-nether-sol-y55.json",
+      "target": {
+        "x": -127.5,
+        "z": 624.5,
+        "located": "The nearest minecraft:fortress is at [-128, ~, 624] (634 blocks away)"
+      },
+      "start": [
+        26.7,
+        31.88,
+        8.5
+      ],
+      "startDistance": 635,
+      "legChoices": {
+        "landmark": 0,
+        "bearing": 0
+      },
+      "bearingTries": 0,
+      "detours": 1,
+      "stopWhenSeen": null,
+      "results": {
+        "FAILED HOSTILE_NEAR": 1,
+        "FAILED OUT_OF_BLOCKS": 3,
+        "FAILED LAVA_INCOMING": 1,
+        "TIMED_OUT TRAVEL_TIMEOUT (detour)": 1,
+        "TIMED_OUT TRAVEL_TIMEOUT": 1
+      },
+      "actions": 7,
+      "failures": 6,
+      "damage": 0,
+      "actionDamage": 0,
+      "actionDamageEvents": 0,
+      "minHealth": 20,
+      "fireSamples": 0,
+      "lavaSamples": 0,
+      "deaths": 0,
+      "path": 597.0448074312756,
+      "stops": [
+        {
+          "at": 19.3,
+          "state": "FAILED",
+          "reasonCode": "HOSTILE_NEAR",
+          "message": "minecraft:piglin 704eec2f-0b46-4980-a9ce-2b8a38bf0079 12.8 blocks away at 8.8,36.0,79.2, targeting you; at 18.5,33.9,71.3; 572 blocks left to the target (yaw 15); covered 63 blocks toward it in 19 s (198 blocks/min, 74 walked); 3 legs, bridged 0, pillared 0, tunnelled 0; 0 plain blocks on the hotbar"
+        },
+        {
+          "at": 75,
+          "state": "FAILED",
+          "reasonCode": "OUT_OF_BLOCKS",
+          "message": "No seen leg gets closer, and building cannot continue: a gap at -14,40,127 needs a block and no plain block is on the hotbar; 491 plain blocks are in the main inventory (select_tool moves them to the hotbar); last leg: NO_SEEN_ROUTE toward -20,44,127: No seen continuation after 3 observation replans; Destination not reached; seen path ends at -14,41,126; beyond unseen. Observe beyond the edge or choose another route before retrying; at -13.6,41.0,126.5; 511 blocks left to the target (yaw 13); covered 61 blocks toward it in 56 s (66 blocks/min, 114 walked); 12 legs, bridged 0, pillared 0, tunne"
+        },
+        {
+          "at": 166.7,
+          "state": "FAILED",
+          "reasonCode": "LAVA_INCOMING",
+          "message": "Seen lava was flowing into -14,41,173; backed out to -14,41,165 and the flow stopped short of it; at -13.5,41.0,165.5; 473 blocks left to the target (yaw 14); covered 38 blocks toward it in 91 s (25 blocks/min, 55 walked); 2 legs, bridged 22, pillared 0, tunnelled 28; 42 plain blocks on the hotbar"
+        },
+        {
+          "at": 226.7,
+          "state": "TIMED_OUT",
+          "reasonCode": "TRAVEL_TIMEOUT",
+          "detour": true,
+          "message": "The trip's timeoutMs ran out before arrival; at -38.4,41.0,165.5; 9 blocks left to the target (yaw 25); covered 21 blocks toward it in 60 s (21 blocks/min, 25 walked); 0 legs, bridged 0, pillared 0, tunnelled 25; 42 plain blocks on the hotbar"
+        },
+        {
+          "at": 351.8,
+          "state": "FAILED",
+          "reasonCode": "OUT_OF_BLOCKS",
+          "message": "No seen way on toward the target, and building cannot continue: a gap at -36,39,230 needs a block and no plain block is on the hotbar; 593 plain blocks are in the main inventory (select_tool moves them to the hotbar); last leg: backtracking toward -34,35,232; at -35.5,40.0,229.3; 406 blocks left to the target (yaw 13); covered 62 blocks toward it in 125 s (30 blocks/min, 95 walked); 5 legs, bridged 42, pillared 0, tunnelled 43; 0 plain blocks on the hotbar; footing {\"drop\":9,\"into\":\"lava\",\"yaw\":128}"
+        },
+        {
+          "at": 561.9,
+          "state": "FAILED",
+          "reasonCode": "OUT_OF_BLOCKS",
+          "message": "No seen way on toward the target, and building cannot continue: a gap at -41,39,349 needs a block and no plain block is on the hotbar; 627 plain blocks are in the main inventory (select_tool moves them to the hotbar); last leg: backtracking toward -45,32,279; at -40.5,40.0,348.4; 289 blocks left to the target (yaw 17); covered 116 blocks toward it in 210 s (33 blocks/min, 175 walked); 9 legs, bridged 64, pillared 0, tunnelled 54; 0 plain blocks on the hotbar; footing {\"drop\":9,\"into\":\"lava\",\"yaw\":133}"
+        },
+        {
+          "at": 720.1,
+          "state": "TIMED_OUT",
+          "reasonCode": "TRAVEL_TIMEOUT",
+          "message": "The trip's timeoutMs ran out before arrival; at -45.5,41.0,434.4; 207 blocks left to the target (yaw 23); covered 82 blocks toward it in 158 s (31 blocks/min, 97 walked); 4 legs, bridged 24, pillared 1, tunnelled 53; 64 plain blocks on the hotbar"
+        }
+      ],
+      "hostilesRemoved": 1,
+      "blockSwaps": 3,
+      "damageLowerBound": 0,
+      "end": [
+        -45.5,
+        41,
+        434.39
+      ],
+      "endDistance": 207,
+      "arrived": false,
+      "wallSeconds": 720.2,
+      "progressBlocks": 428,
+      "blocksPerMinute": 35.7,
+      "startedAtEpochMs": 1792942228209,
+      "endedAtEpochMs": 1792942948370,
+      "gameTicks": 14409,
+      "gameSeconds": 720.45,
+      "observedTicksPerSecond": 20.01,
+      "blocksPerGameMinute": 35.6,
+      "gameClockSource": "ready observation world.gameTime",
+      "pathBlocks": 597,
+      "blocksPerMinuteWithModel5s": 34
+    }
+  ]
+}

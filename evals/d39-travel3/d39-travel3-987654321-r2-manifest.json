@@ -1,0 +1,11 @@
+{
+  "tag": "d39-travel3-987654321-r2",
+  "machine": "mini",
+  "sha": "6345839ef4a61df87e8da7115c6ce0e61f433be5",
+  "checkpoint": "9-nether-entry-987654321-v2.json",
+  "minutes": 90,
+  "arenaRoot": "/home/agaminggod/Desktop/Projects/arena-beat-game",
+  "maxCost": 1000,
+  "createdAt": 1792957409.7094345,
+  "checkpointSha256": "9206cf27c8c1924a99a8940fa306c277e0262b7fbfdf81e9a64240fb3c79e9dc"
+}

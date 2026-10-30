@@ -1,0 +1,126 @@
+{
+  "version": 1,
+  "description": "First iron pick from generated world spawn, empty inventory, fixed natural seeds; terrain labels from prior evaluator traces. No located or supplied resources.",
+  "scenarios": [
+    {
+      "id": "IP-P",
+      "name": "ip-p",
+      "phase": "A",
+      "seed": "3493734883320277296",
+      "goal": "Get an iron pickaxe.",
+      "durationBudgetMs": 900000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": true
+      },
+      "worldSpawn": {
+        "policy": "world_spawn"
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "startAt": "world_spawn",
+        "generality": true,
+        "commands": [],
+        "inventory": [],
+        "armour": {},
+        "effects": [],
+        "mobs": [],
+        "freezeUntilGoalStart": true
+      },
+      "successCheck": "inventory: iron_pickaxe >=1",
+      "handoffFrom": [],
+      "notes": "Natural plains world-spawn start; no terrain edits, gear, ore, locator or fixture facts given to the agent.",
+      "startState": "Empty inventory at natural world spawn (plains)."
+    },
+    {
+      "id": "IP-B",
+      "name": "ip-b",
+      "phase": "A",
+      "seed": "8365083243764356534",
+      "goal": "Get an iron pickaxe.",
+      "durationBudgetMs": 900000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": true
+      },
+      "worldSpawn": {
+        "policy": "world_spawn"
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "startAt": "world_spawn",
+        "generality": true,
+        "commands": [],
+        "inventory": [],
+        "armour": {},
+        "effects": [],
+        "mobs": [],
+        "freezeUntilGoalStart": true
+      },
+      "successCheck": "inventory: iron_pickaxe >=1",
+      "handoffFrom": [],
+      "notes": "Natural birch_forest world-spawn start; no terrain edits, gear, ore, locator or fixture facts given to the agent.",
+      "startState": "Empty inventory at natural world spawn (birch_forest)."
+    },
+    {
+      "id": "IP-F",
+      "name": "ip-f",
+      "phase": "A",
+      "seed": "6047290773629289184",
+      "goal": "Get an iron pickaxe.",
+      "durationBudgetMs": 900000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": true
+      },
+      "worldSpawn": {
+        "policy": "world_spawn"
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "startAt": "world_spawn",
+        "generality": true,
+        "commands": [],
+        "inventory": [],
+        "armour": {},
+        "effects": [],
+        "mobs": [],
+        "freezeUntilGoalStart": true
+      },
+      "successCheck": "inventory: iron_pickaxe >=1",
+      "handoffFrom": [],
+      "notes": "Natural forest world-spawn start; no terrain edits, gear, ore, locator or fixture facts given to the agent.",
+      "startState": "Empty inventory at natural world spawn (forest)."
+    },
+    {
+      "id": "IP-H",
+      "name": "ip-h",
+      "phase": "A",
+      "seed": "-4801419744382045067",
+      "goal": "Get an iron pickaxe.",
+      "durationBudgetMs": 900000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": true
+      },
+      "worldSpawn": {
+        "policy": "world_spawn"
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "startAt": "world_spawn",
+        "generality": true,
+        "commands": [],
+        "inventory": [],
+        "armour": {},
+        "effects": [],
+        "mobs": [],
+        "freezeUntilGoalStart": true
+      },
+      "successCheck": "inventory: iron_pickaxe >=1",
+      "handoffFrom": [],
+      "notes": "Natural meadow hills world-spawn start; no terrain edits, gear, ore, locator or fixture facts given to the agent.",
+      "startState": "Empty inventory at natural world spawn (meadow hills)."
+    }
+  ]
+}

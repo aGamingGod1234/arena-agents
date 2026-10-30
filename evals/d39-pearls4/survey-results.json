@@ -1,0 +1,1190 @@
+{
+  "operatorOnly": true,
+  "seeds": [
+    {
+      "seed": "123456789",
+      "portal": [
+        0.5,
+        65,
+        5.5
+      ],
+      "locate": "The nearest minecraft:bastion_remnant is at [320, ~, 16] (320 blocks away)",
+      "portalChunksExpected": 225,
+      "portalChunksFull": 225,
+      "walkablePositions": 41763,
+      "goldReachableByUnmodifiedWalking": [],
+      "oreDensityByShortestRoute": {
+        "10": {
+          "ore": 0,
+          "positions": 68
+        },
+        "25": {
+          "ore": 7,
+          "positions": 550
+        },
+        "50": {
+          "ore": 21,
+          "positions": 2600
+        },
+        "100": {
+          "ore": 57,
+          "positions": 10939
+        },
+        "200": {
+          "ore": 125,
+          "positions": 32335
+        },
+        "400": {
+          "ore": 133,
+          "positions": 41763
+        }
+      },
+      "limits": "No digging, bridging or mob-risk simulation; cardinal steps with +1/-3, full-block floors only, closed doors treated open; centre-ray approximate eye visibility. Geometry upper/lower biases make this a terrain census, not a player yield trial.",
+      "reachableOreCount": 133,
+      "bastions": [
+        {
+          "type": "units",
+          "bounds": [
+            271,
+            32,
+            -5,
+            320,
+            87,
+            61
+          ],
+          "actualGoldBlocks": 19,
+          "goldPositions": [
+            [
+              279,
+              35,
+              4
+            ],
+            [
+              280,
+              35,
+              4
+            ],
+            [
+              280,
+              36,
+              4
+            ],
+            [
+              283,
+              36,
+              6
+            ],
+            [
+              279,
+              48,
+              12
+            ],
+            [
+              296,
+              35,
+              3
+            ],
+            [
+              296,
+              35,
+              4
+            ],
+            [
+              297,
+              35,
+              4
+            ],
+            [
+              295,
+              35,
+              5
+            ],
+            [
+              297,
+              35,
+              5
+            ],
+            [
+              295,
+              36,
+              2
+            ],
+            [
+              294,
+              36,
+              3
+            ],
+            [
+              295,
+              36,
+              4
+            ],
+            [
+              295,
+              36,
+              6
+            ],
+            [
+              292,
+              49,
+              3
+            ],
+            [
+              293,
+              49,
+              5
+            ],
+            [
+              293,
+              50,
+              3
+            ],
+            [
+              297,
+              54,
+              19
+            ],
+            [
+              310,
+              36,
+              46
+            ]
+          ],
+          "chests": [
+            {
+              "at": [
+                290,
+                73,
+                7
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                299,
+                36,
+                10
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                300,
+                36,
+                10
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                294,
+                73,
+                7
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                295,
+                73,
+                7
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                292,
+                33,
+                41
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                283,
+                40,
+                49
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                314,
+                40,
+                54
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "seed": "20261024",
+      "portal": [
+        0.5,
+        82,
+        -2.5
+      ],
+      "locate": "The nearest minecraft:bastion_remnant is at [-304, ~, -640] (705 blocks away)",
+      "portalChunksExpected": 225,
+      "portalChunksFull": 225,
+      "walkablePositions": 32121,
+      "goldReachableByUnmodifiedWalking": [],
+      "oreDensityByShortestRoute": {
+        "10": {
+          "ore": 0,
+          "positions": 68
+        },
+        "25": {
+          "ore": 2,
+          "positions": 636
+        },
+        "50": {
+          "ore": 4,
+          "positions": 2061
+        },
+        "100": {
+          "ore": 4,
+          "positions": 4329
+        },
+        "200": {
+          "ore": 7,
+          "positions": 18569
+        },
+        "400": {
+          "ore": 24,
+          "positions": 31194
+        }
+      },
+      "limits": "No digging, bridging or mob-risk simulation; cardinal steps with +1/-3, full-block floors only, closed doors treated open; centre-ray approximate eye visibility. Geometry upper/lower biases make this a terrain census, not a player yield trial.",
+      "reachableOreCount": 25,
+      "bastions": [
+        {
+          "type": "units",
+          "bounds": [
+            -304,
+            32,
+            -685,
+            -255,
+            87,
+            -619
+          ],
+          "actualGoldBlocks": 19,
+          "goldPositions": [
+            [
+              -292,
+              40,
+              -676
+            ],
+            [
+              -297,
+              43,
+              -643
+            ],
+            [
+              -281,
+              35,
+              -629
+            ],
+            [
+              -279,
+              35,
+              -629
+            ],
+            [
+              -281,
+              35,
+              -628
+            ],
+            [
+              -280,
+              35,
+              -628
+            ],
+            [
+              -280,
+              35,
+              -627
+            ],
+            [
+              -279,
+              36,
+              -630
+            ],
+            [
+              -279,
+              36,
+              -628
+            ],
+            [
+              -278,
+              36,
+              -627
+            ],
+            [
+              -279,
+              36,
+              -626
+            ],
+            [
+              -277,
+              49,
+              -629
+            ],
+            [
+              -276,
+              49,
+              -627
+            ],
+            [
+              -277,
+              50,
+              -627
+            ],
+            [
+              -264,
+              35,
+              -628
+            ],
+            [
+              -263,
+              35,
+              -628
+            ],
+            [
+              -267,
+              36,
+              -630
+            ],
+            [
+              -264,
+              36,
+              -628
+            ],
+            [
+              -263,
+              48,
+              -636
+            ]
+          ],
+          "chests": [
+            {
+              "at": [
+                -298,
+                40,
+                -678
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                -274,
+                36,
+                -678
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                -291,
+                40,
+                -661
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                -282,
+                33,
+                -667
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                -267,
+                40,
+                -659
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                -269,
+                40,
+                -648
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                -284,
+                36,
+                -634
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                -283,
+                36,
+                -634
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                -274,
+                73,
+                -631
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                -278,
+                73,
+                -631
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                -279,
+                73,
+                -631
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                -264,
+                69,
+                -627
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "seed": "8675309",
+      "portal": [
+        16.5,
+        77,
+        -2.5
+      ],
+      "locate": "The nearest minecraft:bastion_remnant is at [192, ~, -400] (434 blocks away)",
+      "portalChunksExpected": 225,
+      "portalChunksFull": 225,
+      "walkablePositions": 21735,
+      "goldReachableByUnmodifiedWalking": [],
+      "oreDensityByShortestRoute": {
+        "10": {
+          "ore": 0,
+          "positions": 59
+        },
+        "25": {
+          "ore": 2,
+          "positions": 315
+        },
+        "50": {
+          "ore": 4,
+          "positions": 1070
+        },
+        "100": {
+          "ore": 9,
+          "positions": 3084
+        },
+        "200": {
+          "ore": 43,
+          "positions": 12717
+        },
+        "400": {
+          "ore": 73,
+          "positions": 21735
+        }
+      },
+      "limits": "No digging, bridging or mob-risk simulation; cardinal steps with +1/-3, full-block floors only, closed doors treated open; centre-ray approximate eye visibility. Geometry upper/lower biases make this a terrain census, not a player yield trial.",
+      "reachableOreCount": 73,
+      "bastions": [
+        {
+          "type": "units",
+          "bounds": [
+            192,
+            32,
+            -445,
+            241,
+            87,
+            -379
+          ],
+          "actualGoldBlocks": 21,
+          "goldPositions": [
+            [
+              205,
+              43,
+              -433
+            ],
+            [
+              218,
+              40,
+              -437
+            ],
+            [
+              202,
+              36,
+              -430
+            ],
+            [
+              207,
+              54,
+              -411
+            ],
+            [
+              215,
+              35,
+              -389
+            ],
+            [
+              217,
+              35,
+              -389
+            ],
+            [
+              215,
+              35,
+              -388
+            ],
+            [
+              216,
+              35,
+              -388
+            ],
+            [
+              216,
+              35,
+              -387
+            ],
+            [
+              217,
+              36,
+              -390
+            ],
+            [
+              217,
+              36,
+              -388
+            ],
+            [
+              218,
+              36,
+              -387
+            ],
+            [
+              217,
+              36,
+              -386
+            ],
+            [
+              219,
+              49,
+              -389
+            ],
+            [
+              220,
+              49,
+              -387
+            ],
+            [
+              219,
+              50,
+              -387
+            ],
+            [
+              232,
+              35,
+              -388
+            ],
+            [
+              233,
+              35,
+              -388
+            ],
+            [
+              229,
+              36,
+              -390
+            ],
+            [
+              232,
+              36,
+              -388
+            ],
+            [
+              233,
+              48,
+              -396
+            ]
+          ],
+          "chests": [
+            {
+              "at": [
+                193,
+                40,
+                -423
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                220,
+                33,
+                -425
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                231,
+                40,
+                -425
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                218,
+                73,
+                -391
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                217,
+                73,
+                -391
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                222,
+                73,
+                -391
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                212,
+                36,
+                -394
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                213,
+                36,
+                -394
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                234,
+                73,
+                -391
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                233,
+                73,
+                -391
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                238,
+                73,
+                -391
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "seed": "987654321",
+      "portal": [
+        0.5,
+        61,
+        -2.5
+      ],
+      "locate": "The nearest minecraft:bastion_remnant is at [352, ~, -352] (495 blocks away)",
+      "portalChunksExpected": 225,
+      "portalChunksFull": 225,
+      "walkablePositions": 6779,
+      "goldReachableByUnmodifiedWalking": [],
+      "oreDensityByShortestRoute": {
+        "10": {
+          "ore": 0,
+          "positions": 71
+        },
+        "25": {
+          "ore": 8,
+          "positions": 791
+        },
+        "50": {
+          "ore": 23,
+          "positions": 2591
+        },
+        "100": {
+          "ore": 27,
+          "positions": 4949
+        },
+        "200": {
+          "ore": 37,
+          "positions": 6779
+        },
+        "400": {
+          "ore": 37,
+          "positions": 6779
+        }
+      },
+      "limits": "No digging, bridging or mob-risk simulation; cardinal steps with +1/-3, full-block floors only, closed doors treated open; centre-ray approximate eye visibility. Geometry upper/lower biases make this a terrain census, not a player yield trial.",
+      "reachableOreCount": 37,
+      "bastions": [
+        {
+          "type": "hoglin_stable",
+          "bounds": [
+            305,
+            31,
+            -372,
+            352,
+            86,
+            -323
+          ],
+          "actualGoldBlocks": 26,
+          "goldPositions": [
+            [
+              307,
+              64,
+              -369
+            ],
+            [
+              308,
+              64,
+              -369
+            ],
+            [
+              313,
+              35,
+              -360
+            ],
+            [
+              315,
+              35,
+              -360
+            ],
+            [
+              314,
+              35,
+              -359
+            ],
+            [
+              316,
+              35,
+              -359
+            ],
+            [
+              315,
+              35,
+              -358
+            ],
+            [
+              316,
+              35,
+              -358
+            ],
+            [
+              312,
+              39,
+              -367
+            ],
+            [
+              313,
+              39,
+              -367
+            ],
+            [
+              313,
+              40,
+              -367
+            ],
+            [
+              314,
+              43,
+              -367
+            ],
+            [
+              319,
+              48,
+              -365
+            ],
+            [
+              307,
+              64,
+              -368
+            ],
+            [
+              308,
+              64,
+              -368
+            ],
+            [
+              345,
+              35,
+              -360
+            ],
+            [
+              347,
+              35,
+              -360
+            ],
+            [
+              346,
+              35,
+              -359
+            ],
+            [
+              348,
+              35,
+              -359
+            ],
+            [
+              347,
+              35,
+              -358
+            ],
+            [
+              344,
+              39,
+              -367
+            ],
+            [
+              345,
+              39,
+              -367
+            ],
+            [
+              344,
+              40,
+              -367
+            ],
+            [
+              345,
+              40,
+              -367
+            ],
+            [
+              351,
+              48,
+              -365
+            ],
+            [
+              346,
+              33,
+              -325
+            ]
+          ],
+          "chests": [
+            {
+              "at": [
+                309,
+                72,
+                -363
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                313,
+                72,
+                -363
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                312,
+                72,
+                -363
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                332,
+                58,
+                -362
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                323,
+                35,
+                -356
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                348,
+                58,
+                -364
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                314,
+                51,
+                -349
+              ],
+              "lootTable": "minecraft:chests/bastion_hoglin_stable",
+              "items": null
+            },
+            {
+              "at": [
+                319,
+                45,
+                -326
+              ],
+              "lootTable": "minecraft:chests/bastion_hoglin_stable",
+              "items": null
+            },
+            {
+              "at": [
+                343,
+                39,
+                -326
+              ],
+              "lootTable": "minecraft:chests/bastion_hoglin_stable",
+              "items": null
+            }
+          ]
+        },
+        {
+          "type": "units",
+          "bounds": [
+            -80,
+            32,
+            -29,
+            -31,
+            87,
+            37
+          ],
+          "actualGoldBlocks": 17,
+          "goldPositions": [
+            [
+              -57,
+              35,
+              27
+            ],
+            [
+              -55,
+              35,
+              27
+            ],
+            [
+              -57,
+              35,
+              28
+            ],
+            [
+              -56,
+              35,
+              28
+            ],
+            [
+              -56,
+              35,
+              29
+            ],
+            [
+              -55,
+              36,
+              26
+            ],
+            [
+              -55,
+              36,
+              28
+            ],
+            [
+              -54,
+              36,
+              29
+            ],
+            [
+              -55,
+              36,
+              30
+            ],
+            [
+              -53,
+              49,
+              27
+            ],
+            [
+              -52,
+              49,
+              29
+            ],
+            [
+              -53,
+              50,
+              29
+            ],
+            [
+              -40,
+              35,
+              28
+            ],
+            [
+              -39,
+              35,
+              28
+            ],
+            [
+              -43,
+              36,
+              26
+            ],
+            [
+              -40,
+              36,
+              28
+            ],
+            [
+              -39,
+              48,
+              20
+            ]
+          ],
+          "chests": [
+            {
+              "at": [
+                -58,
+                33,
+                -11
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                -60,
+                36,
+                22
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                -59,
+                36,
+                22
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                -55,
+                73,
+                25
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                -54,
+                73,
+                25
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                -50,
+                73,
+                25
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            },
+            {
+              "at": [
+                -40,
+                69,
+                29
+              ],
+              "lootTable": "minecraft:chests/bastion_other",
+              "items": null
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

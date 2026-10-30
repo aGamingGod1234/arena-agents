@@ -1,0 +1,53 @@
+--- a/scripts/quality/test-blaze-spawner-live.mjs
++++ b/scripts/quality/test-blaze-spawner-live.mjs
+@@ -48,7 +48,7 @@
+ async function sha256(file) { const hash = createHash('sha256'); for await (const chunk of createReadStream(file)) hash.update(chunk); return hash.digest('hex'); }
+ const jarSha = await sha256(jarPath);
+ const harnessSha = await sha256(fileURLToPath(import.meta.url));
+-await writeFile(join(out, 'manifest.json'), JSON.stringify({ kind: 'provider-free live mechanics', aiPerformanceMeasured: false, fixtureSetupUsesOperatorCommands: true, jarSha256: jarSha, harnessSha256: harnessSha, shelter: SHELTER, roof: ROOF, ranged: RANGED, kitExtra: { bow: 1, arrows: 64, snowballs: 16 }, primaryScore: 'rods held in last observation inside window; zero on death', opening: OPENING, shieldStance: SHIELD_STANCE, incomingProjectileGuard: SHIELD_STANCE, terrainReset: 'original 3x3 shell and spawner restored by clone before each trial', freshBodyPerTrial: true, previousProjectilesCleared: true, gapBeforeEveryBodyCall: true, startMode: START_MODE, naturalMobSpawning: false, seed: '20261009', spawner: SPAWNER, variants: VARIANTS, repeats: REPEATS, runS: RUN_S, pursue: PURSUE }, null, 2));
++await writeFile(join(out, 'manifest.json'), JSON.stringify({ blockedShotPolicy: 'choose another visible target until the blocked target or body moves', postPickupRepair: 'walls and sill only; existing roof retained', kind: 'provider-free live mechanics', aiPerformanceMeasured: false, fixtureSetupUsesOperatorCommands: true, jarSha256: jarSha, harnessSha256: harnessSha, shelter: SHELTER, roof: ROOF, ranged: RANGED, kitExtra: { bow: 1, arrows: 64, snowballs: 16 }, primaryScore: 'rods held in last observation inside window; zero on death', opening: OPENING, shieldStance: SHIELD_STANCE, incomingProjectileGuard: SHIELD_STANCE, terrainReset: 'original 3x3 shell and spawner restored by clone before each trial', freshBodyPerTrial: true, previousProjectilesCleared: true, gapBeforeEveryBodyCall: true, startMode: START_MODE, naturalMobSpawning: false, seed: '20261009', spawner: SPAWNER, variants: VARIANTS, repeats: REPEATS, runS: RUN_S, pursue: PURSUE }, null, 2));
+ await cp(template, server, { recursive: true });
+ for (const name of await readdir(join(server, 'mods'))) if (name.startsWith('arena-agents-')) await unlink(join(server, 'mods', name));
+ await cp(jarPath, join(server, 'mods/arena-agents-0.2.0.jar'));
+@@ -251,6 +251,7 @@
+ 			const openingHead = [shelterArgs.x+openX,shelterArgs.y+1,shelterArgs.z+openZ].join(',');
+ 			const peekedHeads = new Set([openingHead]);
+ 			let maxRods = 0, blockedWindow = null;
++			const blockedShots = new Map();
+ 			let o = await observe().catch(async () => { await recover(); return observe(); }), dead = false;
+ 			run.initialPosition = o.position; run.initialHealth = o.player?.health;
+ 			if (run.initialHealth !== 20 || Math.hypot(o.position.x-cell[0],o.position.y-cell[1],o.position.z-cell[2])>0.4)
+@@ -285,7 +286,15 @@
+ 					if (RANGED !== 'none') knownRods.set(r.uuid, { uuid:r.uuid, at:Date.now(), x:Math.floor(r.position.x), y:Math.floor(r.position.y), z:Math.floor(r.position.z) });
+ 				}
+ 				const rod = ents.filter(x => x.type === 'minecraft:item' && x.itemId === 'minecraft:blaze_rod' && x.distance < 10 && (!SHELTER || RANGED !== 'none' && x.position.y >= cell[1]-0.5 || Math.hypot(x.position.x-cell[0],x.position.z-cell[2]) <= 1.8)).sort((a, b) => a.distance - b.distance)[0] ?? [...knownRods.values()].find(r=>Date.now()-r.at<60000 && (!SHELTER || RANGED !== 'none' && r.y >= cell[1]-0.5 || Math.hypot(r.x+0.5-cell[0],r.z+0.5-cell[2]) <= 1.8));
+-				const blaze = ents.filter(x => x.type === 'minecraft:blaze' && (!SHELTER || x.perceivedBy !== 'sound')).sort((a, b) => a.distance - b.distance)[0];
++				const blaze = ents.filter(x => {
++					if (x.type !== 'minecraft:blaze' || SHELTER && x.perceivedBy === 'sound') return false;
++					const block = blockedShots.get(x.uuid);
++					if (!block) return true;
++					const moved = Math.hypot(x.position.x-block.target.x,x.position.y-block.target.y,x.position.z-block.target.z)>0.5
++						|| Math.hypot(o.position.x-block.body.x,o.position.y-block.body.y,o.position.z-block.body.z)>0.25;
++					if (moved) blockedShots.delete(x.uuid);
++					return moved;
++				}).sort((a, b) => a.distance - b.distance)[0];
+ 				const heard = ents.find(x => x.type === 'minecraft:blaze' && x.perceivedBy === 'sound');
+ 				if (blaze && run.firstBlazeS === null) run.firstBlazeS = Math.round((Date.now() - startedAt) / 1000);
+ 				let type, args;
+@@ -340,6 +349,7 @@
+ 						const [x,y,z] = block.slice(1).map(Number);
+ 						// The stand-in reads the named obstruction and mines only its known head-height wall, keeping the sill.
+ 						if (y === shelterArgs.y+1 && Math.abs(x-shelterArgs.x)+Math.abs(z-shelterArgs.z) === 1) blockedWindow = {x,y,z};
++						else blockedShots.set(args.targetId, { target: {...blaze.position}, body: {...o.position}, block:{x,y,z} });
+ 					}
+ 				}
+ 				if (type === 'break_block') {
+@@ -348,7 +358,7 @@
+ 				}
+ 				if (type === 'pick_up_item' && res.state === 'SUCCEEDED') run.rodsPicked++;
+ 				if (type === 'pick_up_item' && SHELTER && RANGED !== 'none' && res.reasonCode !== 'AGENT_DEAD') {
+-					const returned = await act('build_shelter', shelterArgs, 125000);
++					const returned = await act('build_shelter', { ...shelterArgs, roof: false }, 125000);
+ 					(run.returnShelters ??= []).push(returned);
+ 					if (returned.state === 'SUCCEEDED') { peekedHeads.clear(); peekedHeads.add(openingHead); }
+ 				}

@@ -1,0 +1,3 @@
+{"v":1,"type":"forecast","id":"fc-1","agentId":"agent-a","atMs":1792600035000,"action":"move_to","hazard":{"kind":"lava","block":[12,63,-3],"distance":2},"detail":"route crosses lava"}
+{"v":1,"type":"forecast","id":"fc-2","agentId":"agent-a","atMs":1792600045000,"action":"break_block","hazard":{"kind":"lava","block":[12,64,-3],"distance":1},"detail":"removal lets lava in"}
+{"v":1,"type":"forecast","id":"fc-3","agentId":"agent-a","atMs":1792600055000,"action":"move_to","hazard":{"kind":"drop","block":[0,40,0],"distance":3},"detail":"route crosses a 20-block drop"}

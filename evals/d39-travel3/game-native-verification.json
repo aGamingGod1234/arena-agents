@@ -1,0 +1,275 @@
+[
+  {
+    "tag": "d39-travel3-123456789-r3",
+    "profile": {
+      "provider": "codex",
+      "model": "gpt-6.1-sol",
+      "reasoningEffort": "low",
+      "serviceTier": "default"
+    },
+    "configuredCodex": {
+      "model": "gpt-6.1-sol",
+      "reasoningEffort": "low",
+      "serviceTier": "default"
+    },
+    "jarSha256": "53545d9bf635763da270c9077888de9e675d4587f86e833149c20eb52670f88f",
+    "coordinatorSha256": "23a75cdf2428218e02ccecb702ca909b53cce1bb13504859778ab14ab39be885",
+    "sourceChangedDuringRun": false,
+    "harnessCommit": "6345839ef4a61df87e8da7115c6ce0e61f433be5",
+    "timeline": {
+      "startedAt": 1792948193108,
+      "endedAt": 1792953593109,
+      "playedMs": 5400001,
+      "stopReason": "WALL_CLOCK_BUDGET",
+      "deaths": [
+        {
+          "at": 1792953198855,
+          "elapsedMs": 5005747,
+          "cause": "ha_q_o313n_31jxe was fireballed by Blaze",
+          "cumulative": {
+            "at": 1792953198312,
+            "calls": 388,
+            "tokens": {
+              "input": 1986169,
+              "cacheRead": 61444224,
+              "cacheWrite": 0,
+              "output": 26913
+            },
+            "costUsd": 10.385890400000001
+          }
+        }
+      ]
+    },
+    "metricWindow": {
+      "startedAt": 1792948193108,
+      "endedAt": 1792953593108
+    },
+    "nativeRunnerStatus": "FAILED",
+    "termination": "TIMEOUT",
+    "measurementStatus": "INCOMPLETE",
+    "observerErrors": [],
+    "terminalObserverErrors": [],
+    "nativeSamplingGaps": [],
+    "coverage": {
+      "protocolRecords": 26813,
+      "samples": 5295,
+      "watcherFiles": 1,
+      "diagnostics": [],
+      "maxSampleGapSeconds": 3.773,
+      "protocolPresent": true
+    },
+    "firstSampleOffsetSeconds": 0.135,
+    "tailGapSeconds": 0.929,
+    "lastSample": 1792953593182,
+    "globalTierFallback": "priority",
+    "providerSettingsVariants": [
+      {
+        "configured": null,
+        "controlProtocol": "goal_spec",
+        "effective": {
+          "model": "gpt-6-luna",
+          "provider": "codex",
+          "reasoningEffort": null,
+          "serviceTier": "default",
+          "thinkingMode": null
+        },
+        "evidence": {
+          "model": "provider_reported",
+          "reasoningEffort": "submitted",
+          "serviceTier": "provider_reported"
+        },
+        "requested": {
+          "model": "gpt-6-luna",
+          "provider": "codex",
+          "reasoningEffort": "medium",
+          "serviceTier": "default"
+        }
+      },
+      {
+        "configured": null,
+        "controlProtocol": "native_tools",
+        "effective": {
+          "model": "gpt-6.1-sol",
+          "provider": "codex",
+          "reasoningEffort": null,
+          "serviceTier": "default",
+          "thinkingMode": null
+        },
+        "evidence": {
+          "model": "provider_reported",
+          "reasoningEffort": "submitted",
+          "serviceTier": "provider_reported"
+        },
+        "requested": {
+          "model": "gpt-6.1-sol",
+          "provider": "codex",
+          "reasoningEffort": "low",
+          "serviceTier": "default"
+        }
+      }
+    ],
+    "profilePrecedence": "Explicit launch and player profile override global service-tier fallback; provider-reported player model and tier match."
+  },
+  {
+    "tag": "d39-travel3-987654321-r2",
+    "profile": {
+      "provider": "codex",
+      "model": "gpt-6.1-sol",
+      "reasoningEffort": "low",
+      "serviceTier": "default"
+    },
+    "configuredCodex": {
+      "model": "gpt-6.1-sol",
+      "reasoningEffort": "low",
+      "serviceTier": "default"
+    },
+    "jarSha256": "53545d9bf635763da270c9077888de9e675d4587f86e833149c20eb52670f88f",
+    "coordinatorSha256": "23a75cdf2428218e02ccecb702ca909b53cce1bb13504859778ab14ab39be885",
+    "sourceChangedDuringRun": false,
+    "harnessCommit": "6345839ef4a61df87e8da7115c6ce0e61f433be5",
+    "timeline": {
+      "startedAt": 1792959579379,
+      "endedAt": 1792964979380,
+      "playedMs": 5400001,
+      "stopReason": "WALL_CLOCK_BUDGET",
+      "deaths": [
+        {
+          "at": 1792959883277,
+          "elapsedMs": 303898,
+          "cause": "ha_q_o9tb6_9tpbp was slain by Piglin Brute",
+          "cumulative": {
+            "at": 1792959876165,
+            "calls": 37,
+            "tokens": {
+              "input": 138256,
+              "cacheRead": 2920320,
+              "cacheWrite": 0,
+              "output": 3551
+            },
+            "costUsd": 0.604054
+          }
+        },
+        {
+          "at": 1792960168676,
+          "elapsedMs": 589297,
+          "cause": "ha_q_o9tb6_9tpbp was slain by Piglin Brute",
+          "cumulative": {
+            "at": 1792960138344,
+            "calls": 70,
+            "tokens": {
+              "input": 240093,
+              "cacheRead": 9924736,
+              "cacheWrite": 0,
+              "output": 7048
+            },
+            "costUsd": 1.5431396000000002
+          }
+        },
+        {
+          "at": 1792960246227,
+          "elapsedMs": 666848,
+          "cause": "ha_q_o9tb6_9tpbp was slain by Piglin Brute",
+          "cumulative": {
+            "at": 1792960244695,
+            "calls": 79,
+            "tokens": {
+              "input": 267763,
+              "cacheRead": 12408448,
+              "cacheWrite": 0,
+              "output": 7636
+            },
+            "costUsd": 1.8527308
+          }
+        },
+        {
+          "at": 1792961311277,
+          "elapsedMs": 1731898,
+          "cause": "ha_q_o9tb6_9tpbp was shot by Skeleton",
+          "cumulative": {
+            "at": 1792961310324,
+            "calls": 239,
+            "tokens": {
+              "input": 913186,
+              "cacheRead": 27411200,
+              "cacheWrite": 0,
+              "output": 19687
+            },
+            "costUsd": 4.764362
+          }
+        }
+      ]
+    },
+    "metricWindow": {
+      "startedAt": 1792959579379,
+      "endedAt": 1792964979379
+    },
+    "nativeRunnerStatus": "FAILED",
+    "termination": "TIMEOUT",
+    "measurementStatus": "INCOMPLETE",
+    "observerErrors": [
+      "Quality player disappeared during sampling",
+      "Quality player disappeared during sampling"
+    ],
+    "terminalObserverErrors": [],
+    "nativeSamplingGaps": [],
+    "coverage": {
+      "protocolRecords": 32256,
+      "samples": 5267,
+      "watcherFiles": 1,
+      "diagnostics": [],
+      "maxSampleGapSeconds": 4.869,
+      "protocolPresent": true
+    },
+    "firstSampleOffsetSeconds": 0.136,
+    "tailGapSeconds": 0.545,
+    "lastSample": 1792964979539,
+    "globalTierFallback": "priority",
+    "providerSettingsVariants": [
+      {
+        "configured": null,
+        "controlProtocol": "goal_spec",
+        "effective": {
+          "model": "gpt-6-luna",
+          "provider": "codex",
+          "reasoningEffort": null,
+          "serviceTier": "default",
+          "thinkingMode": null
+        },
+        "evidence": {
+          "model": "provider_reported",
+          "reasoningEffort": "submitted",
+          "serviceTier": "provider_reported"
+        },
+        "requested": {
+          "model": "gpt-6-luna",
+          "provider": "codex",
+          "reasoningEffort": "medium",
+          "serviceTier": "default"
+        }
+      },
+      {
+        "configured": null,
+        "controlProtocol": "native_tools",
+        "effective": {
+          "model": "gpt-6.1-sol",
+          "provider": "codex",
+          "reasoningEffort": null,
+          "serviceTier": "default",
+          "thinkingMode": null
+        },
+        "evidence": {
+          "model": "provider_reported",
+          "reasoningEffort": "submitted",
+          "serviceTier": "provider_reported"
+        },
+        "requested": {
+          "model": "gpt-6.1-sol",
+          "provider": "codex",
+          "reasoningEffort": "low",
+          "serviceTier": "default"
+        }
+      }
+    ],
+    "profilePrecedence": "Explicit launch and player profile override global service-tier fallback; provider-reported player model and tier match."
+  }
+]

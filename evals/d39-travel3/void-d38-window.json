@@ -1,0 +1,6 @@
+{
+  "at": "2026-10-25T23:00:42.284448",
+  "run": "d38-travel-98-mini-123456789",
+  "status": "VOID",
+  "reason": "User excludes Oct 25 22:20-22:50 Sol-capacity window; old d38 sequential launcher stopped; no metrics from it used."
+}

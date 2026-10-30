@@ -1,0 +1,421 @@
+{
+  "source": "A15 ab6f128f, trials/final-sol/sol/protocol.jsonl*, goal-relative time",
+  "note": "Minimized recorded sighting sequence; retains position, tick, time and source rows only. No hidden terrain or block contradictions. Distances, bearings and unrelated sections omitted.",
+  "samples": [
+    {
+      "elapsedMs": 530583,
+      "gameTime": 11057,
+      "position": {
+        "x": -141.47830625686274,
+        "y": 61.45965029325777,
+        "z": 170.4100760316634
+      },
+      "sighted": {
+        "veins": [
+          {
+            "blockId": "minecraft:iron_ore",
+            "visible": 1,
+            "x": -140,
+            "y": 43,
+            "z": 168
+          },
+          {
+            "blockId": "minecraft:copper_ore",
+            "visible": 2,
+            "x": -144,
+            "y": 43,
+            "z": 177
+          }
+        ]
+      }
+    },
+    {
+      "elapsedMs": 557023,
+      "gameTime": 11586,
+      "position": {
+        "x": -140.49868053206163,
+        "y": 63.57950775670745,
+        "z": 173.22831121829708
+      },
+      "sighted": {
+        "caves": [
+          {
+            "air": 66,
+            "x": -206,
+            "y": 66,
+            "z": 245
+          }
+        ]
+      }
+    },
+    {
+      "elapsedMs": 558025,
+      "gameTime": 11606,
+      "position": {
+        "x": -139.1308873286178,
+        "y": 63,
+        "z": 176.22172501848584
+      },
+      "sighted": {
+        "caves": [
+          {
+            "air": 45,
+            "x": -132,
+            "y": 67,
+            "z": 202
+          },
+          {
+            "air": 69,
+            "x": -96,
+            "y": 72,
+            "z": 236
+          }
+        ]
+      }
+    },
+    {
+      "elapsedMs": 560023,
+      "gameTime": 11646,
+      "position": {
+        "x": -133.6719227708003,
+        "y": 63,
+        "z": 183.5858951853028
+      },
+      "sighted": {
+        "caves": [
+          {
+            "air": 50,
+            "x": -105,
+            "y": 63,
+            "z": 209
+          },
+          {
+            "air": 74,
+            "x": -99,
+            "y": 70,
+            "z": 222
+          },
+          {
+            "air": 74,
+            "x": -97,
+            "y": 71,
+            "z": 237
+          }
+        ],
+        "veins": [
+          {
+            "blockId": "minecraft:copper_ore",
+            "visible": 1,
+            "x": -101,
+            "y": 69,
+            "z": 211
+          }
+        ]
+      }
+    },
+    {
+      "elapsedMs": 573223,
+      "gameTime": 11910,
+      "position": {
+        "x": -138.56599710670997,
+        "y": 63.796735600668704,
+        "z": 201.1134012332182
+      },
+      "sighted": {
+        "caves": [
+          {
+            "air": 71,
+            "x": -110,
+            "y": 72,
+            "z": 195
+          }
+        ]
+      }
+    },
+    {
+      "elapsedMs": 583424,
+      "gameTime": 12114,
+      "position": {
+        "x": -142.34286167024527,
+        "y": 63,
+        "z": 200.38045158928068
+      },
+      "sighted": {
+        "caves": [
+          {
+            "air": 60,
+            "x": -176,
+            "y": 74,
+            "z": 175
+          },
+          {
+            "air": 73,
+            "x": -187,
+            "y": 69,
+            "z": 176
+          }
+        ],
+        "veins": [
+          {
+            "blockId": "minecraft:copper_ore",
+            "visible": 6,
+            "x": -178,
+            "y": 68,
+            "z": 197
+          }
+        ]
+      }
+    },
+    {
+      "elapsedMs": 584427,
+      "gameTime": 12134,
+      "position": {
+        "x": -147.54865182313975,
+        "y": 63,
+        "z": 199.6950632262015
+      },
+      "sighted": {
+        "caves": [
+          {
+            "air": 86,
+            "x": -175,
+            "y": 72,
+            "z": 181
+          },
+          {
+            "air": 88,
+            "x": -180,
+            "y": 68,
+            "z": 172
+          },
+          {
+            "air": 81,
+            "x": -191,
+            "y": 69,
+            "z": 178
+          }
+        ]
+      }
+    },
+    {
+      "elapsedMs": 585424,
+      "gameTime": 12154,
+      "position": {
+        "x": -150.58438019666437,
+        "y": 63,
+        "z": 198.98154464252806
+      },
+      "sighted": {
+        "caves": [
+          {
+            "air": 66,
+            "x": -177,
+            "y": 73,
+            "z": 175
+          },
+          {
+            "air": 66,
+            "x": -182,
+            "y": 63,
+            "z": 171
+          },
+          {
+            "air": 81,
+            "x": -191,
+            "y": 69,
+            "z": 178
+          }
+        ]
+      }
+    },
+    {
+      "elapsedMs": 592221,
+      "gameTime": 12290,
+      "position": {
+        "x": -158.33913704064838,
+        "y": 63,
+        "z": 197.48233347101586
+      },
+      "sighted": {
+        "caves": [
+          {
+            "air": 75,
+            "x": -179,
+            "y": 71,
+            "z": 178
+          },
+          {
+            "air": 73,
+            "x": -190,
+            "y": 68,
+            "z": 176
+          },
+          {
+            "air": 68,
+            "x": -194,
+            "y": 74,
+            "z": 216
+          }
+        ],
+        "veins": [
+          {
+            "blockId": "minecraft:copper_ore",
+            "visible": 6,
+            "x": -178,
+            "y": 67,
+            "z": 196
+          }
+        ]
+      }
+    },
+    {
+      "elapsedMs": 592722,
+      "gameTime": 12300,
+      "position": {
+        "x": -160.9977363650497,
+        "y": 63,
+        "z": 197.4884377381542
+      },
+      "sighted": {
+        "caves": [
+          {
+            "air": 71,
+            "x": -183,
+            "y": 71,
+            "z": 178
+          },
+          {
+            "air": 78,
+            "x": -194,
+            "y": 63,
+            "z": 175
+          },
+          {
+            "air": 92,
+            "x": -191,
+            "y": 68,
+            "z": 224
+          }
+        ],
+        "veins": [
+          {
+            "blockId": "minecraft:copper_ore",
+            "visible": 6,
+            "x": -178,
+            "y": 67,
+            "z": 196
+          },
+          {
+            "blockId": "minecraft:copper_ore",
+            "visible": 2,
+            "x": -192,
+            "y": 68,
+            "z": 224
+          }
+        ]
+      }
+    },
+    {
+      "elapsedMs": 593224,
+      "gameTime": 12310,
+      "position": {
+        "x": -163.6860635796555,
+        "y": 63,
+        "z": 197.49279222592807
+      },
+      "sighted": {
+        "caves": [
+          {
+            "air": 64,
+            "x": -188,
+            "y": 68,
+            "z": 175
+          },
+          {
+            "air": 80,
+            "x": -192,
+            "y": 68,
+            "z": 223
+          }
+        ],
+        "veins": [
+          {
+            "blockId": "minecraft:copper_ore",
+            "visible": 6,
+            "x": -178,
+            "y": 67,
+            "z": 196
+          }
+        ]
+      }
+    },
+    {
+      "elapsedMs": 602224,
+      "gameTime": 12490,
+      "position": {
+        "x": -174.56444759868384,
+        "y": 63.41999998688698,
+        "z": 196.53668166954574
+      },
+      "sighted": {
+        "caves": [
+          {
+            "air": 65,
+            "x": -193,
+            "y": 63,
+            "z": 199
+          }
+        ],
+        "veins": [
+          {
+            "blockId": "minecraft:copper_ore",
+            "visible": 4,
+            "x": -178,
+            "y": 67,
+            "z": 196
+          }
+        ]
+      }
+    },
+    {
+      "elapsedMs": 620826,
+      "gameTime": 12862,
+      "position": {
+        "x": -178.60223820131372,
+        "y": 63,
+        "z": 197.47031166663928
+      },
+      "sighted": {
+        "caves": [
+          {
+            "air": 67,
+            "x": -182,
+            "y": 63,
+            "z": 195
+          },
+          {
+            "air": 60,
+            "x": -197,
+            "y": 63,
+            "z": 186
+          },
+          {
+            "air": 80,
+            "x": -186,
+            "y": 67,
+            "z": 174
+          }
+        ],
+        "veins": [
+          {
+            "blockId": "minecraft:copper_ore",
+            "visible": 3,
+            "x": -186,
+            "y": 57,
+            "z": 194
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "gradle": {
+    "base": "base-build-cleanenv.log",
+    "candidate": "final-build.log",
+    "passed": true,
+    "baseCoreAssertions": 2577412,
+    "candidateCoreAssertions": 2577418,
+    "voiceAssertions": 442
+  },
+  "npm": {
+    "passed": 6984,
+    "skipped": 75,
+    "failed": 11,
+    "total": 7070,
+    "exitCode": 1,
+    "failureNames": [
+      "PowerShell process tracking rejects a reused PID before sampling or cleanup",
+      "PowerShell resource sampling reuses one process snapshot per sampling phase",
+      "PowerShell snapshot refuses to adopt an unverified child after its parent exits",
+      "PowerShell wrapper samples a fast-exit tracked runner before completion",
+      "an npm .cmd shim without the package beside it gets install advice instead of \"reinstall\"",
+      "native A/B runner contains child module failures at the CLI root",
+      "native A/B trial contains missing service-module failures at the CLI root",
+      "parses the headless matrix CLI contract and rejects missing flags",
+      "reports a broken CLI when --version exits non-zero, including a sanitized stderr excerpt",
+      "reports a broken CLI when --version times out or cannot start",
+      "the Windows job wrapper starts System32 PowerShell even when the provider PATH omits it"
+    ],
+    "matchesPriorD38FailureNames": true,
+    "newFailures": [],
+    "removedFailures": []
+  },
+  "contracts": {
+    "passed": 639,
+    "failed": 0
+  },
+  "focusedCoordinator": {
+    "passed": 26,
+    "failed": 0
+  },
+  "byteBudgetsRaised": false,
+  "initialAttemptExcluded": {
+    "voice": "JAVA_TOOL_OPTIONS printed into intentionally silent readiness fixture; clean-environment full builds pass",
+    "npm": "initial run overlapped Gradle npm ci; Acorn disappeared mid-import. It also caught the new code catalog entry and witness, fixed before the final run."
+  }
+}

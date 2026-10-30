@@ -1,0 +1,2392 @@
+{
+  "heldBeforeDeath": 3,
+  "creditedAtEnd": 0,
+  "stage": "shooting in shelter, then repeated eating while in contact fire",
+  "returnShelters": [
+    {
+      "traceId": "bz-37",
+      "goalRevision": 1,
+      "actionId": "bz-37",
+      "commandId": "bz-37",
+      "actionType": "build_shelter",
+      "state": "SUCCEEDED",
+      "reasonCode": "SHELTER_BUILT",
+      "message": "Shelter interior=83, 73, 91; opening=east; placed=2; cleared=0; completed=9/9; stay inside, fight through the east eye-height window above the sill with pursue:false",
+      "elapsedMs": 2649,
+      "observedAtEpochMs": 1792910050016,
+      "executionStarted": true,
+      "physicalAttempted": true,
+      "timing": {
+        "acceptedAtEpochMs": 1792910047367,
+        "startedAtEpochMs": 1792910047369,
+        "startedTick": 1724,
+        "endedTick": 1777
+      },
+      "replayProof": "rdejWpxdiaj_JyM3i3qK-BZVsT6BCU5Gjr637mKo0q8"
+    },
+    {
+      "traceId": "bz-184",
+      "goalRevision": 1,
+      "actionId": "bz-184",
+      "commandId": "bz-184",
+      "actionType": "build_shelter",
+      "state": "SUCCEEDED",
+      "reasonCode": "SHELTER_BUILT",
+      "message": "Shelter interior=83, 73, 91; opening=east; placed=3; cleared=0; completed=9/9; stay inside, fight through the east eye-height window above the sill with pursue:false",
+      "elapsedMs": 1450,
+      "observedAtEpochMs": 1792910068717,
+      "executionStarted": true,
+      "physicalAttempted": true,
+      "timing": {
+        "acceptedAtEpochMs": 1792910067267,
+        "startedAtEpochMs": 1792910067269,
+        "startedTick": 2122,
+        "endedTick": 2151
+      },
+      "replayProof": "sWsa19YpdIvHXaRkxEf3Mn2diDvwG43w21Yu3i8OlCo"
+    },
+    {
+      "traceId": "bz-412",
+      "goalRevision": 1,
+      "actionId": "bz-412",
+      "commandId": "bz-412",
+      "actionType": "build_shelter",
+      "state": "SUCCEEDED",
+      "reasonCode": "SHELTER_BUILT",
+      "message": "Shelter interior=83, 73, 91; opening=east; placed=2; cleared=0; completed=9/9; stay inside, fight through the east eye-height window above the sill with pursue:false",
+      "elapsedMs": 1499,
+      "observedAtEpochMs": 1792910095016,
+      "executionStarted": true,
+      "physicalAttempted": true,
+      "timing": {
+        "acceptedAtEpochMs": 1792910093517,
+        "startedAtEpochMs": 1792910093518,
+        "startedTick": 2647,
+        "endedTick": 2677
+      },
+      "replayProof": "chzyLNJbo_dcNhSNcYBBjFHuqla13NPPYyMBU6eoYsY"
+    },
+    {
+      "traceId": "bz-416",
+      "goalRevision": 1,
+      "actionId": "bz-416",
+      "commandId": "bz-416",
+      "actionType": "build_shelter",
+      "state": "SUCCEEDED",
+      "reasonCode": "SHELTER_BUILT",
+      "message": "Shelter interior=83, 73, 91; opening=east; placed=1; cleared=0; completed=9/9; stay inside, fight through the east eye-height window above the sill with pursue:false",
+      "elapsedMs": 2173,
+      "observedAtEpochMs": 1792910098590,
+      "executionStarted": true,
+      "physicalAttempted": true,
+      "timing": {
+        "acceptedAtEpochMs": 1792910096417,
+        "startedAtEpochMs": 1792910096418,
+        "startedTick": 2705,
+        "endedTick": 2748
+      },
+      "replayProof": "bdN3yCaHLkPyt0kF2gE8zVGXRncC1cM2XWYgnwWta1M"
+    },
+    {
+      "traceId": "bz-454",
+      "goalRevision": 1,
+      "actionId": "bz-454",
+      "commandId": "bz-454",
+      "actionType": "build_shelter",
+      "state": "SUCCEEDED",
+      "reasonCode": "SHELTER_BUILT",
+      "message": "Shelter interior=83, 73, 91; opening=east; placed=2; cleared=0; completed=9/9; stay inside, fight through the east eye-height window above the sill with pursue:false",
+      "elapsedMs": 1549,
+      "observedAtEpochMs": 1792910111066,
+      "executionStarted": true,
+      "physicalAttempted": true,
+      "timing": {
+        "acceptedAtEpochMs": 1792910109517,
+        "startedAtEpochMs": 1792910109519,
+        "startedTick": 2967,
+        "endedTick": 2998
+      },
+      "replayProof": "HgyvZWAnhyh44pOHEiJopwsof1-wx2gb37GyZsYpDFU"
+    }
+  ],
+  "rangedResults": {
+    "RANGED_DRAW_INTERRUPTED": 4,
+    "OWNED_PROJECTILE_CONFIRMED": 13,
+    "TARGET_OBSTRUCTED": 3
+  },
+  "events": [
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 105.4,
+      "type": "use_ranged",
+      "args": {
+        "targetId": "6b1d3880-e128-49e9-b537-a53974e57c79",
+        "drawDurationMs": 1000,
+        "trackTarget": true,
+        "timeoutMs": 10000
+      },
+      "result": {
+        "traceId": "bz-449",
+        "goalRevision": 1,
+        "actionId": "bz-449",
+        "commandId": "bz-449",
+        "actionType": "use_ranged",
+        "state": "SUCCEEDED",
+        "reasonCode": "OWNED_PROJECTILE_CONFIRMED",
+        "message": "Arrow loosed (aim point 86.7,76.0,90.3: 0.1 blocks above the target's visible point for drop over 4 blocks); it struck the target",
+        "elapsedMs": 1115,
+        "observedAtEpochMs": 1792910107316,
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "timing": {
+          "acceptedAtEpochMs": 1792910106201,
+          "startedAtEpochMs": 1792910106210,
+          "startedTick": 2899,
+          "endedTick": 2923
+        },
+        "replayProof": "ZegfjiE-B3__3UKE79eAMzYeCTEKpaBdi2OXQcE7EhA"
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 105.4,
+      "position": {
+        "x": 83.30000001192093,
+        "y": 73,
+        "z": 91.69999998807907
+      },
+      "inventoryRods": 2,
+      "player": {
+        "harm": {
+          "source": "minecraft:generic",
+          "hpLossPerSecond": 0,
+          "options": [
+            "healing",
+            "leave_source"
+          ]
+        },
+        "stand": {
+          "here": {
+            "pushSafe": false,
+            "roof": true,
+            "walls": 2
+          },
+          "searchedSteps": 16
+        },
+        "pose": "standing",
+        "underWater": false,
+        "swimming": false,
+        "gliding": false,
+        "sprinting": false,
+        "crouching": false,
+        "onClimbable": false,
+        "inLava": false,
+        "horizontalCollision": false,
+        "verticalCollision": true,
+        "passenger": false,
+        "groundAhead": {
+          "status": "blocked",
+          "at": 4.25
+        },
+        "health": 16.45333480834961,
+        "maxHealth": 20,
+        "armor": 15,
+        "foodLevel": 17,
+        "saturation": 0,
+        "gameMode": "survival",
+        "onGround": true,
+        "inWater": false,
+        "onFire": false,
+        "air": 300,
+        "maxAir": 300,
+        "suffocating": false,
+        "fallDistance": 0,
+        "effects": [],
+        "lastAttacker": {
+          "uuid": "6b1d3880-e128-49e9-b537-a53974e57c79",
+          "type": "minecraft:blaze",
+          "distance": 4.60658597946167
+        }
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 106.2,
+      "type": "use_ranged",
+      "args": {
+        "targetId": "6b1d3880-e128-49e9-b537-a53974e57c79",
+        "drawDurationMs": 1000,
+        "trackTarget": true,
+        "timeoutMs": 10000
+      },
+      "result": {
+        "traceId": "bz-450",
+        "goalRevision": 1,
+        "actionId": "bz-450",
+        "commandId": "bz-450",
+        "actionType": "use_ranged",
+        "state": "FAILED",
+        "reasonCode": "TARGET_OBSTRUCTED",
+        "message": "No line from this eye reaches the target unblocked; arrows stop at minecraft:cobblestone at 83,75,91; currently visible targets with a clear full-draw arrow line, nearest first: none",
+        "elapsedMs": 749,
+        "observedAtEpochMs": 1792910108116,
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "timing": {
+          "acceptedAtEpochMs": 1792910107367,
+          "startedAtEpochMs": 1792910107368,
+          "startedTick": 2924,
+          "endedTick": 2939
+        },
+        "replayProof": "jtY3H6FzwvYQ7FraOMu_jmmSfxoDNbQfR4M3dgMM_6Q"
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 106.2,
+      "position": {
+        "x": 83.30000001192093,
+        "y": 73,
+        "z": 91.69999998807907
+      },
+      "inventoryRods": 2,
+      "player": {
+        "stand": {
+          "here": {
+            "pushSafe": false,
+            "roof": true,
+            "walls": 2
+          },
+          "searchedSteps": 16
+        },
+        "pose": "standing",
+        "underWater": false,
+        "swimming": false,
+        "gliding": false,
+        "sprinting": false,
+        "crouching": false,
+        "onClimbable": false,
+        "inLava": false,
+        "horizontalCollision": false,
+        "verticalCollision": true,
+        "passenger": false,
+        "groundAhead": {
+          "status": "unknown",
+          "at": 1.75,
+          "drop": 1,
+          "atLeast": true
+        },
+        "health": 16.45333480834961,
+        "maxHealth": 20,
+        "armor": 15,
+        "foodLevel": 17,
+        "saturation": 0,
+        "gameMode": "survival",
+        "onGround": true,
+        "inWater": false,
+        "onFire": false,
+        "air": 300,
+        "maxAir": 300,
+        "suffocating": false,
+        "fallDistance": 0,
+        "effects": []
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 107.5,
+      "type": "pick_up_item",
+      "args": {
+        "targetSelector": "93e332c0-8033-4b4d-bfe3-5d7b000e0f91"
+      },
+      "result": {
+        "traceId": "bz-453",
+        "goalRevision": 1,
+        "actionId": "bz-453",
+        "commandId": "bz-453",
+        "actionType": "pick_up_item",
+        "state": "SUCCEEDED",
+        "reasonCode": "ITEM_PICKED_UP",
+        "message": "Collected into inventory",
+        "elapsedMs": 549,
+        "observedAtEpochMs": 1792910109466,
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "timing": {
+          "acceptedAtEpochMs": 1792910108917,
+          "startedAtEpochMs": 1792910108918,
+          "startedTick": 2955,
+          "endedTick": 2966
+        },
+        "replayProof": "kecR_O-D80kRN--8NfGdcnMlPNpF1FFEaGQBwreETzw"
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 109.2,
+      "position": {
+        "x": 83.43563221436169,
+        "y": 73,
+        "z": 91.48280975022918
+      },
+      "inventoryRods": 3,
+      "player": {
+        "stand": {
+          "here": {
+            "pushSafe": false,
+            "roof": true,
+            "walls": 3
+          },
+          "searchedSteps": 16
+        },
+        "pose": "standing",
+        "underWater": false,
+        "swimming": false,
+        "gliding": false,
+        "sprinting": false,
+        "crouching": false,
+        "onClimbable": false,
+        "inLava": false,
+        "horizontalCollision": false,
+        "verticalCollision": true,
+        "passenger": false,
+        "groundAhead": {
+          "status": "blocked",
+          "at": 3.75
+        },
+        "health": 16.45333480834961,
+        "maxHealth": 20,
+        "armor": 15,
+        "foodLevel": 17,
+        "saturation": 0,
+        "gameMode": "survival",
+        "onGround": true,
+        "inWater": false,
+        "onFire": false,
+        "air": 300,
+        "maxAir": 300,
+        "suffocating": false,
+        "fallDistance": 0,
+        "effects": []
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 109.9,
+      "type": "break_block",
+      "args": {
+        "x": 83,
+        "y": 74,
+        "z": 92,
+        "expectedBlockId": "minecraft:cobblestone",
+        "timeoutMs": 15000
+      },
+      "result": {
+        "traceId": "bz-456",
+        "goalRevision": 1,
+        "actionId": "bz-456",
+        "commandId": "bz-456",
+        "actionType": "break_block",
+        "state": "SUCCEEDED",
+        "reasonCode": "BLOCK_BROKEN",
+        "message": "Broken with iron_pickaxe; drops seen",
+        "elapsedMs": 576,
+        "observedAtEpochMs": 1792910111816,
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "timing": {
+          "acceptedAtEpochMs": 1792910111240,
+          "startedAtEpochMs": 1792910111242,
+          "startedTick": 3001,
+          "endedTick": 3013
+        },
+        "actionObservation": {
+          "observedAtEpochMs": 1792910111816,
+          "worldTick": 3012,
+          "position": {
+            "x": 83.43563221436169,
+            "y": 73,
+            "z": 91.48280975022918
+          },
+          "velocity": {
+            "x": 0,
+            "y": -0.0784000015258789,
+            "z": 0
+          },
+          "yaw": -15.757009506225586,
+          "pitch": 6.714893817901611,
+          "collision": {
+            "horizontal": false,
+            "vertical": true,
+            "inWall": false
+          },
+          "lookedAt": {
+            "type": "block",
+            "hitDistance": 4.500000228550901,
+            "position": {
+              "x": 86,
+              "y": 74,
+              "z": 94
+            },
+            "id": "minecraft:air",
+            "face": "north"
+          },
+          "reach": {
+            "distance": 1.8135101918811494,
+            "max": 4.5,
+            "within": true
+          },
+          "revealedBlocks": [
+            {
+              "position": {
+                "x": 83,
+                "y": 73,
+                "z": 92
+              },
+              "blockId": "minecraft:cobblestone",
+              "face": "up"
+            }
+          ],
+          "target": {
+            "kind": "block",
+            "position": {
+              "x": 83,
+              "y": 74,
+              "z": 92
+            },
+            "expectedId": "minecraft:cobblestone",
+            "currentId": "minecraft:air",
+            "beforeId": "minecraft:cobblestone",
+            "afterId": "minecraft:air",
+            "worldChanged": true,
+            "distanceRemaining": 0
+          },
+          "progress": {
+            "value": 1,
+            "basis": "world_mutation",
+            "verified": true
+          }
+        },
+        "breakOutcome": {
+          "blocks": 1,
+          "held": "minecraft:iron_pickaxe",
+          "correctTool": true,
+          "noDropsSeen": false,
+          "handChanged": false
+        },
+        "replayProof": "CSuKbB_TXeoOwKvGdb9MEoFOgD7kKg3_73clqR_itdI"
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 109.9,
+      "position": {
+        "x": 83.43563221436169,
+        "y": 73,
+        "z": 91.48280975022918
+      },
+      "inventoryRods": 3,
+      "player": {
+        "stand": {
+          "here": {
+            "pushSafe": false,
+            "roof": true,
+            "walls": 2
+          },
+          "searchedSteps": 16
+        },
+        "pose": "standing",
+        "underWater": false,
+        "swimming": false,
+        "gliding": false,
+        "sprinting": false,
+        "crouching": false,
+        "onClimbable": false,
+        "inLava": false,
+        "horizontalCollision": false,
+        "verticalCollision": true,
+        "passenger": false,
+        "groundAhead": {
+          "status": "unknown",
+          "at": 1.75,
+          "drop": 1,
+          "atLeast": true
+        },
+        "health": 16.45333480834961,
+        "maxHealth": 20,
+        "armor": 15,
+        "foodLevel": 17,
+        "saturation": 0,
+        "gameMode": "survival",
+        "onGround": true,
+        "inWater": false,
+        "onFire": false,
+        "air": 300,
+        "maxAir": 300,
+        "suffocating": false,
+        "fallDistance": 0,
+        "effects": []
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 110,
+      "type": "look_at",
+      "args": {
+        "x": 83.43563221436169,
+        "y": 74.6,
+        "z": 99.48280975022918
+      },
+      "result": {
+        "traceId": "bz-457",
+        "goalRevision": 1,
+        "actionId": "bz-457",
+        "commandId": "bz-457",
+        "actionType": "look_at",
+        "state": "SUCCEEDED",
+        "reasonCode": "ACTION_COMPLETED",
+        "message": "Action completed",
+        "elapsedMs": 84,
+        "observedAtEpochMs": 1792910111951,
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "timing": {
+          "acceptedAtEpochMs": 1792910111867,
+          "startedAtEpochMs": 1792910111869,
+          "startedTick": 3014,
+          "endedTick": 3015
+        },
+        "replayProof": "-flRZ0N9GG9mL8gt3e5ETJ0d7L2CPrkMoCsBAHrCRYA"
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 110,
+      "position": {
+        "x": 83.43563221436169,
+        "y": 73,
+        "z": 91.48280975022918
+      },
+      "inventoryRods": 3,
+      "player": {
+        "stand": {
+          "here": {
+            "pushSafe": false,
+            "roof": true,
+            "walls": 2
+          },
+          "searchedSteps": 16
+        },
+        "pose": "standing",
+        "underWater": false,
+        "swimming": false,
+        "gliding": false,
+        "sprinting": false,
+        "crouching": false,
+        "onClimbable": false,
+        "inLava": false,
+        "horizontalCollision": false,
+        "verticalCollision": true,
+        "passenger": false,
+        "groundAhead": {
+          "status": "unknown",
+          "at": 1.75,
+          "drop": 1,
+          "atLeast": true
+        },
+        "health": 16.45333480834961,
+        "maxHealth": 20,
+        "armor": 15,
+        "foodLevel": 17,
+        "saturation": 0,
+        "gameMode": "survival",
+        "onGround": true,
+        "inWater": false,
+        "onFire": false,
+        "air": 300,
+        "maxAir": 300,
+        "suffocating": false,
+        "fallDistance": 0,
+        "effects": []
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 111.2,
+      "type": "use_ranged",
+      "args": {
+        "targetId": "9db292b4-ab54-488c-9a73-a931f9854563",
+        "drawDurationMs": 1000,
+        "trackTarget": true,
+        "timeoutMs": 10000
+      },
+      "result": {
+        "traceId": "bz-459",
+        "goalRevision": 1,
+        "actionId": "bz-459",
+        "commandId": "bz-459",
+        "actionType": "use_ranged",
+        "state": "SUCCEEDED",
+        "reasonCode": "OWNED_PROJECTILE_CONFIRMED",
+        "message": "Arrow loosed (aim point 83.5,75.0,93.0: 0.1 blocks above the target's visible point for drop over 2 blocks); it struck the target",
+        "elapsedMs": 1067,
+        "observedAtEpochMs": 1792910113116,
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "timing": {
+          "acceptedAtEpochMs": 1792910112049,
+          "startedAtEpochMs": 1792910112051,
+          "startedTick": 3017,
+          "endedTick": 3039
+        },
+        "replayProof": "J0COFZWirDSNSFRECh36ANybj_qhj7TeuXjB_cqObuI"
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 111.2,
+      "position": {
+        "x": 83.3983041899846,
+        "y": 73,
+        "z": 91.30000001192093
+      },
+      "inventoryRods": 3,
+      "player": {
+        "harm": {
+          "source": "minecraft:mob_attack",
+          "hpLossPerSecond": 1.5,
+          "direction": "front",
+          "options": [
+            "healing",
+            "leave_source"
+          ]
+        },
+        "recentDamage": {
+          "cause": "mob_attack",
+          "direction": "front",
+          "secondsAgo": 0
+        },
+        "stand": {
+          "here": {
+            "pushSafe": false,
+            "roof": true,
+            "walls": 2
+          },
+          "searchedSteps": 16
+        },
+        "pose": "standing",
+        "underWater": false,
+        "swimming": false,
+        "gliding": false,
+        "sprinting": false,
+        "crouching": false,
+        "onClimbable": false,
+        "inLava": false,
+        "horizontalCollision": false,
+        "verticalCollision": true,
+        "passenger": false,
+        "hurtBy": "mob_attack by minecraft:blaze",
+        "groundAhead": {
+          "status": "unknown",
+          "at": 1.75,
+          "drop": 1,
+          "atLeast": true
+        },
+        "health": 13.333334922790527,
+        "maxHealth": 20,
+        "armor": 15,
+        "foodLevel": 17,
+        "saturation": 0,
+        "gameMode": "survival",
+        "onGround": true,
+        "inWater": false,
+        "onFire": false,
+        "air": 300,
+        "maxAir": 300,
+        "suffocating": false,
+        "fallDistance": 0,
+        "effects": [],
+        "lastAttacker": {
+          "uuid": "9db292b4-ab54-488c-9a73-a931f9854563",
+          "type": "minecraft:blaze",
+          "distance": 2.4281527996063232
+        }
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 113.8,
+      "type": "fight_target",
+      "args": {
+        "targetId": "9db292b4-ab54-488c-9a73-a931f9854563",
+        "pursue": false,
+        "shield": true,
+        "continueWithAttackers": false,
+        "fleeAtHealth": 6,
+        "timeoutMs": 2500
+      },
+      "result": {
+        "traceId": "bz-461",
+        "goalRevision": 1,
+        "actionId": "bz-461",
+        "commandId": "bz-461",
+        "actionType": "fight_target",
+        "state": "TIMED_OUT",
+        "reasonCode": "FIGHT_TIMED_OUT",
+        "message": "body idle; no retreat performed; health 13.3; onGround=true; footing below center: minecraft:nether_bricks at 83,72,91; minecraft:blaze is 1.0 above you, 3.7 horizontal; hits 0; pursue=false: no movement input; target must enter clear melee reach; approach: low ceiling minecraft:cobblestone at 83,75,91; headroom 2; ranged carried: minecraft:bow, arrows=51, chargedCrossbow=false, snowballs=16, rockets=0; heldRangedReady=false; hands(main/off)=minecraft:iron_sword/minecraft:shield; held deck awaiting blaze reach 2.1 s; remaining threats: minecraft:blaze 6b1d3880-e128-49e9-b537-a53974e57c79 at 3.9 blocks, risk 33, minecraft:blaze b9ad6157-c470-47fa-af03-bb3db91f6884 at 9.4 blocks, risk 28; melee cells: not checked; target airborne=false, verticalGap=0.0m, outOfVerticalReach=false; body: input idle, motion moving, onFire=false (0.0s), contact=none; nearest known water: none known; non-burning ground: (83.5,73,91.5) 0.2m (ground does not extinguish; routes unverified; hazards/attackers may remain)",
+        "elapsedMs": 2518,
+        "observedAtEpochMs": 1792910115766,
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "timing": {
+          "acceptedAtEpochMs": 1792910113248,
+          "startedAtEpochMs": 1792910113250,
+          "startedTick": 3041,
+          "endedTick": 3092
+        },
+        "replayProof": "JQyL3UK5Zr7zYa0MI5ERriLykw4R2zJWG6IXlIbiap0"
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 113.8,
+      "position": {
+        "x": 83.39461074051945,
+        "y": 73,
+        "z": 91.30000001192093
+      },
+      "inventoryRods": 3,
+      "player": {
+        "recentDamage": {
+          "cause": "mob_attack",
+          "direction": "front",
+          "secondsAgo": 2
+        },
+        "stand": {
+          "here": {
+            "pushSafe": false,
+            "roof": true,
+            "walls": 2
+          },
+          "searchedSteps": 16
+        },
+        "pose": "standing",
+        "underWater": false,
+        "swimming": false,
+        "gliding": false,
+        "sprinting": false,
+        "crouching": false,
+        "onClimbable": false,
+        "inLava": false,
+        "horizontalCollision": false,
+        "verticalCollision": true,
+        "passenger": false,
+        "groundAhead": {
+          "status": "unknown",
+          "at": 1.75,
+          "drop": 1,
+          "atLeast": true
+        },
+        "health": 13.333334922790527,
+        "maxHealth": 20,
+        "armor": 15,
+        "foodLevel": 17,
+        "saturation": 0,
+        "gameMode": "survival",
+        "onGround": true,
+        "inWater": false,
+        "onFire": false,
+        "air": 300,
+        "maxAir": 300,
+        "suffocating": false,
+        "fallDistance": 0,
+        "effects": [],
+        "lastAttacker": {
+          "uuid": "9db292b4-ab54-488c-9a73-a931f9854563",
+          "type": "minecraft:blaze",
+          "distance": 3.8675320148468018
+        }
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 115.1,
+      "type": "use_ranged",
+      "args": {
+        "targetId": "9db292b4-ab54-488c-9a73-a931f9854563",
+        "drawDurationMs": 1000,
+        "trackTarget": true,
+        "timeoutMs": 10000
+      },
+      "result": {
+        "traceId": "bz-463",
+        "goalRevision": 1,
+        "actionId": "bz-463",
+        "commandId": "bz-463",
+        "actionType": "use_ranged",
+        "state": "SUCCEEDED",
+        "reasonCode": "OWNED_PROJECTILE_CONFIRMED",
+        "message": "Arrow loosed (aim point 83.6,76.3,95.0: 0.1 blocks above the target's visible point for drop over 4 blocks); you lost sight of it; impact not confirmed",
+        "elapsedMs": 501,
+        "observedAtEpochMs": 1792910116991,
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "timing": {
+          "acceptedAtEpochMs": 1792910115889,
+          "startedAtEpochMs": 1792910115895,
+          "startedTick": 3094,
+          "endedTick": 3116
+        },
+        "replayProof": "LuEmJkpySMyWS8h6BT48qioJOAvQY-H1CmgPIHPaD8M"
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 115.1,
+      "position": {
+        "x": 83.30000001192093,
+        "y": 73,
+        "z": 91.69999998807907
+      },
+      "inventoryRods": 3,
+      "player": {
+        "harm": {
+          "source": "minecraft:on_fire",
+          "ongoing": true,
+          "hpLossPerSecond": 1.5,
+          "direction": "front_left",
+          "options": [
+            "leave_fire",
+            "fire_resistance"
+          ],
+          "waterEvaporates": true,
+          "exits": [
+            "front_right 0.8m up1 (83,74,92)",
+            "front_left 1.2m up1 (84,74,91)",
+            "front 1.4m up1 unseen (84,74,92)"
+          ]
+        },
+        "recentDamage": {
+          "cause": "fireball",
+          "direction": "front_left",
+          "secondsAgo": 0
+        },
+        "stand": {
+          "here": {
+            "pushSafe": false,
+            "roof": true,
+            "walls": 2
+          },
+          "searchedSteps": 16
+        },
+        "pose": "standing",
+        "underWater": false,
+        "swimming": false,
+        "gliding": false,
+        "sprinting": false,
+        "crouching": false,
+        "onClimbable": false,
+        "inLava": false,
+        "horizontalCollision": false,
+        "verticalCollision": true,
+        "passenger": false,
+        "fireTicks": 88,
+        "exits": [
+          "front_right 0.8m up1 (83,74,92)",
+          "front_left 1.2m up1 (84,74,91)",
+          "front 1.4m up1 unseen (84,74,92)"
+        ],
+        "hurtBy": "fireball by minecraft:blaze",
+        "groundAhead": {
+          "status": "blocked",
+          "at": 4
+        },
+        "health": 10.833334922790527,
+        "maxHealth": 20,
+        "armor": 15,
+        "foodLevel": 17,
+        "saturation": 0,
+        "gameMode": "survival",
+        "onGround": true,
+        "inWater": false,
+        "onFire": true,
+        "air": 300,
+        "maxAir": 300,
+        "suffocating": false,
+        "fallDistance": 0,
+        "effects": [],
+        "lastAttacker": {
+          "uuid": "6b1d3880-e128-49e9-b537-a53974e57c79",
+          "type": "minecraft:blaze",
+          "distance": 4.096973896026611
+        }
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 116,
+      "type": "use_ranged",
+      "args": {
+        "targetId": "9db292b4-ab54-488c-9a73-a931f9854563",
+        "drawDurationMs": 1000,
+        "trackTarget": true,
+        "timeoutMs": 10000
+      },
+      "result": {
+        "traceId": "bz-464",
+        "goalRevision": 1,
+        "actionId": "bz-464",
+        "commandId": "bz-464",
+        "actionType": "use_ranged",
+        "state": "FAILED",
+        "reasonCode": "RANGED_DRAW_INTERRUPTED",
+        "message": "Vanilla bow draw ended before release; using=false; active item=minecraft:air; no new owned arrow observed; choose the next action",
+        "elapsedMs": 424,
+        "observedAtEpochMs": 1792910117891,
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "timing": {
+          "acceptedAtEpochMs": 1792910117017,
+          "startedAtEpochMs": 1792910117019,
+          "startedTick": 3117,
+          "endedTick": 3134
+        },
+        "replayProof": "kMZMTvm69RLW-k-VB3X5s4F3dwdfI-b5uHHj8XqiO4s"
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 116,
+      "position": {
+        "x": 83.37000120798346,
+        "y": 73,
+        "z": 91.30000001192093
+      },
+      "inventoryRods": 3,
+      "player": {
+        "harm": {
+          "source": "minecraft:on_fire",
+          "ongoing": true,
+          "hpLossPerSecond": 2.5,
+          "direction": "front",
+          "options": [
+            "leave_fire",
+            "fire_resistance"
+          ],
+          "waterEvaporates": true,
+          "exits": [
+            "front 1.2m up1 (83,74,92)",
+            "front_left 1.6m up1 remembered 8s (84,74,92)"
+          ]
+        },
+        "recentDamage": {
+          "cause": "fireball",
+          "direction": "front",
+          "secondsAgo": 0
+        },
+        "stand": {
+          "here": {
+            "pushSafe": false,
+            "roof": true,
+            "walls": 2
+          },
+          "searchedSteps": 16
+        },
+        "pose": "standing",
+        "underWater": false,
+        "swimming": false,
+        "gliding": false,
+        "sprinting": false,
+        "crouching": false,
+        "onClimbable": false,
+        "inLava": false,
+        "horizontalCollision": false,
+        "verticalCollision": true,
+        "passenger": false,
+        "fireTicks": 89,
+        "exits": [
+          "front 1.2m up1 (83,74,92)",
+          "front_left 1.6m up1 remembered 8s (84,74,92)"
+        ],
+        "hurtBy": "fireball by minecraft:blaze",
+        "groundAhead": {
+          "status": "unknown",
+          "at": 1.75,
+          "drop": 1,
+          "atLeast": true
+        },
+        "health": 8.333334922790527,
+        "maxHealth": 20,
+        "armor": 15,
+        "foodLevel": 17,
+        "saturation": 0,
+        "gameMode": "survival",
+        "onGround": true,
+        "inWater": false,
+        "onFire": true,
+        "air": 300,
+        "maxAir": 300,
+        "suffocating": false,
+        "fallDistance": 0,
+        "effects": [],
+        "lastAttacker": {
+          "uuid": "9db292b4-ab54-488c-9a73-a931f9854563",
+          "type": "minecraft:blaze",
+          "distance": 4.280429363250732
+        }
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 117.7,
+      "type": "use_item",
+      "args": {
+        "durationMs": 1700,
+        "expectedItemId": "minecraft:cooked_beef"
+      },
+      "result": {
+        "traceId": "bz-466",
+        "goalRevision": 1,
+        "actionId": "bz-466",
+        "commandId": "bz-466",
+        "actionType": "use_item",
+        "state": "SUCCEEDED",
+        "reasonCode": "USE_INPUT_CONFIRMED",
+        "message": "Held use for 34 server ticks; accepted interactions=1, using state observed=true, input released=true; downstream effects are unconfirmed",
+        "elapsedMs": 1687,
+        "observedAtEpochMs": 1792910119666,
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "timing": {
+          "acceptedAtEpochMs": 1792910117979,
+          "startedAtEpochMs": 1792910117986,
+          "startedTick": 3136,
+          "endedTick": 3170
+        },
+        "replayProof": "Ky2U8iCtKWPkTzj3zAhyZlyt5aMlzmCctFw8x_aL9eY"
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 117.7,
+      "position": {
+        "x": 83.37000120798346,
+        "y": 73,
+        "z": 91.30000001192093
+      },
+      "inventoryRods": 3,
+      "player": {
+        "harm": {
+          "source": "minecraft:on_fire",
+          "ongoing": true,
+          "hpLossPerSecond": 1,
+          "options": [
+            "leave_fire",
+            "fire_resistance"
+          ],
+          "waterEvaporates": true,
+          "exits": [
+            "front 1.2m up1 (83,74,92)",
+            "front_left 1.6m up1 remembered 9s (84,74,92)"
+          ]
+        },
+        "recentDamage": {
+          "cause": "on_fire",
+          "secondsAgo": 0
+        },
+        "stand": {
+          "here": {
+            "pushSafe": false,
+            "roof": true,
+            "walls": 2
+          },
+          "searchedSteps": 16
+        },
+        "pose": "standing",
+        "underWater": false,
+        "swimming": false,
+        "gliding": false,
+        "sprinting": false,
+        "crouching": false,
+        "onClimbable": false,
+        "inLava": false,
+        "horizontalCollision": false,
+        "verticalCollision": true,
+        "passenger": false,
+        "fireTicks": 53,
+        "exits": [
+          "front 1.2m up1 (83,74,92)",
+          "front_left 1.6m up1 remembered 9s (84,74,92)"
+        ],
+        "hurtBy": "on_fire",
+        "groundAhead": {
+          "status": "unknown",
+          "at": 1.75,
+          "drop": 1,
+          "atLeast": true
+        },
+        "health": 6.333334922790527,
+        "maxHealth": 20,
+        "armor": 15,
+        "foodLevel": 20,
+        "saturation": 12.800000190734863,
+        "gameMode": "survival",
+        "onGround": true,
+        "inWater": false,
+        "onFire": true,
+        "air": 300,
+        "maxAir": 300,
+        "suffocating": false,
+        "fallDistance": 0,
+        "effects": [],
+        "lastAttacker": {
+          "uuid": "9db292b4-ab54-488c-9a73-a931f9854563",
+          "type": "minecraft:blaze",
+          "distance": 4.224112033843994
+        }
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 119.5,
+      "type": "use_item",
+      "args": {
+        "durationMs": 1700,
+        "expectedItemId": "minecraft:cooked_beef"
+      },
+      "result": {
+        "traceId": "bz-468",
+        "goalRevision": 1,
+        "actionId": "bz-468",
+        "commandId": "bz-468",
+        "actionType": "use_item",
+        "state": "FAILED",
+        "reasonCode": "USE_NOT_ACCEPTED",
+        "message": "Nothing consumed: hunger is full (food 20/20); minecraft:cooked_beef can be eaten only below 20",
+        "elapsedMs": 1670,
+        "observedAtEpochMs": 1792910121467,
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "timing": {
+          "acceptedAtEpochMs": 1792910119797,
+          "startedAtEpochMs": 1792910119802,
+          "startedTick": 3172,
+          "endedTick": 3206
+        },
+        "replayProof": "yB_m7fbBjW8vB9F3loUTeihSKeUVn6nteCcnyHWw7zc"
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 119.5,
+      "position": {
+        "x": 83.37000120798346,
+        "y": 73,
+        "z": 91.30000001192093
+      },
+      "inventoryRods": 3,
+      "player": {
+        "harm": {
+          "source": "minecraft:on_fire",
+          "ongoing": true,
+          "hpLossPerSecond": 0,
+          "options": [
+            "leave_fire",
+            "fire_resistance"
+          ],
+          "waterEvaporates": true,
+          "exits": [
+            "front 1.2m up1 (83,74,92)",
+            "front_left 1.6m up1 remembered 11s (84,74,92)"
+          ]
+        },
+        "recentDamage": {
+          "cause": "on_fire",
+          "secondsAgo": 0
+        },
+        "stand": {
+          "here": {
+            "pushSafe": false,
+            "roof": true,
+            "walls": 1
+          },
+          "searchedSteps": 16
+        },
+        "pose": "standing",
+        "underWater": false,
+        "swimming": false,
+        "gliding": false,
+        "sprinting": false,
+        "crouching": false,
+        "onClimbable": false,
+        "inLava": false,
+        "horizontalCollision": false,
+        "verticalCollision": true,
+        "passenger": false,
+        "fireTicks": 17,
+        "exits": [
+          "front 1.2m up1 (83,74,92)",
+          "front_left 1.6m up1 remembered 11s (84,74,92)"
+        ],
+        "hurtBy": "on_fire",
+        "groundAhead": {
+          "status": "unknown",
+          "at": 1.75,
+          "drop": 1,
+          "atLeast": true
+        },
+        "health": 8.333334922790527,
+        "maxHealth": 20,
+        "armor": 15,
+        "foodLevel": 20,
+        "saturation": 8.800000190734863,
+        "gameMode": "survival",
+        "onGround": true,
+        "inWater": false,
+        "onFire": true,
+        "air": 300,
+        "maxAir": 300,
+        "suffocating": false,
+        "fallDistance": 0,
+        "effects": [],
+        "lastAttacker": {
+          "uuid": "9db292b4-ab54-488c-9a73-a931f9854563",
+          "type": "minecraft:blaze",
+          "distance": 4.057061195373535
+        }
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 121.3,
+      "type": "use_item",
+      "args": {
+        "durationMs": 1700,
+        "expectedItemId": "minecraft:cooked_beef"
+      },
+      "result": {
+        "traceId": "bz-470",
+        "goalRevision": 1,
+        "actionId": "bz-470",
+        "commandId": "bz-470",
+        "actionType": "use_item",
+        "state": "FAILED",
+        "reasonCode": "USE_NOT_ACCEPTED",
+        "message": "Nothing consumed: hunger is full (food 20/20); minecraft:cooked_beef can be eaten only below 20",
+        "elapsedMs": 1666,
+        "observedAtEpochMs": 1792910123266,
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "timing": {
+          "acceptedAtEpochMs": 1792910121600,
+          "startedAtEpochMs": 1792910121602,
+          "startedTick": 3208,
+          "endedTick": 3242
+        },
+        "replayProof": "V1A4PIQ9u83lMcFCOR0-ldMZKxvb5tzDFr3Is7dVzJ4"
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 121.3,
+      "position": {
+        "x": 83.37000120798346,
+        "y": 73,
+        "z": 91.30000001192093
+      },
+      "inventoryRods": 3,
+      "player": {
+        "harm": {
+          "source": "minecraft:on_fire",
+          "hpLossPerSecond": 0,
+          "options": [
+            "leave_fire",
+            "fire_resistance"
+          ],
+          "waterEvaporates": true
+        },
+        "recentDamage": {
+          "cause": "on_fire",
+          "secondsAgo": 1
+        },
+        "stand": {
+          "here": {
+            "pushSafe": false,
+            "roof": true,
+            "walls": 1
+          },
+          "searchedSteps": 16
+        },
+        "pose": "standing",
+        "underWater": false,
+        "swimming": false,
+        "gliding": false,
+        "sprinting": false,
+        "crouching": false,
+        "onClimbable": false,
+        "inLava": false,
+        "horizontalCollision": false,
+        "verticalCollision": true,
+        "passenger": false,
+        "hurtBy": "on_fire",
+        "groundAhead": {
+          "status": "unknown",
+          "at": 1.75,
+          "drop": 1,
+          "atLeast": true
+        },
+        "health": 10.933334350585938,
+        "maxHealth": 20,
+        "armor": 15,
+        "foodLevel": 20,
+        "saturation": 2.8000001907348633,
+        "gameMode": "survival",
+        "onGround": true,
+        "inWater": false,
+        "onFire": false,
+        "air": 300,
+        "maxAir": 300,
+        "suffocating": false,
+        "fallDistance": 0,
+        "effects": []
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 122.6,
+      "type": "use_ranged",
+      "args": {
+        "targetId": "9db292b4-ab54-488c-9a73-a931f9854563",
+        "drawDurationMs": 1000,
+        "trackTarget": true,
+        "timeoutMs": 10000
+      },
+      "result": {
+        "traceId": "bz-472",
+        "goalRevision": 1,
+        "actionId": "bz-472",
+        "commandId": "bz-472",
+        "actionType": "use_ranged",
+        "state": "SUCCEEDED",
+        "reasonCode": "OWNED_PROJECTILE_CONFIRMED",
+        "message": "Arrow loosed (aim point 83.6,75.0,94.9: 0.1 blocks above the target's visible point for drop over 4 blocks); it struck the target",
+        "elapsedMs": 1127,
+        "observedAtEpochMs": 1792910124516,
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "timing": {
+          "acceptedAtEpochMs": 1792910123389,
+          "startedAtEpochMs": 1792910123394,
+          "startedTick": 3244,
+          "endedTick": 3267
+        },
+        "replayProof": "dwfOgcNJLSDZswSJ3F6p3-y8s3T7Wx5Jql6CWOPLeiw"
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 122.6,
+      "position": {
+        "x": 83.37000120798346,
+        "y": 73,
+        "z": 91.30000001192093
+      },
+      "inventoryRods": 3,
+      "player": {
+        "recentDamage": {
+          "cause": "on_fire",
+          "secondsAgo": 3
+        },
+        "stand": {
+          "here": {
+            "pushSafe": false,
+            "roof": true,
+            "walls": 1
+          },
+          "searchedSteps": 16
+        },
+        "pose": "standing",
+        "underWater": false,
+        "swimming": false,
+        "gliding": false,
+        "sprinting": false,
+        "crouching": false,
+        "onClimbable": false,
+        "inLava": false,
+        "horizontalCollision": false,
+        "verticalCollision": true,
+        "passenger": false,
+        "groundAhead": {
+          "status": "unknown",
+          "at": 1.75,
+          "drop": 1,
+          "atLeast": true
+        },
+        "health": 12.166668891906738,
+        "maxHealth": 20,
+        "armor": 15,
+        "foodLevel": 20,
+        "saturation": 0.8000001907348633,
+        "gameMode": "survival",
+        "onGround": true,
+        "inWater": false,
+        "onFire": false,
+        "air": 300,
+        "maxAir": 300,
+        "suffocating": false,
+        "fallDistance": 0,
+        "effects": []
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 123.6,
+      "type": "use_ranged",
+      "args": {
+        "targetId": "9db292b4-ab54-488c-9a73-a931f9854563",
+        "drawDurationMs": 1000,
+        "trackTarget": true,
+        "timeoutMs": 10000
+      },
+      "result": {
+        "traceId": "bz-473",
+        "goalRevision": 1,
+        "actionId": "bz-473",
+        "commandId": "bz-473",
+        "actionType": "use_ranged",
+        "state": "SUCCEEDED",
+        "reasonCode": "OWNED_PROJECTILE_CONFIRMED",
+        "message": "Arrow loosed (aim point 83.7,75.0,95.1: 0.1 blocks above the target's visible point for drop over 3 blocks); missed: stuck in minecraft:nether_brick_fence at 87,74,94; closest pass 3.4 blocks from the target's box, 0.2 below and 3.7 left of its centre; arrows scatter up to 0.1 blocks each way at 3 blocks",
+        "elapsedMs": 412,
+        "observedAtEpochMs": 1792910125579,
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "timing": {
+          "acceptedAtEpochMs": 1792910124567,
+          "startedAtEpochMs": 1792910124569,
+          "startedTick": 3268,
+          "endedTick": 3288
+        },
+        "replayProof": "RqA1wRLJXHaNGhO2Ah67mhUu3ckpa5HjdIzAr-0mVvQ"
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 123.7,
+      "position": {
+        "x": 83.30000001192093,
+        "y": 73,
+        "z": 91.69999998807907
+      },
+      "inventoryRods": 3,
+      "player": {
+        "harm": {
+          "source": "minecraft:on_fire",
+          "ongoing": true,
+          "hpLossPerSecond": 1,
+          "direction": "front_left",
+          "options": [
+            "leave_fire",
+            "fire_resistance"
+          ],
+          "waterEvaporates": true,
+          "exits": [
+            "front_right 0.8m up1 (83,74,92)",
+            "front 1.4m up1 unseen (84,74,92)"
+          ]
+        },
+        "recentDamage": {
+          "cause": "fireball",
+          "direction": "front_left",
+          "secondsAgo": 0
+        },
+        "stand": {
+          "here": {
+            "pushSafe": false,
+            "roof": true,
+            "walls": 2
+          },
+          "searchedSteps": 16
+        },
+        "pose": "standing",
+        "underWater": false,
+        "swimming": false,
+        "gliding": false,
+        "sprinting": false,
+        "crouching": false,
+        "onClimbable": false,
+        "inLava": false,
+        "horizontalCollision": false,
+        "verticalCollision": true,
+        "passenger": false,
+        "fireTicks": 88,
+        "exits": [
+          "front_right 0.8m up1 (83,74,92)",
+          "front 1.4m up1 unseen (84,74,92)"
+        ],
+        "hurtBy": "fireball by minecraft:blaze",
+        "groundAhead": {
+          "status": "blocked",
+          "at": 4
+        },
+        "health": 9.933335304260254,
+        "maxHealth": 20,
+        "armor": 15,
+        "foodLevel": 20,
+        "saturation": 0.8000001907348633,
+        "gameMode": "survival",
+        "onGround": true,
+        "inWater": false,
+        "onFire": true,
+        "air": 300,
+        "maxAir": 300,
+        "suffocating": false,
+        "fallDistance": 0,
+        "effects": [],
+        "lastAttacker": {
+          "uuid": "6b1d3880-e128-49e9-b537-a53974e57c79",
+          "type": "minecraft:blaze",
+          "distance": 4.096973896026611
+        }
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 125.5,
+      "type": "use_item",
+      "args": {
+        "durationMs": 1700,
+        "expectedItemId": "minecraft:cooked_beef"
+      },
+      "result": {
+        "traceId": "bz-475",
+        "goalRevision": 1,
+        "actionId": "bz-475",
+        "commandId": "bz-475",
+        "actionType": "use_item",
+        "state": "FAILED",
+        "reasonCode": "USE_NOT_ACCEPTED",
+        "message": "Nothing consumed: hunger is full (food 20/20); minecraft:cooked_beef can be eaten only below 20",
+        "elapsedMs": 1675,
+        "observedAtEpochMs": 1792910127366,
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "timing": {
+          "acceptedAtEpochMs": 1792910125691,
+          "startedAtEpochMs": 1792910125692,
+          "startedTick": 3290,
+          "endedTick": 3324
+        },
+        "replayProof": "hm8bzNJv5-8asS2EUsuIfK6f5YXLzJncTX5LVt42qZA"
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 125.5,
+      "position": {
+        "x": 83.30000001192093,
+        "y": 73,
+        "z": 91.69999998807907
+      },
+      "inventoryRods": 3,
+      "player": {
+        "harm": {
+          "source": "minecraft:on_fire",
+          "ongoing": true,
+          "hpLossPerSecond": 0.5,
+          "options": [
+            "leave_fire",
+            "fire_resistance"
+          ],
+          "waterEvaporates": true,
+          "exits": [
+            "front_right 0.8m up1 (83,74,92)",
+            "front 1.4m up1 unseen (84,74,92)"
+          ]
+        },
+        "recentDamage": {
+          "cause": "on_fire",
+          "secondsAgo": 0
+        },
+        "stand": {
+          "here": {
+            "pushSafe": false,
+            "roof": true,
+            "walls": 2
+          },
+          "searchedSteps": 16
+        },
+        "pose": "standing",
+        "underWater": false,
+        "swimming": false,
+        "gliding": false,
+        "sprinting": false,
+        "crouching": false,
+        "onClimbable": false,
+        "inLava": false,
+        "horizontalCollision": false,
+        "verticalCollision": true,
+        "passenger": false,
+        "fireTicks": 52,
+        "exits": [
+          "front_right 0.8m up1 (83,74,92)",
+          "front 1.4m up1 unseen (84,74,92)"
+        ],
+        "hurtBy": "on_fire",
+        "groundAhead": {
+          "status": "unknown",
+          "at": 2,
+          "drop": 1,
+          "atLeast": true
+        },
+        "health": 8.333334922790527,
+        "maxHealth": 20,
+        "armor": 15,
+        "foodLevel": 20,
+        "saturation": 0,
+        "gameMode": "survival",
+        "onGround": true,
+        "inWater": false,
+        "onFire": true,
+        "air": 300,
+        "maxAir": 300,
+        "suffocating": false,
+        "fallDistance": 0,
+        "effects": [],
+        "lastAttacker": {
+          "uuid": "6b1d3880-e128-49e9-b537-a53974e57c79",
+          "type": "minecraft:blaze",
+          "distance": 5.064235687255859
+        }
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 127.2,
+      "type": "use_item",
+      "args": {
+        "durationMs": 1700,
+        "expectedItemId": "minecraft:cooked_beef"
+      },
+      "result": {
+        "traceId": "bz-477",
+        "goalRevision": 1,
+        "actionId": "bz-477",
+        "commandId": "bz-477",
+        "actionType": "use_item",
+        "state": "FAILED",
+        "reasonCode": "USE_NOT_ACCEPTED",
+        "message": "Nothing consumed: hunger is full (food 20/20); minecraft:cooked_beef can be eaten only below 20",
+        "elapsedMs": 1661,
+        "observedAtEpochMs": 1792910129166,
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "timing": {
+          "acceptedAtEpochMs": 1792910127505,
+          "startedAtEpochMs": 1792910127510,
+          "startedTick": 3326,
+          "endedTick": 3360
+        },
+        "replayProof": "N50VLYIgfrMwPxGGMkfGjRJUN6A3yOtTEnTRqqzkyDw"
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 127.2,
+      "position": {
+        "x": 83.30000001192093,
+        "y": 73,
+        "z": 91.69999998807907
+      },
+      "inventoryRods": 3,
+      "player": {
+        "harm": {
+          "source": "minecraft:on_fire",
+          "ongoing": true,
+          "hpLossPerSecond": 1,
+          "options": [
+            "leave_fire",
+            "fire_resistance"
+          ],
+          "waterEvaporates": true,
+          "exits": [
+            "front_right 0.8m up1 (83,74,92)",
+            "front 1.4m up1 unseen (84,74,92)"
+          ]
+        },
+        "recentDamage": {
+          "cause": "on_fire",
+          "secondsAgo": 0
+        },
+        "stand": {
+          "here": {
+            "pushSafe": false,
+            "roof": true,
+            "walls": 2
+          },
+          "searchedSteps": 16
+        },
+        "pose": "standing",
+        "underWater": false,
+        "swimming": false,
+        "gliding": false,
+        "sprinting": false,
+        "crouching": false,
+        "onClimbable": false,
+        "inLava": false,
+        "horizontalCollision": false,
+        "verticalCollision": true,
+        "passenger": false,
+        "fireTicks": 16,
+        "exits": [
+          "front_right 0.8m up1 (83,74,92)",
+          "front 1.4m up1 unseen (84,74,92)"
+        ],
+        "hurtBy": "on_fire",
+        "groundAhead": {
+          "status": "unknown",
+          "at": 2,
+          "drop": 1,
+          "atLeast": true
+        },
+        "health": 6.333334922790527,
+        "maxHealth": 20,
+        "armor": 15,
+        "foodLevel": 20,
+        "saturation": 0,
+        "gameMode": "survival",
+        "onGround": true,
+        "inWater": false,
+        "onFire": true,
+        "air": 300,
+        "maxAir": 300,
+        "suffocating": false,
+        "fallDistance": 0,
+        "effects": [],
+        "lastAttacker": {
+          "uuid": "6b1d3880-e128-49e9-b537-a53974e57c79",
+          "type": "minecraft:blaze",
+          "distance": 4.997482776641846
+        }
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 130.2,
+      "type": "use_item",
+      "args": {
+        "durationMs": 1700,
+        "expectedItemId": "minecraft:cooked_beef"
+      },
+      "result": {
+        "traceId": "bz-479",
+        "goalRevision": 1,
+        "actionId": "bz-479",
+        "commandId": "bz-479",
+        "actionType": "use_item",
+        "state": "SUCCEEDED",
+        "reasonCode": "USE_INPUT_CONFIRMED",
+        "message": "Held use for 34 server ticks; accepted interactions=2, using state observed=true, input released=true; downstream effects are unconfirmed",
+        "elapsedMs": 1687,
+        "observedAtEpochMs": 1792910132116,
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "timing": {
+          "acceptedAtEpochMs": 1792910129293,
+          "startedAtEpochMs": 1792910129295,
+          "startedTick": 3362,
+          "endedTick": 3419
+        },
+        "replayProof": "FiU8iHr1AAwNE05gmRiSMEJeUXk75RWctwdSNE_PyD0"
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 130.2,
+      "position": {
+        "x": 83.30000001192093,
+        "y": 73,
+        "z": 91.69999998807907
+      },
+      "inventoryRods": 3,
+      "player": {
+        "harm": {
+          "source": "minecraft:in_fire",
+          "ongoing": true,
+          "hpLossPerSecond": 0.5,
+          "options": [
+            "leave_fire",
+            "fire_resistance"
+          ],
+          "waterEvaporates": true,
+          "exits": [
+            "left 1.2m up1 (84,74,91)",
+            "front_left 1.4m up1 unseen (84,74,92)"
+          ]
+        },
+        "recentDamage": {
+          "cause": "in_fire",
+          "secondsAgo": 0
+        },
+        "stand": {
+          "here": {
+            "pushSafe": false,
+            "roof": true,
+            "walls": 2
+          },
+          "searchedSteps": 16
+        },
+        "pose": "standing",
+        "underWater": false,
+        "swimming": false,
+        "gliding": false,
+        "sprinting": false,
+        "crouching": false,
+        "onClimbable": false,
+        "inLava": false,
+        "horizontalCollision": false,
+        "verticalCollision": true,
+        "passenger": false,
+        "hazard": "fire",
+        "fireTicks": 169,
+        "exits": [
+          "left 1.2m up1 (84,74,91)",
+          "front_left 1.4m up1 unseen (84,74,92)"
+        ],
+        "hurtBy": "in_fire",
+        "groundAhead": {
+          "status": "unknown",
+          "at": 1.5,
+          "drop": 1,
+          "atLeast": true
+        },
+        "health": 5.073334693908691,
+        "maxHealth": 20,
+        "armor": 15,
+        "foodLevel": 19,
+        "saturation": 0,
+        "gameMode": "survival",
+        "onGround": true,
+        "inWater": false,
+        "onFire": true,
+        "air": 300,
+        "maxAir": 300,
+        "suffocating": false,
+        "fallDistance": 0,
+        "effects": []
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 132,
+      "type": "use_item",
+      "args": {
+        "durationMs": 1700,
+        "expectedItemId": "minecraft:cooked_beef"
+      },
+      "result": {
+        "traceId": "bz-481",
+        "goalRevision": 1,
+        "actionId": "bz-481",
+        "commandId": "bz-481",
+        "actionType": "use_item",
+        "state": "SUCCEEDED",
+        "reasonCode": "USE_INPUT_CONFIRMED",
+        "message": "Held use for 34 server ticks; accepted interactions=1, using state observed=true, input released=true; downstream effects are unconfirmed",
+        "elapsedMs": 1639,
+        "observedAtEpochMs": 1792910133916,
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "timing": {
+          "acceptedAtEpochMs": 1792910132277,
+          "startedAtEpochMs": 1792910132279,
+          "startedTick": 3421,
+          "endedTick": 3455
+        },
+        "replayProof": "VMTMWi3Yge194S_H-1yf6-BYHGWuKxfL3lDLxgH_yys"
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 132,
+      "position": {
+        "x": 83.30000001192093,
+        "y": 73,
+        "z": 91.69999998807907
+      },
+      "inventoryRods": 3,
+      "player": {
+        "harm": {
+          "source": "minecraft:in_fire",
+          "ongoing": true,
+          "hpLossPerSecond": 0.5,
+          "options": [
+            "leave_fire",
+            "fire_resistance"
+          ],
+          "waterEvaporates": true,
+          "exits": [
+            "left 1.2m up1 (84,74,91)",
+            "front_left 1.4m up1 unseen (84,74,92)"
+          ]
+        },
+        "recentDamage": {
+          "cause": "in_fire",
+          "secondsAgo": 0
+        },
+        "stand": {
+          "here": {
+            "pushSafe": false,
+            "roof": true,
+            "walls": 2
+          },
+          "searchedSteps": 16
+        },
+        "pose": "standing",
+        "underWater": false,
+        "swimming": false,
+        "gliding": false,
+        "sprinting": false,
+        "crouching": false,
+        "onClimbable": false,
+        "inLava": false,
+        "horizontalCollision": false,
+        "verticalCollision": true,
+        "passenger": false,
+        "hazard": "fire",
+        "fireTicks": 189,
+        "exits": [
+          "left 1.2m up1 (84,74,91)",
+          "front_left 1.4m up1 unseen (84,74,92)"
+        ],
+        "hurtBy": "in_fire",
+        "groundAhead": {
+          "status": "unknown",
+          "at": 1.5,
+          "drop": 1,
+          "atLeast": true
+        },
+        "health": 4.39333438873291,
+        "maxHealth": 20,
+        "armor": 15,
+        "foodLevel": 20,
+        "saturation": 10.800000190734863,
+        "gameMode": "survival",
+        "onGround": true,
+        "inWater": false,
+        "onFire": true,
+        "air": 300,
+        "maxAir": 300,
+        "suffocating": false,
+        "fallDistance": 0,
+        "effects": []
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 134.7,
+      "type": "use_item",
+      "args": {
+        "durationMs": 1700,
+        "expectedItemId": "minecraft:cooked_beef"
+      },
+      "result": {
+        "traceId": "bz-483",
+        "goalRevision": 1,
+        "actionId": "bz-483",
+        "commandId": "bz-483",
+        "actionType": "use_item",
+        "state": "SUCCEEDED",
+        "reasonCode": "USE_INPUT_CONFIRMED",
+        "message": "Held use for 34 server ticks; accepted interactions=1, using state observed=false, input released=true; downstream effects are unconfirmed. Nothing consumed: hunger is full (food 20/20); minecraft:cooked_beef can be eaten only below 20",
+        "elapsedMs": 1669,
+        "observedAtEpochMs": 1792910136616,
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "timing": {
+          "acceptedAtEpochMs": 1792910134047,
+          "startedAtEpochMs": 1792910134048,
+          "startedTick": 3457,
+          "endedTick": 3509
+        },
+        "replayProof": "hrm4ll1mbrQDtlZE8bGL8dsy27w5uNqPSFMmV4q0idk"
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 134.7,
+      "position": {
+        "x": 83.30000001192093,
+        "y": 73,
+        "z": 91.69999998807907
+      },
+      "inventoryRods": 3,
+      "player": {
+        "harm": {
+          "source": "minecraft:in_fire",
+          "ongoing": true,
+          "hpLossPerSecond": 0,
+          "options": [
+            "leave_fire",
+            "fire_resistance"
+          ],
+          "waterEvaporates": true,
+          "exits": [
+            "front 1.2m up1 (84,74,91)",
+            "front_right 1.4m up1 unseen (84,74,92)"
+          ]
+        },
+        "recentDamage": {
+          "cause": "in_fire",
+          "secondsAgo": 0
+        },
+        "stand": {
+          "here": {
+            "pushSafe": false,
+            "roof": true,
+            "walls": 1
+          },
+          "searchedSteps": 16
+        },
+        "pose": "standing",
+        "underWater": false,
+        "swimming": false,
+        "gliding": false,
+        "sprinting": false,
+        "crouching": false,
+        "onClimbable": false,
+        "inLava": false,
+        "horizontalCollision": false,
+        "verticalCollision": true,
+        "passenger": false,
+        "hazard": "fire",
+        "fireTicks": 213,
+        "exits": [
+          "front 1.2m up1 (84,74,91)",
+          "front_right 1.4m up1 unseen (84,74,92)"
+        ],
+        "hurtBy": "in_fire",
+        "groundAhead": {
+          "status": "unknown",
+          "at": 1.5,
+          "drop": 1,
+          "atLeast": true
+        },
+        "health": 5.173334121704102,
+        "maxHealth": 20,
+        "armor": 15,
+        "foodLevel": 20,
+        "saturation": 3.8000001907348633,
+        "gameMode": "survival",
+        "onGround": true,
+        "inWater": false,
+        "onFire": true,
+        "air": 300,
+        "maxAir": 300,
+        "suffocating": false,
+        "fallDistance": 0,
+        "effects": [],
+        "lastAttacker": {
+          "uuid": "6b1d3880-e128-49e9-b537-a53974e57c79",
+          "type": "minecraft:blaze",
+          "distance": 3.9629151821136475
+        }
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 136.5,
+      "type": "use_item",
+      "args": {
+        "durationMs": 1700,
+        "expectedItemId": "minecraft:cooked_beef"
+      },
+      "result": {
+        "traceId": "bz-485",
+        "goalRevision": 1,
+        "actionId": "bz-485",
+        "commandId": "bz-485",
+        "actionType": "use_item",
+        "state": "FAILED",
+        "reasonCode": "USE_NOT_ACCEPTED",
+        "message": "Nothing consumed: hunger is full (food 20/20); minecraft:cooked_beef can be eaten only below 20",
+        "elapsedMs": 1652,
+        "observedAtEpochMs": 1792910138416,
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "timing": {
+          "acceptedAtEpochMs": 1792910136764,
+          "startedAtEpochMs": 1792910136770,
+          "startedTick": 3511,
+          "endedTick": 3545
+        },
+        "replayProof": "quK6tRJPT-TiU85UJoj_1rxjvK7HISxHF9km_sNfR_s"
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 136.5,
+      "position": {
+        "x": 83.30000001192093,
+        "y": 73,
+        "z": 91.69999998807907
+      },
+      "inventoryRods": 3,
+      "player": {
+        "harm": {
+          "source": "minecraft:in_fire",
+          "ongoing": true,
+          "hpLossPerSecond": 0.5,
+          "options": [
+            "leave_fire",
+            "fire_resistance"
+          ],
+          "waterEvaporates": true,
+          "exits": [
+            "front 1.2m up1 (84,74,91)",
+            "front_right 1.4m up1 unseen (84,74,92)"
+          ]
+        },
+        "recentDamage": {
+          "cause": "in_fire",
+          "secondsAgo": 0
+        },
+        "stand": {
+          "here": {
+            "pushSafe": false,
+            "roof": true,
+            "walls": 1
+          },
+          "searchedSteps": 16
+        },
+        "pose": "standing",
+        "underWater": false,
+        "swimming": false,
+        "gliding": false,
+        "sprinting": false,
+        "crouching": false,
+        "onClimbable": false,
+        "inLava": false,
+        "horizontalCollision": false,
+        "verticalCollision": true,
+        "passenger": false,
+        "hazard": "fire",
+        "fireTicks": 233,
+        "exits": [
+          "front 1.2m up1 (84,74,91)",
+          "front_right 1.4m up1 unseen (84,74,92)"
+        ],
+        "hurtBy": "in_fire",
+        "groundAhead": {
+          "status": "unknown",
+          "at": 1.5,
+          "drop": 1,
+          "atLeast": true
+        },
+        "health": 4.6133341789245605,
+        "maxHealth": 20,
+        "armor": 15,
+        "foodLevel": 20,
+        "saturation": 0.8000001907348633,
+        "gameMode": "survival",
+        "onGround": true,
+        "inWater": false,
+        "onFire": true,
+        "air": 300,
+        "maxAir": 300,
+        "suffocating": false,
+        "fallDistance": 0,
+        "effects": [],
+        "lastAttacker": {
+          "uuid": "6b1d3880-e128-49e9-b537-a53974e57c79",
+          "type": "minecraft:blaze",
+          "distance": 3.9629151821136475
+        }
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 139,
+      "type": "use_item",
+      "args": {
+        "durationMs": 1700,
+        "expectedItemId": "minecraft:cooked_beef"
+      },
+      "result": {
+        "traceId": "bz-487",
+        "goalRevision": 1,
+        "actionId": "bz-487",
+        "commandId": "bz-487",
+        "actionType": "use_item",
+        "state": "SUCCEEDED",
+        "reasonCode": "USE_INPUT_CONFIRMED",
+        "message": "Held use for 34 server ticks; accepted interactions=1, using state observed=false, input released=true; downstream effects are unconfirmed. Nothing consumed: hunger is full (food 20/20); minecraft:cooked_beef can be eaten only below 20",
+        "elapsedMs": 1701,
+        "observedAtEpochMs": 1792910140897,
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "timing": {
+          "acceptedAtEpochMs": 1792910138546,
+          "startedAtEpochMs": 1792910138547,
+          "startedTick": 3547,
+          "endedTick": 3594
+        },
+        "replayProof": "GjxQ6308HOTwCoUfCWHqJMh4rXmh4MsHmTiJxu9RHhY"
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 139,
+      "position": {
+        "x": 83.30000001192093,
+        "y": 73,
+        "z": 91.69999998807907
+      },
+      "inventoryRods": 3,
+      "player": {
+        "harm": {
+          "source": "minecraft:in_fire",
+          "ongoing": true,
+          "hpLossPerSecond": 1.5,
+          "options": [
+            "leave_fire",
+            "fire_resistance"
+          ],
+          "waterEvaporates": true,
+          "exits": [
+            "left 1.2m up1 remembered 2s (84,74,91)",
+            "front_left 1.4m up1 unseen (84,74,92)"
+          ]
+        },
+        "recentDamage": {
+          "cause": "in_fire",
+          "secondsAgo": 0
+        },
+        "stand": {
+          "here": {
+            "pushSafe": false,
+            "roof": true,
+            "walls": 1
+          },
+          "searchedSteps": 16
+        },
+        "pose": "standing",
+        "underWater": false,
+        "swimming": false,
+        "gliding": false,
+        "sprinting": false,
+        "crouching": false,
+        "onClimbable": false,
+        "inLava": false,
+        "horizontalCollision": false,
+        "verticalCollision": true,
+        "passenger": false,
+        "hazard": "fire",
+        "fireTicks": 255,
+        "exits": [
+          "left 1.2m up1 remembered 2s (84,74,91)",
+          "front_left 1.4m up1 unseen (84,74,92)"
+        ],
+        "hurtBy": "in_fire",
+        "groundAhead": {
+          "status": "unknown",
+          "at": 1.5,
+          "drop": 1,
+          "atLeast": true
+        },
+        "health": 1.1266672611236572,
+        "maxHealth": 20,
+        "armor": 15,
+        "foodLevel": 20,
+        "saturation": 0,
+        "gameMode": "survival",
+        "onGround": true,
+        "inWater": false,
+        "onFire": true,
+        "air": 300,
+        "maxAir": 300,
+        "suffocating": false,
+        "fallDistance": 0,
+        "effects": [],
+        "lastAttacker": {
+          "uuid": "9db292b4-ab54-488c-9a73-a931f9854563",
+          "type": "minecraft:blaze",
+          "distance": 3.6351375579833984
+        }
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 140.4,
+      "type": "use_item",
+      "args": {
+        "durationMs": 1700,
+        "expectedItemId": "minecraft:cooked_beef"
+      },
+      "result": {
+        "traceId": "bz-489",
+        "goalRevision": 1,
+        "actionId": "bz-489",
+        "commandId": "bz-489",
+        "actionType": "use_item",
+        "state": "CANCELLED",
+        "reasonCode": "ACTION_CANCELLED",
+        "message": "Lifecycle changed to DEAD",
+        "elapsedMs": 1301,
+        "observedAtEpochMs": 1792910142318,
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "timing": {
+          "acceptedAtEpochMs": 1792910141017,
+          "startedAtEpochMs": 1792910141018,
+          "startedTick": 3597,
+          "endedTick": 3623
+        },
+        "replayProof": "g-ouLS_JQU1dZCtmMsiHTUhYMdobqsGy_BljSW6Hu8M"
+      }
+    }
+  ]
+}

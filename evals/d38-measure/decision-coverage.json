@@ -1,0 +1,12 @@
+{
+  "source": "current branch committed training corpus at base a68669f5",
+  "cases": 275,
+  "withoutContinuation": 261,
+  "withScriptedContinuation": 14,
+  "minecraftExecution": false,
+  "historicalAudit": {
+    "cases": 270,
+    "withoutContinuation": 256
+  },
+  "note": "Current corpus counts differ from the dated audit; continuations are scripted replies, not live execution."
+}

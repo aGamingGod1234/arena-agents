@@ -1,0 +1,202 @@
+{
+  "milestone": "stronghold",
+  "sampleIndex": null,
+  "minute": null,
+  "seed": "20261009",
+  "source": "ladder L-G1 setup (Inside stronghold, 12 eyes, iron kit, bow, 64 arrows, 2 pearls)",
+  "priorAdvancements": [
+    "story/iron_tools",
+    "story/obtain_armor",
+    "story/enter_the_nether",
+    "nether/find_fortress",
+    "nether/obtain_blaze_rod",
+    "story/follow_ender_eye"
+  ],
+  "deathsBefore": 0,
+  "setup": {
+    "dimension": "minecraft:overworld",
+    "position": [
+      260.5,
+      -12,
+      2549.5
+    ],
+    "generality": true,
+    "freezeUntilGoalStart": true,
+    "time": 1000,
+    "weather": "clear",
+    "commands": [
+      "execute in minecraft:overworld run fill 257 -13 2545 265 -9 2551 minecraft:cobblestone",
+      "execute in minecraft:overworld run fill 258 -12 2546 264 -10 2550 minecraft:air",
+      "execute in minecraft:overworld run setblock 257 -12 2548 minecraft:oak_door[facing=west,half=lower]",
+      "execute in minecraft:overworld run setblock 257 -11 2548 minecraft:oak_door[facing=west,half=upper]",
+      "execute in minecraft:overworld run setblock 260 -12 2548 minecraft:red_bed[facing=east,part=foot]",
+      "execute in minecraft:overworld run setblock 261 -12 2548 minecraft:red_bed[facing=east,part=head]",
+      "execute in minecraft:overworld run setblock 259 -12 2549 minecraft:chest[facing=north]",
+      "execute in minecraft:overworld run setblock 262 -12 2547 minecraft:crafting_table",
+      "execute in minecraft:overworld run setblock 259 -12 2547 minecraft:torch",
+      "execute in minecraft:overworld run setblock 263 -12 2547 minecraft:torch",
+      "execute in minecraft:overworld run item replace block 259 -12 2549 container.0 with minecraft:stone_pickaxe 1",
+      "execute in minecraft:overworld run item replace block 259 -12 2549 container.1 with minecraft:stone_axe 1",
+      "execute in minecraft:overworld run item replace block 259 -12 2549 container.2 with minecraft:cooked_beef 16",
+      "execute in minecraft:overworld run item replace block 259 -12 2549 container.3 with minecraft:cobblestone 64",
+      "execute in minecraft:overworld run item replace block 259 -12 2549 container.4 with minecraft:oak_log 8",
+      "execute in minecraft:overworld run item replace block 259 -12 2549 container.5 with minecraft:shield 1",
+      "execute in minecraft:overworld run fill 263 -12 2548 265 69 2550 minecraft:cobblestone",
+      "execute in minecraft:overworld run fill 264 -12 2549 264 70 2549 minecraft:air",
+      "execute in minecraft:overworld run fill 264 -12 2549 264 69 2549 minecraft:ladder[facing=west]",
+      "execute in minecraft:overworld run fill 262 -12 2549 263 -11 2549 minecraft:air"
+    ],
+    "inventory": [
+      {
+        "item": "minecraft:iron_pickaxe",
+        "count": 1
+      },
+      {
+        "item": "minecraft:iron_sword",
+        "count": 1
+      },
+      {
+        "item": "minecraft:shield",
+        "count": 1
+      },
+      {
+        "item": "minecraft:water_bucket",
+        "count": 1
+      },
+      {
+        "item": "minecraft:flint_and_steel",
+        "count": 1
+      },
+      {
+        "item": "minecraft:cooked_beef",
+        "count": 32
+      },
+      {
+        "item": "minecraft:cobblestone",
+        "count": 64
+      },
+      {
+        "item": "minecraft:cobblestone",
+        "count": 64
+      },
+      {
+        "item": "minecraft:oak_planks",
+        "count": 32
+      },
+      {
+        "item": "minecraft:oak_log",
+        "count": 8
+      },
+      {
+        "item": "minecraft:crafting_table",
+        "count": 1
+      },
+      {
+        "item": "minecraft:stone_axe",
+        "count": 1
+      },
+      {
+        "item": "minecraft:torch",
+        "count": 32
+      },
+      {
+        "item": "minecraft:ender_eye",
+        "count": 12
+      }
+    ],
+    "armour": {
+      "head": "minecraft:iron_helmet",
+      "chest": "minecraft:iron_chestplate",
+      "legs": "minecraft:iron_leggings",
+      "feet": "minecraft:iron_boots"
+    },
+    "effects": [],
+    "mobs": [],
+    "loadChunks": [
+      {
+        "dimension": "minecraft:overworld",
+        "position": [
+          260,
+          -12,
+          2548
+        ]
+      },
+      {
+        "dimension": "minecraft:overworld",
+        "position": [
+          264,
+          70,
+          2549
+        ]
+      }
+    ],
+    "usedBedSpawn": {
+      "dimension": "minecraft:overworld",
+      "position": [
+        260,
+        -12,
+        2548
+      ]
+    }
+  },
+  "notes": [
+    "Version 2: reconstructed player preparation on the original seed; original file retained unchanged.",
+    "The bed is used through vanilla interaction. Breaking or moving it invalidates this respawn.",
+    "A lit recovery camp contains a spare kit and crafting table. A ladder visible from the bed reaches the surface.",
+    "Only visible world blocks supply route information; no hidden terrain memory or structure coordinates are injected."
+  ],
+  "variantOf": "5-stronghold.json",
+  "fixtureVersion": 2,
+  "bedSpawn": {
+    "dimension": "minecraft:overworld",
+    "position": [
+      260,
+      -12,
+      2548
+    ]
+  },
+  "recoveryRoute": {
+    "dimension": "minecraft:overworld",
+    "kind": "ladder",
+    "bottom": [
+      264,
+      -12,
+      2549
+    ],
+    "top": [
+      264,
+      70,
+      2549
+    ],
+    "support": [
+      265,
+      2549
+    ]
+  },
+  "spareKit": [
+    [
+      "stone_pickaxe",
+      1
+    ],
+    [
+      "stone_axe",
+      1
+    ],
+    [
+      "cooked_beef",
+      16
+    ],
+    [
+      "cobblestone",
+      64
+    ],
+    [
+      "oak_log",
+      8
+    ],
+    [
+      "shield",
+      1
+    ]
+  ]
+}

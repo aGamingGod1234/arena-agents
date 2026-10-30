@@ -1,0 +1,26 @@
+{
+  "d39-travel3-courses-r2.service": {
+    "cgroup": "/user.slice/user-1000.slice/user@1000.service/app.slice/d39-travel3-courses-r2.service",
+    "cpuMax": "400000 100000",
+    "cpuAffinity": "not pinned; no fixed-core claim",
+    "mainPid": "307491"
+  },
+  "d39-travel3-games-r2.service": {
+    "cgroup": "/user.slice/user-1000.slice/user@1000.service/app.slice/d39-travel3-games-r2.service",
+    "cpuMax": "400000 100000",
+    "cpuAffinity": "not pinned; no fixed-core claim",
+    "mainPid": "310238"
+  },
+  "d39-travel3-games-r3.service": {
+    "cgroup": "/user.slice/user-1000.slice/user@1000.service/app.slice/d39-travel3-games-r3.service",
+    "cpuMax": "400000 100000",
+    "cpuAffinity": "not pinned; no fixed-core claim",
+    "mainPid": "418763"
+  },
+  "d39-travel3-games-second.service": {
+    "cgroup": "/user.slice/user-1000.slice/user@1000.service/app.slice/d39-travel3-games-second.service",
+    "cpuMax": "400000 100000",
+    "cpuAffinity": "not pinned; no fixed-core claim",
+    "mainPid": "845906"
+  }
+}

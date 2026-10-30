@@ -1,0 +1,27 @@
+program.onUnhandledAttention("continue_and_notify", {reassessWhen: () => player.state().threat !== null});
+const p = program.parameters();
+async function checked(result) {
+  if (!result.succeeded) program.checkpoint(result.reasonCode);
+}
+await program.repeatUntil(() => inventory.countTag(p.resourceTag) >= p.targetCount, {maxIterations:32}, async () => {
+  const block = world.nearest(world.blocks({tag:p.resourceTag}));
+  if (block === null) program.checkpoint("source no longer visible");
+  await checked(await player.mine({x:block.x,y:block.y,z:block.z,expectedBlockId:block.blockId,timeoutMs:15000}));
+  for (let i=0;i<8;i++) {
+    const drop = world.nearest(world.items({tag:p.resourceTag}));
+    if (drop === null) break;
+    await checked(await player.pickUpItem({targetSelector:drop.stableId}));
+  }
+});
+for (const recipe of p.crafts) {
+  await checked(await player.craftInventory({recipeId:recipe.id,count:recipe.count,timeoutMs:5000}));
+}
+async function leg(target) {
+  const result = await tryResult(player.navigateTo({x:target.x,y:target.y,z:target.z,tolerance:1,sprint:true,timeoutMs:30000}), async (failed) => {
+    if (failed.reasonCode !== "NO_STANDABLE_PATH") program.checkpoint(failed.reasonCode);
+    return await player.navigateTo({x:p.fallback.x,y:p.fallback.y,z:p.fallback.z,tolerance:1,sprint:false,timeoutMs:15000});
+  });
+  await checked(result);
+}
+for (const target of p.route) await leg(target);
+// Natural exhaustion hands off an already queued successor; finish only when you intend to stop.

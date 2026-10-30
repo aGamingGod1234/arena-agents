@@ -1,0 +1,32 @@
+{
+  "baseCommit": "590fa635",
+  "runtimeCommit": "b8c17dcd",
+  "harnessCommit": "ae29d9a1",
+  "baseJarSha256": "472c5fa734bf737e5140f36a2348c09f69e967923c85f9a07b8e41d3a40f753a",
+  "candidateJarSha256": "3d76f0c7295c6ca247c09d79d39ee4971d735f0ef6e5220d9e18eac19e75173b",
+  "frozenOriginalHarnessSha256": "4127295bb8e0177809e5b063c6b34e765c67a2a2b5192755c6723a81a2331085",
+  "measuredHarnessSha256": "467393577a9301c8071967029efc21c0f219f1f2e1baa650e3634a06ce4e8e3e",
+  "harnessChange": "passive vanilla used-bow scoreboard only; policy, seed, spawner, reset, arms, timings and scoring unchanged",
+  "sourceSha256": {
+    "src/main/java/dev/agaminggod/arenaagents/server/runtime/controller/ServerRangedUseController.java": "5bbe3b0469fa78c82ca752e50b43d97707cd64d0c46e5a8bb9a765dfd32ae1ca",
+    "src/main/java/dev/agaminggod/arenaagents/server/runtime/controller/RangedShotCheck.java": "e95ca659455622cee3270338f8e7bb80d3900a78bee62967bb19b767e44c56d2",
+    "src/main/java/dev/agaminggod/arenaagents/server/runtime/controller/ServerShelterController.java": "8f8087d0d0e4fb5484d164c2d30c53ef548d8adaec8ba2d6def9e3215f6bc5f6"
+  },
+  "changedClassEntries": [
+    "dev/agaminggod/arenaagents/server/runtime/ServerActionExecutor$3.class",
+    "dev/agaminggod/arenaagents/server/runtime/controller/RangedShotCheck.class",
+    "dev/agaminggod/arenaagents/server/runtime/controller/ServerRangedUseController$ArrowWatch.class",
+    "dev/agaminggod/arenaagents/server/runtime/controller/ServerRangedUseController$Shot.class",
+    "dev/agaminggod/arenaagents/server/runtime/controller/ServerRangedUseController$TargetFacts.class",
+    "dev/agaminggod/arenaagents/server/runtime/controller/ServerRangedUseController.class",
+    "dev/agaminggod/arenaagents/server/runtime/controller/ServerShelterController.class"
+  ],
+  "heldOutHarnessCommit": "7352e15f",
+  "heldOutHarnessSha256": "72e50b0b3e4114214bef2dd5e3cba7b814ace457272d5935f65e07eb0eae62fc",
+  "unchangedInstructionBodies": {
+    "dev.agaminggod.arenaagents.server.runtime.ServerActionExecutor$3": true,
+    "dev.agaminggod.arenaagents.server.runtime.controller.ServerRangedUseController$ArrowWatch": true,
+    "dev.agaminggod.arenaagents.server.runtime.controller.ServerRangedUseController$TargetFacts": true
+  },
+  "selectedHeldOutOutput": "candidate2-repair-r2"
+}

@@ -1,0 +1,2128 @@
+{
+  "kind": "provider-free incident replay",
+  "modelCalls": 0,
+  "jar": "/home/agaminggod/Desktop/Projects/arena-beat-game/evals/d39-blaze6/candidate2.jar",
+  "jarSha256": "3d76f0c7295c6ca247c09d79d39ee4971d735f0ef6e5220d9e18eac19e75173b",
+  "library": "/home/agaminggod/Desktop/Projects/arena-beat-game/incidents-d31c",
+  "startedAt": "2026-10-25T06:48:38.255Z",
+  "windowMs": 12000,
+  "incidents": {
+    "q-k3hoos-f670-LONG-r1-de910c4e/3abacedd-c34e-452f-a6bb-22401667482a-1792708199292-63-ft": {
+      "recorded": {
+        "kind": "wither_skeleton",
+        "outcome": "death",
+        "diagnosis": "REFLEX_FAILED",
+        "evidence": "covering reflex hostile_shield=failed: the shield broke after 7 blocked hit(s): no shield in either hand; arm sprint_away or take_cover for this condit,hostile_shield=failed: no shield in either hand; arm sprint_away or take_cover for this condition instead,hostile_shield=failed: no shield in either hand; arm sprint_away or take_cover for this condition instead,hostile_shield=failed: no shield in either hand; arm sprint_away or take_cover for this condition instead fired in time but death followed"
+      },
+      "armed": [
+        "hostile_shield",
+        "blaze_shield"
+      ],
+      "terrain": "saved world",
+      "armedStatus": [
+        {
+          "id": "hostile_shield",
+          "state": "armed"
+        },
+        {
+          "id": "blaze_shield",
+          "state": "armed"
+        }
+      ],
+      "survived": true,
+      "died": false,
+      "healthBefore": 20,
+      "healthAfter": 20,
+      "minHealth": 20,
+      "events": [
+        {
+          "id": "hostile_shield",
+          "outcome": "done",
+          "detail": "shield raised (fight)",
+          "ms": 4000
+        }
+      ],
+      "recreated": {
+        "kind": "entity",
+        "id": "minecraft:wither_skeleton",
+        "offset": [
+          -0.14236522696145215,
+          0,
+          -3.997465714943935
+        ],
+        "from": "source.pos",
+        "at": [
+          45.34,
+          65,
+          54.7
+        ],
+        "reply": "Summoned new Wither Skeleton",
+        "action": [
+          {
+            "actionType": "look_at",
+            "arguments": {
+              "x": 41.73763477303855,
+              "y": 66.5,
+              "z": 52.392534285056065
+            }
+          },
+          {
+            "actionType": "wait",
+            "arguments": {
+              "durationMs": 1000
+            }
+          },
+          {
+            "actionType": "fight_target",
+            "arguments": {
+              "targetId": "5fa386f3-42a8-4113-b337-78ac8c4dbe3a",
+              "pursue": true,
+              "shield": true,
+              "fleeAtHealth": 8,
+              "timeoutMs": 25000
+            }
+          }
+        ],
+        "results": [
+          {
+            "actionType": "look_at",
+            "state": "SUCCEEDED",
+            "reasonCode": "ACTION_COMPLETED",
+            "message": "Action completed"
+          },
+          {
+            "actionType": "wait",
+            "state": "SUCCEEDED",
+            "reasonCode": "ACTION_COMPLETED",
+            "message": "Action completed"
+          },
+          {
+            "actionType": "fight_target",
+            "state": "FAILED",
+            "reasonCode": "TARGET_ESCAPED",
+            "message": "body idle; no retreat performed; health 20.0; onGround=false; footing below center: minecraft:air at 46,65,58; minecraft:wither_skeleton is out of view or occluded; beyond chase distance; footwork: 0 falling crit(s), 0 sprint hit(s), dodged 0 shot(s), 0.3 s stepping off a lip; melee cells: target out of view; target airborne/vertical reach unknown; body: input idle, motion moving, onFire=false (0.0s), contact=none; nearest known water: none known; non-burning ground: (46.5,65,57.5) 0.8m remembered 1s (ground does not extinguish; routes unverified; hazards/attackers may remain)"
+          }
+        ],
+        "end": [
+          16.34,
+          58,
+          53.78
+        ],
+        "endDistance": 32.11
+      },
+      "bodyAction": {
+        "state": "FAILED",
+        "reasonCode": "TARGET_ESCAPED",
+        "message": "body idle; no retreat performed; health 20.0; onGround=false; footing below center: minecraft:air at 46,65,58; minecraft:wither_skeleton is out of view or occluded; beyond chase distance; footwork: 0 falling crit(s), 0 sprint hit(s), dodged 0 shot(s), 0.3 s stepping off a lip; melee cells: target out of view; target airborne/vertical reach unknown; body: input idle, motion moving, onFire=false (0.0s), contact=none; nearest known water: none known; non-burning ground: (46.5,65,57.5) 0.8m remembered 1s (ground does not extinguish; routes unverified; hazards/attackers may remain)",
+        "error": null
+      },
+      "track": [
+        {
+          "t": 36,
+          "x": 45.48,
+          "y": 64,
+          "z": 58.7,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 5347,
+          "x": 45.48,
+          "y": 64,
+          "z": 58.7,
+          "hp": 20,
+          "firing": "hostile_shield"
+        },
+        {
+          "t": 6444,
+          "x": 44.76,
+          "y": 65.18,
+          "z": 58.31,
+          "hp": 20,
+          "firing": "hostile_shield"
+        },
+        {
+          "t": 7627,
+          "x": 47.34,
+          "y": 65,
+          "z": 57.95,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 8856,
+          "x": 47.41,
+          "y": 65,
+          "z": 57.92,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 10086,
+          "x": 47.41,
+          "y": 65,
+          "z": 57.92,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 11284,
+          "x": 47.41,
+          "y": 65,
+          "z": 57.92,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 12499,
+          "x": 47.41,
+          "y": 65,
+          "z": 57.92,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 13684,
+          "x": 47.41,
+          "y": 65,
+          "z": 57.92,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 14884,
+          "x": 47.41,
+          "y": 65,
+          "z": 57.92,
+          "hp": 20,
+          "firing": null
+        }
+      ]
+    },
+    "q-k6vjjh-445e-LONG-r1-6f845735/bbb01684-9e72-4510-8288-356254ec563f-1792714293734-48-ft": {
+      "recorded": {
+        "kind": "wither_skeleton",
+        "outcome": "death",
+        "diagnosis": "REFLEX_FAILED",
+        "evidence": "covering reflex melee=preempted: by behind,behind=done: stepped back 2.1 blocks; lost 3.5 health,melee=preempted: by behind,behind=done: stepped back 2.1 blocks; lost 3.5 health,melee=preempted: by edge,melee=preempted: by behind,behind=done: stepped back 2.2 blocks,melee=failed: the shield broke after 4 blocked hit(s): no shield in either hand; arm sprint_away or take_cover for this condit,melee=failed: no shield in either hand; arm sprint_away or take_cover for this condition instead,blaze=failed: no shield in either hand; arm sprint_away or take_cover for this condition instead fired in time but death followed"
+      },
+      "armed": [
+        "blaze",
+        "melee"
+      ],
+      "terrain": "saved world",
+      "armedStatus": [
+        {
+          "id": "blaze",
+          "state": "armed"
+        },
+        {
+          "id": "melee",
+          "state": "armed"
+        }
+      ],
+      "survived": true,
+      "died": false,
+      "healthBefore": 20,
+      "healthAfter": 20,
+      "minHealth": 20,
+      "events": [
+        {
+          "id": "melee",
+          "outcome": "done",
+          "detail": "shield raised",
+          "ms": 3350
+        }
+      ],
+      "recreated": {
+        "kind": "entity",
+        "id": "minecraft:wither_skeleton",
+        "offset": [
+          -3.9982157309257005,
+          0,
+          -0.1194611609613645
+        ],
+        "from": "source.pos",
+        "at": [
+          53.52,
+          64,
+          93.7
+        ],
+        "reply": "Summoned new Wither Skeleton",
+        "action": [
+          {
+            "actionType": "look_at",
+            "arguments": {
+              "x": 53.5217842690743,
+              "y": 65.5,
+              "z": 93.70053883903863
+            }
+          },
+          {
+            "actionType": "wait",
+            "arguments": {
+              "durationMs": 1000
+            }
+          },
+          {
+            "actionType": "fight_target",
+            "arguments": {
+              "targetId": "a72c6b3d-515f-46b5-96ea-d7a8cd693327",
+              "pursue": true,
+              "shield": true,
+              "fleeAtHealth": 8,
+              "timeoutMs": 25000
+            }
+          }
+        ],
+        "results": [
+          {
+            "actionType": "look_at",
+            "state": "SUCCEEDED",
+            "reasonCode": "ACTION_COMPLETED",
+            "message": "Action completed"
+          },
+          {
+            "actionType": "wait",
+            "state": "SUCCEEDED",
+            "reasonCode": "ACTION_COMPLETED",
+            "message": "Action completed"
+          },
+          {
+            "actionType": "fight_target",
+            "state": "SUCCEEDED",
+            "reasonCode": "TARGET_KILLED",
+            "message": "body idle; no retreat performed; health 20.0; onGround=true; footing below center: minecraft:nether_bricks at 57,63,94; Killed minecraft:wither_skeleton with 4 hit(s); kills: 1x minecraft:wither_skeleton (4 hits); drops seen: 2x minecraft:bone at 54,64,93 uuid=2e1cd819-34dd-491d-8b72-a4af7c0914ed (falling, last seen); footwork: 1 falling crit(s), 0 sprint hit(s), dodged 0 shot(s), 0.1 s stepping off a lip; drop: 2x minecraft:bone at 54,64,93 uuid=2e1cd819-34dd-491d-8b72-a4af7c0914ed (falling, last seen); observed melee cells (clear hit line; remembered terrain; paths from (57.5,64,94.5)): (56.5,64,94.5) 1.0m path=unknown; (56.5,64,93.5) 1.2m path=unknown; (56.5,64,95.5) 1.6m path=unknown; target airborne=true, verticalGap=0.0m, outOfVerticalReach=false; body: input idle, motion moving, onFire=false (0.0s), contact=none; nearest known water: none known; non-burning ground: (57.5,64,94.5) 0.3m remembered 1s (ground does not extinguish; routes unverified; hazards/attackers may remain)"
+          }
+        ],
+        "end": [
+          38.73,
+          72,
+          77.59
+        ],
+        "endDistance": 26.24
+      },
+      "bodyAction": {
+        "state": "SUCCEEDED",
+        "reasonCode": "TARGET_KILLED",
+        "message": "body idle; no retreat performed; health 20.0; onGround=true; footing below center: minecraft:nether_bricks at 57,63,94; Killed minecraft:wither_skeleton with 4 hit(s); kills: 1x minecraft:wither_skeleton (4 hits); drops seen: 2x minecraft:bone at 54,64,93 uuid=2e1cd819-34dd-491d-8b72-a4af7c0914ed (falling, last seen); footwork: 1 falling crit(s), 0 sprint hit(s), dodged 0 shot(s), 0.1 s stepping off a lip; drop: 2x minecraft:bone at 54,64,93 uuid=2e1cd819-34dd-491d-8b72-a4af7c0914ed (falling, last seen); observed melee cells (clear hit line; remembered terrain; paths from (57.5,64,94.5)): (56.5,64,94.5) 1.0m path=unknown; (56.5,64,93.5) 1.2m path=unknown; (56.5,64,95.5) 1.6m path=unknown; target airborne=true, verticalGap=0.0m, outOfVerticalReach=false; body: input idle, motion moving, onFire=false (0.0s), contact=none; nearest known water: none known; non-burning ground: (57.5,64,94.5) 0.3m remembered 1s (ground does not extinguish; routes unverified; hazards/attackers may remain)",
+        "error": null
+      },
+      "track": [
+        {
+          "t": 51,
+          "x": 57.52,
+          "y": 64,
+          "z": 93.82,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 1254,
+          "x": 57.52,
+          "y": 64,
+          "z": 93.82,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 2439,
+          "x": 57.52,
+          "y": 64,
+          "z": 93.82,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 3998,
+          "x": 57.52,
+          "y": 64,
+          "z": 93.82,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 5371,
+          "x": 57.74,
+          "y": 65.09,
+          "z": 94.1,
+          "hp": 20,
+          "firing": "melee"
+        },
+        {
+          "t": 6574,
+          "x": 57.99,
+          "y": 64,
+          "z": 94.28,
+          "hp": 20,
+          "firing": "melee"
+        },
+        {
+          "t": 7766,
+          "x": 57.44,
+          "y": 64,
+          "z": 94.16,
+          "hp": 20,
+          "firing": "melee"
+        },
+        {
+          "t": 8964,
+          "x": 57.44,
+          "y": 64,
+          "z": 94.16,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 10165,
+          "x": 57.44,
+          "y": 64,
+          "z": 94.16,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 11375,
+          "x": 57.44,
+          "y": 64,
+          "z": 94.16,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 12564,
+          "x": 57.44,
+          "y": 64,
+          "z": 94.16,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 13771,
+          "x": 57.44,
+          "y": 64,
+          "z": 94.16,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 14965,
+          "x": 57.44,
+          "y": 64,
+          "z": 94.16,
+          "hp": 20,
+          "firing": null
+        }
+      ]
+    },
+    "q-k93y73-b1a9-LONG-r1-53a4293b/d5a4876d-50d9-43c4-a5f7-eaf27cee9a1e-1792718114774-90-ft": {
+      "recorded": {
+        "kind": "wither_skeleton",
+        "outcome": "death",
+        "diagnosis": "REFLEX_FAILED",
+        "evidence": "covering reflex wither=done: hit minecraft:wither_skeleton,wither=done: hit minecraft:wither_skeleton fired in time but death followed"
+      },
+      "armed": [
+        "wither"
+      ],
+      "terrain": "saved world",
+      "armedStatus": [
+        {
+          "id": "wither",
+          "state": "armed"
+        }
+      ],
+      "survived": true,
+      "died": false,
+      "healthBefore": 20,
+      "healthAfter": 19.67,
+      "minHealth": 17.5,
+      "events": [
+        {
+          "id": "wither",
+          "outcome": "done",
+          "detail": "hit minecraft:wither_skeleton",
+          "ms": 550
+        },
+        {
+          "id": "wither",
+          "outcome": "done",
+          "detail": "1 hit(s)",
+          "ms": 150
+        }
+      ],
+      "recreated": {
+        "kind": "entity",
+        "id": "minecraft:wither_skeleton",
+        "offset": [
+          -0.06971418024254916,
+          0,
+          -3.999392445493825
+        ],
+        "from": "source.pos",
+        "at": [
+          38.72,
+          69,
+          92.09
+        ],
+        "reply": "Summoned new Wither Skeleton",
+        "action": [
+          {
+            "actionType": "look_at",
+            "arguments": {
+              "x": 40.61028581975745,
+              "y": 70.5,
+              "z": 91.48060755450618
+            }
+          },
+          {
+            "actionType": "wait",
+            "arguments": {
+              "durationMs": 1000
+            }
+          },
+          {
+            "actionType": "fight_target",
+            "arguments": {
+              "targetId": "1f973e4b-6bd0-4b0b-9fa2-e0dd47ba943b",
+              "pursue": true,
+              "shield": true,
+              "fleeAtHealth": 8,
+              "timeoutMs": 25000
+            }
+          }
+        ],
+        "results": [
+          {
+            "actionType": "look_at",
+            "state": "SUCCEEDED",
+            "reasonCode": "ACTION_COMPLETED",
+            "message": "Action completed"
+          },
+          {
+            "actionType": "wait",
+            "state": "SUCCEEDED",
+            "reasonCode": "ACTION_COMPLETED",
+            "message": "Action completed"
+          },
+          {
+            "actionType": "fight_target",
+            "state": "SUCCEEDED",
+            "reasonCode": "TARGET_KILLED",
+            "message": "body idle; no retreat performed; health 19.0; onGround=true; footing below center: minecraft:nether_bricks at 37,68,95; Killed minecraft:wither_skeleton with 2 hit(s); kills: 1x minecraft:wither_skeleton (2 hits); drops seen: 1x minecraft:bone at 39,69,92 uuid=c8df3561-a78e-4b1a-be36-64829d28ea18 (falling, last seen); drop: 1x minecraft:bone at 39,69,92 uuid=c8df3561-a78e-4b1a-be36-64829d28ea18 (falling, last seen); observed melee cells (clear hit line; remembered terrain; paths from (37.5,69,95.5)): (37.5,69,94.5) 0.9m path=unknown; (38.5,69,94.5) 1.1m path=unknown; (39.5,69,95.5) 1.7m path=unknown; target airborne=true, verticalGap=0.0m, outOfVerticalReach=false; body: input idle, motion moving, onFire=true (2.7s), contact=none; nearest known water: none known; non-burning ground: (37.5,69,95.5) 0.3m remembered 1s (ground does not extinguish; routes unverified; hazards/attackers may remain)"
+          }
+        ],
+        "end": [
+          45.5,
+          65,
+          52.71
+        ],
+        "endDistance": 43.55
+      },
+      "bodyAction": {
+        "state": "SUCCEEDED",
+        "reasonCode": "TARGET_KILLED",
+        "message": "body idle; no retreat performed; health 19.0; onGround=true; footing below center: minecraft:nether_bricks at 37,68,95; Killed minecraft:wither_skeleton with 2 hit(s); kills: 1x minecraft:wither_skeleton (2 hits); drops seen: 1x minecraft:bone at 39,69,92 uuid=c8df3561-a78e-4b1a-be36-64829d28ea18 (falling, last seen); drop: 1x minecraft:bone at 39,69,92 uuid=c8df3561-a78e-4b1a-be36-64829d28ea18 (falling, last seen); observed melee cells (clear hit line; remembered terrain; paths from (37.5,69,95.5)): (37.5,69,94.5) 0.9m path=unknown; (38.5,69,94.5) 1.1m path=unknown; (39.5,69,95.5) 1.7m path=unknown; target airborne=true, verticalGap=0.0m, outOfVerticalReach=false; body: input idle, motion moving, onFire=true (2.7s), contact=none; nearest known water: none known; non-burning ground: (37.5,69,95.5) 0.3m remembered 1s (ground does not extinguish; routes unverified; hazards/attackers may remain)",
+        "error": null
+      },
+      "track": [
+        {
+          "t": 45,
+          "x": 40.68,
+          "y": 69,
+          "z": 95.48,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 1248,
+          "x": 40.68,
+          "y": 69,
+          "z": 95.48,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 2441,
+          "x": 38.79,
+          "y": 69,
+          "z": 96.09,
+          "hp": 18.5,
+          "firing": null
+        },
+        {
+          "t": 3640,
+          "x": 38.79,
+          "y": 69,
+          "z": 96.09,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 4838,
+          "x": 38.79,
+          "y": 69,
+          "z": 96.09,
+          "hp": 19,
+          "firing": "wither"
+        },
+        {
+          "t": 6040,
+          "x": 38.05,
+          "y": 69,
+          "z": 96.08,
+          "hp": 19,
+          "firing": null
+        },
+        {
+          "t": 7243,
+          "x": 37.86,
+          "y": 69,
+          "z": 95.4,
+          "hp": 19,
+          "firing": null
+        },
+        {
+          "t": 8437,
+          "x": 37.87,
+          "y": 69,
+          "z": 95.4,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 9638,
+          "x": 37.87,
+          "y": 69,
+          "z": 95.4,
+          "hp": 19.83,
+          "firing": null
+        },
+        {
+          "t": 10838,
+          "x": 37.87,
+          "y": 69,
+          "z": 95.4,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 12039,
+          "x": 37.87,
+          "y": 69,
+          "z": 95.4,
+          "hp": 19.5,
+          "firing": null
+        },
+        {
+          "t": 13244,
+          "x": 37.87,
+          "y": 69,
+          "z": 95.4,
+          "hp": 19,
+          "firing": null
+        },
+        {
+          "t": 14440,
+          "x": 37.87,
+          "y": 69,
+          "z": 95.4,
+          "hp": 19.33,
+          "firing": null
+        }
+      ]
+    },
+    "q-kiuc06-6727-LONG-r1-667b99e1/2f15fc06-d655-4d03-a17c-9fcfcf84e8d3-1792733048454-7-ft": {
+      "recorded": {
+        "kind": "wither_skeleton",
+        "outcome": "death",
+        "diagnosis": "REFLEX_FAILED",
+        "evidence": "covering reflex shots=preempted: by projectile,shots=preempted: by projectile fired in time but death followed"
+      },
+      "armed": [],
+      "terrain": "regenerated from seed",
+      "armedStatus": [],
+      "survived": true,
+      "died": false,
+      "healthBefore": 20,
+      "healthAfter": 14.91,
+      "minHealth": 14.41,
+      "events": [],
+      "recreated": {
+        "kind": "entity",
+        "id": "minecraft:wither_skeleton",
+        "offset": [
+          1.234567706846562,
+          0,
+          3.8047132056452853
+        ],
+        "from": "source.pos",
+        "at": [
+          75.84,
+          70,
+          92.34
+        ],
+        "reply": "Summoned new Wither Skeleton",
+        "action": [
+          {
+            "actionType": "look_at",
+            "arguments": {
+              "x": 75.53456770684656,
+              "y": 71.5,
+              "z": 92.48471320564529
+            }
+          },
+          {
+            "actionType": "wait",
+            "arguments": {
+              "durationMs": 1000
+            }
+          },
+          {
+            "actionType": "fight_target",
+            "arguments": {
+              "targetId": "28339f9f-67db-45d9-85ed-8ca8da726fa3",
+              "pursue": true,
+              "shield": true,
+              "fleeAtHealth": 12,
+              "timeoutMs": 25000
+            }
+          }
+        ],
+        "results": [
+          {
+            "actionType": "look_at",
+            "state": "SUCCEEDED",
+            "reasonCode": "ACTION_COMPLETED",
+            "message": "Action completed"
+          },
+          {
+            "actionType": "wait",
+            "state": "SUCCEEDED",
+            "reasonCode": "ACTION_COMPLETED",
+            "message": "Action completed"
+          },
+          {
+            "actionType": "fight_target",
+            "state": "SUCCEEDED",
+            "reasonCode": "TARGET_KILLED",
+            "message": "body idle; no retreat performed; health 20.0; onGround=true; footing below center: minecraft:nether_bricks at 75,69,90; Killed minecraft:wither_skeleton with 4 hit(s); kills: 1x minecraft:wither_skeleton (4 hits); drops seen: 2x minecraft:bone at 72,70,91 uuid=8da3478a-68e7-4052-a6f9-de120a039dea (falling, last seen); remaining threats: minecraft:blaze 38775fc2-70c0-4dd4-8984-c99dbf2e4059 at 10.4 blocks, risk 47, minecraft:blaze f3850376-a7f0-46f3-96a7-445cd04ce7ff at 7.4 blocks, risk 34, minecraft:blaze d5f2bf6b-d2a3-4aa3-b41c-2e40cd7a3c78 at 9.6 blocks, risk 28; drop: 2x minecraft:bone at 72,70,91 uuid=8da3478a-68e7-4052-a6f9-de120a039dea (falling, last seen); observed melee cells (clear hit line; remembered terrain; paths from (75.5,70,90.5)): (75.5,70,90.5) 0.2m path=available; (74.5,70,90.5) 1.1m path=unknown; (75.5,70,91.5) 1.2m path=unknown; target airborne=true, verticalGap=0.0m, outOfVerticalReach=false; body: input idle, motion moving, onFire=false (0.0s), contact=none; nearest known water: none known; non-burning ground: (75.5,70,90.5) 0.2m remembered 1s (ground does not extinguish; routes unverified; hazards/attackers may remain)"
+          }
+        ],
+        "end": [
+          43.71,
+          64,
+          48.73
+        ],
+        "endDistance": 50.45
+      },
+      "bodyAction": {
+        "state": "SUCCEEDED",
+        "reasonCode": "TARGET_KILLED",
+        "message": "body idle; no retreat performed; health 20.0; onGround=true; footing below center: minecraft:nether_bricks at 75,69,90; Killed minecraft:wither_skeleton with 4 hit(s); kills: 1x minecraft:wither_skeleton (4 hits); drops seen: 2x minecraft:bone at 72,70,91 uuid=8da3478a-68e7-4052-a6f9-de120a039dea (falling, last seen); remaining threats: minecraft:blaze 38775fc2-70c0-4dd4-8984-c99dbf2e4059 at 10.4 blocks, risk 47, minecraft:blaze f3850376-a7f0-46f3-96a7-445cd04ce7ff at 7.4 blocks, risk 34, minecraft:blaze d5f2bf6b-d2a3-4aa3-b41c-2e40cd7a3c78 at 9.6 blocks, risk 28; drop: 2x minecraft:bone at 72,70,91 uuid=8da3478a-68e7-4052-a6f9-de120a039dea (falling, last seen); observed melee cells (clear hit line; remembered terrain; paths from (75.5,70,90.5)): (75.5,70,90.5) 0.2m path=available; (74.5,70,90.5) 1.1m path=unknown; (75.5,70,91.5) 1.2m path=unknown; target airborne=true, verticalGap=0.0m, outOfVerticalReach=false; body: input idle, motion moving, onFire=false (0.0s), contact=none; nearest known water: none known; non-burning ground: (75.5,70,90.5) 0.2m remembered 1s (ground does not extinguish; routes unverified; hazards/attackers may remain)",
+        "error": null
+      },
+      "track": [
+        {
+          "t": 16,
+          "x": 75.54,
+          "y": 70,
+          "z": 90.34,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 1610,
+          "x": 74.59,
+          "y": 70,
+          "z": 88.53,
+          "hp": 17,
+          "firing": null
+        },
+        {
+          "t": 2918,
+          "x": 74.6,
+          "y": 70,
+          "z": 88.53,
+          "hp": 19,
+          "firing": null
+        },
+        {
+          "t": 4221,
+          "x": 74.6,
+          "y": 70,
+          "z": 88.53,
+          "hp": 19,
+          "firing": null
+        },
+        {
+          "t": 5443,
+          "x": 76.03,
+          "y": 70.63,
+          "z": 90.28,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 6625,
+          "x": 75.98,
+          "y": 70,
+          "z": 90.58,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 7843,
+          "x": 75.54,
+          "y": 70,
+          "z": 90.2,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 9023,
+          "x": 75.54,
+          "y": 70,
+          "z": 90.2,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 10222,
+          "x": 75.54,
+          "y": 70,
+          "z": 90.2,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 11421,
+          "x": 75.54,
+          "y": 70,
+          "z": 90.2,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 12621,
+          "x": 74.3,
+          "y": 70,
+          "z": 89.67,
+          "hp": 18.5,
+          "firing": null
+        },
+        {
+          "t": 13825,
+          "x": 74.3,
+          "y": 70,
+          "z": 88.53,
+          "hp": 15.08,
+          "firing": null
+        },
+        {
+          "t": 15019,
+          "x": 74.3,
+          "y": 70,
+          "z": 88.4,
+          "hp": 14.75,
+          "firing": null
+        }
+      ]
+    },
+    "q-kjrycv-7894-LONG-r1-ef77f649/cc425f12-a989-440a-abe8-c1953ce0f133-1792734684355-18-ft": {
+      "recorded": {
+        "kind": "blaze",
+        "outcome": "death",
+        "diagnosis": "REFLEX_FAILED",
+        "evidence": "covering reflex nether-shield=preempted: by ghast-deflect,ghast-deflect=done: deflected minecraft:fireball; lost 1.0 health,blaze-shot=done: shield raised; walking; lost 1.0 health,nether-shield=preempted: by nether-fire,blaze-shot=preempted: by low-health fired in time but death followed"
+      },
+      "armed": [
+        "nether-shield",
+        "ghast-deflect",
+        "blaze-shot"
+      ],
+      "terrain": "saved world",
+      "armedStatus": [
+        {
+          "id": "nether-shield",
+          "state": "armed"
+        },
+        {
+          "id": "ghast-deflect",
+          "state": "armed"
+        },
+        {
+          "id": "blaze-shot",
+          "state": "armed"
+        }
+      ],
+      "survived": true,
+      "died": false,
+      "healthBefore": 15.13,
+      "healthAfter": 20,
+      "minHealth": 15.13,
+      "events": [
+        {
+          "id": "nether-shield",
+          "outcome": "preempted",
+          "detail": "by blaze-shot",
+          "ms": 3850
+        },
+        {
+          "id": "blaze-shot",
+          "outcome": "done",
+          "detail": "blocked 2 hit(s)",
+          "ms": 1300
+        },
+        {
+          "id": "nether-shield",
+          "outcome": "preempted",
+          "detail": "by blaze-shot",
+          "ms": 7600
+        },
+        {
+          "id": "blaze-shot",
+          "outcome": "done",
+          "detail": "blocked 1 hit(s)",
+          "ms": 1000
+        }
+      ],
+      "recreated": {
+        "kind": "entity",
+        "id": "minecraft:blaze",
+        "offset": [
+          3.9562324902643127,
+          2,
+          0.5901054846186469
+        ],
+        "from": "source.pos",
+        "at": [
+          78.25,
+          70,
+          85.07
+        ],
+        "reply": "Summoned new Blaze",
+        "action": [
+          {
+            "actionType": "look_at",
+            "arguments": {
+              "x": 63.63623249026431,
+              "y": 73.5,
+              "z": 85.25010548461864
+            }
+          },
+          {
+            "actionType": "wait",
+            "arguments": {
+              "durationMs": 1000
+            }
+          },
+          {
+            "actionType": "fight_target",
+            "arguments": {
+              "targetId": "46b334b3-e4fe-447b-94fa-365193b8d8d6",
+              "pursue": true,
+              "shield": true,
+              "fleeAtHealth": 8,
+              "timeoutMs": 25000
+            }
+          }
+        ],
+        "end": [
+          65.2,
+          64,
+          58.74
+        ],
+        "endDistance": 26.97
+      },
+      "bodyAction": {
+        "state": "STILL_RUNNING",
+        "reasonCode": null,
+        "message": null,
+        "error": null
+      },
+      "track": [
+        {
+          "t": 108,
+          "x": 74.29,
+          "y": 70,
+          "z": 84.48,
+          "hp": 15.13,
+          "firing": null
+        },
+        {
+          "t": 1447,
+          "x": 74.29,
+          "y": 70,
+          "z": 84.48,
+          "hp": 19.13,
+          "firing": null
+        },
+        {
+          "t": 3997,
+          "x": 74.29,
+          "y": 70,
+          "z": 84.48,
+          "hp": 20,
+          "firing": "nether-shield"
+        },
+        {
+          "t": 5286,
+          "x": 74.29,
+          "y": 70,
+          "z": 84.48,
+          "hp": 20,
+          "firing": "nether-shield"
+        },
+        {
+          "t": 6541,
+          "x": 74.29,
+          "y": 70,
+          "z": 84.48,
+          "hp": 20,
+          "firing": "blaze-shot"
+        },
+        {
+          "t": 7768,
+          "x": 73.3,
+          "y": 70,
+          "z": 83.95,
+          "hp": 20,
+          "firing": "nether-shield"
+        },
+        {
+          "t": 8959,
+          "x": 73.3,
+          "y": 70,
+          "z": 83.95,
+          "hp": 20,
+          "firing": "nether-shield"
+        },
+        {
+          "t": 10446,
+          "x": 73.3,
+          "y": 70,
+          "z": 83.95,
+          "hp": 20,
+          "firing": "nether-shield"
+        },
+        {
+          "t": 11661,
+          "x": 73.3,
+          "y": 70,
+          "z": 83.95,
+          "hp": 20,
+          "firing": "nether-shield"
+        },
+        {
+          "t": 12843,
+          "x": 73.3,
+          "y": 70,
+          "z": 83.95,
+          "hp": 20,
+          "firing": "nether-shield"
+        },
+        {
+          "t": 14058,
+          "x": 73.3,
+          "y": 70.58,
+          "z": 83.79,
+          "hp": 20,
+          "firing": "blaze-shot"
+        }
+      ]
+    },
+    "q-kto03v-4ebf-LONG-r1-d098c2ff/83ac51ba-7027-4ae5-af06-037eb23245a4-1792751700906-48-ft": {
+      "recorded": {
+        "kind": "wither_skeleton",
+        "outcome": "death",
+        "diagnosis": "REFLEX_FAILED",
+        "evidence": "covering reflex shield=preempted: by projectile,shield=preempted: by projectile,shield=preempted: by projectile,shield=running fired in time but death followed"
+      },
+      "armed": [
+        "shield"
+      ],
+      "terrain": "saved world",
+      "armedStatus": [
+        {
+          "id": "shield",
+          "state": "armed"
+        }
+      ],
+      "survived": true,
+      "died": false,
+      "healthBefore": 17,
+      "healthAfter": 17.67,
+      "minHealth": 17,
+      "events": [],
+      "recreated": {
+        "kind": "entity",
+        "id": "minecraft:wither_skeleton",
+        "offset": [
+          0.45461374533880416,
+          0,
+          3.97408182383667
+        ],
+        "from": "source.pos",
+        "at": [
+          72.03,
+          75,
+          89.46
+        ],
+        "reply": "Summoned new Wither Skeleton",
+        "action": [
+          {
+            "actionType": "look_at",
+            "arguments": {
+              "x": 76.8446137453388,
+              "y": 71.5,
+              "z": 92.72408182383667
+            }
+          },
+          {
+            "actionType": "wait",
+            "arguments": {
+              "durationMs": 1000
+            }
+          },
+          {
+            "actionType": "fight_target",
+            "arguments": {
+              "targetId": "692d25b3-6641-4dea-820a-5dda069fa1fc",
+              "pursue": true,
+              "shield": true,
+              "fleeAtHealth": 10,
+              "timeoutMs": 25000
+            }
+          }
+        ],
+        "end": [
+          41.7,
+          64,
+          27.72
+        ],
+        "endDistance": 66.49
+      },
+      "bodyAction": {
+        "state": "STILL_RUNNING",
+        "reasonCode": null,
+        "message": null,
+        "error": null
+      },
+      "track": [
+        {
+          "t": 96,
+          "x": 71.67,
+          "y": 70,
+          "z": 85.44,
+          "hp": 17,
+          "firing": null
+        },
+        {
+          "t": 1486,
+          "x": 71.57,
+          "y": 70,
+          "z": 85.49,
+          "hp": 19,
+          "firing": null
+        },
+        {
+          "t": 2745,
+          "x": 71.57,
+          "y": 70,
+          "z": 85.49,
+          "hp": 19,
+          "firing": "shield"
+        },
+        {
+          "t": 3947,
+          "x": 71.57,
+          "y": 70,
+          "z": 85.49,
+          "hp": 20,
+          "firing": "shield"
+        },
+        {
+          "t": 5139,
+          "x": 71.57,
+          "y": 70,
+          "z": 85.49,
+          "hp": 20,
+          "firing": "shield"
+        },
+        {
+          "t": 6339,
+          "x": 72.25,
+          "y": 71.15,
+          "z": 84.3,
+          "hp": 20,
+          "firing": "shield"
+        },
+        {
+          "t": 7539,
+          "x": 74.42,
+          "y": 70.3,
+          "z": 84.3,
+          "hp": 19.12,
+          "firing": "shield"
+        },
+        {
+          "t": 8738,
+          "x": 76.15,
+          "y": 70.79,
+          "z": 84.09,
+          "hp": 19.12,
+          "firing": "shield"
+        },
+        {
+          "t": 9941,
+          "x": 77.7,
+          "y": 70,
+          "z": 83.3,
+          "hp": 20,
+          "firing": "shield"
+        },
+        {
+          "t": 11138,
+          "x": 77.7,
+          "y": 70.4,
+          "z": 83.3,
+          "hp": 19.5,
+          "firing": "shield"
+        },
+        {
+          "t": 12337,
+          "x": 77.7,
+          "y": 71.15,
+          "z": 83.3,
+          "hp": 20,
+          "firing": "shield"
+        },
+        {
+          "t": 13544,
+          "x": 77.7,
+          "y": 70.63,
+          "z": 83.3,
+          "hp": 19.33,
+          "firing": "shield"
+        },
+        {
+          "t": 14742,
+          "x": 77.7,
+          "y": 70,
+          "z": 83.3,
+          "hp": 18.67,
+          "firing": "shield"
+        }
+      ]
+    },
+    "q-kvu8gk-05ee-LONG-r1-f72a06e9/b8e068c4-89b2-44f0-bb02-83db387c0eab-1792754982011-21-ft": {
+      "recorded": {
+        "kind": "blaze",
+        "outcome": "death",
+        "diagnosis": "REFLEX_FAILED",
+        "evidence": "covering reflex projectile=done: blocked 1 hit(s); walking fired in time but death followed"
+      },
+      "armed": [
+        "projectile"
+      ],
+      "terrain": "regenerated from seed",
+      "armedStatus": [
+        {
+          "id": "projectile",
+          "state": "armed"
+        }
+      ],
+      "survived": true,
+      "died": false,
+      "healthBefore": 10.38,
+      "healthAfter": 20,
+      "minHealth": 10.38,
+      "events": [
+        {
+          "id": "projectile",
+          "outcome": "done",
+          "detail": "blocked 2 hit(s) (fight)",
+          "ms": 1450
+        }
+      ],
+      "recreated": {
+        "kind": "entity",
+        "id": "minecraft:blaze",
+        "offset": [
+          -3.220486889370804,
+          2,
+          -2.3724384492312396
+        ],
+        "from": "source.pos",
+        "at": [
+          67.12,
+          71,
+          97.99
+        ],
+        "reply": "Summoned new Blaze",
+        "action": [
+          {
+            "actionType": "look_at",
+            "arguments": {
+              "x": 61.84951311062919,
+              "y": 74.08,
+              "z": 98.22756155076875
+            }
+          },
+          {
+            "actionType": "wait",
+            "arguments": {
+              "durationMs": 1000
+            }
+          },
+          {
+            "actionType": "fight_target",
+            "arguments": {
+              "targetId": "f775a10f-2762-4b01-91c3-22c2572b3da7",
+              "pursue": true,
+              "shield": true,
+              "fleeAtHealth": 8,
+              "timeoutMs": 25000
+            }
+          }
+        ],
+        "results": [
+          {
+            "actionType": "look_at",
+            "state": "SUCCEEDED",
+            "reasonCode": "ACTION_COMPLETED",
+            "message": "Action completed"
+          },
+          {
+            "actionType": "wait",
+            "state": "SUCCEEDED",
+            "reasonCode": "ACTION_COMPLETED",
+            "message": "Action completed"
+          }
+        ],
+        "end": [
+          45.51,
+          72.67,
+          65.64
+        ],
+        "endDistance": 38.95
+      },
+      "bodyAction": {
+        "state": "STILL_RUNNING",
+        "reasonCode": null,
+        "message": null,
+        "error": null
+      },
+      "track": [
+        {
+          "t": 34,
+          "x": 70.34,
+          "y": 70,
+          "z": 100.36,
+          "hp": 10.38,
+          "firing": null
+        },
+        {
+          "t": 1591,
+          "x": 70.34,
+          "y": 70,
+          "z": 100.36,
+          "hp": 14.38,
+          "firing": null
+        },
+        {
+          "t": 3009,
+          "x": 70.34,
+          "y": 70,
+          "z": 100.36,
+          "hp": 17.38,
+          "firing": null
+        },
+        {
+          "t": 4591,
+          "x": 70.34,
+          "y": 70,
+          "z": 100.36,
+          "hp": 18.88,
+          "firing": null
+        },
+        {
+          "t": 5839,
+          "x": 69.15,
+          "y": 70,
+          "z": 100.36,
+          "hp": 19.38,
+          "firing": null
+        },
+        {
+          "t": 7041,
+          "x": 68.69,
+          "y": 70.96,
+          "z": 100.7,
+          "hp": 19.71,
+          "firing": "projectile"
+        },
+        {
+          "t": 8235,
+          "x": 67.75,
+          "y": 70,
+          "z": 100.49,
+          "hp": 19.71,
+          "firing": null
+        },
+        {
+          "t": 9432,
+          "x": 66.63,
+          "y": 70,
+          "z": 100.58,
+          "hp": 19.71,
+          "firing": null
+        },
+        {
+          "t": 10635,
+          "x": 65.85,
+          "y": 70,
+          "z": 100.27,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 11889,
+          "x": 65.67,
+          "y": 70,
+          "z": 99.24,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 13084,
+          "x": 65.61,
+          "y": 70,
+          "z": 98.89,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 14284,
+          "x": 65.61,
+          "y": 70,
+          "z": 98.89,
+          "hp": 20,
+          "firing": null
+        }
+      ]
+    },
+    "q-kwyzoj-19f1-LONG-r1-1e85b417/b64ea0b8-0685-40dd-9246-91512ca09518-1792757317165-39-ft": {
+      "recorded": {
+        "kind": "wither_skeleton",
+        "outcome": "death",
+        "diagnosis": "REFLEX_FAILED",
+        "evidence": "covering reflex wither-shield=preempted: by projectile,wither-shield=preempted: by projectile,wither-shield=yielded: model command fired in time but death followed"
+      },
+      "armed": [
+        "wither-shield",
+        "blaze-shield"
+      ],
+      "terrain": "saved world",
+      "armedStatus": [
+        {
+          "id": "wither-shield",
+          "state": "armed"
+        },
+        {
+          "id": "blaze-shield",
+          "state": "armed"
+        }
+      ],
+      "survived": true,
+      "died": false,
+      "healthBefore": 15.17,
+      "healthAfter": 19.5,
+      "minHealth": 15.17,
+      "events": [
+        {
+          "id": "wither-shield",
+          "outcome": "done",
+          "detail": "shield raised (fight)",
+          "ms": 1700
+        }
+      ],
+      "recreated": {
+        "kind": "entity",
+        "id": "minecraft:wither_skeleton",
+        "offset": [
+          -0.19862894887718596,
+          0,
+          -3.9950652736429646
+        ],
+        "from": "source.pos",
+        "at": [
+          74.39,
+          70,
+          105.93
+        ],
+        "reply": "Summoned new Wither Skeleton",
+        "action": [
+          {
+            "actionType": "look_at",
+            "arguments": {
+              "x": 74.83137105112282,
+              "y": 72.54,
+              "z": 105.28493472635704
+            }
+          },
+          {
+            "actionType": "wait",
+            "arguments": {
+              "durationMs": 1000
+            }
+          },
+          {
+            "actionType": "fight_target",
+            "arguments": {
+              "targetId": "7145130d-eccc-47c1-a9a2-241d99837589",
+              "pursue": true,
+              "shield": true,
+              "fleeAtHealth": 8,
+              "timeoutMs": 25000
+            }
+          }
+        ],
+        "results": [
+          {
+            "actionType": "look_at",
+            "state": "SUCCEEDED",
+            "reasonCode": "ACTION_COMPLETED",
+            "message": "Action completed"
+          },
+          {
+            "actionType": "wait",
+            "state": "SUCCEEDED",
+            "reasonCode": "ACTION_COMPLETED",
+            "message": "Action completed"
+          },
+          {
+            "actionType": "fight_target",
+            "state": "SUCCEEDED",
+            "reasonCode": "TARGET_KILLED",
+            "message": "body idle; no retreat performed; health 20.0; onGround=true; footing below center: minecraft:nether_bricks at 75,69,108; Killed minecraft:wither_skeleton with 4 hit(s); kills: 1x minecraft:wither_skeleton (4 hits); drops seen: 1x minecraft:bone at 74,70,106 uuid=c25f30bf-042f-45f2-83fc-2ba5dbbc8c3b (falling, last seen); footwork: 0 falling crit(s), 0 sprint hit(s), dodged 0 shot(s), 2.0 s circling off a drop behind; drop: 1x minecraft:bone at 74,70,106 uuid=c25f30bf-042f-45f2-83fc-2ba5dbbc8c3b (falling, last seen); observed melee cells (clear hit line; remembered terrain; paths from (75.5,70,108.5)): (75.5,70,108.5) 0.6m path=available; (76.5,70,108.5) 0.6m path=unknown; (75.5,70,107.5) 1.4m path=unknown; target airborne=true, verticalGap=0.0m, outOfVerticalReach=false; body: input idle, motion moving, onFire=false (0.0s), contact=none; nearest known water: none known; non-burning ground: (75.5,70,108.5) 0.6m remembered 1s (ground does not extinguish; routes unverified; hazards/attackers may remain)"
+          }
+        ],
+        "end": [
+          54.38,
+          71,
+          87.48
+        ],
+        "endDistance": 30.4
+      },
+      "bodyAction": {
+        "state": "SUCCEEDED",
+        "reasonCode": "TARGET_KILLED",
+        "message": "body idle; no retreat performed; health 20.0; onGround=true; footing below center: minecraft:nether_bricks at 75,69,108; Killed minecraft:wither_skeleton with 4 hit(s); kills: 1x minecraft:wither_skeleton (4 hits); drops seen: 1x minecraft:bone at 74,70,106 uuid=c25f30bf-042f-45f2-83fc-2ba5dbbc8c3b (falling, last seen); footwork: 0 falling crit(s), 0 sprint hit(s), dodged 0 shot(s), 2.0 s circling off a drop behind; drop: 1x minecraft:bone at 74,70,106 uuid=c25f30bf-042f-45f2-83fc-2ba5dbbc8c3b (falling, last seen); observed melee cells (clear hit line; remembered terrain; paths from (75.5,70,108.5)): (75.5,70,108.5) 0.6m path=available; (76.5,70,108.5) 0.6m path=unknown; (75.5,70,107.5) 1.4m path=unknown; target airborne=true, verticalGap=0.0m, outOfVerticalReach=false; body: input idle, motion moving, onFire=false (0.0s), contact=none; nearest known water: none known; non-burning ground: (75.5,70,108.5) 0.6m remembered 1s (ground does not extinguish; routes unverified; hazards/attackers may remain)",
+        "error": null
+      },
+      "track": [
+        {
+          "t": 99,
+          "x": 74.59,
+          "y": 70,
+          "z": 109.92,
+          "hp": 15.17,
+          "firing": null
+        },
+        {
+          "t": 1625,
+          "x": 74.59,
+          "y": 70,
+          "z": 109.92,
+          "hp": 18.17,
+          "firing": null
+        },
+        {
+          "t": 2805,
+          "x": 74.59,
+          "y": 70,
+          "z": 109.92,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 4015,
+          "x": 74.59,
+          "y": 70,
+          "z": 109.92,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 5210,
+          "x": 74.69,
+          "y": 71.04,
+          "z": 110.33,
+          "hp": 19.12,
+          "firing": "wither-shield"
+        },
+        {
+          "t": 6416,
+          "x": 75.65,
+          "y": 70,
+          "z": 109.45,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 7607,
+          "x": 76.06,
+          "y": 70,
+          "z": 108.77,
+          "hp": 19,
+          "firing": null
+        },
+        {
+          "t": 8805,
+          "x": 76.06,
+          "y": 70,
+          "z": 108.77,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 10004,
+          "x": 76.06,
+          "y": 70,
+          "z": 108.77,
+          "hp": 19.83,
+          "firing": null
+        },
+        {
+          "t": 11216,
+          "x": 76.06,
+          "y": 70,
+          "z": 108.77,
+          "hp": 19,
+          "firing": null
+        },
+        {
+          "t": 12410,
+          "x": 76.06,
+          "y": 70,
+          "z": 108.77,
+          "hp": 19.83,
+          "firing": null
+        },
+        {
+          "t": 13606,
+          "x": 76.06,
+          "y": 70,
+          "z": 108.77,
+          "hp": 19,
+          "firing": null
+        },
+        {
+          "t": 14805,
+          "x": 76.06,
+          "y": 70,
+          "z": 108.77,
+          "hp": 19.5,
+          "firing": null
+        }
+      ]
+    },
+    "q-l3csmw-f7df-LONG-r1-ea546b8e/27fcbf27-6ac7-4bc6-9787-a3a139805d14-1792767584174-18-ft": {
+      "recorded": {
+        "kind": "wither_skeleton",
+        "outcome": "death",
+        "diagnosis": "MODEL_CHOICE",
+        "evidence": "observed since 1792767583083; covering rules armed none; last model reply 10.0 s before; outcome death"
+      },
+      "armed": [
+        "shots",
+        "fire",
+        "lava",
+        "flow"
+      ],
+      "terrain": "regenerated from seed",
+      "armedStatus": [
+        {
+          "id": "shots",
+          "state": "armed"
+        },
+        {
+          "id": "fire",
+          "state": "armed"
+        },
+        {
+          "id": "lava",
+          "state": "armed"
+        },
+        {
+          "id": "flow",
+          "state": "armed"
+        }
+      ],
+      "survived": true,
+      "died": false,
+      "healthBefore": 11.85,
+      "healthAfter": 20,
+      "minHealth": 11.85,
+      "events": [],
+      "recreated": {
+        "kind": "entity",
+        "id": "minecraft:wither_skeleton",
+        "offset": [
+          3.9899331655079386,
+          0,
+          -0.28360771283551856
+        ],
+        "from": "source.pos",
+        "at": [
+          28.83,
+          62,
+          88.23
+        ],
+        "reply": "Summoned new Wither Skeleton",
+        "action": [
+          {
+            "actionType": "look_at",
+            "arguments": {
+              "x": 21.26993316550794,
+              "y": 59.5,
+              "z": 89.08639228716449
+            }
+          },
+          {
+            "actionType": "wait",
+            "arguments": {
+              "durationMs": 1000
+            }
+          },
+          {
+            "actionType": "fight_target",
+            "arguments": {
+              "targetId": "bb582a56-2fd3-4fd5-a425-442a33cd4c16",
+              "pursue": true,
+              "shield": true,
+              "fleeAtHealth": 8,
+              "timeoutMs": 25000
+            }
+          }
+        ],
+        "results": [
+          {
+            "actionType": "look_at",
+            "state": "SUCCEEDED",
+            "reasonCode": "ACTION_COMPLETED",
+            "message": "Action completed"
+          },
+          {
+            "actionType": "wait",
+            "state": "SUCCEEDED",
+            "reasonCode": "ACTION_COMPLETED",
+            "message": "Action completed"
+          },
+          {
+            "actionType": "fight_target",
+            "state": "SUCCEEDED",
+            "reasonCode": "TARGET_KILLED",
+            "message": "body idle; no retreat performed; health 20.0; onGround=false; footing below center: minecraft:air at 25,60,88; Killed minecraft:wither_skeleton with 4 hit(s); kills: 1x minecraft:wither_skeleton (4 hits); drops seen: 2x minecraft:bone at 28,63,88 uuid=5ca99e7c-e19b-4018-b594-03fab2cfc1f2 (falling, last seen); drop: 2x minecraft:bone at 28,63,88 uuid=5ca99e7c-e19b-4018-b594-03fab2cfc1f2 (falling, last seen); observed melee cells (clear hit line; remembered terrain; paths from (25.5,60,88.5)): (26.5,60,88.5) 1.0m path=unknown; (26.5,60,89.5) 1.2m path=unknown; (27.5,61,88.5) 1.7m path=unknown; target airborne=true, verticalGap=0.6m, outOfVerticalReach=false; body: input idle, motion moving, onFire=false (0.0s), contact=none; nearest known water: none known; non-burning ground: (26.5,60,88.5) 1.0m remembered 1s (ground does not extinguish; routes unverified; hazards/attackers may remain)"
+          }
+        ],
+        "end": [
+          39.53,
+          64,
+          74.35
+        ],
+        "endDistance": 20.36
+      },
+      "bodyAction": {
+        "state": "SUCCEEDED",
+        "reasonCode": "TARGET_KILLED",
+        "message": "body idle; no retreat performed; health 20.0; onGround=false; footing below center: minecraft:air at 25,60,88; Killed minecraft:wither_skeleton with 4 hit(s); kills: 1x minecraft:wither_skeleton (4 hits); drops seen: 2x minecraft:bone at 28,63,88 uuid=5ca99e7c-e19b-4018-b594-03fab2cfc1f2 (falling, last seen); drop: 2x minecraft:bone at 28,63,88 uuid=5ca99e7c-e19b-4018-b594-03fab2cfc1f2 (falling, last seen); observed melee cells (clear hit line; remembered terrain; paths from (25.5,60,88.5)): (26.5,60,88.5) 1.0m path=unknown; (26.5,60,89.5) 1.2m path=unknown; (27.5,61,88.5) 1.7m path=unknown; target airborne=true, verticalGap=0.6m, outOfVerticalReach=false; body: input idle, motion moving, onFire=false (0.0s), contact=none; nearest known water: none known; non-burning ground: (26.5,60,88.5) 1.0m remembered 1s (ground does not extinguish; routes unverified; hazards/attackers may remain)",
+        "error": null
+      },
+      "track": [
+        {
+          "t": 22,
+          "x": 24.84,
+          "y": 58.5,
+          "z": 88.52,
+          "hp": 11.85,
+          "firing": null
+        },
+        {
+          "t": 1208,
+          "x": 24.84,
+          "y": 58.5,
+          "z": 88.52,
+          "hp": 14.85,
+          "firing": null
+        },
+        {
+          "t": 2504,
+          "x": 24.84,
+          "y": 58.5,
+          "z": 88.52,
+          "hp": 16.85,
+          "firing": null
+        },
+        {
+          "t": 3805,
+          "x": 24.84,
+          "y": 58.5,
+          "z": 88.52,
+          "hp": 19.85,
+          "firing": null
+        },
+        {
+          "t": 5158,
+          "x": 25.5,
+          "y": 60.02,
+          "z": 89.19,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 6407,
+          "x": 25.92,
+          "y": 60.67,
+          "z": 89.08,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 7602,
+          "x": 25.81,
+          "y": 59.5,
+          "z": 88.71,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 8811,
+          "x": 25.81,
+          "y": 59.5,
+          "z": 88.71,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 10004,
+          "x": 25.81,
+          "y": 59.5,
+          "z": 88.71,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 11205,
+          "x": 25.81,
+          "y": 59.5,
+          "z": 88.71,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 12404,
+          "x": 25.81,
+          "y": 59.5,
+          "z": 88.71,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 13605,
+          "x": 25.81,
+          "y": 59.5,
+          "z": 88.71,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 14808,
+          "x": 25.81,
+          "y": 59.5,
+          "z": 88.71,
+          "hp": 20,
+          "firing": null
+        }
+      ]
+    },
+    "q-l4vz24-7439-LONG-r1-6c9490d7/cccf4394-c827-43d7-9761-8efa15e6f687-1792770387320-31-ft": {
+      "recorded": {
+        "kind": "blaze",
+        "outcome": "death",
+        "diagnosis": "REFLEX_FAILED",
+        "evidence": "covering reflex melee=preempted: by projectile,melee=timeout: shield raised,projectile=done: shield raised; lost 2.5 health,melee=preempted: by projectile,melee=timeout: shield raised; lost 3.0 health,melee=timeout: shield raised; held 30 s and the condition has not cleared,melee=timeout: shield raised,melee=timeout: shield raised,projectile=done: shield raised; lost 2.5 health,melee=preempted: by projectile,projectile=done: shield raised; lost 2.5 health,melee=preempted: by projectile,projectile=running fired in time but death followed"
+      },
+      "armed": [
+        "projectile",
+        "melee",
+        "deflect"
+      ],
+      "terrain": "saved world",
+      "armedStatus": [
+        {
+          "id": "projectile",
+          "state": "armed"
+        },
+        {
+          "id": "melee",
+          "state": "armed"
+        },
+        {
+          "id": "deflect",
+          "state": "armed"
+        }
+      ],
+      "survived": true,
+      "died": false,
+      "healthBefore": 20,
+      "healthAfter": 20,
+      "minHealth": 20,
+      "events": [],
+      "recreated": {
+        "kind": "entity",
+        "id": "minecraft:blaze",
+        "offset": [
+          0.8853751701323915,
+          2,
+          -3.9007833582644764
+        ],
+        "from": "source.pos",
+        "at": [
+          75.39,
+          70,
+          88.61
+        ],
+        "reply": "Summoned new Blaze",
+        "action": [
+          {
+            "actionType": "look_at",
+            "arguments": {
+              "x": 75.38537517013239,
+              "y": 70.5,
+              "z": 88.60921664173553
+            }
+          },
+          {
+            "actionType": "wait",
+            "arguments": {
+              "durationMs": 1000
+            }
+          },
+          {
+            "actionType": "fight_target",
+            "arguments": {
+              "targetId": "c2ccd5ae-1988-435b-a63c-1a4977c1f2b9",
+              "pursue": true,
+              "shield": true,
+              "fleeAtHealth": 8,
+              "timeoutMs": 25000
+            }
+          }
+        ],
+        "results": [
+          {
+            "actionType": "look_at",
+            "state": "SUCCEEDED",
+            "reasonCode": "ACTION_COMPLETED",
+            "message": "Action completed"
+          },
+          {
+            "actionType": "wait",
+            "state": "SUCCEEDED",
+            "reasonCode": "ACTION_COMPLETED",
+            "message": "Action completed"
+          },
+          {
+            "actionType": "fight_target",
+            "state": "FAILED",
+            "reasonCode": "TARGET_NOT_VISIBLE",
+            "message": "Target is neither visible nor currently sensed; threat signals can persist after contact. Reacquire it before retrying"
+          }
+        ],
+        "end": [
+          80.3,
+          76.75,
+          83.49
+        ],
+        "endDistance": 14.49
+      },
+      "bodyAction": {
+        "state": "FAILED",
+        "reasonCode": "TARGET_NOT_VISIBLE",
+        "message": "Target is neither visible nor currently sensed; threat signals can persist after contact. Reacquire it before retrying",
+        "error": null
+      },
+      "track": [
+        {
+          "t": 131,
+          "x": 74.5,
+          "y": 67,
+          "z": 92.51,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 1389,
+          "x": 74.5,
+          "y": 67,
+          "z": 92.51,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 2604,
+          "x": 74.5,
+          "y": 67,
+          "z": 92.51,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 3980,
+          "x": 74.5,
+          "y": 67,
+          "z": 92.51,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 5188,
+          "x": 74.5,
+          "y": 67,
+          "z": 92.51,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 6385,
+          "x": 74.5,
+          "y": 67,
+          "z": 92.51,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 7602,
+          "x": 74.5,
+          "y": 67,
+          "z": 92.51,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 8786,
+          "x": 74.5,
+          "y": 67,
+          "z": 92.51,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 10011,
+          "x": 74.5,
+          "y": 67,
+          "z": 92.51,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 11401,
+          "x": 74.5,
+          "y": 67,
+          "z": 92.51,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 12593,
+          "x": 74.5,
+          "y": 67,
+          "z": 92.51,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 13839,
+          "x": 74.5,
+          "y": 67,
+          "z": 92.51,
+          "hp": 20,
+          "firing": null
+        },
+        {
+          "t": 15038,
+          "x": 74.5,
+          "y": 67,
+          "z": 92.51,
+          "hp": 20,
+          "firing": null
+        }
+      ]
+    }
+  },
+  "finishedAt": "2026-10-25T06:56:52.109Z",
+  "summary": {
+    "incidents": 10,
+    "survived": 10,
+    "died": 0,
+    "errors": 0
+  },
+  "comparison": {
+    "against": "/home/agaminggod/Desktop/Projects/arena-beat-game/evals/d39-blaze6/base-d31.json",
+    "rows": [
+      {
+        "id": "q-k3hoos-f670-LONG-r1-de910c4e/3abacedd-c34e-452f-a6bb-22401667482a-1792708199292-63-ft",
+        "old": "survived",
+        "new": "survived"
+      },
+      {
+        "id": "q-k6vjjh-445e-LONG-r1-6f845735/bbb01684-9e72-4510-8288-356254ec563f-1792714293734-48-ft",
+        "old": "survived",
+        "new": "survived"
+      },
+      {
+        "id": "q-k93y73-b1a9-LONG-r1-53a4293b/d5a4876d-50d9-43c4-a5f7-eaf27cee9a1e-1792718114774-90-ft",
+        "old": "survived",
+        "new": "survived"
+      },
+      {
+        "id": "q-kiuc06-6727-LONG-r1-667b99e1/2f15fc06-d655-4d03-a17c-9fcfcf84e8d3-1792733048454-7-ft",
+        "old": "died",
+        "new": "survived"
+      },
+      {
+        "id": "q-kjrycv-7894-LONG-r1-ef77f649/cc425f12-a989-440a-abe8-c1953ce0f133-1792734684355-18-ft",
+        "old": "survived",
+        "new": "survived"
+      },
+      {
+        "id": "q-kto03v-4ebf-LONG-r1-d098c2ff/83ac51ba-7027-4ae5-af06-037eb23245a4-1792751700906-48-ft",
+        "old": "survived",
+        "new": "survived"
+      },
+      {
+        "id": "q-kvu8gk-05ee-LONG-r1-f72a06e9/b8e068c4-89b2-44f0-bb02-83db387c0eab-1792754982011-21-ft",
+        "old": "survived",
+        "new": "survived"
+      },
+      {
+        "id": "q-kwyzoj-19f1-LONG-r1-1e85b417/b64ea0b8-0685-40dd-9246-91512ca09518-1792757317165-39-ft",
+        "old": "survived",
+        "new": "survived"
+      },
+      {
+        "id": "q-l3csmw-f7df-LONG-r1-ea546b8e/27fcbf27-6ac7-4bc6-9787-a3a139805d14-1792767584174-18-ft",
+        "old": "survived",
+        "new": "survived"
+      },
+      {
+        "id": "q-l4vz24-7439-LONG-r1-6c9490d7/cccf4394-c827-43d7-9761-8efa15e6f687-1792770387320-31-ft",
+        "old": "survived",
+        "new": "survived"
+      }
+    ]
+  }
+}

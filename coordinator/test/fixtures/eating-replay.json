@@ -1,0 +1,50 @@
+[
+  {
+    "trace": "B/S1-r2",
+    "series": [
+      {
+        "at": 1791585983571,
+        "observation": {
+          "ready": true,
+          "position": {
+            "x": 71.6467819533398,
+            "y": 41,
+            "z": 65.4406033242058
+          },
+          "player": {
+            "inLava": false,
+            "fireTicks": 179,
+            "health": 6.086670875549316,
+            "maxHealth": 20,
+            "foodLevel": 18,
+            "saturation": 0,
+            "gameMode": "survival",
+            "onFire": true,
+            "effects": []
+          },
+          "survival": {
+            "safe": true,
+            "canHealNow": true,
+            "signals": [
+              "heal_opportunity"
+            ],
+            "bestFood": {
+              "slot": 2,
+              "itemId": "minecraft:cooked_beef",
+              "nutrition": 8
+            }
+          },
+          "inventory": {
+            "items": []
+          },
+          "entities": [],
+          "blocks": [],
+          "view": {
+            "yaw": 33.69597625732422,
+            "pitch": 17.823701858520508
+          }
+        }
+      }
+    ]
+  }
+]

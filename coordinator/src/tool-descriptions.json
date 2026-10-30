@@ -1,0 +1,185 @@
+{
+  "version": 1,
+  "toolDescriptions": {
+    "taskMemory": [
+      {
+        "id": "tool:taskMemory:description",
+        "claim": "Persist historical places, routes, progress and lessons across deaths. Death sites, trails and workstations auto-record. shared:true shares selected entries in this world/dimension. Query pages include route waypoints and earlier deaths. Routes need from/to place keys and 2..64 waypoints. Reobserve before relying on any memory."
+      }
+    ],
+    "observe": [
+      {
+        "id": "tool:observe:description",
+        "claim": "Replies use format:\"minecraft-facts-v1\": data is the original JSON; {$rows:{columns,defaults?,rows,optional?}} holds column-ordered records (optional null = absent), defaults fill every row; {$ref:N} is values[N] of this reply; {$object:[[key,value],...]} keeps reserved keys. Null, missing fields, coverage and freshness keep meaning. observe reads fresh player facts as a complete snapshot with observationView.id. Action/sequence postAction without view sends changed whole sections vs the newest delivered view (observationView.baseId); full after 8 in a row or with no baseline. view:\"changes\"+afterObservationId diffs vs that exact delivered ID; view:\"full\" forces a snapshot. Apply observationView.replace/remove to the baseline; keep unchanged sections. observationView.retainMetadata names top-level sample fields copied from it; other metadata is current; missing fields are absent. Receipts and per-step history are unchanged. Missing, stale or other-world baselines return full; request view:\"full\" when unsure. Unavailable freshness barriers return explicitly stale cached facts."
+      }
+    ],
+    "capabilities": [
+      {
+        "id": "tool:capabilities:description",
+        "claim": "List action fields, query sections, limits and runtime support; no gameplay. Read each topic once. program: read before writing ArenaScript. control: lists topics; read tool:<name> or action:<actionType> before unfamiliar calls, follow nextOffset; topic all is complete. strategy: mechanics incl ores; no topic lists all. howto: topic <item>: sources vs what you have."
+      }
+    ],
+    "inspect": [
+      {
+        "id": "tool:inspect:description",
+        "claim": "Read player-accessible pages with coverage/freshness. hud: HUD/XP/F3 light; events: chat/toasts. Item needs slot; block needs visible x/y/z. Survey fields: include/exclude/limit. moveTo/act/sequence inspectAfter:{these args} returns the page as inspected after the body work."
+      }
+    ],
+    "actionStatus": [
+      {
+        "id": "tool:actionStatus:description",
+        "claim": "Read active handle or retained terminal receipt immediately; changes nothing. Completion and danger arrive as events."
+      }
+    ],
+    "cancelAction": [
+      {
+        "id": "tool:cancelAction:description",
+        "claim": "Cancel exact active handle and await authoritative terminal result. Stale handles cannot cancel another action."
+      }
+    ],
+    "replaceAction": [
+      {
+        "id": "tool:replaceAction:description",
+        "claim": "Replace latest handle. Active: cancel and await terminal result. Ended: return new handle + replacedAction. Uncertain cancellation blocks."
+      }
+    ],
+    "startAction": [
+      {
+        "id": "tool:startAction:description",
+        "claim": "Return an action handle immediately. Routine wakes wait up to 15 s while running; danger/dimension changes wake immediately, completion supplies fresh facts. Cancel exact handle to stop. Dependent actions still need fresh facts."
+      }
+    ],
+    "notebook": [
+      {
+        "id": "tool:notebook:description",
+        "claim": "Save/replace one note up to 2048 characters for this agent/world. Notes are hypotheses, never authoritative game evidence."
+      }
+    ],
+    "queryMemory": [
+      {
+        "id": "tool:queryMemory:description",
+        "claim": "Page this agent/world's notes, historical receipts and unresolved dispatches. Follow nextOffset. Earlier outcomes never establish current state."
+      }
+    ],
+    "runProgram": [
+      {
+        "id": "tool:runProgram:description",
+        "claim": "ArenaScript; receipt branches/tryResult(call,onError) handle failures. Use live-authored source; saved programs are outside this player's allowed actions. background:true gives handle; else await. One body. observationIntervalMs samples; expectedDurationMs<=timeout. Size loops from work, not timeout; queue early. standing:{id,when,ttlS}; guard:true repeats; goal clears. Same id replaces; bad edits keep guard. {id} deletes. Author standing guards with id, when and source; standing ignores background."
+      }
+    ],
+    "queueProgram": [
+      {
+        "id": "tool:queueProgram:description",
+        "claim": "Queue one authored successor for exact running afterProgramId/goalRevision/programVersion. Live-authored source; pure precondition reads fresh handoff facts and must be exactly true. Replaces pending successor. Only successful natural PROGRAM_EXHAUSTED starts it, with no pending decision and unchanged world/dimension/lifecycle. Failure/death/cancellation/manual finish/deadlines discard it. Timeout starts at handoff; expectedDurationMs must fit it. Runtime chooses no gameplay."
+      }
+    ],
+    "cancelQueuedProgram": [
+      {
+        "id": "tool:cancelQueuedProgram:description",
+        "claim": "Withdraw exact pending successor by afterProgramId/goalRevision/queueId. Predecessor keeps running; stale handles cannot cancel replacements."
+      }
+    ],
+    "programStatus": [
+      {
+        "id": "tool:programStatus:description",
+        "claim": "Read running program, pending decision/successor or latest terminal result immediately; changes nothing. End/decision events arrive asynchronously. Program completion does not complete the goal."
+      }
+    ],
+    "respondProgram": [
+      {
+        "id": "tool:respondProgram:description",
+        "claim": "Answer exact pending decision with a listed directive: continue preserves routine; replace requires new source; pause stops; finish requires factual goal verification. eventSequence identifies fresh facts."
+      }
+    ],
+    "cancelProgram": [
+      {
+        "id": "tool:cancelProgram:description",
+        "claim": "Cancel exact agent/goal-revision program and await result. New body actions stay blocked until cancellation is confirmed."
+      }
+    ],
+    "lookAround": [
+      {
+        "id": "tool:lookAround:description",
+        "claim": "Turn 2..8 camera steps with fresh samples. Return bounded historical sightings with time, last seeing heading and omitted counts. Optional survey merges headings; reacquire before acting."
+      }
+    ],
+    "survey": [
+      {
+        "id": "tool:survey:description",
+        "claim": "View-cone survey: structures named within 64 blocks, otherwise seen built size; poi (portals/bells/beds/workstations), biomes (nearest visible ground), built (possible player builds), blocks (lava pools/spawners/chests), caves, veins. Caves/structures show seen ore without digging. Big features count to 256 blocks; single blocks within 24. blocks:<id> searches exclude stone/bulk terrain. Threats always included; passive updates retain recent sightings."
+      }
+    ],
+    "control": [
+      {
+        "id": "tool:control:description",
+        "claim": "Hold inputs 1..200 ticks; turns before movement/clicks; instantLook snaps. Raw input can cross drops; sneak follows vanilla. groundAhead: unknown is unverified. Prefer moveTo for travel. Water: jump rises, release sinks; underwater sprint follows pitch. Food: slot + use:true 40 ticks."
+      }
+    ],
+    "moveTo": [
+      {
+        "id": "tool:moveTo:description",
+        "claim": "Traverse acquired terrain in ~30-block legs; swims and surfaces early if breath runs short. sprint defaults true. REACHED_FRONTIER is partial; choose leg. Near stops unverified."
+      }
+    ],
+    "travelTo": [
+      {
+        "id": "tool:travelTo:description",
+        "claim": "retrace:true with x,y,z and optional dimension follows your walked route (survives death); no connected route fails NO_ROUTE. Enter portals and reissue after dimension changes. Long trip in one call, the fast choice past ~30 blocks: give x,z (y optional) of a seen or known place, or yaw+distance. The body sprints over seen ground leg by leg and, where that ends, bridges gaps/lava, pillars ledges or tunnels walls with hotbar blocks and tools (build:false never builds). Stops with where and why on arrival (tolerance, default 3), damage, a new hostile in 16 or any within 6, health at minHealth (default 8), food 6, no blocks for a needed bridge, no way on, stopWhenSeen block id in view, or timeoutMs (default 300000). fightThrough:true fights a hostile within 6 or one that hits you (fight_target rules, fleeAtHealth=minHealth), then goes on; stops on low health, a hazard or a 2nd failed fight."
+      }
+    ],
+    "exploreFrontier": [
+      {
+        "id": "tool:exploreFrontier:description",
+        "claim": "List stood spots and seen_surface blocks with dy, heading and coverage; footing/headroom/hazards are unverified. blockId filters remembered blocks. Chooses nothing."
+      }
+    ],
+    "mine": [
+      {
+        "id": "tool:mine:description",
+        "claim": "Mine the chosen block with exact blockId and held item; never selects a tool. It turns to a visible part at player speed; autoAim:true adds a separate look_at. May clear instant-break grass/flowers via vanilla attacks; reports it; solids fail. usesLeft reports wear; veins may extend unseen. Nearby drops collect. Failure chooses no substitute."
+      }
+    ],
+    "say": [
+      {
+        "id": "tool:say:description",
+        "claim": "Public chat, direct message to an observed player UUID, or nearby proximity speech. Limit: 256 Unicode code points."
+      }
+    ],
+    "wait": [
+      {
+        "id": "tool:wait:description",
+        "claim": "Pause for the specified duration and await the body result."
+      }
+    ],
+    "act": [
+      {
+        "id": "tool:act:description",
+        "claim": "One action. cast_obsidian x,y,z: water+empty bucket cast obsidian in place, count (default 4) by pouring water over the seen lava pool at x,y,z, or frame:true a 4x5 portal frame with lowest corner x,y,z (axis x|z); stops at count/frame done, no lava in reach, damage, hostile, timeout. barter_until itemId,count: gold armour worn, throws gold ingots one at a time to the nearest calm piglin, picks up returns; stops at count gained, no gold, angry piglin, damage, timeout. dig_to: one call digs a staircase to y or tunnel to x/z at body speed (fast way deep), past caves, trickles; stops with facts: lava, lakes, mob, damage, worn tool, full bag. Aim at seen geometry; routes use acquired terrain. pick_up_item needs fresh UUID; nearby drops may be gone; owned receipts: ITEM_ALREADY_PICKED_UP. fight_target/use_ranged can continue until a count, with pickup: untilItem+untilCount keep fighting that mob type, picking up drops, until the inventory holds it (roof:true vs endermen); an open plan step has:<drop>*N for the target's mob (blaze rod, ender pearl) does this to N unless single:true. fight_target keeps target unless continueWithAttackers or highest_risk/nearest_attacker switches attackers with hysteresis; excludes creepers; players need includePlayers:true. Threats risk-ordered; visible=seen now. replaceAction fight_target retargets, keeping weapon/swing timing. place_block: x,y,z empty cell; face clicked support side; inventory auto-swaps. furnace_transaction: load input+fuel, take_output all; furnaces show ETA. select_item: hotbar 0-8, creative fills empty slot; select_tool swaps sourceSlot 0-35 with hotbarSlot 0-8, selects (non-tools: minRemainingDurability 0). use_item: eyes near a stronghold hover at its anchor, not the portal room; conserve 12 minus filled frames."
+      }
+    ],
+    "sequence": [
+      {
+        "id": "tool:sequence:description",
+        "claim": "Run 2..8 authored actions in order, stopping on first factual failure. Optional finish:{summary} verifies only after every action succeeds and fresh final facts exist. Movement/mining/pickup return fresh postAction after last attempted step."
+      }
+    ],
+    "taskPlan": [
+      {
+        "id": "tool:taskPlan:description",
+        "claim": "Advisory plan; no gameplay or goal change. now.plan has current needs; read detail if it changes action. Replace at meaningful revisions with the whole tree, stable IDs/dependencies; inventory/world use evidence, manual/milestone reports. intent: only when your commitment changes, beside actions (step,why,via,until,unless,next)."
+      }
+    ],
+    "takeTask": [
+      {
+        "id": "tool:takeTask:description",
+        "claim": "No task: adopt delivered operator words. request must match exactly; omitted uses latest. resume:true resumes paused work. requesterId selects operator. Minecraft starts, validates (PENDING), or refuses; success starts a task turn."
+      }
+    ],
+    "finish": [
+      {
+        "id": "tool:finish:description",
+        "claim": "Verify immutable goal; failures return unmet facts. AWAITING_OPERATOR_CONFIRMATION: report once, wait; never repeat work/verification. Self-preservation leaves confirmation pending. Only operator requests change work; verify after handling them."
+      }
+    ]
+  }
+}

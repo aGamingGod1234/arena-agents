@@ -1,0 +1,28 @@
+{
+  "defense": {
+    "tool": "runProgram",
+    "arguments": {
+      "standing": {
+        "id": "defense",
+        "when": "player.state().threat !== null",
+        "guard": true
+      },
+      "maxActions": 8,
+      "timeoutMs": 20000,
+      "source": "program.onUnhandledAttention(\"continue_and_notify\", { survival: \"continue_and_notify\" }); const t = player.state().threat; if (t !== null) { const melee = t.type !== \"minecraft:creeper\" && (t.type === \"minecraft:zombie\" || t.type === \"minecraft:skeleton\"); if (melee && t.distance <= 3 && player.state().health >= 10) { const hit = await tryResult(player.fightTarget({ targetId: t.uuid, timeoutMs: 6000, fleeAtHealth: 8 })); if (hit.state !== \"SUCCEEDED\" && hit.reasonCode !== \"TARGET_GONE\") { await tryResult(player.fleeFrom({ targetId: t.uuid, distance: 12, timeoutMs: 6000 })); } } else { const run = await tryResult(player.fleeFrom({ targetId: t.uuid, distance: 12, timeoutMs: 6000 })); if (run.state !== \"SUCCEEDED\" && run.reasonCode !== \"TARGET_GONE\" && melee) { await tryResult(player.fightTarget({ targetId: t.uuid, timeoutMs: 6000, fleeAtHealth: 4 })); } } const food = player.state().bestFood; if (player.state().health < 10 && player.state().threat === null && food !== null) { await player.selectItem({ itemId: food.itemId }); await player.useItem({ durationMs: 1600 }); } }"
+    }
+  },
+  "air": {
+    "tool": "runProgram",
+    "arguments": {
+      "standing": {
+        "id": "air",
+        "when": "player.state().underWater && player.state().airSecondsLeft < 10",
+        "guard": true
+      },
+      "maxActions": 2,
+      "timeoutMs": 10000,
+      "source": "program.onUnhandledAttention(\"continue_and_notify\", { survival: \"continue_and_notify\" }); const p = player.state(); const b = p.breathable; if (b !== null) { await tryResult(player.moveTo({ x: b.x, y: b.y, z: b.z, tolerance: 0.5, sprint: true })); } else { await player.control({ forward: 0, strafe: 0, jump: true, sneak: false, sprint: false, attack: false, use: false, yaw: p.yaw, pitch: -60, selectedSlot: 0, hand: \"main\", ticks: 20 }); }"
+    }
+  }
+}

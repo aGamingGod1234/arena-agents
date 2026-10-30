@@ -1,0 +1,4866 @@
+package dev.agaminggod.arenaagents.server.bridge;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
+import com.google.gson.JsonObject;
+import dev.agaminggod.arenaagents.agent.AgentConstants;
+import dev.agaminggod.arenaagents.agent.AgentDomainException;
+import dev.agaminggod.arenaagents.agent.AgentGoal;
+import dev.agaminggod.arenaagents.agent.AgentId;
+import dev.agaminggod.arenaagents.agent.AgentLifecycleState;
+import dev.agaminggod.arenaagents.agent.AgentProfile;
+import dev.agaminggod.arenaagents.agent.AgentRecord;
+import dev.agaminggod.arenaagents.agent.AgentTransition;
+import dev.agaminggod.arenaagents.agent.AgentValidators;
+import dev.agaminggod.arenaagents.agent.goal.GoalPredicate;
+import dev.agaminggod.arenaagents.agent.goal.GoalEvidence;
+import dev.agaminggod.arenaagents.control.AgentControlCatalog;
+import dev.agaminggod.arenaagents.control.AgentControlModelOption;
+import dev.agaminggod.arenaagents.protocol.ActionType;
+import dev.agaminggod.arenaagents.protocol.ProtocolCodec;
+import dev.agaminggod.arenaagents.protocol.ProtocolException;
+import dev.agaminggod.arenaagents.protocol.ProtocolConstants;
+import dev.agaminggod.arenaagents.scenario.ScenarioAgentEvent;
+import dev.agaminggod.arenaagents.scenario.runtime.ScenarioRuntimeService;
+import dev.agaminggod.arenaagents.server.AgentRuntimeHooks;
+import dev.agaminggod.arenaagents.server.AgentSavedData;
+import dev.agaminggod.arenaagents.server.AgentRuntimeRouter;
+import dev.agaminggod.arenaagents.server.AgentActivityPresentation;
+import dev.agaminggod.arenaagents.server.AgentChatReporter;
+import dev.agaminggod.arenaagents.server.AgentVerboseChat;
+import dev.agaminggod.arenaagents.server.AgentVerboseState;
+import dev.agaminggod.arenaagents.server.CodexAgentManager;
+import dev.agaminggod.arenaagents.server.conversation.ConversationAudience;
+import dev.agaminggod.arenaagents.server.conversation.ConversationEvent;
+import dev.agaminggod.arenaagents.server.conversation.ConversationKind;
+import dev.agaminggod.arenaagents.server.conversation.ConversationWakePolicy;
+import dev.agaminggod.arenaagents.server.conversation.DeliveryReceipt;
+import dev.agaminggod.arenaagents.server.conversation.PendingConversationWake;
+import dev.agaminggod.arenaagents.server.conversation.ServerAgentConversationRouter;
+import dev.agaminggod.arenaagents.server.goal.PendingGoalDraft;
+import dev.agaminggod.arenaagents.server.goal.GoalPredicateWorldValidator;
+import dev.agaminggod.arenaagents.server.goal.GoalInventoryCapacity;
+import dev.agaminggod.arenaagents.server.goal.GoalSpecWireCodec;
+import dev.agaminggod.arenaagents.server.goal.GoalVerificationRuntime;
+import dev.agaminggod.arenaagents.server.goal.GoalSubmission;
+import dev.agaminggod.arenaagents.server.perception.ObservationBlockTags;
+import dev.agaminggod.arenaagents.server.perception.ObservationDispatchQueue;
+import dev.agaminggod.arenaagents.server.perception.AttentionFactDelta;
+import dev.agaminggod.arenaagents.server.perception.AttentionSignalPolicy;
+import dev.agaminggod.arenaagents.server.perception.ServerObservationCollector;
+import dev.agaminggod.arenaagents.server.perception.ServerObservationWireBudget;
+import dev.agaminggod.arenaagents.server.runtime.ActionTimelines;
+import dev.agaminggod.arenaagents.server.runtime.ServerActionExecutor;
+import dev.agaminggod.arenaagents.server.runtime.ServerActionProgress;
+import dev.agaminggod.arenaagents.server.runtime.ServerActionObservation;
+import dev.agaminggod.arenaagents.server.runtime.ActionProvenance;
+import dev.agaminggod.arenaagents.server.runtime.ServerActionRequest;
+import dev.agaminggod.arenaagents.server.runtime.ServerActionResult;
+import dev.agaminggod.arenaagents.server.runtime.ServerActionState;
+import dev.agaminggod.arenaagents.server.runtime.GoalCompletionVerifier;
+import dev.agaminggod.arenaagents.server.runtime.input.AgentInputRuntime;
+import dev.agaminggod.arenaagents.server.runtime.input.LeasedServerInputController;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketTimeoutException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.security.GeneralSecurityException;
+import java.security.SecureRandom;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.LongSupplier;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+
+public final class MultiplexedServerBridge implements AgentRuntimeHooks, AutoCloseable {
+	public static final String LOOPBACK_HOST = "127.0.0.1";
+	public static final int DEFAULT_PORT = 25_570;
+	public static final int CONNECTION_QUEUE_CAP = 256;
+	public static final int AGENT_QUEUE_CAP = 32;
+	/** Default idle heartbeat spacing; urgent and explicitly requested observations are unaffected. */
+	public static final int DEFAULT_HEARTBEAT_MIN_INTERVAL_TICKS = 10;
+	private static final int OBSERVATIONS_PER_TICK = AgentConstants.DEFAULT_AGENT_LIMIT;
+	private static final int HANDSHAKE_TIMEOUT_MS = 5_000;
+	private static final int PREAUTH_SESSION_CAP = 8;
+	private static final int PREAUTH_ACCEPT_RATE_CAP = 32;
+	private static final long PREAUTH_ACCEPT_RATE_WINDOW_NANOS = TimeUnit.SECONDS.toNanos(1L);
+	private static final int AUTHENTICATION_NONCE_BYTES = 32;
+	private static final int AUTHENTICATION_TOKEN_LENGTH = 43;
+	private static final String AUTHENTICATION_CONTEXT = "arena-agents-v2";
+	private static final String ACTION_RESULT_REPLAY_CONTEXT = "arena-agents-v2-action-result-replay";
+	static final long HANDSHAKE_RETRY_WAIT_MS = 25L;
+	private static final int MIN_SECRET_LENGTH = 32;
+	private static final int MAX_SECRET_LENGTH = 512;
+	private static final int MAX_TRACKED_IDS = 4_096;
+	private static final int MAX_ACTIVATED_GOAL_SPEC_REQUESTS = AgentConstants.DEFAULT_AGENT_LIMIT * 2;
+	private static final int SERVER_TASK_BULK_CAP = 4_096;
+	private static final int SERVER_TASK_URGENT_RESERVE = 512;
+	private static final int SERVER_TASK_CONTROL_RESERVE = 512;
+	private static final int SERVER_TASKS_PER_TICK = 256;
+	private static final int SERVER_CONTROL_TASKS_PER_TICK = 16;
+	private static final int SERVER_BULK_TASKS_PER_TICK = 8;
+	private static final int SERVER_INSPECTION_TASKS_PER_TICK = 8;
+	// One second of consecutive failed journal writes, then unrecorded acceptances go back to the model.
+	private static final int JOURNAL_FAILURE_REJECTION_THRESHOLD = 20;
+	private static final long JOURNAL_FAILURE_WARNING_INTERVAL_NANOS = 5_000_000_000L;
+	private static final int OBSERVATION_HISTORY_CAPACITY = 4_096;
+	private static final int MAX_TARGET_IDS_PER_OBSERVATION = 64;
+	private static final int MAX_TARGET_IDS_WITH_INSPECTIONS = 320;
+	private static final int MAX_CONVERSATION_SOURCES_PER_AGENT = 16;
+	private static final long CATALOG_DISCOVERY_RETRY_BASE_NANOS = 50_000_000L;
+	private static final int CATALOG_DISCOVERY_MAX_BACKOFF_SHIFT = 6;
+	private static final String MAX_OBSERVATION_MESSAGE_ID = "m".repeat(128);
+	private static final String HEARTBEAT_MIN_INTERVAL_TICKS_PROPERTY =
+			"arenaagents.observationHeartbeatMinIntervalTicks";
+	private static final String COORDINATOR_OFFLINE_MESSAGE =
+			"AI agent coordinator is offline; check logs/arena-agents-coordinator-error.log for the startup cause";
+	private static final Logger LOGGER = LoggerFactory.getLogger(MultiplexedServerBridge.class);
+	private static final Set<String> INBOUND_TYPES = Set.of(
+			"auth_challenge", "hello", "catalog_snapshot", "coordinator_status", "agent_ready", "planning_state", "goal_completed", "conversation_wake_ack", "goal_spec_proposal", "task_request", "director_script_result", "request_observation", "inspection_request", "action_command", "action_cancel", "action_result_ack", "agent_error", "agent_notice", "verbose_event", "task_view", "reflex_update", "heartbeat"
+	);
+
+	private final CodexAgentManager manager;
+	private final AgentRuntimeRouter router;
+	private final ServerActionExecutor actionExecutor;
+	private final ServerAgentConversationRouter conversationRouter;
+	private final ServerObservationCollector observations;
+	private final dev.agaminggod.arenaagents.server.runtime.reflex.ReflexEngine reflexes;
+	/** What the reflexes see of each agent's own action: whether it only moves, and how it ended. */
+	private final dev.agaminggod.arenaagents.server.runtime.reflex.ReflexEngine.Body reflexBody = new dev.agaminggod.arenaagents.server.runtime.reflex.ReflexEngine.Body() {
+		@Override
+		public dev.agaminggod.arenaagents.server.runtime.ServerActionRequest active(AgentId agentId) {
+			return actionExecutor.activeRequest(agentId);
+		}
+
+		@Override
+		public dev.agaminggod.arenaagents.server.runtime.ServerActionResult last(AgentId agentId) {
+			return actionExecutor.lastResult(agentId);
+		}
+	};
+	private final Map<AgentId, String> progressReceiptScopes = new HashMap<>();
+	private final GoalVerificationRuntime goalVerificationRuntime;
+	private final BridgeEnvelopeCodec codec = new BridgeEnvelopeCodec();
+	private static final GoalSpecWireCodec GOAL_SPEC_WIRE_CODEC = new GoalSpecWireCodec();
+	private final String serverInstanceId = UUID.randomUUID().toString();
+	private final Object publicationLock = new Object();
+	private final ObservationPublication observationPublication = new ObservationPublication(
+			publicationLock,
+			AgentConstants.DEFAULT_AGENT_LIMIT,
+			OBSERVATIONS_PER_TICK,
+			configuredHeartbeatMinimumIntervalTicks(),
+			(agentId, payload) -> ServerObservationWireBudget.fitOwned(payload, candidate ->
+					codec.encodedLineBytesForPayload(
+							2, serverInstanceId, agentId.toString(), "observation",
+							MAX_OBSERVATION_MESSAGE_ID, candidate
+					) <= BridgeEnvelopeCodec.MAX_LINE_BYTES)
+	);
+	private final String secret;
+	private final int port;
+	private final ServerSocketFactory serverSockets;
+	private final LongSupplier nanoTime;
+	private final AgentVerboseState verboseState;
+	private final BoundedServerTaskQueue serverTasks = new BoundedServerTaskQueue(
+			SERVER_TASK_BULK_CAP + SERVER_TASK_URGENT_RESERVE + SERVER_TASK_CONTROL_RESERVE,
+			SERVER_TASK_URGENT_RESERVE,
+			SERVER_TASK_CONTROL_RESERVE
+	);
+	private final AtomicBoolean running = new AtomicBoolean();
+	private final AtomicBoolean coordinatorDisconnectPending = new AtomicBoolean();
+	private final AtomicBoolean activeDisconnectPending = new AtomicBoolean();
+	private final AtomicLong messageIds = new AtomicLong();
+	private final AtomicLong registryPublicationRevision = new AtomicLong();
+	private final AtomicLong sessionGenerations = new AtomicLong();
+	private final SecureRandom authenticationRandom = new SecureRandom();
+	private final ProgramActionLedger programActions = new ProgramActionLedger();
+	private final TerminalResultLedger terminalResults = new TerminalResultLedger();
+	private List<ServerActionResult> pendingDurableTerminalResults = new ArrayList<>();
+	private int consecutiveJournalFailures;
+	private long lastJournalFailureWarningNanos;
+	private List<PendingRespawnPublication> pendingRespawnPublications = new ArrayList<>();
+	private final DurableActionJournal actionJournal;
+	private final Object verboseControlLock = new Object();
+	private final Set<AgentId> protocolKnownAgentIds = new HashSet<>();
+	private final Set<AgentId> coordinatorReadyAgentIds = new HashSet<>();
+	private final LinkedHashSet<Session> preauthSessions = new LinkedHashSet<>();
+	private final ArrayDeque<Long> preauthAccepts = new ArrayDeque<>();
+	private final Map<AgentId, RecoveryObservationIdentity> recoveryObservationIdentities = new HashMap<>();
+	private final Map<UUID, ActivatedGoalSpecRequest> activatedGoalSpecRequests = new LinkedHashMap<>();
+	// Latest launch notice per agent, replayed to players who join after it was broadcast.
+	private final Map<AgentId, AgentNotice> latestAgentNotices = new java.util.concurrent.ConcurrentHashMap<>();
+	private volatile java.util.function.Consumer<AcceptedAgentNotice> agentNoticeHook = ignored -> { };
+	private volatile Runnable handshakeSnapshotHook = () -> { };
+	private volatile Runnable observationEnqueueHook = () -> { };
+	private volatile java.util.function.Consumer<AutoCloseable> handshakeCommittedHook = ignored -> { };
+	private boolean disconnectInProgress;
+	private long coordinatorLifecycleGeneration;
+	private long verboseControlRevision;
+	private long publishedVerboseControlRevision;
+	private volatile Session session;
+	private volatile ServerSocket serverSocket;
+	private volatile Set<String> catalogProfiles = Set.of();
+	private volatile List<AgentControlModelOption> catalogModels = List.of();
+	private volatile List<dev.agaminggod.arenaagents.control.AgentControlProvider> catalogProviders = List.of();
+	private boolean actionJournalHydrated;
+	private volatile boolean catalogLoaded;
+	private boolean catalogDiscoveryPending;
+	private int catalogDiscoveryAttempts;
+	private long catalogDiscoveryRetryAtNanos;
+	private long catalogDiscoveryGeneration;
+	private String catalogDiscoveryFailureCode;
+	private volatile long admissionTicks;
+	private volatile long publicationTicks;
+
+	public MultiplexedServerBridge(CodexAgentManager manager) {
+		this(manager, configuredPort(), configuredSecretPath(), new AgentVerboseState());
+	}
+
+	public MultiplexedServerBridge(CodexAgentManager manager, AgentVerboseState verboseState) {
+		this(manager, configuredPort(), configuredSecretPath(), verboseState);
+	}
+
+	public MultiplexedServerBridge(
+			CodexAgentManager manager,
+			AgentVerboseState verboseState,
+			GoalVerificationRuntime goalVerificationRuntime
+	) {
+		this(manager, configuredPort(), configuredSecretPath(), verboseState, goalVerificationRuntime);
+	}
+
+	public MultiplexedServerBridge(CodexAgentManager manager, Path secretPath) {
+		this(manager, DEFAULT_PORT, secretPath, new AgentVerboseState());
+	}
+
+	public MultiplexedServerBridge(CodexAgentManager manager, Path secretPath, AgentVerboseState verboseState) {
+		this(manager, DEFAULT_PORT, secretPath, verboseState);
+	}
+
+	public MultiplexedServerBridge(CodexAgentManager manager, int port, Path secretPath) {
+		this(manager, port, secretPath, new AgentVerboseState());
+	}
+
+	public MultiplexedServerBridge(
+			CodexAgentManager manager,
+			int port,
+			Path secretPath,
+			AgentVerboseState verboseState
+	) {
+		this(manager, port, secretPath, verboseState, defaultGoalVerificationRuntime(manager));
+	}
+
+	public MultiplexedServerBridge(
+			CodexAgentManager manager,
+			Path secretPath,
+			AgentVerboseState verboseState,
+			GoalVerificationRuntime goalVerificationRuntime
+	) {
+		this(manager, DEFAULT_PORT, secretPath, verboseState, goalVerificationRuntime);
+	}
+
+	public MultiplexedServerBridge(
+			CodexAgentManager manager,
+			int port,
+			Path secretPath,
+			AgentVerboseState verboseState,
+			GoalVerificationRuntime goalVerificationRuntime
+	) {
+		this(manager, port, secretPath, verboseState, goalVerificationRuntime, ServerSocket::new, System::nanoTime);
+	}
+
+	MultiplexedServerBridge(
+			CodexAgentManager manager,
+			int port,
+			Path secretPath,
+			ServerSocketFactory serverSockets,
+			LongSupplier nanoTime
+	) {
+		this(
+				manager, port, secretPath, new AgentVerboseState(), defaultGoalVerificationRuntime(manager),
+				serverSockets, nanoTime
+		);
+	}
+
+	MultiplexedServerBridge(
+			CodexAgentManager manager,
+			int port,
+			Path secretPath,
+			ServerSocketFactory serverSockets,
+			LongSupplier nanoTime,
+			DurableActionJournal actionJournal
+	) {
+		this(
+				manager, port, readSecret(secretPath), new AgentVerboseState(), defaultGoalVerificationRuntime(manager),
+				serverSockets, nanoTime, actionJournal
+		);
+	}
+
+	private MultiplexedServerBridge(
+			CodexAgentManager manager,
+			int port,
+			Path secretPath,
+			AgentVerboseState verboseState,
+			GoalVerificationRuntime goalVerificationRuntime,
+			ServerSocketFactory serverSockets
+	) {
+		this(manager, port, secretPath, verboseState, goalVerificationRuntime, serverSockets, System::nanoTime);
+	}
+
+	private MultiplexedServerBridge(
+			CodexAgentManager manager,
+			int port,
+			Path secretPath,
+			AgentVerboseState verboseState,
+			GoalVerificationRuntime goalVerificationRuntime,
+			ServerSocketFactory serverSockets,
+			LongSupplier nanoTime
+	) {
+		this(
+				manager, port, readSecret(secretPath), verboseState, goalVerificationRuntime,
+				serverSockets, nanoTime
+		);
+	}
+
+	private MultiplexedServerBridge(
+			CodexAgentManager manager,
+			int port,
+			String preparedSecret,
+			AgentVerboseState verboseState,
+			GoalVerificationRuntime goalVerificationRuntime,
+			ServerSocketFactory serverSockets,
+			LongSupplier nanoTime
+	) {
+		this(manager, port, preparedSecret, verboseState, goalVerificationRuntime, serverSockets, nanoTime, defaultActionJournal(manager));
+	}
+
+	private MultiplexedServerBridge(
+			CodexAgentManager manager,
+			int port,
+			String preparedSecret,
+			AgentVerboseState verboseState,
+			GoalVerificationRuntime goalVerificationRuntime,
+			ServerSocketFactory serverSockets,
+			LongSupplier nanoTime,
+			DurableActionJournal actionJournal
+	) {
+		this.manager = Objects.requireNonNull(manager, "manager must not be null");
+		this.actionJournal = Objects.requireNonNull(actionJournal, "actionJournal must not be null");
+		this.router = new AgentRuntimeRouter(manager);
+		if (port < 0 || port > 65_535) throw new IllegalArgumentException("bridge port must be between 0 and 65535");
+		this.port = port;
+		this.serverSockets = Objects.requireNonNull(serverSockets, "server socket factory must not be null");
+		this.nanoTime = Objects.requireNonNull(nanoTime, "nanoTime must not be null");
+		this.secret = validatePreparedSecret(preparedSecret);
+		this.verboseState = Objects.requireNonNull(verboseState, "verboseState must not be null");
+		this.goalVerificationRuntime = Objects.requireNonNull(goalVerificationRuntime, "goalVerificationRuntime must not be null");
+		this.conversationRouter = new ServerAgentConversationRouter(
+				manager, this::publishConversationEvent, this::publishGoalSpecRequest);
+		this.actionExecutor = new ServerActionExecutor(
+				manager, this::sendActionResult, this::sendActionProgress,
+				dev.agaminggod.arenaagents.server.runtime.ServerProtectionPolicy.TRUSTED_LOCAL_OPERATOR,
+				this::sendRespawnResultBeforeControl,
+				conversationRouter
+		);
+		this.observations = new ServerObservationCollector(manager, actionExecutor);
+		this.reflexes = manager.server() == null ? new dev.agaminggod.arenaagents.server.runtime.reflex.ReflexEngine(manager)
+				: dev.agaminggod.arenaagents.server.runtime.reflex.ReflexEngine.of(manager.server(), manager);
+		this.reflexes.actionProbe(agentId -> actionExecutor.activeRequest(agentId) != null);
+		BridgeTap.bind(manager.server(), actionExecutor);
+	}
+
+	public static MultiplexedServerBridge withPreparedSecret(CodexAgentManager manager, int port, String secret) {
+		return withPreparedSecret(manager, port, secret, new AgentVerboseState(), defaultGoalVerificationRuntime(manager));
+	}
+
+	public static MultiplexedServerBridge withPreparedSecret(
+			CodexAgentManager manager,
+			int port,
+			String secret,
+			AgentVerboseState verboseState
+	) {
+		return withPreparedSecret(manager, port, secret, verboseState, defaultGoalVerificationRuntime(manager));
+	}
+
+	public static MultiplexedServerBridge withPreparedSecret(
+			CodexAgentManager manager,
+			int port,
+			String secret,
+			AgentVerboseState verboseState,
+			GoalVerificationRuntime goalVerificationRuntime
+	) {
+		return new MultiplexedServerBridge(
+				manager, port, secret, verboseState, goalVerificationRuntime, ServerSocket::new, System::nanoTime
+		);
+	}
+
+	public synchronized void start() {
+		start(serverSockets);
+	}
+
+	synchronized void start(ServerSocketFactory socketFactory) {
+		Objects.requireNonNull(socketFactory, "server socket factory must not be null");
+		hydrateActionJournal();
+		if (!running.compareAndSet(false, true)) {
+			return;
+		}
+		ServerSocket socket = null;
+		try {
+			socket = socketFactory.open();
+			socket.setReuseAddress(true);
+			socket.bind(new InetSocketAddress(InetAddress.getByName(LOOPBACK_HOST), port), 1);
+			serverSocket = socket;
+			manager.setRuntimeHooks(this);
+			Thread.ofPlatform().daemon().name("arenaagents-v2-accept").start(this::acceptLoop);
+		} catch (IOException exception) {
+			running.set(false);
+			if (socket != null) {
+				try {
+					socket.close();
+				} catch (IOException closeException) {
+					exception.addSuppressed(closeException);
+				}
+			}
+			throw new BridgeProtocolException("BRIDGE_BIND_FAILED", "Could not bind " + LOOPBACK_HOST + ":" + port, exception);
+		}
+	}
+
+	@FunctionalInterface
+	interface ServerSocketFactory {
+		ServerSocket open() throws IOException;
+	}
+
+	private void flushPublicChat() {
+		for (AgentRecord record : manager.coordinatorVisibleRecords()) {
+			if (!coordinatorReadyAgentIds.contains(record.agentId())) continue;
+			manager.findAgentPlayer(record.agentId()).ifPresent(player -> {
+				try {
+					dev.agaminggod.arenaagents.server.perception.PlayerObservationEvents.deliverPublicChat(player,
+							chat -> conversationRouter.deliverObservedPublicChat(record, chat.sourceId(), "", chat.text(), player.level()));
+				} catch (AgentDomainException ignored) {
+					// Disconnects retain the unread packet for the next ready session.
+				}
+			});
+		}
+	}
+
+	/**
+	 * Admits coordinator work and applies action input at the start of the Minecraft tick.
+	 * Every callback in this method must run on the server thread.
+	 */
+	public void startTick() {
+		admissionTicks++;
+		flushPublicChat();
+		drainServerTasks();
+	}
+
+	/** Publishes terminal results and post-physics observations at the end of the tick. */
+	public void endTick() {
+		publicationTicks++;
+		flushPublicChat();
+		// Native hand-use and vanilla physics run after startTick returns. Keep inspection
+		// collection here so urgent input is physically applied before expensive world reads.
+		serverTasks.drainInspections(SERVER_INSPECTION_TASKS_PER_TICK, this::runServerTask);
+		publishPendingDisconnects();
+		publishPendingVerboseControl();
+		publishCatalogDiscoveryRetry();
+		replayPendingTerminalResults();
+		List<AgentRecord> visibleRecords = manager.coordinatorVisibleRecords();
+		List<AgentId> observationAgents = registeredObservationIds(visibleRecords);
+		Set<AgentId> observationAgentSet = Set.copyOf(observationAgents);
+		Session connected = session;
+		for (var change : observations.changedActiveAgentSamples(visibleRecords, connected != null && connected.dropAheadFacts)) {
+			AgentId agentId = change.agentId();
+			if (!observationAgentSet.contains(agentId)) continue;
+			if (change.forceAttention()) {
+				observationPublication.markAttention(agentId);
+				queueUrgentObservation(agentId);
+			} else if (change.sampleNow()) {
+				// Collected now and published as sampleOnly: authored orders and watchers see the drop ahead change, and the
+				// coordinator schedules no model turn for it.
+				observationPublication.markSample(agentId);
+				queueUrgentObservation(agentId);
+			} else {
+				// Keep quiet samples on the normal queue so safe-air churn cannot
+				// continually displace a due heartbeat.
+				queueObservation(agentId);
+			}
+		}
+		observationPublication.scheduleIdleHeartbeat(observationAgents);
+		observationPublication.drain(this::sendObservation);
+	}
+
+	/** Compatibility entry point for verification and embedders that do not expose tick phases. */
+	public void tick() {
+		startTick();
+		endTick();
+	}
+
+	private void drainServerTasks() {
+		serverTasks.drainBeforePhysics(
+				SERVER_TASKS_PER_TICK - SERVER_CONTROL_TASKS_PER_TICK - SERVER_BULK_TASKS_PER_TICK - SERVER_INSPECTION_TASKS_PER_TICK,
+				SERVER_CONTROL_TASKS_PER_TICK, SERVER_BULK_TASKS_PER_TICK,
+				this::runServerTask, this::executeAcceptedInput);
+	}
+
+	/**
+	 * Forces admitted actions before they run, then forces again so a result that finishes in the executor leaves in the
+	 * same tick. While the journal cannot write, only agents whose acceptance is still staged wait; the rest keep running.
+	 */
+	private void executeAcceptedInput() {
+		boolean durable = flushActionJournalGroup();
+		// Reflexes run first: an agent whose rule fires this tick has its action paused (not ticked) under the firing.
+		// Verification fixtures may allocate the bridge without its constructor; they have no reflexes.
+		Set<AgentId> paused = reflexes == null ? Set.of() : reflexes.tick(reflexBody);
+		Set<AgentId> held = durable ? Set.of() : agentsWithStagedAcceptances();
+		actionExecutor.tick(held, paused, agentId -> reflexes == null ? null : reflexes.firingRule(agentId));
+		if (durable) flushActionJournalGroup();
+		for (AgentId agentId : reflexes == null ? Set.<AgentId>of() : reflexes.takeChanged()) {
+			// Firing reports reach the coordinator promptly as samples; the coordinator decides whether they wake the model.
+			observations.invalidatePlayerState(agentId);
+			observationPublication.markSample(agentId);
+			queueUrgentObservation(agentId);
+		}
+	}
+
+	private Set<AgentId> agentsWithStagedAcceptances() {
+		Set<AgentId> agents = new HashSet<>();
+		for (ServerActionRequest request : actionJournal.stagedAcceptances()) agents.add(request.agentId());
+		return agents;
+	}
+
+	private void runServerTask(Runnable task) {
+		try {
+			task.run();
+		} catch (RuntimeException exception) {
+			LOGGER.error("Codex bridge server task failed", exception);
+		}
+	}
+
+	static List<AgentId> registeredObservationIds(List<AgentRecord> records) {
+		Objects.requireNonNull(records, "records must not be null");
+		// The product protocol is hard-capped at 16 agents even if restored data is malformed.
+		return records.stream()
+				.map(AgentRecord::agentId)
+				.limit(AgentConstants.DEFAULT_AGENT_LIMIT)
+				.toList();
+	}
+
+	public boolean authenticated() {
+		Session active = session;
+		return active != null && active.open.get() && active.authenticated.get();
+	}
+
+	TerminalResultLedger terminalResultsForVerification() {
+		return terminalResults;
+	}
+
+	/** Low-cost counters for confirming queue pressure and tick-phase admission in production. */
+	public BridgePerformanceSnapshot performanceSnapshot() {
+		BoundedServerTaskQueue.QueueMetrics queue = serverTasks.metrics();
+		return new BridgePerformanceSnapshot(
+				admissionTicks, publicationTicks,
+				queue.offeredUrgent(), queue.offeredControl(), queue.offeredBulk(),
+				queue.rejected(), queue.drained(),
+				queue.pendingUrgent(), queue.pendingControl(), queue.pendingBulk()
+		);
+	}
+
+	public record BridgePerformanceSnapshot(
+			long admissionTicks,
+			long publicationTicks,
+			long offeredUrgent,
+			long offeredControl,
+			long offeredBulk,
+			long rejectedInbound,
+			long drainedInbound,
+			int pendingUrgent,
+			int pendingControl,
+			int pendingBulk
+	) { }
+
+	public void setVerbose(boolean enabled) {
+		synchronized (verboseControlLock) {
+			verboseState.setEnabled(enabled);
+			verboseControlRevision += 1L;
+		}
+		publishPendingVerboseControl();
+	}
+
+	private void publishPendingVerboseControl() {
+		VerboseControlSnapshot control = verboseControlSnapshot();
+		if (control.revision() <= publishedVerboseControlRevision()) return;
+		Session active = session;
+		if (active == null || !active.authenticated.get()) return;
+		try {
+			active.enqueue(verboseControlEnvelope(control.enabled()));
+			markVerboseControlPublished(control);
+		} catch (BridgeProtocolException exception) {
+			LOGGER.debug("Verbose control will retry on the next server tick: {}", exception.getMessage());
+		}
+	}
+
+	private VerboseControlSnapshot verboseControlSnapshot() {
+		synchronized (verboseControlLock) {
+			return new VerboseControlSnapshot(verboseControlRevision, verboseState.enabled());
+		}
+	}
+
+	private long publishedVerboseControlRevision() {
+		synchronized (verboseControlLock) {
+			return publishedVerboseControlRevision;
+		}
+	}
+
+	private void markVerboseControlPublished(VerboseControlSnapshot control) {
+		synchronized (verboseControlLock) {
+			if (verboseControlRevision == control.revision() && verboseState.enabled() == control.enabled()) {
+				publishedVerboseControlRevision = Math.max(publishedVerboseControlRevision, control.revision());
+			}
+		}
+	}
+
+
+	public String authenticatedLaunchId() {
+		Session active = session;
+		return active == null || !active.open.get() || !active.authenticated.get()
+				? null
+				: active.authenticatedLaunchId;
+	}
+
+	public long authenticatedSessionGeneration() {
+		Session active = session;
+		return active == null || !active.open.get() || !active.authenticated.get()
+				? 0L
+				: active.authenticatedSessionGeneration;
+	}
+
+	ObservationPublication observationPublicationForVerification() {
+		return observationPublication;
+	}
+
+	boolean coordinatorReadyForVerification(AgentId agentId) {
+		return coordinatorReadyAgentIds.contains(agentId);
+	}
+
+	/** Server ticks serialize input leases with observation publication at this boundary. */
+	static ObservationPublication.Result publishObservationWithInputGuard(
+			ObservationPublication publication,
+			Optional<LeasedServerInputController> inputController,
+			AgentId agentId,
+			Object sourceSession,
+			JsonObject observation,
+			ObservationPublication.Writer writer,
+			boolean allowUnchanged) {
+		return publishObservationWithInputGuard(publication, inputController, agentId, sourceSession,
+				observation, writer, allowUnchanged, publication.fitter);
+	}
+
+	private static ObservationPublication.Result publishObservationWithInputGuard(
+			ObservationPublication publication, Optional<LeasedServerInputController> inputController,
+			AgentId agentId, Object sourceSession, JsonObject observation,
+			ObservationPublication.Writer writer, boolean allowUnchanged,
+			java.util.function.BiFunction<AgentId, JsonObject, ServerObservationWireBudget.Fitted> fitter) {
+		return publishObservationWithInputGuard(publication, inputController, agentId, sourceSession, observation, writer,
+				allowUnchanged, fitter, false, null);
+	}
+
+	/** For a freshly collected tree the caller never touches again; see {@link ObservationPublication#publishOwned}. */
+	static ObservationPublication.Result publishOwnedObservationWithInputGuard(
+			ObservationPublication publication, Optional<LeasedServerInputController> inputController,
+			AgentId agentId, Object sourceSession, JsonObject observation,
+			ObservationPublication.Writer writer, boolean allowUnchanged) {
+		return publishObservationWithInputGuard(publication, inputController, agentId, sourceSession, observation, writer,
+				allowUnchanged, publication.fitter, true, null);
+	}
+
+	private static ObservationPublication.Result publishOwnedObservationWithInputGuard(
+			ObservationPublication publication, Optional<LeasedServerInputController> inputController,
+			AgentId agentId, Object sourceSession, JsonObject observation,
+			ObservationPublication.Writer writer, boolean allowUnchanged,
+			java.util.function.BiFunction<AgentId, JsonObject, ServerObservationWireBudget.Fitted> fitter,
+			Set<String> threatSignalKeys) {
+		return publishObservationWithInputGuard(publication, inputController, agentId, sourceSession, observation, writer,
+				allowUnchanged, fitter, true, threatSignalKeys);
+	}
+
+	private static ObservationPublication.Result publishObservationWithInputGuard(
+			ObservationPublication publication, Optional<LeasedServerInputController> inputController,
+			AgentId agentId, Object sourceSession, JsonObject observation,
+			ObservationPublication.Writer writer, boolean allowUnchanged,
+			java.util.function.BiFunction<AgentId, JsonObject, ServerObservationWireBudget.Fitted> fitter, boolean owned,
+			Set<String> threatSignalKeys) {
+		Objects.requireNonNull(publication, "publication must not be null");
+		Objects.requireNonNull(inputController, "input controller must not be null");
+		long revision = inputController.map(LeasedServerInputController::mutationRevision).orElse(-1L);
+		try {
+			return publication.publishOwned(agentId, sourceSession, owned ? observation : observation.deepCopy(), writer,
+					allowUnchanged, fitter, threatSignalKeys);
+		} finally {
+			if (inputController.isPresent() && inputController.get().mutationRevision() != revision) {
+				throw new BridgeProtocolException(
+						"INPUT_MUTATED_DURING_OBSERVATION", "Observation publication changed input state");
+			}
+		}
+	}
+
+	int boundPortForVerification() {
+		ServerSocket active = serverSocket;
+		if (active == null) throw new IllegalStateException("bridge is not started");
+		return active.getLocalPort();
+	}
+
+	public List<dev.agaminggod.arenaagents.control.AgentControlProvider> catalogProviders() {
+		return catalogProviders;
+	}
+
+	/** A player's Rescan: the coordinator re-runs CLI, account and model discovery and republishes the catalog. */
+	public void requestProviderRescan() {
+		synchronized (publicationLock) {
+			if (session == null || !session.authenticated.get()) return;
+			try {
+				send("catalog_request", "server", new JsonObject());
+			} catch (RuntimeException exception) {
+				LOGGER.debug("Provider rescan request was not sent: {}", exception.getMessage());
+			}
+		}
+	}
+
+	public List<AgentControlModelOption> catalogModels() {
+		return catalogModels;
+	}
+
+	public GoalSubmission submitGoal(
+			String selector,
+			String prompt,
+			net.minecraft.server.level.ServerLevel sourceLevel,
+			Optional<UUID> requestingPlayerId,
+			GoalSubmission.Operation operation
+	) {
+		if (!authenticated()) {
+			throw new AgentDomainException("COORDINATOR_DISCONNECTED", COORDINATOR_OFFLINE_MESSAGE);
+		}
+		return manager.submitGoal(selector, prompt, sourceLevel, requestingPlayerId, operation, this::publishGoalSpecRequest);
+	}
+
+	public DeliveryReceipt sendPlayerDirectMessage(ServerPlayer source, AgentId recipientAgentId, String text) {
+		if (!authenticated()) {
+			throw new AgentDomainException("COORDINATOR_DISCONNECTED", COORDINATOR_OFFLINE_MESSAGE);
+		}
+		return conversationRouter.deliverPlayerMessage(source, recipientAgentId, text);
+	}
+
+	public DeliveryReceipt sendNativePlayerDirectMessage(ServerPlayer source, AgentId recipientAgentId, String text) {
+		if (!authenticated()) {
+			throw new AgentDomainException("COORDINATOR_DISCONNECTED", COORDINATOR_OFFLINE_MESSAGE);
+		}
+		return conversationRouter.deliverPlayerMessageFromNativeWhisper(source, recipientAgentId, text);
+	}
+
+	public DeliveryReceipt sendPlayerProximitySpeech(ServerPlayer source, String text, boolean whispering) {
+		if (!authenticated()) {
+			throw new AgentDomainException("COORDINATOR_DISCONNECTED", COORDINATOR_OFFLINE_MESSAGE);
+		}
+		return conversationRouter.deliverPlayerProximitySpeech(source, text, whispering ? 16.0D : 48.0D);
+	}
+
+	public ServerAgentConversationRouter.ProximitySpeechAudience capturePlayerProximitySpeechAudience(
+			ServerPlayer source,
+			boolean whispering
+	) {
+		if (!authenticated()) {
+			throw new AgentDomainException("COORDINATOR_DISCONNECTED", COORDINATOR_OFFLINE_MESSAGE);
+		}
+		return conversationRouter.capturePlayerProximitySpeechAudience(source, whispering ? 16.0D : 48.0D);
+	}
+
+	public DeliveryReceipt sendPlayerProximitySpeech(
+			ServerAgentConversationRouter.ProximitySpeechAudience audience,
+			String text
+	) {
+		if (!authenticated()) {
+			throw new AgentDomainException("COORDINATOR_DISCONNECTED", COORDINATOR_OFFLINE_MESSAGE);
+		}
+		return conversationRouter.deliverPlayerProximitySpeech(audience, text);
+	}
+
+	@Override
+	public void validateProfile(AgentProfile profile) {
+		if (!authenticated()) {
+			throw new AgentDomainException("COORDINATOR_DISCONNECTED", COORDINATOR_OFFLINE_MESSAGE);
+		}
+		if (!catalogLoaded) {
+			throw new AgentDomainException("MODEL_CATALOG_UNAVAILABLE", "AI provider model catalog has not loaded yet");
+		}
+		Set<String> catalog = catalogProfiles;
+		String requestedProfile = profile.provider() + "\u0000" + profile.model() + "\u0000" + profile.reasoning();
+		if (!catalog.contains(requestedProfile)) {
+			long providerProfileCount = catalog.stream()
+					.filter(candidate -> candidate.startsWith(profile.provider() + "\u0000"))
+					.count();
+			throw new AgentDomainException(
+					"UNSUPPORTED_MODEL_PROFILE",
+					"Coordinator catalog rejected " + profile.provider() + "/" + profile.model()
+							+ "/" + profile.reasoning() + " (provider profiles: " + providerProfileCount + ")"
+			);
+		}
+	}
+
+	@Override
+	public boolean onCreated(AgentRecord record) {
+		registryPublicationRevision.incrementAndGet();
+		actionJournal.retainGoalForTick(record.agentId(), logicalGoalId(record));
+		programActions.beginGoal(record.agentId(), record.goalRevision());
+		terminalResults.beginGoal(record.agentId(), record.goalRevision(), logicalGoalId(record));
+		synchronized (publicationLock) {
+			if (protocolKnownAgentIds.contains(record.agentId())) return true;
+			Session active = session;
+			if (active == null || !active.open.get() || !active.authenticated.get()) return false;
+			try {
+				active.enqueue(new BridgeEnvelope(
+						2, serverInstanceId, record.agentId().toString(), "agent_registered",
+						"server-" + messageIds.incrementAndGet(), registeredPayload(record)
+				));
+			} catch (RuntimeException exception) {
+				// A committed registry update must be reconciled if publication cannot fit.
+				active.close();
+				throw exception;
+			}
+			protocolKnownAgentIds.add(record.agentId());
+			return true;
+		}
+	}
+
+	@Override
+	public void onTransition(AgentTransition transition) {
+		registryPublicationRevision.incrementAndGet();
+		actionExecutor.actionSuccessLedger().retainRevision(
+				transition.after().agentId(), transition.after().goalRevision()
+		);
+		if (transition.after().state() == dev.agaminggod.arenaagents.agent.AgentLifecycleState.COMPLETED
+				|| transition.after().state() == dev.agaminggod.arenaagents.agent.AgentLifecycleState.ERROR
+				|| transition.after().state() == dev.agaminggod.arenaagents.agent.AgentLifecycleState.IDLE) {
+			actionExecutor.actionSuccessLedger().clear(
+					transition.after().agentId(), transition.after().goalRevision()
+			);
+		}
+		programActions.beginGoal(transition.after().agentId(), transition.after().goalRevision());
+		terminalResults.beginGoal(transition.after().agentId(), transition.after().goalRevision(), logicalGoalId(transition.after()));
+		withinPublicationBoundary(() -> {
+			ScenarioRuntimeService.onAgentState(
+					manager.server(),
+					transition.after().agentId().toString(),
+					publicState(transition.after().state())
+			);
+			if (transition.cancelAction()) {
+				actionExecutor.cancel(transition.after().agentId(), "Lifecycle changed to " + transition.after().state());
+			}
+			if (!authenticated()) {
+				if (transition.after().state().isActive()) {
+					requestActiveDisconnect();
+				}
+				return null;
+			}
+			if (!protocolKnownAgentIds.contains(transition.after().agentId())) return null;
+			observationPublication.markAttention(transition.after().agentId());
+			queueUrgentObservation(transition.after().agentId());
+			if (transition.before().state() == AgentLifecycleState.DEAD
+					&& transition.after().state() == AgentLifecycleState.DEAD
+					&& transition.after().goalRevision() > transition.before().goalRevision()) {
+				// Stop/steer changed intent, not physical life. Publish the authoritative
+				// revised DEAD record; a goal_control stop/steer would falsely revive it.
+				send("agent_registered", transition.after().agentId().toString(), registeredPayload(transition.after()));
+				return null;
+			}
+			String operation = operation(transition);
+			if (operation == null) return null;
+			send("goal_control", transition.after().agentId().toString(), goalControlPayload(transition, operation));
+			return null;
+		});
+		actionJournal.retainGoalForTick(transition.after().agentId(), logicalGoalId(transition.after()));
+	}
+
+	void setHandshakeSnapshotHookForVerification(Runnable hook) {
+		handshakeSnapshotHook = Objects.requireNonNull(hook, "handshake snapshot hook must not be null");
+	}
+
+	void setObservationEnqueueHookForVerification(Runnable hook) {
+		observationEnqueueHook = Objects.requireNonNull(hook, "observation enqueue hook must not be null");
+	}
+
+	void setHandshakeCommittedHookForVerification(java.util.function.Consumer<AutoCloseable> hook) {
+		handshakeCommittedHook = Objects.requireNonNull(hook, "handshake committed hook must not be null");
+	}
+
+	boolean coordinatorDisconnectPendingForVerification() {
+		return coordinatorDisconnectPending.get();
+	}
+
+	@Override
+	public void onRemoved(AgentId agentId, long terminalRevision) {
+		registryPublicationRevision.incrementAndGet();
+		actionExecutor.cancel(agentId, "Agent removed");
+		actionExecutor.actionSuccessLedger().clear(agentId);
+		conversationRouter.removeAgent(agentId);
+		dev.agaminggod.arenaagents.server.voice.VoiceSubsystemRuntime.removeAgent(manager.server(), agentId);
+		programActions.remove(agentId);
+		terminalResults.remove(agentId);
+		latestAgentNotices.remove(agentId);
+		actionJournal.removeForTick(agentId);
+		observationPublication.remove(agentId);
+		activatedGoalSpecRequests.entrySet().removeIf(entry -> entry.getValue().agentId().equals(agentId));
+		synchronized (publicationLock) {
+			coordinatorReadyAgentIds.remove(agentId);
+			recoveryObservationIdentities.remove(agentId);
+			if (!protocolKnownAgentIds.contains(agentId)) return;
+			Session active = session;
+			if (active == null || !active.open.get() || !active.authenticated.get()) {
+				if (active != null) active.close();
+				return;
+			}
+			JsonObject payload = new JsonObject();
+			payload.addProperty("goalRevision", terminalRevision);
+			try {
+				active.enqueue(new BridgeEnvelope(
+						2, serverInstanceId, agentId.toString(), "agent_removed",
+						"server-" + messageIds.incrementAndGet(), payload
+				));
+				protocolKnownAgentIds.remove(agentId);
+			} catch (RuntimeException exception) {
+				active.close();
+				throw exception;
+			}
+		}
+	}
+
+	@Override
+	public <T> T withinPublicationBoundary(java.util.function.Supplier<T> publication) {
+		bumpRegistryPublicationRevision();
+		try {
+			synchronized (publicationLock) {
+				return AgentRuntimeHooks.super.withinPublicationBoundary(publication);
+			}
+		} finally {
+			bumpRegistryPublicationRevision();
+		}
+	}
+
+	@Override
+	public void onServerStopping() {
+		JsonObject payload = new JsonObject();
+		payload.addProperty("reason", "server_stopping");
+		send("shutdown", "server", payload);
+		close();
+	}
+
+	@Override
+	public synchronized void close() {
+		try {
+			closeTransport();
+			flushActionJournalGroup();
+		} finally {
+			actionJournal.close();
+		}
+	}
+
+	private void closeTransport() {
+		List<Session> candidates;
+		synchronized (publicationLock) {
+			running.set(false);
+			verboseState.clearActivity();
+			CoordinatorStatusStore.clear(manager.server());
+			Session active = session;
+			if (active != null) {
+				active.close();
+			}
+			candidates = List.copyOf(preauthSessions);
+		}
+		for (Session candidate : candidates) candidate.close();
+		try {
+			if (serverSocket != null) {
+				serverSocket.close();
+			}
+		} catch (IOException ignored) {
+		}
+	}
+
+	/** Rebinding runs on the server thread, so finish the old session's state transition before replacement. */
+	public synchronized void closeAndDrainDisconnect() {
+		try {
+			closeTransport();
+			publishPendingDisconnects();
+			flushActionJournalGroup();
+		} finally {
+			actionJournal.close();
+		}
+	}
+
+	private void acceptLoop() {
+		while (running.get()) {
+			try {
+				Socket socket = serverSocket.accept();
+				boolean admitted = false;
+				try {
+					if (!socket.getInetAddress().isLoopbackAddress()) continue;
+					Session candidate = new Session(socket);
+					synchronized (publicationLock) {
+						if (!running.get() || !allowPreauthAcceptLocked()) continue;
+						if (preauthSessions.size() >= PREAUTH_SESSION_CAP) continue;
+						preauthSessions.add(candidate);
+						candidate.start();
+						admitted = true;
+					}
+				} finally {
+					if (!admitted) socket.close();
+				}
+			} catch (IOException exception) {
+				if (running.get()) {
+					LOGGER.error("Codex bridge accept failed", exception);
+				}
+			}
+		}
+	}
+
+	private boolean allowPreauthAcceptLocked() {
+		long now = nanoTime.getAsLong();
+		long cutoff = now - PREAUTH_ACCEPT_RATE_WINDOW_NANOS;
+		while (!preauthAccepts.isEmpty() && preauthAccepts.getFirst() <= cutoff) preauthAccepts.removeFirst();
+		if (preauthAccepts.size() >= PREAUTH_ACCEPT_RATE_CAP) return false;
+		preauthAccepts.addLast(now);
+		return true;
+	}
+
+	static void onSessionAccepted(ObservationPublication publication, Object session) {
+		publication.activate(session);
+	}
+
+	static void onSessionClosed(ObservationPublication publication, Object session) {
+		publication.deactivate(session);
+	}
+
+	private void accept(BridgeEnvelope envelope, Session source) {
+		if (!INBOUND_TYPES.contains(envelope.type())) {
+			throw new BridgeProtocolException("UNKNOWN_MESSAGE_TYPE", "Unsupported coordinator message: " + envelope.type());
+		}
+		if (!source.authenticated.get()) {
+			if (source.clientNonce == null) acceptAuthChallenge(envelope, source);
+			else acceptHello(envelope, source);
+			return;
+		}
+		if (!serverInstanceId.equals(envelope.serverInstanceId())) {
+			throw new BridgeProtocolException("SERVER_INSTANCE_MISMATCH", "Authenticated session changed serverInstanceId");
+		}
+		if (!serverTasks.offer(inboundLane(envelope.type()), () -> {
+			synchronized (publicationLock) {
+				if (session != source || !source.open.get() || !source.authenticated.get()) return;
+				routeAuthenticated(envelope);
+			}
+		})) {
+			throw new BridgeProtocolException("SERVER_TASK_QUEUE_FULL", "Coordinator exceeded the bounded server task queue");
+		}
+	}
+
+	static BoundedServerTaskQueue.Lane inboundLane(String type) {
+		return switch (Objects.requireNonNull(type, "type must not be null")) {
+			// Lifecycle state, action admission, and cancellation share one FIFO. In particular,
+			// an action_cancel can never overtake its preceding action_command.
+			case "agent_ready", "planning_state", "goal_completed", "action_command", "action_cancel",
+					"action_result_ack", "reflex_update" -> BoundedServerTaskQueue.Lane.URGENT;
+			case "coordinator_status", "conversation_wake_ack", "goal_spec_proposal", "task_request",
+					"request_observation", "agent_notice", "heartbeat" -> BoundedServerTaskQueue.Lane.CONTROL;
+			case "inspection_request" -> BoundedServerTaskQueue.Lane.INSPECTION;
+			default -> BoundedServerTaskQueue.Lane.BULK;
+		};
+	}
+
+	private void acceptAuthChallenge(BridgeEnvelope envelope, Session source) {
+		if (!"auth_challenge".equals(envelope.type()) || !"server".equals(envelope.agentId())) {
+			throw new BridgeProtocolException("HANDSHAKE_REQUIRED", "auth_challenge must be the first coordinator message");
+		}
+		String clientNonce = requiredAuthenticationToken(envelope.payload(), "clientNonce");
+		String serverNonce = newAuthenticationNonce();
+		JsonObject payload = new JsonObject();
+		payload.addProperty("replyTo", envelope.messageId());
+		payload.addProperty("clientNonce", clientNonce);
+		payload.addProperty("serverNonce", serverNonce);
+		payload.addProperty("proof", authenticationProof("server", clientNonce, serverNonce, serverInstanceId, null));
+		BridgeEnvelope response = new BridgeEnvelope(
+				2, serverInstanceId, "server", "auth_response", "server-" + messageIds.incrementAndGet(), payload
+		);
+		source.beginAuthentication(clientNonce, serverNonce, response);
+	}
+
+	/** Whether the coordinator's hello announced an optional capability; a coordinator that predates it says nothing. */
+	static boolean announcedCapability(JsonObject hello, String name) {
+		if (!hello.has(name)) return false;
+		JsonElement capability = hello.get(name);
+		if (!capability.isJsonPrimitive() || !capability.getAsJsonPrimitive().isBoolean()) throw new BridgeProtocolException("INVALID_FIELD", name + " must be a boolean");
+		return capability.getAsBoolean();
+	}
+
+	/**
+	 * Observation tags are listed once per block type only for a coordinator that announced {@code blockTags}; an older
+	 * one (the installer can keep a last-known-good coordinator) rejects the dictionary, so its rows keep their tags.
+	 * The same strict key lists reject the player's teleport tick unless the coordinator announced {@code bodyFacts}, and
+	 * the approach-drop fact (whose attention path follows from it) unless it announced {@code dropAheadFacts}.
+	 */
+	static JsonObject forSession(JsonObject observation, boolean blockTags, boolean bodyFacts) {
+		return forSession(observation, blockTags, bodyFacts, false);
+	}
+
+	static JsonObject forSession(JsonObject observation, boolean blockTags, boolean bodyFacts, boolean dropAheadFacts) {
+		if (blockTags) ObservationBlockTags.compact(observation);
+		if (observation.get("player") instanceof JsonObject player) {
+			if (!bodyFacts) player.remove("teleportTick");
+			if (!dropAheadFacts) player.remove("dropAhead");
+		}
+		return observation;
+	}
+
+	private void acceptHello(BridgeEnvelope envelope, Session source) {
+		if (!"hello".equals(envelope.type()) || !"server".equals(envelope.agentId())) {
+			throw new BridgeProtocolException("HANDSHAKE_REQUIRED", "hello must be the first coordinator message");
+		}
+		if (!serverInstanceId.equals(envelope.serverInstanceId())) {
+			throw new BridgeProtocolException("SERVER_INSTANCE_MISMATCH", "hello changed the authenticated server instance");
+		}
+		String replyTo = requiredString(envelope.payload(), "replyTo");
+		String clientNonce = requiredAuthenticationToken(envelope.payload(), "clientNonce");
+		String serverNonce = requiredAuthenticationToken(envelope.payload(), "serverNonce");
+		String suppliedLaunchId = optionalLaunchId(envelope.payload());
+		String suppliedProof = requiredAuthenticationToken(envelope.payload(), "proof");
+		if (!replyTo.equals(source.authResponseMessageId)
+				|| !clientNonce.equals(source.clientNonce)
+				|| !serverNonce.equals(source.serverNonce)) {
+			throw new BridgeProtocolException("HANDSHAKE_MISMATCH", "hello does not match the active server authentication response");
+		}
+		String expectedProof = authenticationProof("coordinator", clientNonce, serverNonce, serverInstanceId, suppliedLaunchId);
+		if (!MessageDigest.isEqual(expectedProof.getBytes(StandardCharsets.UTF_8), suppliedProof.getBytes(StandardCharsets.UTF_8))) {
+			throw new BridgeProtocolException("AUTHENTICATION_FAILED", "Coordinator did not prove possession of the bridge secret");
+		}
+		source.registryFragments = announcedCapability(envelope.payload(), "registryFragments");
+		source.actionTiming = announcedCapability(envelope.payload(), "actionTiming");
+		source.blockTags = announcedCapability(envelope.payload(), "blockTags");
+		source.planFacts = announcedCapability(envelope.payload(), "planFacts");
+		source.bodyFacts = announcedCapability(envelope.payload(), "bodyFacts");
+		source.breakExposureFacts = announcedCapability(envelope.payload(), "breakExposureFacts");
+		source.placementFacts = announcedCapability(envelope.payload(), "placementFacts");
+		source.breakOutcomeFacts = announcedCapability(envelope.payload(), "breakOutcomeFacts");
+		source.dropAheadFacts = announcedCapability(envelope.payload(), "dropAheadFacts");
+
+		while (true) {
+			ensureHandshakeTimeRemaining(source);
+			awaitDisconnectPublication(source);
+			ensureHandshakeTimeRemaining(source);
+			HandshakeSnapshot snapshot = awaitHandshakeSnapshot(source);
+			long snapshotRevision = snapshot.registryRevision();
+			List<AgentRecord> visibleRecords = snapshot.visibleRecords();
+			JsonObject payload = new JsonObject();
+			payload.addProperty("replyTo", envelope.messageId());
+			payload.addProperty("authenticated", true);
+			if (suppliedLaunchId != null) payload.addProperty("launchId", suppliedLaunchId);
+			JsonArray registry = new JsonArray();
+			Set<AgentId> handshakeKnownAgentIds = new HashSet<>();
+			// Preflight one immutable record at a time before committing the session. The
+			// negotiated writer retains record references, never a cloned whole JSON registry.
+			long legacyRegistryBytes = 0;
+			for (AgentRecord record : visibleRecords) {
+				JsonObject entry = registeredPayload(record);
+				codec.preflightRegistryEntry(serverInstanceId, entry);
+				if (!source.registryFragments) {
+					legacyRegistryBytes += entry.toString().getBytes(StandardCharsets.UTF_8).length;
+					if (legacyRegistryBytes > BridgeEnvelopeCodec.MAX_LINE_BYTES) throw new BridgeProtocolException(
+							"REGISTRY_FRAGMENT_CAPABILITY_REQUIRED", "Coordinator must negotiate registryFragments for this registry");
+					registry.add(entry);
+				}
+				handshakeKnownAgentIds.add(record.agentId());
+			}
+			payload.add("registry", registry);
+			ArrayList<BridgeEnvelope> handshake = new ArrayList<>();
+			handshake.add(new BridgeEnvelope(
+					2, serverInstanceId, "server", "hello_ack", "server-" + messageIds.incrementAndGet(), payload
+			));
+			VerboseControlSnapshot verboseControl = verboseControlSnapshot();
+			handshake.add(verboseControlEnvelope(verboseControl.enabled()));
+			for (PendingConversationWake wake : snapshot.pendingWakes()) {
+				handshake.add(conversationWakeEnvelope(wake));
+			}
+			handshakeSnapshotHook.run();
+			ensureHandshakeTimeRemaining(source);
+			synchronized (publicationLock) {
+				if (coordinatorDisconnectPending.get()
+						|| disconnectInProgress
+						|| snapshotRevision != registryPublicationRevision.get()) {
+					awaitHandshakeRetryLocked(source);
+					continue;
+				}
+				if (!source.open.get()) {
+					throw new BridgeProtocolException("COORDINATOR_DISCONNECTED", "Bridge session closed during authentication");
+				}
+				if (session != null && session != source) {
+					throw new BridgeProtocolException("SESSION_ACTIVE", "An authenticated coordinator session is already active");
+				}
+				preauthSessions.remove(source);
+				session = source;
+				onSessionAccepted(observationPublication, source);
+				resetObservationPublication();
+				verboseState.clearActivity();
+				catalogProfiles = Set.of();
+				catalogModels = List.of();
+				catalogLoaded = false;
+				catalogDiscoveryPending = false;
+				catalogDiscoveryAttempts = 0;
+				catalogDiscoveryRetryAtNanos = 0L;
+				catalogDiscoveryGeneration = 0L;
+				catalogDiscoveryFailureCode = null;
+				protocolKnownAgentIds.clear();
+				protocolKnownAgentIds.addAll(handshakeKnownAgentIds);
+				coordinatorReadyAgentIds.clear();
+				for (PendingGoalDraft draft : snapshot.goalSpecRequests()) {
+					if (handshakeKnownAgentIds.contains(draft.agentId())) {
+						handshake.add(goalSpecRequestEnvelope(draft, source.planFacts));
+					}
+				}
+				for (AgentRecord record : visibleRecords) terminalResults.beginGoal(record.agentId(), record.goalRevision(), logicalGoalId(record));
+				List<ServerActionResult> terminalReplay = terminalResults.pending();
+				int replayCapacity = Math.max(0, CONNECTION_QUEUE_CAP - handshake.size());
+				Map<String, Integer> handshakeQueuedByAgent = new HashMap<>();
+				for (BridgeEnvelope queued : handshake) handshakeQueuedByAgent.merge(queued.agentId(), 1, Integer::sum);
+				List<ServerActionResult> claimedReplay = new ArrayList<>();
+				for (ServerActionResult result : terminalReplay) {
+					if (claimedReplay.size() >= replayCapacity) break;
+					if (!handshakeKnownAgentIds.contains(result.agentId())) continue;
+					if (handshakeQueuedByAgent.getOrDefault(result.agentId().toString(), 0) >= AGENT_QUEUE_CAP) continue;
+					if (!terminalResults.claim(result, source)) continue;
+					claimedReplay.add(result);
+					handshake.add(actionResultEnvelope(result, source));
+					handshakeQueuedByAgent.merge(result.agentId().toString(), 1, Integer::sum);
+				}
+				try {
+					for (AgentRecord record : visibleRecords) programActions.beginGoal(record.agentId(), record.goalRevision());
+					source.completeHandshake(handshake, suppliedLaunchId, sessionGenerations.incrementAndGet(), source.registryFragments ? visibleRecords : null);
+					handshakeCommittedHook.accept(source);
+					// Every new coordinator session re-probes and re-notifies unhealthy agents.
+					latestAgentNotices.clear();
+					coordinatorLifecycleGeneration++;
+					markVerboseControlPublished(verboseControl);
+				} catch (RuntimeException exception) {
+					for (ServerActionResult result : claimedReplay) terminalResults.release(result, source);
+					protocolKnownAgentIds.clear();
+					coordinatorReadyAgentIds.clear();
+					if (!source.authenticated.get() && session == source) {
+						onSessionClosed(observationPublication, source);
+						session = null;
+					}
+					throw exception;
+				}
+				return;
+			}
+		}
+	}
+
+	private BridgeEnvelope verboseControlEnvelope(boolean enabled) {
+		JsonObject payload = new JsonObject();
+		payload.addProperty("enabled", enabled);
+		return new BridgeEnvelope(
+				2, serverInstanceId, "server", "verbose_control",
+				"server-" + messageIds.incrementAndGet(), payload
+		);
+	}
+
+	private void routeAuthenticated(BridgeEnvelope envelope) {
+		switch (envelope.type()) {
+			case "task_view" -> dev.agaminggod.arenaagents.server.LiveTaskViewSync.accept(manager.server(), AgentId.parse(envelope.agentId()), envelope.payload());
+			case "catalog_snapshot" -> acceptCatalog(envelope.payload());
+			case "coordinator_status" -> acceptCoordinatorStatus(envelope.payload());
+			case "agent_ready", "planning_state" -> plannerReady(envelope);
+			case "goal_completed" -> acceptGoalCompleted(envelope);
+			case "conversation_wake_ack" -> acceptConversationWakeAck(envelope);
+			case "goal_spec_proposal" -> acceptGoalSpecProposal(envelope);
+			case "task_request" -> acceptTaskRequest(envelope);
+            case "director_script_result" -> dev.agaminggod.arenaagents.server.DirectorScriptGeneration.accept(manager.server(), envelope.payload());
+			case "request_observation" -> acceptObservationRequest(envelope);
+			case "inspection_request" -> acceptInspectionRequest(envelope);
+			case "action_command" -> acceptAction(envelope);
+			case "action_cancel" -> acceptActionCancel(envelope);
+			case "reflex_update" -> acceptReflexUpdate(envelope);
+			case "action_result_ack" -> acceptActionResultAck(envelope);
+			case "agent_error" -> acceptAgentError(envelope);
+			case "agent_notice" -> acceptAgentNotice(envelope);
+			case "verbose_event" -> acceptVerboseEvent(envelope);
+			case "heartbeat" -> send("heartbeat", "server", new JsonObject());
+			default -> throw new BridgeProtocolException("UNKNOWN_MESSAGE_TYPE", envelope.type());
+		}
+	}
+
+	/** The coordinator's complete reflex rule set for one agent; rules are not tied to a goal revision. */
+	private void acceptReflexUpdate(BridgeEnvelope envelope) {
+		AgentId agentId = AgentId.parse(envelope.agentId());
+		manager.registry().require(agentId);
+		JsonObject payload = envelope.payload();
+		requireKeys(payload, Set.of("revision", "rules", "yield"), "reflex_update");
+		long revision = requiredLong(payload, "revision");
+		if (!payload.get("rules").isJsonArray()) throw new BridgeProtocolException("INVALID_FIELD", "reflex_update rules must be an array");
+		// A set the mod cannot parse keeps the previous rules; the error rides on the agent's reflex status.
+		reflexes.updateOrReport(agentId, revision, payload.getAsJsonArray("rules"), requiredBoolean(payload, "yield"));
+		BridgeTap.model(agentId, "reflex_update", null, revision);
+	}
+
+	private void acceptActionResultAck(BridgeEnvelope envelope) {
+		AgentId agentId = AgentId.parse(envelope.agentId());
+		JsonObject payload = envelope.payload();
+		requireKeys(payload, Set.of("goalRevision", "actionId"), "action_result_ack");
+		long goalRevision = requiredLong(payload, "goalRevision");
+		String actionId = requiredString(payload, "actionId");
+		if (!actionJournal.queueAcknowledgement(agentId, goalRevision, actionId)) {
+			// Rejected actions and detached conversation replies have no journal acceptance.
+			terminalResults.acknowledge(agentId, goalRevision, actionId);
+		}
+	}
+
+	private boolean flushActionJournalGroup() {
+		List<DurableActionJournal.ActionKey> acknowledged;
+		try {
+			acknowledged = actionJournal.flushTickGroup();
+		} catch (AgentDomainException exception) {
+			recordJournalFailure(exception);
+			return false;
+		}
+		consecutiveJournalFailures = 0;
+		try {
+			for (DurableActionJournal.ActionKey key : acknowledged) {
+				terminalResults.acknowledge(key.agentId(), key.goalRevision(), key.actionId());
+			}
+			List<ServerActionResult> durableResults = pendingDurableTerminalResults();
+			while (!durableResults.isEmpty()) {
+				ServerActionResult result = durableResults.get(0);
+				publishCommittedActionResult(result);
+				durableResults.remove(0);
+			}
+			publishDurableRespawnResults();
+			return true;
+		} catch (AgentDomainException exception) {
+			LOGGER.debug("Committed action publication will retry next tick: {}", exception.getMessage());
+			return false;
+		}
+	}
+
+	/**
+	 * The journal retains the whole group and retries every tick. A persistent outage must not stall silently:
+	 * warn, and after a bounded number of failures hand the not-yet-durable acceptances back to the model.
+	 */
+	private void recordJournalFailure(AgentDomainException exception) {
+		consecutiveJournalFailures++;
+		long now = System.nanoTime();
+		if (consecutiveJournalFailures == 1 || now - lastJournalFailureWarningNanos >= JOURNAL_FAILURE_WARNING_INTERVAL_NANOS) {
+			lastJournalFailureWarningNanos = now;
+			LOGGER.warn("Action journal write failed {} time(s) in a row; accepted actions wait for it: {}",
+					consecutiveJournalFailures, exception.getCause() == null ? exception.getMessage() : exception.getCause());
+		}
+		if (consecutiveJournalFailures >= JOURNAL_FAILURE_REJECTION_THRESHOLD) rejectStagedAcceptances();
+	}
+
+	private void rejectStagedAcceptances() {
+		for (ServerActionRequest request : actionJournal.stagedAcceptances()) {
+			// A respawn starts only once its acceptance is durable, so an unstarted one is rejected like any action.
+			if (!actionJournal.rollbackAccepted(request)) continue;
+			programActions.rollback(request);
+			actionExecutor.rejectUnstarted(request, "ACTION_JOURNAL_UNAVAILABLE",
+					"The server could not record the action durably; it did not run. Try it again.");
+		}
+	}
+
+	private List<ServerActionResult> pendingDurableTerminalResults() {
+		if (pendingDurableTerminalResults == null) pendingDurableTerminalResults = new ArrayList<>();
+		return pendingDurableTerminalResults;
+	}
+
+	private List<PendingRespawnPublication> pendingRespawnPublications() {
+		if (pendingRespawnPublications == null) pendingRespawnPublications = new ArrayList<>();
+		return pendingRespawnPublications;
+	}
+
+	private void acceptGoalSpecProposal(BridgeEnvelope envelope) {
+		AgentId agentId = AgentId.parse(envelope.agentId());
+		JsonObject payload = envelope.payload();
+		String requestIdValue = requiredString(payload, "requestId");
+		UUID requestId;
+		try {
+			requestId = UUID.fromString(requestIdValue);
+		} catch (IllegalArgumentException exception) {
+			sendGoalSpecResult(agentId, requestIdValue, "rejected", "INVALID_GOAL_SPEC_REQUEST_ID");
+			return;
+		}
+		try {
+			requireKeys(payload, Set.of("requestId", "summary", "predicate"), "goal_spec_proposal");
+			String summary = goalSpecSummary(payload);
+			JsonElement predicateElement = payload.get("predicate");
+			if (predicateElement == null || !predicateElement.isJsonObject()) {
+				throw new BridgeProtocolException("INVALID_GOAL_PREDICATE", "goal_spec_proposal.predicate must be an object");
+			}
+			GoalPredicate decodedPredicate = GOAL_SPEC_WIRE_CODEC.decodePredicate(predicateElement.getAsJsonObject());
+			ActivatedGoalSpecRequest activated = activatedGoalSpecRequests.get(requestId);
+			if (activated != null) {
+				if (!activated.agentId().equals(agentId)) {
+					throw new AgentDomainException("GOAL_DRAFT_AGENT_MISMATCH", "Goal draft belongs to another agent");
+				}
+				if (!activated.predicate().equals(decodedPredicate)) {
+					throw new AgentDomainException("GOAL_DRAFT_PROPOSAL_CONFLICT", "Goal draft already activated with a different proposal");
+				}
+				sendGoalSpecResult(agentId, requestIdValue, "accepted", "PROPOSAL_ALREADY_ACTIVATED");
+				return;
+			}
+			PendingGoalDraft draft = manager.goalDraft(requestId)
+					.orElseThrow(() -> new AgentDomainException("UNKNOWN_GOAL_DRAFT", "Goal draft does not exist"));
+			if (!draft.agentId().equals(agentId)) {
+				throw new AgentDomainException("GOAL_DRAFT_AGENT_MISMATCH", "Goal draft belongs to another agent");
+			}
+			if (!draft.matches(manager.registry().require(agentId))) {
+				throw new AgentDomainException("STALE_GOAL_DRAFT", "Goal draft no longer matches the target goal revision");
+			}
+			GoalPredicate predicate = GoalPredicateWorldValidator.bindToDimension(
+					manager.normalizeGoalDraftTranslation(draft, decodedPredicate), draft.dimensionId());
+			GoalPredicateWorldValidator.validateTranslatedProposal(predicate);
+			manager.validateGoalDraftTranslation(draft, predicate);
+			validateProposalIdentifiers(predicate, Set.copyOf(draft.candidateIds()));
+			GoalInventoryCapacity.validateTranslated(
+					predicate,
+					manager.server() == null ? net.minecraft.core.RegistryAccess.EMPTY : manager.server().registryAccess()
+			);
+			if (GoalPredicateWorldValidator.requiresLiveLevel(predicate)) {
+				GoalPredicateWorldValidator.validate(
+						GoalPredicateWorldValidator.requireLevel(manager.server(), draft.dimensionId()), predicate);
+			}
+			boolean duplicate = draft.proposedPredicate().isPresent();
+			PendingGoalDraft updated = manager.updateGoalDraftProposal(requestId, agentId, predicate);
+			ServerPlayer player = manager.server() == null ? null : manager.server().getPlayerList().getPlayer(updated.requestingPlayerId());
+			Optional<CodexAgentManager.GoalDraftResult> activatedResult = manager.activateTranslatedManagerDraft(updated, summary);
+			if (activatedResult.isPresent()) {
+				recordActivatedGoalSpecRequest(requestId, agentId, decodedPredicate);
+				if (player != null) {
+					String operation = activatedResult.orElseThrow().operation() == dev.agaminggod.arenaagents.server.goal.GoalDraftResolution.Operation.QUEUE
+							? "queued" : "started";
+					player.sendSystemMessage(net.minecraft.network.chat.Component.literal(
+							"Validated goal " + operation + ": " + summary));
+				}
+				sendGoalSpecResult(agentId, requestIdValue, "accepted", "PROPOSAL_ACTIVATED");
+				return;
+			}
+			if (player != null && !duplicate) {
+				player.sendSystemMessage(net.minecraft.network.chat.Component.literal(
+						goalProposalMessage(updated, summary)));
+			}
+			sendGoalSpecResult(agentId, requestIdValue, "accepted", duplicate ? "PROPOSAL_ALREADY_STAGED" : "PROPOSAL_STAGED");
+		} catch (AgentDomainException | BridgeProtocolException exception) {
+			String code = exception instanceof AgentDomainException domain ? domain.code() : ((BridgeProtocolException) exception).code();
+			sendGoalSpecResult(agentId, requestIdValue, "rejected", code);
+		}
+	}
+
+	/**
+	 * The model chose takeTask for a player's request. Minecraft applies its normal start or resume
+	 * (publishing goal_control first), stages the usual translation draft, or explains the refusal;
+	 * every identifiable request is answered so the model can tell the player.
+	 */
+	private void acceptTaskRequest(BridgeEnvelope envelope) {
+		AgentId agentId = AgentId.parse(envelope.agentId());
+		ModelTaskRequestHandler.handle(
+				envelope.payload(),
+				request -> manager.adoptModelTask(agentId, request, this::publishGoalSpecRequest),
+				() -> manager.registry().require(agentId).goalRevision()
+		).ifPresent(result -> send("task_request_result", agentId.toString(), result));
+	}
+
+	static String goalSpecSummary(JsonObject payload) {
+		try {
+			// The producer contract counts UTF-16 code units, as String.length does.
+			return requiredString(payload, "summary", 512).strip();
+		} catch (BridgeProtocolException exception) {
+			throw new BridgeProtocolException("INVALID_GOAL_SPEC_SUMMARY", "Goal summary must be a nonblank string of at most 512 characters");
+		}
+	}
+
+	static String goalProposalMessage(PendingGoalDraft draft, String summary) {
+		Objects.requireNonNull(draft, "draft must not be null");
+		String cleanSummary = Objects.requireNonNull(summary, "summary must not be null")
+				.replaceAll("\\s+", " ").strip();
+		if (cleanSummary.isEmpty()) throw new IllegalArgumentException("summary must not be blank");
+		char lastCharacter = cleanSummary.charAt(cleanSummary.length() - 1);
+		String sentence = ".!?".indexOf(lastCharacter) >= 0 ? cleanSummary : cleanSummary + ".";
+		return "Proposed goal for \"" + draft.originalRequest() + "\": " + sentence
+				+ " Confirm or cancel draft " + draft.draftId() + ".";
+	}
+
+	private void recordActivatedGoalSpecRequest(UUID requestId, AgentId agentId, GoalPredicate predicate) {
+		activatedGoalSpecRequests.put(requestId, new ActivatedGoalSpecRequest(agentId, predicate));
+		while (activatedGoalSpecRequests.size() > MAX_ACTIVATED_GOAL_SPEC_REQUESTS) {
+			activatedGoalSpecRequests.remove(activatedGoalSpecRequests.keySet().iterator().next());
+		}
+	}
+
+	private record ActivatedGoalSpecRequest(AgentId agentId, GoalPredicate predicate) {
+		private ActivatedGoalSpecRequest {
+			Objects.requireNonNull(agentId, "agentId must not be null");
+			Objects.requireNonNull(predicate, "predicate must not be null");
+		}
+	}
+
+	private void validateProposalIdentifiers(GoalPredicate predicate, Set<String> candidates) {
+		switch (predicate) {
+			case GoalPredicate.InventoryContains value -> validateIdentifier(value.itemId(), candidates,
+					id -> BuiltInRegistries.ITEM.containsKey(id), "item");
+			case GoalPredicate.InventoryContainsAny value -> value.itemIds().forEach(
+					itemId -> validateIdentifier(itemId, candidates, id -> BuiltInRegistries.ITEM.containsKey(id), "item"));
+			case GoalPredicate.AdvancementGranted value -> validateIdentifier(value.advancementId(), candidates,
+					id -> manager.server().getAdvancements().get(id) != null, "advancement");
+			case GoalPredicate.EntityKilledByAgent value -> validateIdentifier(value.entityType(), candidates,
+					id -> BuiltInRegistries.ENTITY_TYPE.containsKey(id), "entity type");
+			case GoalPredicate.BlockMatches value -> validateIdentifier(value.blockId(), candidates,
+					id -> BuiltInRegistries.BLOCK.containsKey(id), "block");
+			case GoalPredicate.AllOf value -> value.predicates().forEach(child -> validateProposalIdentifiers(child, candidates));
+			case GoalPredicate.AnyOf value -> value.predicates().forEach(child -> validateProposalIdentifiers(child, candidates));
+			default -> { }
+		}
+	}
+
+	private static void validateIdentifier(
+			String value, Set<String> candidates, java.util.function.Predicate<Identifier> exists, String type
+	) {
+		if (!candidates.contains(value)) throw new AgentDomainException("GOAL_IDENTIFIER_NOT_CANDIDATE", type + " was not offered by the server");
+		Identifier id = Identifier.tryParse(value);
+		if (id == null || !exists.test(id)) throw new AgentDomainException("UNKNOWN_GOAL_IDENTIFIER", type + " does not exist on this server");
+	}
+
+	private void sendGoalSpecResult(AgentId agentId, String requestId, String status, String reasonCode) {
+		JsonObject result = new JsonObject();
+		result.addProperty("requestId", requestId);
+		result.addProperty("status", status);
+		result.addProperty("reasonCode", reasonCode);
+		send("goal_spec_result", agentId.toString(), result);
+	}
+
+	private void acceptObservationRequest(BridgeEnvelope envelope) {
+		AgentId id = AgentId.parse(envelope.agentId());
+		AgentRecord record = manager.registry().require(id);
+		JsonObject payload = envelope.payload();
+		requireKeys(payload, Set.of("goalRevision"), "request_observation");
+		if (requiredLong(payload, "goalRevision") != record.goalRevision()) {
+			throw new AgentDomainException("STALE_REVISION", "Coordinator observation request revision is stale");
+		}
+		observations.invalidate(id);
+		observationPublication.markAttention(id);
+		queueUrgentObservation(id);
+	}
+
+	private void acceptCoordinatorStatus(JsonObject payload) {
+		CoordinatorStatusStore.update(manager.server(), decodeCoordinatorStatus(payload, System.currentTimeMillis()));
+	}
+
+	private void acceptInspectionRequest(BridgeEnvelope envelope) {
+		AgentId id = AgentId.parse(envelope.agentId());
+		JsonObject payload = envelope.payload();
+		requireKeys(payload, Set.of("goalRevision", "requestId", "query"), "inspection_request");
+		AgentRecord record = manager.registry().require(id);
+		long revision = requiredLong(payload, "goalRevision");
+		String requestId = requiredString(payload, "requestId");
+		if (requestId.length() > 128) throw new BridgeProtocolException("INVALID_FIELD", "Invalid inspection request id");
+		Session source = session;
+		if (source == null) return;
+		JsonObject reply = new JsonObject();
+		reply.addProperty("goalRevision", revision);
+		reply.addProperty("requestId", requestId);
+		try {
+			if (revision != record.goalRevision()) throw new AgentDomainException("STALE_REVISION", "Inspection goal revision is stale");
+			if (!payload.get("query").isJsonObject()) throw new AgentDomainException("INVALID_INSPECTION", "query must be an object");
+			JsonObject query = validateInspectionQuery(payload.getAsJsonObject("query"));
+			String section = requiredString(query, "section");
+			if ("observation".equals(section)) {
+				observations.invalidate(id);
+				JsonObject observation = forSession(observations.collect(id), source.blockTags, source.bodyFacts, source.dropAheadFacts);
+				ObservationPublication.Result published = publishObservationWithInputGuard(
+						observationPublication, AgentInputRuntime.existingController(manager.server()), id, source, observation,
+						(agent, fresh) -> {
+							return sendInspectionObservation(source, agent, fresh, inspectionObservationReply(reply, fresh));
+						}, true, (agent, fresh) -> fitInspectionObservation(codec, serverInstanceId, agent, reply, fresh), false,
+						observations.collectedThreatSignalKeys(id));
+				if (published != ObservationPublication.Result.COMMITTED) throw new AgentDomainException("INSPECTION_UNAVAILABLE", "Fresh observation could not be delivered");
+				acknowledgeThreats(id);
+				return;
+			} else {
+				ServerPlayer player = manager.findAgentPlayer(id).orElseThrow(() -> new AgentDomainException("PLAYER_UNAVAILABLE", "No player to inspect"));
+				JsonObject inspection = observations.collectInspection(id, player, query);
+				ObservationPublication.Result published = observationPublication.deliverInspection(id, source, inspection,
+						(agent, result) -> {
+							reply.add("result", result);
+							return sendInspectionEnvelope(source, agent, reply);
+						});
+				if (published != ObservationPublication.Result.COMMITTED) throw new AgentDomainException("INSPECTION_UNAVAILABLE", "Inspection session changed before delivery");
+				return;
+			}
+		} catch (IllegalArgumentException | BridgeProtocolException exception) {
+			JsonObject error = new JsonObject();
+			error.addProperty("code", exception instanceof AgentDomainException domain ? domain.code()
+					: exception instanceof BridgeProtocolException protocol ? protocol.code() : "INVALID_INSPECTION");
+			error.addProperty("message", exception.getMessage() == null ? "Inspection unavailable" : exception.getMessage());
+			reply.remove("result");
+			reply.add("error", error);
+		}
+		sendInspectionEnvelope(source, id, reply);
+	}
+
+	static JsonObject validateInspectionQuery(JsonObject query) {
+		Set<String> sections = Set.of("observation", "inventory", "menu", "entities", "blocks", "item", "block", "events", "landmarks", "nearby_containers", "recipes", "mechanics", "survey", "hud");
+		JsonElement sectionValue = query.get("section");
+		if (sectionValue == null || !sectionValue.isJsonPrimitive() || !sectionValue.getAsJsonPrimitive().isString()
+				|| !sections.contains(sectionValue.getAsString())) throw new AgentDomainException("INVALID_INSPECTION", "Unknown inspection section");
+		String section = sectionValue.getAsString();
+		Set<String> allowed = new HashSet<>(Set.of("section", "offset", "limit"));
+		if ("item".equals(section)) allowed.add("slot");
+		if ("block".equals(section)) allowed.addAll(Set.of("x", "y", "z"));
+		if ("events".equals(section)) allowed.add("afterSequence");
+		if ("recipes".equals(section)) allowed.addAll(Set.of("recipeId", "outputItemId"));
+		if ("entities".equals(section)) allowed.add("entityType");
+		if ("survey".equals(section)) {
+			allowed.remove("offset");
+			allowed.addAll(Set.of("include", "exclude"));
+		}
+		if (!allowed.containsAll(query.keySet())) throw new AgentDomainException("INVALID_INSPECTION", "Unexpected field for inspection section");
+		JsonObject result = query.deepCopy();
+		if ("survey".equals(section)) {
+			if (!result.has("limit")) result.addProperty("limit", 4);
+			inspectionInteger(result, "limit", 1, 8);
+			for (String field : List.of("include", "exclude")) if (result.has(field)) surveySections(result.get(field), field);
+			return result;
+		}
+		if (!result.has("offset")) result.addProperty("offset", 0);
+		if (!result.has("limit")) result.addProperty("limit", 16);
+		inspectionInteger(result, "offset", 0, 4096);
+		inspectionInteger(result, "limit", 1, 32);
+		if ("item".equals(section)) inspectionInteger(result, "slot", 0, 255);
+		if ("block".equals(section)) {
+			inspectionInteger(result, "x", -30_000_000, 30_000_000);
+			inspectionInteger(result, "y", -2048, 2048);
+			inspectionInteger(result, "z", -30_000_000, 30_000_000);
+		}
+		if (result.has("afterSequence")) inspectionInteger(result, "afterSequence", -1, ActionProvenance.MAX_SAFE_INTEGER);
+		if (result.has("recipeId") && result.has("outputItemId")) throw new AgentDomainException("INVALID_INSPECTION", "Use recipeId or outputItemId, not both");
+		for (String field : List.of("recipeId", "outputItemId", "entityType")) if (result.has(field)) {
+			JsonElement recipe = result.get(field);
+			if (!recipe.isJsonPrimitive() || !recipe.getAsJsonPrimitive().isString() || recipe.getAsString().length() > 256
+					|| !recipe.getAsString().matches("[a-z0-9_.-]+:[a-z0-9_./-]+")) {
+				throw new AgentDomainException("INVALID_INSPECTION", field + " must be a namespaced identifier");
+			}
+		}
+		return result;
+	}
+
+	/** Survey include/exclude: up to 8 section names or blocks:<namespaced id> entries (include only). */
+	private static void surveySections(JsonElement value, String field) {
+		if (!value.isJsonArray() || value.getAsJsonArray().size() > 8) throw new AgentDomainException("INVALID_INSPECTION", field + " must be an array of at most 8 entries");
+		Set<String> sections = Set.of("structures", "poi", "biomes", "built", "blocks", "caves", "veins");
+		for (JsonElement entry : value.getAsJsonArray()) {
+			if (!entry.isJsonPrimitive() || !entry.getAsJsonPrimitive().isString()) throw new AgentDomainException("INVALID_INSPECTION", field + " entries must be strings");
+			String text = entry.getAsString();
+			boolean search = "include".equals(field) && text.length() <= 263 && text.matches("blocks:[a-z0-9_.-]+:[a-z0-9_./-]+");
+			if (!sections.contains(text) && !search) throw new AgentDomainException("INVALID_INSPECTION", "Unknown survey section: " + text);
+		}
+	}
+
+	private static long inspectionInteger(JsonObject query, String field, long minimum, long maximum) {
+		JsonElement value = query.get(field);
+		if (value == null || !value.isJsonPrimitive() || !value.getAsJsonPrimitive().isNumber()) {
+			throw new AgentDomainException("INVALID_INSPECTION", field + " must be a JSON integer");
+		}
+		try {
+			long number = value.getAsBigDecimal().longValueExact();
+			if (number < minimum || number > maximum) throw new ArithmeticException();
+			return number;
+		} catch (ArithmeticException | NumberFormatException exception) {
+			throw new AgentDomainException("INVALID_INSPECTION", field + " is outside the inspection bounds");
+		}
+	}
+
+	static JsonObject inspectionObservationReply(JsonObject correlation, JsonObject observation) {
+		JsonObject reply = correlation.deepCopy();
+		JsonObject result = new JsonObject();
+		result.add("observation", observation.deepCopy());
+		result.add("eventSequence", observation.get("eventSequence"));
+		reply.add("result", result);
+		return reply;
+	}
+
+	static ServerObservationWireBudget.Fitted fitInspectionObservation(
+			BridgeEnvelopeCodec codec, String serverId, AgentId agent, JsonObject correlation, JsonObject observation) {
+		return ServerObservationWireBudget.fit(observation, candidate ->
+				codec.encodedLineBytesForPayload(2, serverId, agent.toString(), "observation", MAX_OBSERVATION_MESSAGE_ID, candidate)
+						<= BridgeEnvelopeCodec.MAX_LINE_BYTES
+				&& codec.encodedLineBytesForPayload(2, serverId, agent.toString(), "inspection_result", MAX_OBSERVATION_MESSAGE_ID,
+						inspectionObservationReply(correlation, candidate)) <= BridgeEnvelopeCodec.MAX_LINE_BYTES);
+	}
+
+	static CoordinatorStatusSnapshot decodeCoordinatorStatus(JsonObject payload, long receivedAtEpochMs) {
+		try {
+		Set<String> legacyKeys = Set.of("reconciled", "profiles", "supportedProfileCount", "rosterReadyCount", "rosterCount", "scheduler", "circuits");
+		Set<String> latencyKeys = Set.of("reconciled", "profiles", "supportedProfileCount", "rosterReadyCount", "rosterCount", "scheduler", "circuits", "latencies");
+		Set<String> recoveryKeys = Set.of("reconciled", "profiles", "supportedProfileCount", "rosterReadyCount", "rosterCount", "scheduler", "circuits", "bridgeSessionEpoch", "runtimeGeneration", "components");
+		Set<String> recoveryLatencyKeys = Set.of("reconciled", "profiles", "supportedProfileCount", "rosterReadyCount", "rosterCount", "scheduler", "circuits", "latencies", "bridgeSessionEpoch", "runtimeGeneration", "components");
+		boolean extendedRecovery = payload.keySet().equals(recoveryKeys) || payload.keySet().equals(recoveryLatencyKeys);
+		if (!payload.keySet().equals(legacyKeys) && !payload.keySet().equals(latencyKeys) && !extendedRecovery) {
+			throw new BridgeProtocolException("INVALID_FIELD", "coordinator_status");
+		}
+		JsonArray profileValues = requiredArray(payload, "profiles", CoordinatorStatusSnapshot.MAX_PROFILES);
+		ArrayList<CoordinatorStatusSnapshot.SupportedProfile> profiles = new ArrayList<>();
+		for (var element : profileValues) {
+			if (!element.isJsonObject()) throw new BridgeProtocolException("INVALID_COORDINATOR_STATUS", "profile must be an object");
+			JsonObject profile = element.getAsJsonObject();
+			Set<String> legacyProfileKeys = Set.of("agentId", "provider", "model", "reasoningEffort");
+			Set<String> exactProfileKeys = Set.of("agentId", "provider", "model", "reasoningEffort", "serviceTier");
+			if (!profile.keySet().equals(legacyProfileKeys) && !profile.keySet().equals(exactProfileKeys)) throw new BridgeProtocolException("INVALID_FIELD", "profile");
+			profiles.add(new CoordinatorStatusSnapshot.SupportedProfile(
+					requiredStatusString(profile, "agentId"), requiredStatusString(profile, "provider"),
+					requiredStatusString(profile, "model"), requiredStatusString(profile, "reasoningEffort"),
+					profile.has("serviceTier") ? requiredStatusString(profile, "serviceTier")
+							: AgentValidators.defaultServiceTier(requiredStatusString(profile, "provider"))
+			));
+		}
+		JsonObject scheduler = requiredObject(payload, "scheduler");
+		Set<String> schedulerRequiredKeys = Set.of("active", "pending", "maxConcurrent", "maxPending", "warning");
+		Set<String> schedulerAllowedKeys = Set.of(
+				"active", "pending", "maxConcurrent", "maxPending", "warning", "mode", "configuredTarget", "target",
+				"minConcurrency", "maxConcurrency", "urgentReserve", "ordinaryActiveLimit", "activeOrdinary", "activeUrgent",
+				"pendingOrdinary", "pendingUrgent", "growthCount", "backoffCount", "lastChangeReason", "healthyCompletions",
+				"ordinaryReservationRejections", "urgentReservationRejections"
+		);
+		if (!scheduler.keySet().containsAll(schedulerRequiredKeys) || !schedulerAllowedKeys.containsAll(scheduler.keySet())) {
+			throw new BridgeProtocolException("INVALID_FIELD", "scheduler");
+		}
+		CoordinatorStatusSnapshot.SchedulerStatus schedulerStatus = new CoordinatorStatusSnapshot.SchedulerStatus(
+				requiredInt(scheduler, "active"), requiredInt(scheduler, "pending"),
+				requiredInt(scheduler, "maxConcurrent"), requiredInt(scheduler, "maxPending"), requiredBoolean(scheduler, "warning"),
+				scheduler.has("mode") && "adaptive".equals(requiredString(scheduler, "mode")) && scheduler.has("maxConcurrency")
+						? requiredInt(scheduler, "maxConcurrency")
+						: requiredInt(scheduler, "maxConcurrent")
+		);
+		JsonArray circuitValues = requiredArray(payload, "circuits", CoordinatorStatusSnapshot.MAX_CIRCUITS);
+		ArrayList<CoordinatorStatusSnapshot.CircuitHealth> circuits = new ArrayList<>();
+		for (var element : circuitValues) {
+			if (!element.isJsonObject()) throw new BridgeProtocolException("INVALID_COORDINATOR_STATUS", "circuit must be an object");
+			JsonObject circuit = element.getAsJsonObject();
+			requireKeys(circuit, Set.of("provider", "model", "operation", "count", "p50Ms", "p95Ms", "failureRate", "circuit"), "circuit");
+			circuits.add(new CoordinatorStatusSnapshot.CircuitHealth(
+					requiredStatusString(circuit, "provider"), requiredStatusString(circuit, "model"), requiredStatusString(circuit, "operation"),
+					requiredInt(circuit, "count"), requiredInt(circuit, "p50Ms"), requiredInt(circuit, "p95Ms"),
+					requiredDouble(circuit, "failureRate"), requiredStatusString(circuit, "circuit")
+			));
+		}
+		JsonArray latencyValues = payload.has("latencies")
+				? requiredArray(payload, "latencies", CoordinatorStatusSnapshot.MAX_LATENCIES)
+				: new JsonArray();
+		ArrayList<CoordinatorStatusSnapshot.LatencyHealth> latencies = new ArrayList<>();
+		for (var element : latencyValues) {
+			if (!element.isJsonObject()) throw new BridgeProtocolException("INVALID_COORDINATOR_STATUS", "latency must be an object");
+			JsonObject latency = element.getAsJsonObject();
+			requireKeys(latency, Set.of("operation", "count", "p50Ms", "p95Ms"), "latency");
+			latencies.add(new CoordinatorStatusSnapshot.LatencyHealth(
+					requiredStatusString(latency, "operation"), requiredInt(latency, "count"),
+					requiredNonNegativeDouble(latency, "p50Ms"), requiredNonNegativeDouble(latency, "p95Ms")
+			));
+		}
+		long bridgeSessionEpoch = 0L;
+		String runtimeGeneration = null;
+		ArrayList<CoordinatorStatusSnapshot.ComponentRecovery> components = new ArrayList<>();
+		if (extendedRecovery) {
+			bridgeSessionEpoch = requiredLong(payload, "bridgeSessionEpoch");
+			runtimeGeneration = requiredNullableStatusString(payload, "runtimeGeneration");
+			JsonArray componentValues = requiredArray(payload, "components", CoordinatorStatusSnapshot.MAX_COMPONENTS);
+			for (var element : componentValues) {
+				if (!element.isJsonObject()) throw new BridgeProtocolException("INVALID_COORDINATOR_STATUS", "component must be an object");
+				JsonObject component = element.getAsJsonObject();
+				Set<String> requiredComponentKeys = Set.of(
+						"component", "state", "fallbackMode", "boundary", "failureCode", "consecutiveFailureCount",
+						"nextProbeAtEpochMs", "generation", "lastRecoveryAtEpochMs"
+				);
+				Set<String> allowedComponentKeys = new java.util.HashSet<>(requiredComponentKeys);
+				allowedComponentKeys.addAll(Set.of("failedOperationCount", "droppedCount", "incompleteCapture"));
+				if (!component.keySet().containsAll(requiredComponentKeys) || !allowedComponentKeys.containsAll(component.keySet())) {
+					throw new BridgeProtocolException("INVALID_FIELD", "component");
+				}
+				components.add(new CoordinatorStatusSnapshot.ComponentRecovery(
+						requiredStatusString(component, "component"), requiredStatusString(component, "state"),
+						requiredNullableStatusString(component, "fallbackMode"), requiredNullableStatusString(component, "boundary"),
+						requiredNullableStatusString(component, "failureCode"), requiredInt(component, "consecutiveFailureCount"),
+						requiredNullableStatusLong(component, "nextProbeAtEpochMs"), requiredLong(component, "generation"),
+						requiredNullableStatusLong(component, "lastRecoveryAtEpochMs"),
+						component.has("failedOperationCount") ? requiredLong(component, "failedOperationCount") : null,
+						component.has("droppedCount") ? requiredLong(component, "droppedCount") : null,
+						component.has("incompleteCapture") ? requiredBoolean(component, "incompleteCapture") : null
+				));
+			}
+		}
+			return new CoordinatorStatusSnapshot(
+					requiredBoolean(payload, "reconciled"), profiles, requiredInt(payload, "supportedProfileCount"),
+					requiredInt(payload, "rosterReadyCount"), requiredInt(payload, "rosterCount"), schedulerStatus, circuits, latencies,
+					bridgeSessionEpoch, runtimeGeneration, components,
+					receivedAtEpochMs
+			);
+		} catch (BridgeProtocolException exception) {
+			throw exception;
+		} catch (IllegalArgumentException exception) {
+			throw new BridgeProtocolException("INVALID_COORDINATOR_STATUS", exception.getMessage(), exception);
+		}
+	}
+
+	@Override
+	public boolean cancelDetachedAction(AgentId agentId, String reason) {
+		return actionExecutor.cancel(agentId, reason);
+	}
+
+	private void acceptAgentError(BridgeEnvelope envelope) {
+		AgentId agentId = AgentId.parse(envelope.agentId());
+		long goalRevision = requiredLong(envelope.payload(), "goalRevision");
+		if (!router.isCurrentActiveRevision(agentId, goalRevision)) {
+			return;
+		}
+		String code = requiredString(envelope.payload(), "code");
+		String message = requiredString(envelope.payload(), "message");
+		AgentTransition transition = router.plannerFailed(agentId, goalRevision, message);
+		reportRawAgentError(verboseState,
+				() -> AgentChatReporter.failed(manager, transition.after(), code, message));
+	}
+
+	static void reportRawAgentError(AgentVerboseState verboseState, Runnable reporter) {
+		if (verboseState.standardActivityEnabled()) reporter.run();
+	}
+
+	/**
+	 * Launch-time notices (for example a missing or signed-out provider CLI) carry no goal
+	 * revision: the agent is usually still idle, so unlike agent_error they are never dropped.
+	 */
+	private void acceptAgentNotice(BridgeEnvelope envelope) {
+		AgentId agentId = AgentId.parse(envelope.agentId());
+		AgentNotice notice = decodeAgentNotice(envelope.payload());
+		AgentRecord record = null;
+		try {
+			if (manager.registry().contains(agentId)) record = manager.registry().require(agentId);
+		} catch (RuntimeException exception) {
+			record = null;
+		}
+		AgentChatReporter.notice(manager, record, notice.severity(), notice.code(), notice.message());
+		if (record != null) latestAgentNotices.put(agentId, notice);
+		agentNoticeHook.accept(new AcceptedAgentNotice(agentId, record != null, notice));
+	}
+
+	/** Replays the latest notice of every still-registered agent to a player who joined after it was broadcast. */
+	public void replayAgentNotices(ServerPlayer player) {
+		Objects.requireNonNull(player, "player must not be null");
+		for (net.minecraft.network.chat.Component line : pendingAgentNoticeLines()) {
+			try {
+				player.sendSystemMessage(line);
+			} catch (RuntimeException exception) {
+				LOGGER.warn("Could not replay an agent notice to {}", player.getGameProfile().name(), exception);
+			}
+		}
+	}
+
+	List<net.minecraft.network.chat.Component> pendingAgentNoticeLines() {
+		List<net.minecraft.network.chat.Component> lines = new java.util.ArrayList<>();
+		for (Map.Entry<AgentId, AgentNotice> entry : latestAgentNotices.entrySet()) {
+			AgentRecord record = null;
+			try {
+				if (manager.registry().contains(entry.getKey())) record = manager.registry().require(entry.getKey());
+			} catch (RuntimeException exception) {
+				record = null;
+			}
+			if (record == null) {
+				latestAgentNotices.remove(entry.getKey());
+				continue;
+			}
+			AgentNotice notice = entry.getValue();
+			lines.add(AgentChatReporter.noticeLine(manager.displayName(record), record.profile().provider(), notice.severity(), notice.message()));
+		}
+		return lines;
+	}
+
+	void setAgentNoticeHookForVerification(java.util.function.Consumer<AcceptedAgentNotice> hook) {
+		agentNoticeHook = Objects.requireNonNull(hook, "agent notice hook must not be null");
+	}
+
+	static AgentNotice decodeAgentNotice(JsonObject payload) {
+		requireKeys(payload, Set.of("severity", "code", "message"), "agent_notice");
+		String severity = requiredString(payload, "severity");
+		if (!AgentChatReporter.NOTICE_SEVERITIES.contains(severity)) {
+			throw new BridgeProtocolException("INVALID_AGENT_NOTICE", "agent_notice.severity is not supported");
+		}
+		String code = requiredString(payload, "code", 128);
+		String message = requiredString(payload, "message", AgentChatReporter.MAX_NOTICE_LENGTH);
+		if (message.codePoints().anyMatch(codePoint -> codePoint < 0x20 || codePoint == 0x7f)) {
+			throw new BridgeProtocolException("INVALID_AGENT_NOTICE", "agent_notice.message must be plain text");
+		}
+		return new AgentNotice(severity, code, message);
+	}
+
+	static record AgentNotice(String severity, String code, String message) { }
+
+	/** What acceptAgentNotice did with one envelope; `known` is false when the agent was logged only. */
+	static record AcceptedAgentNotice(AgentId agentId, boolean known, AgentNotice notice) { }
+
+	private void acceptVerboseEvent(BridgeEnvelope envelope) {
+		AgentId agentId = AgentId.parse(envelope.agentId());
+		VerboseEvent event = decodeVerboseEvent(envelope.payload());
+		AgentRecord record = manager.registry().require(agentId);
+		if (event.goalRevision() != record.goalRevision()) return;
+		if (event.stage().equals("decision")) AgentChatReporter.decision(manager, record, event.message());
+		else AgentVerboseChat.report(manager, verboseState, record, event.stage(), event.message());
+	}
+
+	public boolean requestTaskView(AgentId agentId) {
+		if (!authenticated()) return false;
+		JsonObject payload = new JsonObject();
+		payload.addProperty("goalRevision", manager.registry().require(agentId).goalRevision());
+		send("task_view_request", agentId.toString(), payload);
+		return true;
+	}
+
+	static VerboseEvent decodeVerboseEvent(JsonObject payload) {
+		requireKeys(payload, Set.of("goalRevision", "stage", "message"), "verbose_event");
+		long goalRevision = requiredLong(payload, "goalRevision");
+		String stage = requiredString(payload, "stage");
+		if (!AgentVerboseChat.allowedStage(stage)) {
+			throw new BridgeProtocolException("INVALID_VERBOSE_EVENT", "verbose_event.stage is not supported");
+		}
+		String message = requiredString(payload, "message");
+		if (message.length() > AgentVerboseChat.MAX_MESSAGE_LENGTH
+				|| message.codePoints().anyMatch(codePoint -> codePoint < 0x20 || codePoint == 0x7f)) {
+			throw new BridgeProtocolException(
+					"INVALID_VERBOSE_EVENT", "verbose_event.message must be plain text with at most 256 characters"
+			);
+		}
+		return new VerboseEvent(goalRevision, stage, message);
+	}
+
+	static record VerboseEvent(long goalRevision, String stage, String message) { }
+
+	private void acceptGoalCompleted(BridgeEnvelope envelope) {
+		AgentId agentId = AgentId.parse(envelope.agentId());
+		JsonObject payload = envelope.payload();
+		requireKeys(payload, Set.of("goalRevision", "goalFingerprint", "traceId", "profile"), "goal_completed");
+		long goalRevision = requiredLong(payload, "goalRevision");
+		AgentRecord record = manager.registry().require(agentId);
+		String traceId = requiredTraceId(payload, "traceId");
+		String goalFingerprint = requiredString(payload, "goalFingerprint");
+		if (!goalFingerprint.matches("[0-9a-f]{64}")) {
+			throw new BridgeProtocolException("INVALID_GOAL_FINGERPRINT", "goalFingerprint must be lowercase SHA-256");
+		}
+		JsonObject profile = requiredObject(payload, "profile");
+		requireKeys(profile, Set.of("provider", "model", "reasoningEffort", "serviceTier"), "goal_completed.profile");
+		if (!record.profile().provider().equals(requiredString(profile, "provider"))
+				|| !record.profile().model().equals(requiredString(profile, "model"))
+				|| !record.profile().reasoning().equals(requiredString(profile, "reasoningEffort"))
+				|| !record.profile().serviceTier().equals(requiredString(profile, "serviceTier"))) {
+			throw new AgentDomainException("STALE_PROVENANCE", "Completion profile does not match the selected model profile");
+		}
+		GoalCompletionVerifier.VerificationResult verification = goalVerificationRuntime.evaluateRequest(
+				agentId, goalRevision, goalFingerprint);
+		VerboseEvent feedback = completionVerboseEvent(goalRevision, verification);
+		boolean changed = verboseState.goalVerificationChanged(
+				agentId, goalRevision, verification.verified(), verification.facts());
+		if (!verification.verified() && changed) {
+			AgentChatReporter.goalNotComplete(manager, record, verification.facts());
+			AgentVerboseChat.report(manager, verboseState, record, feedback.stage(), feedback.message());
+		}
+		JsonObject result = completionResultPayload(goalRevision, traceId, goalFingerprint, verification);
+		send("goal_completion_result", agentId.toString(), result);
+		if (verification.verified()) {
+			goalVerificationRuntime.acceptVerified(agentId, goalRevision, goalFingerprint, verification);
+			AgentRecord completed = manager.registry().require(agentId);
+			if (changed) {
+				AgentChatReporter.goalVerified(manager, completed, verification.facts());
+				AgentVerboseChat.report(manager, verboseState, completed, feedback.stage(), feedback.message());
+			}
+		}
+	}
+
+	static VerboseEvent completionVerboseEvent(
+			long goalRevision,
+			GoalCompletionVerifier.VerificationResult verification
+	) {
+		Objects.requireNonNull(verification, "verification must not be null");
+		GoalEvidence.Fact fact = verification.facts().stream().filter(item -> !item.satisfied()).findFirst()
+				.orElse(verification.facts().isEmpty() ? null : verification.facts().getFirst());
+		if (verification.verified()) {
+			return new VerboseEvent(goalRevision, "result",
+					fact == null ? "Goal verified." : "Goal verified: " + fact.expectedValue() + ".");
+		}
+		return new VerboseEvent(goalRevision, verification.awaitingOperatorConfirmation() ? "result" : "retry",
+				AgentActivityPresentation.goalNotComplete(verification.facts()));
+	}
+
+	static JsonObject completionResultPayload(long goalRevision, String traceId, String goalFingerprint, GoalCompletionVerifier.VerificationResult verification) {
+		JsonObject result = verification.toJson();
+		result.addProperty("goalRevision", goalRevision);
+		result.addProperty("traceId", traceId);
+		result.addProperty("goalFingerprint", goalFingerprint);
+		return result;
+	}
+
+	private void acceptConversationWakeAck(BridgeEnvelope envelope) {
+		AgentId agentId = AgentId.parse(envelope.agentId());
+		JsonObject payload = envelope.payload();
+		requireKeys(payload, Set.of("transactionId", "goalRevision"), "conversation_wake_ack");
+		UUID transactionId;
+		try {
+			transactionId = UUID.fromString(requiredString(payload, "transactionId"));
+		} catch (IllegalArgumentException exception) {
+			throw new BridgeProtocolException("INVALID_FIELD", "conversation_wake_ack.transactionId", exception);
+		}
+		manager.acknowledgeConversationWake(transactionId, agentId, requiredLong(payload, "goalRevision"));
+	}
+
+	private void requestActiveDisconnect() {
+		activeDisconnectPending.set(true);
+	}
+
+	private void publishPendingDisconnects() {
+		boolean coordinatorDisconnect;
+		boolean activeDisconnect;
+		synchronized (publicationLock) {
+			coordinatorDisconnect = coordinatorDisconnectPending.getAndSet(false);
+			activeDisconnect = activeDisconnectPending.getAndSet(false) && !authenticated();
+			if (!coordinatorDisconnect && !activeDisconnect) return;
+			disconnectInProgress = true;
+		}
+		try {
+			if (coordinatorDisconnect) {
+				if (reflexes != null) reflexes.clearAll();
+				actionExecutor.coordinatorDisconnected();
+			}
+			disconnectActiveAgents();
+		} finally {
+			synchronized (publicationLock) {
+				disconnectInProgress = false;
+				publicationLock.notifyAll();
+			}
+		}
+	}
+
+	private void awaitDisconnectPublication(Session source) {
+		synchronized (publicationLock) {
+			while (disconnectInProgress) {
+				long remainingNanos = source.handshakeRemainingNanos();
+				if (remainingNanos <= 0L) throw handshakeTimeout();
+				try {
+					publicationLock.wait(Math.max(1L, Math.min(HANDSHAKE_RETRY_WAIT_MS,
+							TimeUnit.NANOSECONDS.toMillis(remainingNanos))));
+				} catch (InterruptedException exception) {
+					Thread.currentThread().interrupt();
+					throw new BridgeProtocolException(
+							"COORDINATOR_DISCONNECTED", "Bridge authentication was interrupted", exception
+					);
+				}
+			}
+		}
+	}
+
+	void hydrateActionJournalForVerification() {
+		hydrateActionJournal();
+	}
+
+	private synchronized void hydrateActionJournal() {
+		if (actionJournalHydrated) return;
+		actionJournal.terminalizeAccepted(MultiplexedServerBridge::recoveryUncertainResult);
+		List<AgentRecord> records = manager.registry().records();
+		Map<AgentId, AgentRecord> current = new HashMap<>();
+		for (AgentRecord record : records) {
+			current.put(record.agentId(), record);
+			actionJournal.retainGoal(record.agentId(), logicalGoalId(record));
+		}
+		for (DurableActionJournal.Entry entry : actionJournal.snapshot()) {
+			AgentRecord record = current.get(entry.request().agentId());
+			if (record == null) {
+				actionJournal.remove(entry.request().agentId());
+				continue;
+			}
+		}
+		for (AgentRecord record : records) {
+			programActions.beginGoal(record.agentId(), record.goalRevision());
+		}
+		for (DurableActionJournal.Entry entry : actionJournal.snapshot()) {
+			AgentRecord record = current.get(entry.request().agentId());
+			if (record == null) continue;
+			ServerActionResult result = entry.result();
+			if (entry.request().goalRevision() == record.goalRevision()) {
+				programActions.accept(entry.request());
+				programActions.terminal(result);
+			}
+			if (entry.phase() == DurableActionJournal.Phase.TERMINAL) {
+				terminalResults.beginGoal(entry.request().agentId(), entry.request().goalRevision(), entry.logicalGoalId());
+				terminalResults.retain(result);
+			}
+		}
+		for (AgentRecord record : records) {
+			terminalResults.beginGoal(record.agentId(), record.goalRevision(), logicalGoalId(record));
+		}
+		actionJournalHydrated = true;
+	}
+
+	static ServerActionResult recoveryUncertainResult(ServerActionRequest request) {
+		return new ServerActionResult(
+				request.agentId(), request.goalRevision(), request.actionId(), request.type(), request.traceId(),
+				dev.agaminggod.arenaagents.server.runtime.ServerActionState.FAILED,
+				"RECOVERY_UNCERTAIN",
+				"Server restarted after accepting the action; its physical outcome is uncertain and it will not be replayed",
+				0L, Math.max(1L, System.currentTimeMillis()), true, true
+		);
+	}
+
+	private HandshakeSnapshot awaitHandshakeSnapshot(Session source) {
+		if (manager.server() == null || !manager.server().isRunning()) {
+			return captureHandshakeSnapshot(false);
+		}
+		CompletableFuture<HandshakeSnapshot> snapshot = new CompletableFuture<>();
+		if (!serverTasks.offer(BoundedServerTaskQueue.Lane.CONTROL, () -> {
+			try {
+				snapshot.complete(captureHandshakeSnapshot(true));
+			} catch (RuntimeException exception) {
+				snapshot.completeExceptionally(exception);
+			}
+		})) {
+			throw new BridgeProtocolException(
+					"SERVER_TASK_QUEUE_FULL", "Could not capture the coordinator handshake on the server thread");
+		}
+		long remainingNanos = source.handshakeRemainingNanos();
+		if (remainingNanos <= 0L) throw handshakeTimeout();
+		try {
+			return snapshot.get(remainingNanos, TimeUnit.NANOSECONDS);
+		} catch (TimeoutException exception) {
+			throw handshakeTimeout();
+		} catch (InterruptedException exception) {
+			Thread.currentThread().interrupt();
+			throw new BridgeProtocolException(
+					"COORDINATOR_DISCONNECTED", "Bridge authentication was interrupted", exception);
+		} catch (ExecutionException exception) {
+			Throwable cause = exception.getCause();
+			if (cause instanceof RuntimeException runtime) throw runtime;
+			throw new BridgeProtocolException(
+					"HANDSHAKE_SNAPSHOT_FAILED", "Could not capture coordinator state", cause);
+		}
+	}
+
+	private HandshakeSnapshot captureHandshakeSnapshot(boolean mayPruneStaleDrafts) {
+		long revision = registryPublicationRevision.get();
+		List<AgentRecord> visibleRecords = manager.coordinatorVisibleRecords();
+		List<PendingConversationWake> pendingWakes = manager.pendingConversationWakes();
+		Map<AgentId, AgentRecord> recordsById = new HashMap<>();
+		for (AgentRecord record : manager.records()) recordsById.put(record.agentId(), record);
+		ArrayList<PendingGoalDraft> goalSpecRequests = new ArrayList<>();
+		ArrayList<UUID> staleDraftIds = new ArrayList<>();
+		for (PendingGoalDraft draft : manager.goalDrafts()) {
+			AgentRecord record = recordsById.get(draft.agentId());
+			if (record == null || !draft.matches(record)) {
+				staleDraftIds.add(draft.draftId());
+			} else if (draft.proposedPredicate().isEmpty()) {
+				goalSpecRequests.add(draft);
+			}
+		}
+		if (!staleDraftIds.isEmpty()) {
+			if (mayPruneStaleDrafts) {
+				staleDraftIds.forEach(manager::removeGoalDraft);
+			} else if (!serverTasks.offer(BoundedServerTaskQueue.Lane.CONTROL,
+					() -> staleDraftIds.forEach(manager::removeGoalDraft))) {
+				LOGGER.debug("Stale goal draft cleanup deferred because the server task queue is full");
+			}
+		}
+		return new HandshakeSnapshot(revision, visibleRecords, pendingWakes, goalSpecRequests);
+	}
+
+	private static void ensureHandshakeTimeRemaining(Session source) {
+		if (source.handshakeRemainingNanos() <= 0L) throw handshakeTimeout();
+	}
+
+	private static BridgeProtocolException handshakeTimeout() {
+		return new BridgeProtocolException(
+				"AUTHENTICATION_TIMEOUT", "Coordinator handshake deadline expired while publishing the registry snapshot"
+		);
+	}
+
+	private record HandshakeSnapshot(
+			long registryRevision,
+			List<AgentRecord> visibleRecords,
+			List<PendingConversationWake> pendingWakes,
+			List<PendingGoalDraft> goalSpecRequests
+	) {
+		private HandshakeSnapshot {
+			visibleRecords = List.copyOf(visibleRecords);
+			pendingWakes = List.copyOf(pendingWakes);
+			goalSpecRequests = List.copyOf(goalSpecRequests);
+		}
+	}
+
+	private void bumpRegistryPublicationRevision() {
+		registryPublicationRevision.incrementAndGet();
+		synchronized (publicationLock) {
+			publicationLock.notifyAll();
+		}
+	}
+
+	private void awaitHandshakeRetryLocked(Session source) {
+		long remainingNanos = source.handshakeRemainingNanos();
+		if (remainingNanos <= 0L) throw handshakeTimeout();
+		try {
+			publicationLock.wait(Math.max(1L, Math.min(HANDSHAKE_RETRY_WAIT_MS,
+					TimeUnit.NANOSECONDS.toMillis(remainingNanos))));
+		} catch (InterruptedException exception) {
+			Thread.currentThread().interrupt();
+			throw new BridgeProtocolException(
+					"COORDINATOR_DISCONNECTED", "Bridge authentication was interrupted", exception
+			);
+		}
+	}
+
+	private void disconnectActiveAgents() {
+		long now = System.currentTimeMillis();
+		for (AgentRecord record : manager.records()) {
+			if (!record.state().isActive()) continue;
+			Optional<PendingConversationWake> wake = manager.pendingConversationWake(record.agentId());
+			if (wake.isPresent() && wake.orElseThrow().matches(record)) {
+				manager.rearmConversationWake(wake.orElseThrow());
+				continue;
+			}
+			AgentTransition transition = manager.registry().disconnect(record.agentId(), now);
+			AgentChatReporter.disconnected(manager, transition.after());
+		}
+	}
+
+	static List<AgentControlModelOption> decodeCatalog(JsonObject payload) {
+		try {
+			requireKeysAllowing(payload, Set.of("refreshedAtEpochMs", "models"), Set.of("providers"), "catalog_snapshot");
+			requiredLong(payload, "refreshedAtEpochMs");
+			JsonArray models = requiredArray(payload, "models", AgentControlModelOption.MAX_OPTIONS);
+			ArrayList<AgentControlModelOption> decoded = new ArrayList<>(models.size());
+			for (var element : models) {
+				if (!element.isJsonObject()) {
+					throw new BridgeProtocolException("INVALID_MODEL_CATALOG", "model must be an object");
+				}
+				JsonObject model = element.getAsJsonObject();
+				requireKeys(model, Set.of("provider", "id", "model", "displayName", "reasoningEfforts", "serviceTiers"),
+						"catalog model");
+				decoded.add(new AgentControlModelOption(
+						requiredStatusString(model, "provider"),
+						requiredStatusString(model, "id"),
+						requiredStatusString(model, "displayName"),
+						stringList(model, "reasoningEfforts", 12),
+						stringList(model, "serviceTiers", 8)
+				));
+			}
+			return List.copyOf(decoded);
+		} catch (BridgeProtocolException exception) {
+			throw exception;
+		} catch (RuntimeException exception) {
+			throw new BridgeProtocolException("INVALID_MODEL_CATALOG", exception.getMessage(), exception);
+		}
+	}
+
+	/** Discovery rows; a malformed row is skipped rather than costing the whole catalog. */
+	static List<dev.agaminggod.arenaagents.control.AgentControlProvider> decodeCatalogProviders(JsonObject payload) {
+		var element = payload.get("providers");
+		if (element == null || !element.isJsonArray()) return List.of();
+		ArrayList<dev.agaminggod.arenaagents.control.AgentControlProvider> rows = new ArrayList<>();
+		int modelBudget = AgentControlModelOption.MAX_OPTIONS;
+		for (var value : element.getAsJsonArray()) {
+			if (rows.size() >= dev.agaminggod.arenaagents.control.AgentControlProvider.MAX_PROVIDERS) break;
+			try {
+				JsonObject row = value.getAsJsonObject();
+				// Model labels, efforts and tiers are the catalog options; rows keep only which models are free.
+				ArrayList<String> freeModels = new ArrayList<>();
+				for (var modelValue : row.getAsJsonArray("models")) {
+					if (freeModels.size() >= modelBudget) break;
+					JsonObject model = modelValue.getAsJsonObject();
+					if (model.get("free").getAsBoolean()) freeModels.add(model.get("id").getAsString());
+				}
+				rows.add(new dev.agaminggod.arenaagents.control.AgentControlProvider(
+						row.get("id").getAsString(), row.get("label").getAsString(), row.get("color").getAsInt(),
+						nullableBoolean(row, "installed"), nullableString(row, "version"), nullableBoolean(row, "signedIn"),
+						nullableString(row, "account"), nullableString(row, "plan"), nullableString(row, "defaultModel"), freeModels,
+						row.get("limitKind").getAsString(), nullableString(row, "limit"), row.get("checkedAt").getAsLong()));
+				modelBudget -= freeModels.size();
+			} catch (RuntimeException invalidRow) {
+				// A row the mod cannot show is left out; the models it describes still arrive in "models".
+			}
+		}
+		return List.copyOf(rows);
+	}
+
+	private static Boolean nullableBoolean(JsonObject object, String key) {
+		var value = object.get(key);
+		return value == null || value.isJsonNull() ? null : value.getAsBoolean();
+	}
+
+	private void acceptCatalog(JsonObject payload) {
+		List<AgentControlModelOption> decoded = decodeCatalog(payload);
+		catalogProviders = decodeCatalogProviders(payload);
+		if (decoded.isEmpty()) {
+			synchronized (publicationLock) {
+				catalogProfiles = Set.of();
+				catalogModels = List.of();
+				catalogLoaded = false;
+				catalogDiscoveryPending = false;
+				AgentControlCatalog.installRuntimeCatalog(List.of(), catalogProviders);
+				if (catalogDiscoveryAttempts == 0) requestCatalogDiscovery();
+				else catalogDiscoveryRetryAtNanos = catalogRetryDeadline(catalogDiscoveryAttempts);
+			}
+			return;
+		}
+		JsonArray models = payload.getAsJsonArray("models");
+		HashSet<String> profiles = new HashSet<>();
+		for (var element : models) {
+			JsonObject model = element.getAsJsonObject();
+			String provider = requiredStatusString(model, "provider");
+			String id = requiredStatusString(model, "id");
+			String wireModel = requiredStatusString(model, "model");
+			JsonArray efforts = model.getAsJsonArray("reasoningEfforts");
+			for (var effort : efforts) {
+				String normalizedEffort = effort.getAsString().toLowerCase();
+				profiles.add(provider + "\u0000" + id + "\u0000" + normalizedEffort);
+				profiles.add(provider + "\u0000" + wireModel + "\u0000" + normalizedEffort);
+			}
+		}
+		catalogProfiles = Set.copyOf(profiles);
+		catalogModels = decoded;
+		catalogLoaded = true;
+		// Server-side commands (summon suggestions, skit models) read the same discovered catalog.
+		AgentControlCatalog.installRuntimeCatalog(decoded, catalogProviders);
+		catalogDiscoveryPending = false;
+		catalogDiscoveryAttempts = 0;
+		catalogDiscoveryRetryAtNanos = 0L;
+		catalogDiscoveryGeneration = 0L;
+		catalogDiscoveryFailureCode = null;
+	}
+
+	private void publishCatalogDiscoveryRetry() {
+		synchronized (publicationLock) {
+			if (catalogLoaded || catalogDiscoveryAttempts == 0) return;
+			if (catalogDiscoveryGeneration != coordinatorLifecycleGeneration || session == null || !session.authenticated.get()) return;
+			if (!catalogRetryDue(nanoTime.getAsLong(), catalogDiscoveryRetryAtNanos)) return;
+			catalogDiscoveryPending = false;
+			requestCatalogDiscovery();
+		}
+	}
+
+	private void requestCatalogDiscovery() {
+		if (catalogLoaded || catalogDiscoveryPending) return;
+		if (catalogDiscoveryAttempts < Integer.MAX_VALUE) catalogDiscoveryAttempts += 1;
+		catalogDiscoveryGeneration = coordinatorLifecycleGeneration;
+		catalogDiscoveryRetryAtNanos = catalogRetryDeadline(catalogDiscoveryAttempts);
+		try {
+			send("catalog_request", "server", new JsonObject());
+			catalogDiscoveryPending = true;
+			if (catalogDiscoveryFailureCode != null) {
+				LOGGER.debug("Catalog discovery publication recovered after {}", catalogDiscoveryFailureCode);
+				catalogDiscoveryFailureCode = null;
+			}
+		} catch (RuntimeException exception) {
+			catalogDiscoveryPending = false;
+			String failureCode = catalogPublicationFailureCode(exception);
+			if (!failureCode.equals(catalogDiscoveryFailureCode)) {
+				LOGGER.debug("Catalog discovery publication unavailable ({}); retry remains scheduled", failureCode);
+				catalogDiscoveryFailureCode = failureCode;
+			}
+		}
+	}
+
+	static long catalogRetryDelayNanos(int completedAttempts) {
+		return CATALOG_DISCOVERY_RETRY_BASE_NANOS
+				<< Math.min(CATALOG_DISCOVERY_MAX_BACKOFF_SHIFT, Math.max(0, completedAttempts - 1));
+	}
+
+	private long catalogRetryDeadline(int completedAttempts) {
+		return nanoTime.getAsLong() + catalogRetryDelayNanos(completedAttempts);
+	}
+
+	static boolean catalogRetryDue(long now, long deadline) {
+		return now - deadline >= 0L;
+	}
+
+	private static String catalogPublicationFailureCode(RuntimeException exception) {
+		String code = exception instanceof BridgeProtocolException protocol ? protocol.code() : exception.getClass().getSimpleName();
+		if (code == null || code.isBlank()) return "RUNTIME_FAILURE";
+		return code.length() <= 64 ? code : code.substring(0, 64);
+	}
+
+	private void plannerReady(BridgeEnvelope envelope) {
+		AgentId id = AgentId.parse(envelope.agentId());
+		long revision = requiredLong(envelope.payload(), "goalRevision");
+		AgentRecord record;
+		try {
+			record = manager.registry().require(id);
+		} catch (AgentDomainException exception) {
+			if ("AGENT_NOT_FOUND".equals(exception.code())) return;
+			throw exception;
+		}
+		if (revision != record.goalRevision()) {
+			if (revision < record.goalRevision()) return;
+			throw new AgentDomainException("STALE_REVISION", "Coordinator planning revision is stale");
+		}
+		boolean agentReady = "agent_ready".equals(envelope.type());
+		if (agentReady) { coordinatorReadyAgentIds.add(id); publishKnownProgress(id); }
+		boolean recoveryReady = agentReady
+				&& envelope.payload().has("reconciled")
+				&& requiredBoolean(envelope.payload(), "reconciled");
+		if (recoveryReady && record.state() == AgentLifecycleState.DISCONNECTED
+				&& record.currentGoal().isPresent()) {
+			manager.registry().rearmAfterCoordinatorRecovery(id.value(), revision, System.currentTimeMillis());
+		}
+		if (!recoveryReady && record.state() == AgentLifecycleState.STARTING) {
+			router.plannerStarted(id);
+		}
+		if (agentReady && shouldRequestReadyObservation(id, revision, recoveryReady)) {
+			observationPublication.markAttention(id);
+			queueUrgentObservation(id);
+		}
+	}
+
+	private boolean shouldRequestReadyObservation(AgentId agentId, long goalRevision, boolean recoveryReady) {
+		if (!recoveryReady) return true;
+		RecoveryObservationIdentity identity = new RecoveryObservationIdentity(
+				coordinatorLifecycleGeneration, goalRevision
+		);
+		return !identity.equals(recoveryObservationIdentities.put(agentId, identity));
+	}
+
+	private void acceptAction(BridgeEnvelope envelope) {
+		boolean durableAccepted = false;
+		try {
+			ServerActionRequest request = decodeActionRequest(envelope);
+			AgentRecord record = validateActionProvenance(request);
+			BridgeTap.model(request.agentId(), "action_command", request.provenance().programId(), request.provenance().programVersion());
+			if (shouldRouteConcurrentChat(request, actionExecutor.activeRequest(request.agentId()))) {
+				actionExecutor.submitConcurrentChat(request);
+				return;
+			}
+			if (isDetachedConversationReply(record, request)) {
+				actionExecutor.submitConversationReply(request);
+			} else {
+				actionJournal.acceptForTick(request, logicalGoalId(record));
+				durableAccepted = true;
+				try {
+					programActions.accept(request);
+					actionExecutor.submitProgramPrimitive(request);
+				} catch (RuntimeException exception) {
+					if (actionJournal.rollbackAccepted(request)) {
+						durableAccepted = false;
+						programActions.rollback(request);
+					}
+					throw exception;
+				}
+			}
+		} catch (BridgeProtocolException | AgentDomainException exception) {
+			if (durableAccepted) throw exception;
+			if (sendRejectedAction(envelope, exception)) return;
+			throw exception;
+		}
+	}
+
+	private void acceptActionCancel(BridgeEnvelope envelope) {
+		AgentId agentId = AgentId.parse(envelope.agentId());
+		JsonObject payload = envelope.payload();
+		requireKeys(payload, Set.of("goalRevision", "actionId"), "action_cancel");
+		long goalRevision = requiredLong(payload, "goalRevision");
+		String actionId = requiredString(payload, "actionId");
+		if (!actionExecutor.cancel(agentId, goalRevision, actionId, "Cancelled by explicit model decision")) {
+			// Completion can win the race with cancellation. Replay its retained authoritative
+			// result; never invent a cancellation receipt or cancel another action's identity.
+			LOGGER.debug("ACTION_NOT_ACTIVE: cancellation arrived after action completion for {} revision {}", agentId, goalRevision);
+			replayPendingTerminalResults();
+			reportVerbose(agentId, "progress", "ACTION_NOT_ACTIVE: referenced action already ended; retained results replayed");
+		}
+	}
+
+	static ServerActionRequest decodeActionRequest(BridgeEnvelope envelope) {
+		JsonObject payload = envelope.payload();
+		requireActionCommandKeys(payload);
+		AgentId agentId = AgentId.parse(envelope.agentId());
+		JsonObject arguments = requiredObject(payload, "arguments");
+		String type = requiredString(payload, "actionType");
+		ActionType actionType = ActionType.fromWireName(type).orElseThrow(
+				() -> new BridgeProtocolException("UNKNOWN_ACTION", "Unknown action type '" + type + "'")
+		);
+		if (!ServerActionExecutor.isArenaScriptPrimitive(actionType)) {
+			throw new BridgeProtocolException("UNSUPPORTED_ARENA_SCRIPT_ACTION", "ArenaScript cannot invoke '" + type + "'");
+		}
+		try {
+			JsonObject validatedArguments = ProtocolCodec.validateActionArguments(actionType, arguments);
+			String traceId = requiredTraceId(payload, "traceId");
+			ActionProvenance provenance = decodeActionProvenance(payload);
+			if (provenance.traceId() == null || !provenance.traceId().equals(traceId)) {
+				throw new BridgeProtocolException("INVALID_TRACE_ID", "provenance.traceId must match traceId");
+			}
+			return new ServerActionRequest(agentId, requiredLong(payload, "goalRevision"), requiredString(payload, "actionId"), actionType, validatedArguments, provenance, traceId);
+		} catch (ProtocolException exception) {
+			throw new BridgeProtocolException(exception.code(), exception.getMessage(), exception);
+		} catch (IllegalArgumentException exception) {
+			throw new BridgeProtocolException("INVALID_ACTION_REQUEST", exception.getMessage(), exception);
+		}
+	}
+
+	private static void requireActionCommandKeys(JsonObject payload) {
+		Set<String> expected = Set.of("traceId", "goalRevision", "actionId", "actionType", "arguments", "provenance");
+		for (String field : Set.of("goalRevision", "actionId", "actionType", "arguments", "provenance")) if (!payload.has(field)) throw new BridgeProtocolException("MISSING_FIELD", field);
+		for (String field : payload.keySet()) if (!expected.contains(field)) throw new BridgeProtocolException("INVALID_FIELD", "action_command");
+	}
+
+	private boolean sendRejectedAction(BridgeEnvelope envelope, RuntimeException exception) {
+		JsonObject payload = envelope.payload();
+		RejectionIdentity identity = rejectionIdentity(envelope);
+		if (identity == null) return false;
+		JsonObject result = new JsonObject();
+		result.addProperty("goalRevision", identity.goalRevision());
+		result.addProperty("actionId", identity.actionId());
+		result.addProperty("commandId", identity.actionId());
+		result.addProperty("actionType", identity.actionType());
+		result.addProperty("traceId", identity.traceId());
+		result.addProperty("state", "FAILED");
+		result.addProperty("reasonCode", exception instanceof BridgeProtocolException protocol ? protocol.code() : ((AgentDomainException) exception).code());
+		result.addProperty("message", boundedRejectionMessage(exception.getMessage()));
+		result.addProperty("elapsedMs", 0L);
+		result.addProperty("observedAtEpochMs", System.currentTimeMillis());
+		result.addProperty("executionStarted", false);
+		result.addProperty("physicalAttempted", false);
+		send("action_result", identity.agentId(), result);
+		BridgeTap.result(AgentId.parse(identity.agentId()), identity.actionType(), "FAILED", result.get("reasonCode").getAsString());
+		reportVerbose(AgentId.parse(identity.agentId()), "error",
+				"Action rejected: " + boundedRejectionMessage(exception.getMessage()));
+		return true;
+	}
+
+	private static RejectionIdentity rejectionIdentity(BridgeEnvelope envelope) {
+		JsonObject payload = envelope.payload();
+		try {
+			AgentId.parse(envelope.agentId());
+			return new RejectionIdentity(envelope.agentId(), requiredLong(payload, "goalRevision"), requiredString(payload, "actionId"), requiredString(payload, "actionType"), requiredTraceId(payload, "traceId"));
+		} catch (RuntimeException exception) {
+			return null;
+		}
+	}
+
+	private record RejectionIdentity(String agentId, long goalRevision, String actionId, String actionType, String traceId) { }
+	private record RecoveryObservationIdentity(long coordinatorLifecycleGeneration, long goalRevision) { }
+	private record PendingRespawnPublication(ServerActionResult result, AgentTransition transition, Runnable commit) { }
+
+	static String boundedRejectionMessage(String message) {
+		String fallback = "Action rejected";
+		if (message == null || message.isBlank()) return fallback;
+		int end = Math.min(message.length(), ProtocolConstants.MAX_RESULT_MESSAGE_LENGTH);
+		if (end < message.length() && end > 0 && Character.isHighSurrogate(message.charAt(end - 1))
+				&& Character.isLowSurrogate(message.charAt(end))) end -= 1;
+		String bounded = message.substring(0, end);
+		return bounded.isBlank() ? fallback : bounded;
+	}
+
+	private AgentRecord validateActionProvenance(ServerActionRequest request) {
+		AgentRecord record = manager.registry().require(request.agentId());
+		boolean respawn = request.type() == ActionType.RESPAWN;
+		if ((respawn && request.goalRevision() != record.goalRevision())
+				|| (!respawn && !acceptsActionRevision(record, request))) {
+			throw new AgentDomainException("STALE_REVISION", "Coordinator action revision is stale");
+		}
+		if (respawn && record.state() != AgentLifecycleState.DEAD) {
+			throw new AgentDomainException("AGENT_NOT_DEAD", "Only a dead Codex agent can be respawned");
+		}
+		requireDetachedBodyActionAllowed(manager.server(), record, request);
+		// With no task, a block or item action must target food in the live world (ripe crop, berries, food drop).
+		if (isDetachedBodyAction(record, request)) {
+			dev.agaminggod.arenaagents.server.runtime.DetachedFoodTargets.require(
+					manager.findAgentPlayer(record.agentId()).orElse(null), request.type(), request.arguments());
+		}
+		ActionProvenance provenance = request.provenance();
+		AgentProfile profile = record.profile();
+		if (!profile.provider().equals(provenance.provider()) || !profile.model().equals(provenance.model())
+				|| !profile.reasoning().equals(provenance.reasoningEffort()) || !profile.serviceTier().equals(provenance.serviceTier())) {
+			throw new AgentDomainException("STALE_PROVENANCE", "Action provenance does not match the selected model profile");
+		}
+		if (request.type() == ActionType.ATTACK || request.type() == ActionType.USE_RANGED
+				|| request.type() == ActionType.INTERACT_ENTITY) {
+		observationPublication.requireObservedTarget(
+					request.agentId(),
+					provenance.eventSequence(),
+					request.arguments().get("targetId").getAsString()
+			);
+		}
+		if (request.type() == ActionType.CHAT
+				&& ConversationAudience.parse(nullableString(request.arguments(), "audience")) == ConversationAudience.DIRECT) {
+			observationPublication.requireDirectMessageRecipient(
+					request.agentId(),
+					provenance.eventSequence(),
+					requiredString(request.arguments(), "recipientId")
+			);
+		}
+		return record;
+	}
+
+	public static boolean acceptsActionRevision(AgentRecord record, ServerActionRequest request) {
+		if (record.acceptsRevision(request.goalRevision())) return true;
+		return isDetachedConversationReply(record, request) || isDetachedBodyAction(record, request);
+	}
+
+	/**
+	 * With no active task (idle, or its task completed or awaiting nothing more) the model may still use its body at
+	 * the same revision: fight, flee, eat, equip, move. The action changes no goal lifecycle (see
+	 * {@link dev.agaminggod.arenaagents.agent.AgentLifecycleReducer#isDetachedActionState}). Paused goals stay paused while self-preservation actions run. Dead and disconnected agents stay blocked.
+	 */
+	static boolean isDetachedBodyAction(AgentRecord record, ServerActionRequest request) {
+		return request.goalRevision() == record.goalRevision()
+				&& dev.agaminggod.arenaagents.agent.AgentLifecycleReducer.isDetachedActionState(record.state())
+				// Only self-preservation, including getting food; chat keeps its own detached-reply rule (direct or
+				// proximity while idle).
+				&& detachedBodyActionAllowed(request);
+	}
+
+	static boolean detachedBodyActionAllowed(ServerActionRequest request) {
+		ActionType type = request.type();
+		// Raw input frames may move, jump and aim, but attacking or using goes through fight_target, attack and
+		// use_item, so a control frame cannot break or place blocks or open containers without a task.
+		if (type == ActionType.CONTROL || type == ActionType.CONTROL_SEQUENCE) return !controlAttacksOrUses(type, request.arguments());
+		// Picking ripe berries is a right-click; the live target is checked in DetachedFoodTargets.
+		if (type == ActionType.INTERACT_BLOCK) return true;
+		return dev.agaminggod.arenaagents.agent.AgentLifecycleReducer.isSelfPreservationAction(type)
+				|| dev.agaminggod.arenaagents.agent.AgentLifecycleReducer.isFoodHarvest(type, expectedBlockId(request.arguments()));
+	}
+
+	private static boolean controlAttacksOrUses(ActionType type, JsonObject arguments) {
+		if (arguments == null) return false;
+		if (type == ActionType.CONTROL) return pressed(arguments, "attack") || pressed(arguments, "use");
+		JsonElement frames = arguments.get("frames");
+		if (frames == null || !frames.isJsonArray()) return false;
+		for (JsonElement frame : frames.getAsJsonArray()) {
+			if (!frame.isJsonObject() || pressed(frame.getAsJsonObject(), "attack") || pressed(frame.getAsJsonObject(), "use")) return true;
+		}
+		return false;
+	}
+
+	private static boolean pressed(JsonObject frame, String field) {
+		JsonElement value = frame.get(field);
+		return value == null || !value.isJsonPrimitive() || !value.getAsJsonPrimitive().isBoolean() || value.getAsBoolean();
+	}
+
+	/**
+	 * A detached action never bypasses a /takeover, skit playback or Director reservation: a takeover of an idle or
+	 * completed agent does not change its revision, so the reservation itself must refuse the model's action.
+	 */
+	public static void requireDetachedBodyActionAllowed(net.minecraft.server.MinecraftServer server, AgentRecord record,
+			ServerActionRequest request) {
+		if (isDetachedBodyAction(record, request)) {
+			dev.agaminggod.arenaagents.server.SkitModeRuntime.requireNormalControlAllowed(server, record.agentId());
+		}
+	}
+
+	static boolean isDetachedConversationReply(AgentRecord record, ServerActionRequest request) {
+		if (request.goalRevision() != record.goalRevision() || request.type() != ActionType.CHAT) return false;
+		if (record.state() != AgentLifecycleState.IDLE
+				&& record.state() != AgentLifecycleState.PAUSED
+				&& record.state() != AgentLifecycleState.COMPLETED) return false;
+		ConversationAudience audience = ConversationAudience.parse(nullableString(request.arguments(), "audience"));
+		return audience == ConversationAudience.DIRECT || audience == ConversationAudience.PROXIMITY;
+	}
+
+	static boolean shouldRouteConcurrentChat(ServerActionRequest request, ServerActionRequest activeRequest) {
+		return request != null && activeRequest != null && request.type() == ActionType.CHAT
+				&& request.agentId().equals(activeRequest.agentId()) && activeRequest.type() != ActionType.CHAT;
+	}
+
+	private static ActionProvenance decodeActionProvenance(JsonObject payload) {
+		JsonObject provenance = requiredObject(payload, "provenance");
+		Set<String> expected = Set.of(
+				"provider", "model", "reasoningEffort", "serviceTier", "programId", "programVersion", "sourceStepId", "eventSequence", "traceId", "watcherId"
+		);
+		for (String field : provenance.keySet()) if (!expected.contains(field)) throw new BridgeProtocolException("INVALID_FIELD", "provenance");
+		for (String field : Set.of("provider", "model", "reasoningEffort", "serviceTier", "programId", "programVersion", "sourceStepId", "eventSequence")) {
+			if (!provenance.has(field)) throw new BridgeProtocolException("MISSING_FIELD", "provenance." + field);
+		}
+		if (provenance.has("watcherId") && !provenance.has("traceId")) {
+			throw new BridgeProtocolException("MISSING_FIELD", "provenance.traceId");
+		}
+		try {
+			return new ActionProvenance(
+					requiredProvenanceString(provenance, "provider"),
+					requiredProvenanceString(provenance, "model"),
+					requiredProvenanceString(provenance, "reasoningEffort"),
+					requiredProvenanceString(provenance, "serviceTier"),
+					requiredProvenanceString(provenance, "programId"),
+					requiredSafeLong(provenance, "programVersion"),
+					requiredProvenanceString(provenance, "sourceStepId"),
+					requiredSafeLong(provenance, "eventSequence"),
+					provenance.has("traceId") ? requiredTraceId(provenance, "traceId") : null,
+					provenance.has("watcherId") ? requiredProvenanceString(provenance, "watcherId") : null
+			);
+		} catch (IllegalArgumentException exception) {
+			throw new BridgeProtocolException("INVALID_PROVENANCE", exception.getMessage(), exception);
+		}
+	}
+
+	private void sendActionResult(ServerActionResult result) {
+		if (actionJournal.terminalIfAcceptedForTick(result)) {
+			pendingDurableTerminalResults().add(result);
+			return;
+		}
+		publishCommittedActionResult(result);
+	}
+
+	private void publishCommittedActionResult(ServerActionResult result) {
+		programActions.terminal(result);
+		BridgeTap.result(result.agentId(), result.actionType().wireName(), result.state().name(), result.reasonCode());
+		observations.invalidatePlayerState(result.agentId());
+		ScenarioRuntimeService.onAgentAction(
+				manager.server(),
+				result.agentId().toString(),
+				result.actionType().wireName(),
+				result.state() == dev.agaminggod.arenaagents.server.runtime.ServerActionState.SUCCEEDED
+						&& !"TARGET_ALREADY_SATISFIED".equals(result.reasonCode())
+		);
+		synchronized (publicationLock) {
+			terminalResults.retain(result);
+		}
+		reportVerbose(result.agentId(), AgentActivityPresentation.verboseResultStage(result), verboseResult(result));
+		verboseState.finishAction(result);
+		observationPublication.markAttention(result.agentId());
+		queueUrgentObservation(result.agentId());
+	}
+
+	void publishConversationEvent(ConversationEvent event, Optional<dev.agaminggod.arenaagents.agent.goal.GoalSpec> wakeGoal) {
+		Objects.requireNonNull(event, "event must not be null");
+		Optional<dev.agaminggod.arenaagents.agent.goal.GoalSpec> checkedWakeGoal = Objects.requireNonNull(wakeGoal, "wakeGoal must not be null");
+		try {
+			if (checkedWakeGoal.isEmpty()) {
+				synchronized (publicationLock) {
+					Session active = requireConversationSession(event.agentId());
+					active.enqueue(new BridgeEnvelope(
+							2, serverInstanceId, event.agentId().toString(), "conversation_event",
+							"server-" + messageIds.incrementAndGet(), conversationEventPayload(event)
+					));
+				}
+			} else {
+				AgentTransition transition = manager.startConversationWakeAtomically(
+						event, checkedWakeGoal.orElseThrow(),
+						(wake, commit) -> {
+							synchronized (publicationLock) {
+								Session active = requireConversationSession(event.agentId());
+								active.enqueueAtomically(conversationWakeEnvelope(wake), commit);
+							}
+						}
+				);
+				if (transition.cancelAction()) actionExecutor.cancel(event.agentId(), "Task changed by player request");
+				registryPublicationRevision.incrementAndGet();
+				actionExecutor.actionSuccessLedger().retainRevision(event.agentId(), transition.after().goalRevision());
+				programActions.beginGoal(event.agentId(), transition.after().goalRevision());
+				terminalResults.beginGoal(event.agentId(), transition.after().goalRevision(), logicalGoalId(transition.after()));
+				actionJournal.retainGoalForTick(event.agentId(), logicalGoalId(transition.after()));
+				observationPublication.markAttention(event.agentId());
+				queueUrgentObservation(event.agentId());
+				publishConversationWakeScenarioState(transition);
+			}
+		} catch (BridgeProtocolException exception) {
+			throw new AgentDomainException(exception.code(), "Agent conversation delivery failed: " + exception.getMessage());
+		}
+		conversationPublished(event);
+	}
+
+	public void publishProgressReceipt(AgentId id, String type, String field, String identifier) {
+		JsonObject payload = new JsonObject();
+		payload.addProperty("goalRevision", manager.registry().require(id).goalRevision());
+		payload.addProperty(field, identifier);
+		publishPlanFacts(id, type, payload);
+	}
+
+	private void publishPlanFacts(AgentId id, String type, JsonObject payload) {
+		Session active = session;
+		if (active == null || !active.planFacts || !active.open.get() || !active.authenticated.get() || !protocolKnownAgentIds.contains(id)) return;
+		active.enqueue(new BridgeEnvelope(2, serverInstanceId, id.toString(), type,
+				"server-" + messageIds.incrementAndGet(), payload));
+	}
+
+	private void publishKnownProgress(AgentId id) {
+		Session active = session;
+		if (active == null || !active.planFacts) return;
+		var record = manager.registry().require(id);
+		String scope = coordinatorLifecycleGeneration + ":" + record.goalRevision();
+		if (scope.equals(progressReceiptScopes.get(id))) return;
+		ServerPlayer player = manager.findAgentPlayer(id).orElse(null);
+		if (player == null) return;
+		JsonObject payload = new JsonObject();
+		payload.addProperty("goalRevision", record.goalRevision());
+		JsonArray advancements = new JsonArray();
+		for (var holder : manager.server().getAdvancements().getAllAdvancements()) {
+			if (holder.value().display().isPresent() && player.getAdvancements().getOrStartProgress(holder).isDone()) advancements.add(holder.id().toString());
+		}
+		payload.add("advancements", advancements);
+		JsonArray kills = new JsonArray();
+		record.currentGoal().ifPresent(goal -> dev.agaminggod.arenaagents.server.goal.PlanProgressFacts.verifiedKills(
+				dev.agaminggod.arenaagents.server.AgentSavedData.get(manager.server()).killLedger().snapshot(),
+				id, goal.goalId(), goal.createdAtEpochMs()).forEach(kills::add));
+		payload.add("verifiedKills", kills);
+		publishPlanFacts(id, "plan_facts", payload);
+		progressReceiptScopes.put(id, scope);
+		progressReceiptScopes.keySet().retainAll(protocolKnownAgentIds);
+	}
+
+	void publishGoalSpecRequest(PendingGoalDraft draft) {
+		Objects.requireNonNull(draft, "draft must not be null");
+		// A draft staged after handshake capture must either invalidate that snapshot or use the live session.
+		bumpRegistryPublicationRevision();
+		synchronized (publicationLock) {
+			Session active = session;
+			if (active == null || !active.open.get() || !active.authenticated.get()
+					|| !protocolKnownAgentIds.contains(draft.agentId())) return;
+			active.enqueue(goalSpecRequestEnvelope(draft, active.planFacts));
+		}
+	}
+
+	private BridgeEnvelope goalSpecRequestEnvelope(PendingGoalDraft draft, boolean planFacts) {
+		JsonObject payload = new JsonObject();
+		payload.addProperty("requestId", draft.draftId().toString());
+		payload.addProperty("originalRequest", draft.originalRequest());
+		if (planFacts) manager.findAgentPlayer(draft.agentId()).ifPresent(player -> payload.addProperty("playerState",
+				dev.agaminggod.arenaagents.server.goal.GoalStartFacts.describe(player)));
+		JsonArray candidates = new JsonArray();
+		draft.candidateIds().forEach(candidates::add);
+		payload.add("candidateIds", candidates);
+		return new BridgeEnvelope(
+				2, serverInstanceId, draft.agentId().toString(), "goal_spec_request",
+				"server-" + messageIds.incrementAndGet(), payload
+		);
+	}
+
+	private record VerboseControlSnapshot(long revision, boolean enabled) {
+	}
+
+	private Session requireConversationSession(AgentId agentId) {
+		Session active = session;
+		if (active == null || !active.open.get() || !active.authenticated.get()) {
+			throw new AgentDomainException("COORDINATOR_DISCONNECTED", COORDINATOR_OFFLINE_MESSAGE);
+		}
+		if (!protocolKnownAgentIds.contains(agentId)) {
+			throw new AgentDomainException(
+					"AGENT_NOT_READY", "AI agent is still registering with the coordinator; retry shortly"
+			);
+		}
+		if (!coordinatorReadyAgentIds.contains(agentId)) {
+			throw new AgentDomainException(
+					"AGENT_NOT_READY", "AI agent is waiting for coordinator readiness; retry shortly"
+			);
+		}
+		return active;
+	}
+
+	private JsonObject conversationEventPayload(ConversationEvent event) {
+		JsonObject payload = new JsonObject();
+		payload.addProperty("sequence", event.sequence());
+		payload.addProperty("kind", event.kind().wireName());
+		payload.addProperty("sourceId", event.sourceId());
+		// The model sees who spoke and whether they are the operator, the only player whose message is a task.
+		if (!event.sourceName().isEmpty()) payload.addProperty("sourceName", event.sourceName());
+		payload.addProperty("operator", event.operator());
+		payload.addProperty("recipientId", event.recipientId());
+		payload.addProperty("scope", event.audience().wireName());
+		payload.addProperty("text", event.text());
+		payload.addProperty("goalRevision", event.goalRevision());
+		payload.addProperty("observedAtEpochMs", event.observedAtEpochMs());
+		return payload;
+	}
+
+	private BridgeEnvelope conversationWakeEnvelope(PendingConversationWake wake) {
+		return new BridgeEnvelope(
+				2, serverInstanceId, wake.event().agentId().toString(), "conversation_wake",
+				"server-" + messageIds.incrementAndGet(), conversationWakePayload(wake)
+		);
+	}
+
+	private JsonObject conversationWakePayload(PendingConversationWake wake) {
+		JsonObject payload = new JsonObject();
+		payload.addProperty("transactionId", wake.transactionId().toString());
+		payload.add("event", conversationEventPayload(wake.event()));
+		JsonObject control = new JsonObject();
+		// A direct new request after the first task replaces work; it never promotes the queued head.
+		control.addProperty("operation", wake.event().goalRevision() == 0L ? "start" : "replace");
+		control.addProperty("goalRevision", wake.goalRevision());
+		control.addProperty("updatedAtEpochMs", wake.updatedAtEpochMs());
+		control.addProperty("goal", plannerGoal(wake.goal()));
+		control.add("goalSpec", GOAL_SPEC_WIRE_CODEC.encodeSpec(wake.goal().spec()));
+		payload.add("control", control);
+		return payload;
+	}
+
+	private static boolean isUuid(String value) {
+		if (value == null) return false;
+		try { UUID.fromString(value); return true; } catch (IllegalArgumentException notUuid) { return false; }
+	}
+
+		private void conversationPublished(ConversationEvent event) {
+		// Console /say arrives as a player message from "server": nothing to reply to directly, and not a UUID
+		// (a live fixture's /say crashed the server tick here).
+		if (event.kind() == ConversationKind.PLAYER_MESSAGE && isUuid(event.sourceId())) {
+			observationPublication.retainConversationSource(event.agentId(), event.sourceId());
+		}
+		// Public chat and others' nearby speech ride the next wake as context; they never wake the agent.
+		if (!ConversationWakePolicy.wakesRecipient(event.kind(), event.audience(), conversationRouter.isOperatorPlayer(event))) return;
+		observationPublication.markAttention(event.agentId());
+		queueUrgentObservation(event.agentId());
+	}
+
+	private void publishConversationWakeScenarioState(AgentTransition transition) {
+		try {
+			ScenarioRuntimeService.onAgentState(
+					manager.server(), transition.after().agentId().toString(), publicState(transition.after().state())
+			);
+		} catch (RuntimeException exception) {
+			LOGGER.warn("Conversation wake scenario telemetry failed after committed publication", exception);
+		}
+	}
+
+	private void sendRespawnResultBeforeControl(ServerActionResult result, AgentTransition transition, Runnable commit) {
+		if (!actionJournal.terminalIfAcceptedForTick(result)) {
+			throw new AgentDomainException("ACTION_JOURNAL_MISSING", "Respawn result has no durable acceptance record");
+		}
+		pendingRespawnPublications().add(new PendingRespawnPublication(result, transition, commit));
+	}
+
+	private void publishDurableRespawnResults() {
+		List<PendingRespawnPublication> publications = pendingRespawnPublications();
+		for (int index = 0; index < publications.size();) {
+			PendingRespawnPublication pending = publications.get(index);
+			if (publishRespawnResultBeforeControl(pending)) publications.remove(index);
+			else index++;
+		}
+	}
+
+	private boolean publishRespawnResultBeforeControl(PendingRespawnPublication pending) {
+		ServerActionResult result = pending.result();
+		AgentTransition transition = pending.transition();
+		synchronized (publicationLock) {
+			Session active = session;
+			if (active == null || !active.open.get() || !active.authenticated.get()) {
+				return false;
+			}
+			BridgeEnvelope resultEnvelope = new BridgeEnvelope(2, serverInstanceId, result.agentId().toString(), "action_result",
+					"server-" + messageIds.incrementAndGet(), actionResultPayload(result, active));
+			BridgeEnvelope controlEnvelope = new BridgeEnvelope(2, serverInstanceId, transition.after().agentId().toString(), "goal_control",
+					"server-" + messageIds.incrementAndGet(), goalControlPayload(transition, "respawn"));
+			terminalResults.retain(result);
+			try {
+				if (!terminalResults.claim(result, active)) throw new BridgeProtocolException("ACTION_RESULT_REPLAY_CONFLICT", "Respawn result is already queued");
+				publishRespawnScenarioEvents(
+						() -> active.enqueuePair(resultEnvelope, controlEnvelope,
+								() -> commitRespawnTerminal(pending.commit(), () -> { })),
+						() -> ScenarioRuntimeService.onAgentAction(manager.server(), result.agentId().toString(), result.actionType().wireName(), true),
+						() -> ScenarioRuntimeService.onAgentState(manager.server(), transition.after().agentId().toString(), publicState(transition.after().state()))
+				);
+			} catch (RuntimeException exception) {
+				terminalResults.discard(result, active);
+				LOGGER.debug("Respawn result/control pair will retry after durable commit: {}", exception.getMessage());
+				return false;
+			}
+		}
+		programActions.terminal(result);
+		observations.invalidate(result.agentId());
+		reportVerbose(result.agentId(), AgentActivityPresentation.verboseResultStage(result), verboseResult(result));
+		verboseState.finishAction(result);
+		observationPublication.markAttention(result.agentId());
+		queueUrgentObservation(result.agentId());
+		return true;
+	}
+
+	static void publishRespawnScenarioEvents(Runnable publication, Runnable actionEvent, Runnable stateEvent) {
+		publication.run();
+		try {
+			actionEvent.run();
+		} catch (RuntimeException exception) {
+			LOGGER.warn("Respawn action scenario telemetry failed after committed publication", exception);
+		}
+		try {
+			stateEvent.run();
+		} catch (RuntimeException exception) {
+			LOGGER.warn("Respawn state scenario telemetry failed after committed publication", exception);
+		}
+	}
+
+	private JsonObject actionResultPayload(ServerActionResult result, Session target) {
+		JsonObject payload = new JsonObject();
+		payload.addProperty("goalRevision", result.goalRevision());
+		payload.addProperty("actionId", result.actionId());
+		payload.addProperty("commandId", result.actionId());
+		payload.addProperty("actionType", result.actionType().wireName());
+		if (result.traceId() != null) payload.addProperty("traceId", result.traceId());
+		payload.addProperty("state", result.state().name());
+		payload.addProperty("reasonCode", result.reasonCode());
+		if (target.placementFacts && result.cause() != null) payload.addProperty("cause", result.cause());
+		payload.addProperty("message", result.message());
+		payload.addProperty("elapsedMs", result.elapsedMs());
+		payload.addProperty("observedAtEpochMs", result.observedAtEpochMs());
+		payload.addProperty("executionStarted", result.executionStarted());
+		payload.addProperty("physicalAttempted", result.physicalAttempted());
+		// An older coordinator rejects unknown action_result keys and would leave the action unresolved, and the
+		// bundled coordinator can lag the jar (rollback to last-known-good, external package roots), so only a
+		// coordinator that announced actionTiming in its hello receives the clocks.
+		ActionTimelines.Timeline timeline = target.actionTiming ? ActionTimelines.recall(result.agentId(), result.actionId()) : null;
+		if (timeline != null) {
+			JsonObject timing = new JsonObject();
+			timing.addProperty("acceptedAtEpochMs", timeline.acceptedAtEpochMs());
+			if (timeline.startedAtEpochMs() > 0L) {
+				timing.addProperty("startedAtEpochMs", timeline.startedAtEpochMs());
+				timing.addProperty("startedTick", timeline.startedTick());
+			}
+			timing.addProperty("endedTick", timeline.endedTick());
+			payload.add("timing", timing);
+		}
+		if (result.actionObservation() != null) payload.add("actionObservation", actionObservationPayload(result.actionObservation(), target.bodyFacts, target.breakExposureFacts
+				&& result.actionType() == ActionType.BREAK_BLOCK && result.state() == ServerActionState.SUCCEEDED));
+		// An older coordinator rejects unknown action_result keys, so only one that announced breakOutcomeFacts gets them.
+		if (target.breakOutcomeFacts && result.breakOutcome() != null) payload.add("breakOutcome", DurableActionJournal.encodeBreakOutcome(result.breakOutcome()));
+		payload.addProperty("replayProof", actionResultReplayProof(
+				secret, target.clientNonce, target.serverNonce, serverInstanceId,
+				result.agentId().toString(), result.goalRevision(), result.actionId()
+		));
+		return payload;
+	}
+
+	private BridgeEnvelope actionResultEnvelope(ServerActionResult result, Session target) {
+		return new BridgeEnvelope(2, serverInstanceId, result.agentId().toString(), "action_result",
+				"server-" + messageIds.incrementAndGet(), actionResultPayload(result, target));
+	}
+
+	private static String verboseResult(ServerActionResult result) {
+		return AgentVerboseChat.sanitizeMessage(AgentActivityPresentation.verboseResult(result));
+	}
+
+	private static JsonObject goalControlPayload(AgentTransition transition, String operation) {
+		JsonObject payload = new JsonObject();
+		payload.addProperty("operation", operation);
+		payload.addProperty("goalRevision", transition.after().goalRevision());
+		payload.addProperty("updatedAtEpochMs", transition.after().updatedAtEpochMs());
+		if ("queue".equals(operation)) {
+			List<AgentGoal> queue = transition.after().queuedGoals();
+			AgentGoal goal = queue.get(queue.size() - 1);
+			payload.addProperty("goal", goal.prompt());
+			payload.add("goalSpec", GOAL_SPEC_WIRE_CODEC.encodeSpec(goal.spec()));
+		} else if ("dequeue".equals(operation)) {
+			AgentGoal goal = transition.before().queuedGoals().getFirst();
+			payload.addProperty("goal", goal.prompt());
+			payload.add("goalSpec", GOAL_SPEC_WIRE_CODEC.encodeSpec(goal.spec()));
+		} else if ("start".equals(operation) || "replace".equals(operation) || "steer".equals(operation)) {
+			transition.after().currentGoal().ifPresent(goal -> {
+				payload.addProperty("goal", plannerGoal(goal));
+				payload.add("goalSpec", GOAL_SPEC_WIRE_CODEC.encodeSpec(goal.spec()));
+			});
+		}
+		if ("respawn".equals(operation) && transition.after().state() == AgentLifecycleState.STARTING) {
+			payload.addProperty("resumeGoal", true);
+		}
+		if ("dead".equals(operation)) transition.after().deathSnapshot().ifPresent(death -> payload.add("death", deathFacts(death)));
+		return payload;
+	}
+
+	static JsonObject deathFacts(dev.agaminggod.arenaagents.agent.AgentDeathSnapshot death) {
+		JsonObject facts = new JsonObject();
+		facts.addProperty("cause", death.cause());
+		facts.addProperty("dimensionId", death.dimensionId());
+		facts.addProperty("x", death.x());
+		facts.addProperty("y", death.y());
+		facts.addProperty("z", death.z());
+		death.respawnDimensionId().ifPresentOrElse(
+				value -> facts.addProperty("respawnDimensionId", value),
+				() -> facts.add("respawnDimensionId", JsonNull.INSTANCE)
+		);
+		death.respawnX().ifPresentOrElse(
+				value -> facts.addProperty("respawnX", value),
+				() -> facts.add("respawnX", JsonNull.INSTANCE)
+		);
+		death.respawnY().ifPresentOrElse(
+				value -> facts.addProperty("respawnY", value),
+				() -> facts.add("respawnY", JsonNull.INSTANCE)
+		);
+		death.respawnZ().ifPresentOrElse(
+				value -> facts.addProperty("respawnZ", value),
+				() -> facts.add("respawnZ", JsonNull.INSTANCE)
+		);
+		death.respawnYaw().ifPresentOrElse(
+				value -> facts.addProperty("respawnYaw", value),
+				() -> facts.add("respawnYaw", JsonNull.INSTANCE)
+		);
+		death.respawnPitch().ifPresentOrElse(
+				value -> facts.addProperty("respawnPitch", value),
+				() -> facts.add("respawnPitch", JsonNull.INSTANCE)
+		);
+		death.respawnForced().ifPresentOrElse(
+				value -> facts.addProperty("respawnForced", value),
+				() -> facts.add("respawnForced", JsonNull.INSTANCE)
+		);
+		facts.addProperty("gameMode", death.gameMode());
+		facts.addProperty("diedAtEpochMs", death.diedAtEpochMs());
+		death.score().ifPresent(value -> facts.addProperty("score", value));
+		return facts;
+	}
+
+	private void sendActionProgress(ServerActionProgress progress) {
+		JsonObject payload = new JsonObject();
+		payload.addProperty("goalRevision", progress.goalRevision());
+		payload.addProperty("actionId", progress.actionId());
+		payload.addProperty("commandId", progress.actionId());
+		payload.addProperty("actionType", progress.actionType().wireName());
+		if (progress.traceId() != null) payload.addProperty("traceId", progress.traceId());
+		payload.addProperty("state", "RUNNING");
+		payload.addProperty("progress", progress.progress());
+		payload.addProperty("elapsedMs", progress.elapsedMs());
+		payload.addProperty("observedAtEpochMs", progress.observedAtEpochMs());
+		Session timingSession = session;
+		if (manager.server() != null && timingSession != null && timingSession.actionTiming) payload.addProperty("serverTick", manager.server().getTickCount());
+		if (progress.actionObservation() != null) payload.add("actionObservation", actionObservationPayload(progress.actionObservation(), timingSession != null && timingSession.bodyFacts));
+		send("action_progress", progress.agentId().toString(), payload);
+		if (progress.actionObservation() == null || progress.actionObservation().progress() == null
+				|| progress.actionObservation().progress().verified()) {
+			verboseState.progressMilestone(progress).ifPresent(milestone -> {
+				String message = AgentActivityPresentation.progress(progress, milestone);
+				reportVerbose(progress.agentId(), "progress", message);
+			});
+		}
+		queueObservation(progress.agentId());
+	}
+
+	private static JsonObject actionObservationPayload(ServerActionObservation observation, boolean bodyFacts) {
+		return actionObservationPayload(observation, bodyFacts, false);
+	}
+
+	private static JsonObject actionObservationPayload(ServerActionObservation observation, boolean bodyFacts, boolean breakExposureFacts) {
+		JsonObject payload = new JsonObject();
+		if (observation.worldTick() != null) payload.addProperty("worldTick", observation.worldTick());
+		payload.addProperty("observedAtEpochMs", observation.observedAtEpochMs());
+		addPosition(payload, "position", observation.position());
+		addPosition(payload, "velocity", observation.velocity());
+		payload.addProperty("yaw", observation.yaw());
+		payload.addProperty("pitch", observation.pitch());
+		if (observation.collision() != null) {
+			JsonObject collision = new JsonObject();
+			collision.addProperty("horizontal", observation.collision().horizontal());
+			collision.addProperty("vertical", observation.collision().vertical());
+			collision.addProperty("inWall", observation.collision().inWall());
+			payload.add("collision", collision);
+		}
+		if (observation.lookedAt() != null) {
+			ServerActionObservation.RayTarget lookedAt = observation.lookedAt();
+			JsonObject look = new JsonObject();
+			look.addProperty("type", lookedAt.type());
+			addPosition(look, "position", lookedAt.position());
+			if (lookedAt.id() != null) look.addProperty("id", lookedAt.id());
+			if (lookedAt.face() != null) look.addProperty("face", lookedAt.face());
+			look.addProperty("hitDistance", lookedAt.hitDistance());
+			payload.add("lookedAt", look);
+		}
+		if (observation.reach() != null) {
+			ServerActionObservation.Reach reach = observation.reach();
+			JsonObject value = new JsonObject();
+			value.addProperty("distance", reach.distance());
+			value.addProperty("max", reach.max());
+			value.addProperty("within", reach.within());
+			payload.add("reach", value);
+		}
+		if (observation.target() != null) {
+			ServerActionObservation.Target target = observation.target();
+			JsonObject value = new JsonObject();
+			value.addProperty("kind", target.kind());
+			addPosition(value, "position", target.position());
+			if (target.expectedId() != null) value.addProperty("expectedId", target.expectedId());
+			if (target.currentId() != null) value.addProperty("currentId", target.currentId());
+			if (target.beforeId() != null) value.addProperty("beforeId", target.beforeId());
+			if (target.afterId() != null) value.addProperty("afterId", target.afterId());
+			if (target.worldChanged() != null) value.addProperty("worldChanged", target.worldChanged());
+			if (target.distanceRemaining() != null) value.addProperty("distanceRemaining", target.distanceRemaining());
+			if (target.tolerance() != null) value.addProperty("tolerance", target.tolerance());
+			if (target.standable() != null) value.addProperty("standable", target.standable());
+			payload.add("target", value);
+		}
+		if (observation.progress() != null) {
+			ServerActionObservation.Progress progress = observation.progress();
+			JsonObject value = new JsonObject();
+			value.addProperty("value", progress.value());
+			value.addProperty("basis", progress.basis());
+			value.addProperty("verified", progress.verified());
+			payload.add("progress", value);
+		}
+		// Only a coordinator that announced bodyFacts accepts these keys; an older one would reject the whole message.
+		if (bodyFacts && observation.onGround() != null) payload.addProperty("onGround", observation.onGround());
+		if (bodyFacts && observation.teleportTick() != null) payload.addProperty("teleportTick", observation.teleportTick());
+		if (breakExposureFacts && observation.revealedBlocks() != null) {
+			JsonArray blocks = new JsonArray();
+			for (ServerActionObservation.RevealedBlock block : observation.revealedBlocks()) {
+				JsonObject value = new JsonObject();
+				addPosition(value, "position", block.position());
+				value.addProperty("blockId", block.blockId());
+				value.addProperty("face", block.face());
+				blocks.add(value);
+			}
+			payload.add("revealedBlocks", blocks);
+		}
+		return payload;
+	}
+
+	private static void addPosition(JsonObject parent, String name, ServerActionObservation.Position position) {
+		if (position == null) return;
+		JsonObject value = new JsonObject();
+		value.addProperty("x", position.x());
+		value.addProperty("y", position.y());
+		value.addProperty("z", position.z());
+		parent.add(name, value);
+	}
+
+	private void reportVerbose(AgentId agentId, String stage, String message) {
+		try {
+			AgentRecord record = manager.registry().require(agentId);
+			AgentVerboseChat.report(manager, verboseState, record, stage, message);
+		} catch (RuntimeException exception) {
+			LOGGER.debug("Verbose {} event was unavailable for {}: {}", stage, agentId, exception.getMessage());
+		}
+	}
+
+	private void queueObservation(AgentId agentId) {
+		if (!manager.isCoordinatorVisible(agentId)) return;
+		// The heartbeat that closes the window collects and delivers a fresh observation anyway.
+		if (observationPublication.heartbeatWindowOpen(agentId)) return;
+		if (!observationPublication.offer(agentId)) {
+			LOGGER.debug("Observation request coalesced or deferred for {}", agentId);
+		}
+	}
+
+	private void queueUrgentObservation(AgentId agentId) {
+		if (!manager.isCoordinatorVisible(agentId)) return;
+		if (!observationPublication.offerUrgent(agentId)) {
+			LOGGER.debug("Urgent observation request deferred for {}", agentId);
+		}
+	}
+
+	private void sendObservation(AgentId agentId) {
+		if (!manager.isCoordinatorVisible(agentId)) return;
+		if (manager.server() == null) return;
+		Session source = session;
+		if (source == null || !source.authenticated.get()) {
+			return;
+		}
+		boolean heartbeat = observationPublication.takeHeartbeat(agentId);
+		final JsonObject observation;
+		try {
+			observation = forSession(observations.collect(agentId), source.blockTags, source.bodyFacts, source.dropAheadFacts);
+			Set<String> threatSignalKeys = observations.collectedThreatSignalKeys(agentId);
+			ObservationPublication.Result result = publishOwnedObservationWithInputGuard(
+					observationPublication,
+					AgentInputRuntime.existingController(manager.server()),
+					agentId,
+					source,
+					observation,
+					(ignoredAgent, payload) -> sendObservationEnvelope(source, ignoredAgent, payload),
+					heartbeat,
+					dangerFootingFitter(observations::addDangerFooting, observationPublication.published, observationPublication.fitter),
+					threatSignalKeys
+			);
+			if (result == ObservationPublication.Result.COMMITTED) acknowledgeThreats(agentId);
+			if (result == ObservationPublication.Result.DELIVERY_RETRY) retryObservation(agentId, heartbeat);
+			return;
+		} catch (AgentDomainException exception) {
+			LOGGER.debug("Dropping observation for removed agent {}: {}", agentId, exception.code());
+		} catch (BridgeProtocolException exception) {
+			if (isTransientObservationDelivery(exception)) retryObservation(agentId, heartbeat);
+			else LOGGER.warn("Dropping observation delivery for {}: {}", agentId, exception.getMessage());
+		} catch (RuntimeException exception) {
+			LOGGER.warn("Could not collect observation for {}: {}", agentId, exception.getMessage());
+		}
+	}
+
+	/** Tells the threat scan which signals the coordinator now has, and asks again for any new ones still owed. */
+	private void acknowledgeThreats(AgentId agentId) {
+		observations.acknowledgeThreatSignals(agentId, observationPublication.published.threatBaseline(agentId));
+		if (observationPublication.published.takeThreatRepublish(agentId)) queueUrgentObservation(agentId);
+	}
+
+	static java.util.function.BiFunction<AgentId, JsonObject, ServerObservationWireBudget.Fitted> dangerFootingFitter(
+			java.util.function.BiConsumer<AgentId, JsonObject> probe, PublishedObservationState published,
+			java.util.function.BiFunction<AgentId, JsonObject, ServerObservationWireBudget.Fitted> fitter) {
+		boolean[] computed = {false};
+		return (id, delivery) -> {
+			if (!computed[0]) {
+				computed[0] = true;
+				probe.accept(id, delivery);
+				published.omitUnchangedFooting(id, delivery);
+			}
+			return fitter.apply(id, delivery);
+		};
+	}
+
+	private void retryObservation(AgentId agentId) {
+		retryObservation(agentId, false);
+	}
+
+	private void retryObservation(AgentId agentId, boolean heartbeat) {
+		try {
+			manager.registry().require(agentId);
+		} catch (AgentDomainException exception) {
+			return;
+		}
+		if (!observationPublication.markDirty(agentId)) return;
+		try {
+			if (heartbeat) observationPublication.offerHeartbeat(agentId);
+			else observationPublication.offer(agentId);
+		} catch (RuntimeException exception) {
+			LOGGER.debug("Could not retain observation retry for {}: {}", agentId, exception.getMessage());
+		}
+	}
+
+	private void resetObservationPublication() {
+		observationPublication.reset();
+	}
+
+	private static boolean isTransientObservationDelivery(BridgeProtocolException exception) {
+		return "AGENT_BACKPRESSURE".equals(exception.code()) || "CONNECTION_BACKPRESSURE".equals(exception.code());
+	}
+
+	private static ScenarioAgentEvent.PublicState publicState(AgentLifecycleState state) {
+		return switch (state) {
+			case IDLE -> ScenarioAgentEvent.PublicState.IDLE;
+			case STARTING, PLANNING -> ScenarioAgentEvent.PublicState.THINKING;
+			case ACTING -> ScenarioAgentEvent.PublicState.ACTING;
+			case PAUSED, DISCONNECTED -> ScenarioAgentEvent.PublicState.RECOVERING;
+			case COMPLETED -> ScenarioAgentEvent.PublicState.DONE;
+			case ERROR -> ScenarioAgentEvent.PublicState.FAILED;
+			case DEAD -> ScenarioAgentEvent.PublicState.DEAD;
+		};
+	}
+
+	/** Replays retained terminal results without ever re-entering physical action execution. */
+	private void replayPendingTerminalResults() {
+		synchronized (publicationLock) {
+			Session active = session;
+			if (active == null || !active.open.get() || !active.authenticated.get()) return;
+			terminalResults.replay(active, result -> active.enqueue(actionResultEnvelope(result, active)),
+					exception -> LOGGER.debug("Terminal action result enqueue will retry: {}", exception.getMessage()));
+		}
+	}
+
+    public boolean requestDirectorScript(JsonObject payload) {
+        Session active=session;
+        if(active==null || !active.open.get() || !active.authenticated.get()) return false;
+        active.enqueue(new BridgeEnvelope(2,serverInstanceId,"server","director_script_request","server-"+messageIds.incrementAndGet(),payload));
+        return true;
+    }
+
+	private void send(String type, String agentId, JsonObject payload) {
+		Session active = session;
+		if (active == null || !active.authenticated.get()) {
+			return;
+		}
+		try {
+			active.enqueue(new BridgeEnvelope(2, serverInstanceId, agentId, type,
+					"server-" + messageIds.incrementAndGet(), payload));
+		} catch (RuntimeException exception) {
+			// Registry transitions commit before their sink runs. Reconnect makes the
+			// authoritative snapshot visible instead of leaving a live stale coordinator.
+			if ("goal_control".equals(type)) active.close();
+			throw exception;
+		}
+	}
+
+	private boolean sendObservationEnvelope(Session source, AgentId agentId, JsonObject payload) {
+		if (session != source || !source.open.get() || !source.authenticated.get()) return false;
+		observationEnqueueHook.run();
+		// The publication owns this payload and keeps it unchanged as the delivered baseline, so the envelope adopts it.
+		BridgeEnvelope envelope = BridgeEnvelope.fromDecoded(2, serverInstanceId, agentId.toString(), "observation",
+				"server-" + messageIds.incrementAndGet(), payload);
+		// The frame is cached on the envelope, so this size check is the one serialization the enqueue reuses.
+		if (codec.encodedLineBytes(envelope) > BridgeEnvelopeCodec.MAX_LINE_BYTES) {
+			throw new BridgeProtocolException("LINE_TOO_LARGE", "Fitted observation exceeds the actual wire envelope");
+		}
+		source.enqueue(envelope);
+		return true;
+	}
+
+	private boolean sendInspectionEnvelope(Session source, AgentId agentId, JsonObject reply) {
+		if (session != source || !source.open.get() || !source.authenticated.get()) return false;
+		BridgeEnvelope envelope = new BridgeEnvelope(2, serverInstanceId, agentId.toString(), "inspection_result",
+				"server-" + messageIds.incrementAndGet(), reply);
+		if (codec.encodedLineBytes(envelope) > BridgeEnvelopeCodec.MAX_LINE_BYTES) {
+			throw new BridgeProtocolException("INSPECTION_TOO_LARGE", "Inspection reply exceeds the complete bridge envelope limit");
+		}
+		source.enqueue(envelope);
+		return true;
+	}
+
+	private boolean sendInspectionObservation(Session source, AgentId agentId, JsonObject observation, JsonObject reply) {
+		if (session != source || !source.open.get() || !source.authenticated.get()) return false;
+		BridgeEnvelope first = new BridgeEnvelope(2, serverInstanceId, agentId.toString(), "observation",
+				"server-" + messageIds.incrementAndGet(), observation);
+		BridgeEnvelope second = new BridgeEnvelope(2, serverInstanceId, agentId.toString(), "inspection_result",
+				"server-" + messageIds.incrementAndGet(), reply);
+		if (codec.encodedLineBytes(first) > BridgeEnvelopeCodec.MAX_LINE_BYTES
+				|| codec.encodedLineBytes(second) > BridgeEnvelopeCodec.MAX_LINE_BYTES) {
+			throw new BridgeProtocolException("INSPECTION_TOO_LARGE", "Fresh observation reply exceeds the complete bridge envelope limit");
+		}
+		source.enqueuePair(first, second, () -> {});
+		return true;
+	}
+
+	private static JsonObject registeredPayload(AgentRecord record) {
+		JsonObject payload = new JsonObject();
+		payload.addProperty("schemaVersion", record.schemaVersion());
+		payload.addProperty("agentId", record.agentId().toString());
+		record.entityUuid().ifPresent(value -> payload.addProperty("entityUuid", value.toString()));
+		record.profile().userName().ifPresent(value -> payload.addProperty("name", value));
+		payload.addProperty("provider", record.profile().provider());
+		payload.addProperty("model", record.profile().model());
+		payload.addProperty("reasoningEffort", record.profile().reasoning());
+		payload.addProperty("serviceTier", record.profile().serviceTier());
+		payload.addProperty("gameMode", record.profile().gameMode().wireName());
+		payload.addProperty("skinVariant", "variant-" + record.profile().skinVariant());
+		payload.addProperty("state", record.state().name());
+		record.currentGoal().ifPresent(goal -> payload.addProperty("currentGoal", plannerGoal(goal)));
+		record.currentGoal().ifPresent(goal -> payload.add("currentGoalSpec", GOAL_SPEC_WIRE_CODEC.encodeSpec(goal.spec())));
+		payload.addProperty("goalRevision", record.goalRevision());
+		JsonArray queue = new JsonArray();
+		JsonArray queueGoalSpecs = new JsonArray();
+		for (AgentGoal goal : record.queuedGoals()) {
+			queue.add(goal.prompt());
+			queueGoalSpecs.add(GOAL_SPEC_WIRE_CODEC.encodeSpec(goal.spec()));
+		}
+		payload.add("queue", queue);
+		payload.add("queueGoalSpecs", queueGoalSpecs);
+		if (!record.lastSummary().isBlank()) {
+			payload.addProperty("lastSummary", record.lastSummary());
+		}
+		record.deathSnapshot().ifPresent(death -> payload.add("death", deathFacts(death)));
+		payload.addProperty("createdAtEpochMs", record.createdAtEpochMs());
+		payload.addProperty("updatedAtEpochMs", record.updatedAtEpochMs());
+		if (!record.lastError().isBlank()) {
+			JsonObject error = new JsonObject();
+			error.addProperty("code", "AGENT_ERROR");
+			error.addProperty("message", record.lastError());
+			payload.add("lastError", error);
+		}
+		return payload;
+	}
+
+	private static String operation(AgentTransition transition) {
+		if (transition.after().queuedGoals().size() > transition.before().queuedGoals().size()) return "queue";
+		if (transition.after().queuedGoals().size() + 1 == transition.before().queuedGoals().size()
+				&& transition.after().goalRevision() == transition.before().goalRevision()) return "dequeue";
+		if (transition.before().state() == AgentLifecycleState.DEAD
+				&& transition.after().state() != AgentLifecycleState.DEAD) return "respawn";
+		if (transition.after().state() == AgentLifecycleState.DEAD
+				&& transition.before().state() != AgentLifecycleState.DEAD) return "dead";
+		if (transition.after().goalRevision() <= transition.before().goalRevision()) return null;
+		if (transition.before().currentGoal().isPresent()
+				&& transition.after().state() == AgentLifecycleState.IDLE
+				&& transition.after().currentGoal().isEmpty()) return "complete";
+		if (transition.after().state() == AgentLifecycleState.PAUSED) return "stop";
+		if (transition.after().state() == AgentLifecycleState.COMPLETED) return "complete";
+		if (transition.after().state() == AgentLifecycleState.ERROR) return "fail";
+		if (transition.after().state() == AgentLifecycleState.DISCONNECTED) return "disconnect";
+		if ((transition.before().state() == AgentLifecycleState.PAUSED
+				|| transition.before().state() == AgentLifecycleState.DISCONNECTED)
+				&& transition.after().state() == AgentLifecycleState.STARTING
+				&& transition.before().currentGoal().isPresent() && transition.after().currentGoal().isPresent()
+				&& transition.before().currentGoal().get().goalId().equals(transition.after().currentGoal().get().goalId())) return "resume";
+		if (transition.after().state() != AgentLifecycleState.STARTING) return null;
+		if (transition.before().currentGoal().isPresent() && transition.after().currentGoal().isPresent()
+				&& transition.before().currentGoal().get().goalId().equals(transition.after().currentGoal().get().goalId())) {
+			return "steer";
+		}
+		if (transition.before().currentGoal().isPresent()
+				&& transition.after().currentGoal().isPresent()
+				&& transition.cancelAction()
+				&& transition.interruptPlanner()) {
+			return "replace";
+		}
+		return "start";
+	}
+
+	private static UUID logicalGoalId(AgentRecord record) {
+		return record.currentGoal().map(AgentGoal::goalId).orElse(null);
+	}
+
+	private static String plannerGoal(AgentGoal goal) {
+		return goal.plannerPrompt();
+	}
+
+	private static GoalVerificationRuntime defaultGoalVerificationRuntime(CodexAgentManager manager) {
+		Objects.requireNonNull(manager, "manager must not be null");
+		return new GoalVerificationRuntime(
+				manager.registry(),
+				agentId -> manager.findAgentPlayer(agentId).map(GoalCompletionVerifier::minecraftFacts),
+				() -> manager.server() == null ? 0L : manager.server().getTickCount(),
+				System::currentTimeMillis,
+				manager::validateGoalForActivation
+		);
+	}
+
+	static void commitRespawnTerminal(Runnable commit, Runnable persistTerminal) {
+		Objects.requireNonNull(commit, "commit must not be null");
+		Objects.requireNonNull(persistTerminal, "persistTerminal must not be null");
+		commit.run();
+		persistTerminal.run();
+	}
+
+	private static DurableActionJournal defaultActionJournal(CodexAgentManager manager) {
+		Objects.requireNonNull(manager, "manager must not be null");
+		if (manager.server() == null || !manager.server().isRunning()) return DurableActionJournal.inMemory();
+		return DurableActionJournal.open(AgentSavedData.actionJournalPath(manager.server()));
+	}
+
+	private static Path configuredSecretPath() {
+		String configured = System.getProperty("arenaagents.bridgeSecretFile");
+		if (configured == null || configured.isBlank()) configured = System.getenv("ARENA_AGENT_BRIDGE_SECRET_FILE");
+		return configured == null || configured.isBlank() ? Paths.get("runtime", "bridge-secret.txt") : Paths.get(configured);
+	}
+
+	static int configuredPort() {
+		String configured = System.getProperty("arenaagents.bridgePort");
+		if (configured == null || configured.isBlank()) return DEFAULT_PORT;
+		final int parsed;
+		try {
+			parsed = Integer.parseInt(configured);
+		} catch (NumberFormatException exception) {
+			throw new IllegalArgumentException("arenaagents.bridgePort must be an integer from 1 to 65535", exception);
+		}
+		if (parsed < 1 || parsed > 65_535) {
+			throw new IllegalArgumentException("arenaagents.bridgePort must be an integer from 1 to 65535");
+		}
+		return parsed;
+	}
+
+	static int configuredHeartbeatMinimumIntervalTicks() {
+		String configured = System.getProperty(HEARTBEAT_MIN_INTERVAL_TICKS_PROPERTY);
+		if (configured == null || configured.isBlank()) return DEFAULT_HEARTBEAT_MIN_INTERVAL_TICKS;
+		final int parsed;
+		try {
+			parsed = Integer.parseInt(configured);
+		} catch (NumberFormatException exception) {
+			throw new IllegalArgumentException(
+					HEARTBEAT_MIN_INTERVAL_TICKS_PROPERTY + " must be an integer from 1 to " + Integer.MAX_VALUE,
+					exception
+			);
+		}
+		if (parsed < 1) {
+			throw new IllegalArgumentException(
+					HEARTBEAT_MIN_INTERVAL_TICKS_PROPERTY + " must be an integer from 1 to " + Integer.MAX_VALUE
+			);
+		}
+		return parsed;
+	}
+
+	private static String readSecret(Path path) {
+		try {
+			if (!Files.isRegularFile(path)) {
+				throw new BridgeProtocolException("BRIDGE_SECRET_MISSING", "Bridge secret file does not exist: " + path.toAbsolutePath());
+			}
+			String value = Files.readString(path, StandardCharsets.UTF_8).trim();
+			if (value.length() < MIN_SECRET_LENGTH || value.length() > MAX_SECRET_LENGTH) {
+				throw new BridgeProtocolException(
+						"BRIDGE_SECRET_INVALID",
+						"Bridge secret must contain " + MIN_SECRET_LENGTH + "-" + MAX_SECRET_LENGTH + " characters"
+				);
+			}
+			return value;
+		} catch (IOException exception) {
+			throw new BridgeProtocolException("BRIDGE_SECRET_READ_FAILED", "Could not read bridge secret: " + path.toAbsolutePath(), exception);
+		}
+	}
+
+	private static String requiredString(JsonObject object, String field) {
+		return requiredString(object, field, 256);
+	}
+
+	private static String requiredString(JsonObject object, String field, int maximumLength) {
+		if (!object.has(field)) throw new BridgeProtocolException("MISSING_FIELD", field);
+		if (!object.get(field).isJsonPrimitive() || !object.get(field).getAsJsonPrimitive().isString()) {
+			throw new BridgeProtocolException("INVALID_FIELD", field + " must be a JSON string");
+		}
+		String value = object.get(field).getAsString();
+		if (value.isBlank() || value.length() > maximumLength) {
+			throw new BridgeProtocolException("INVALID_FIELD", field + " must be nonblank and bounded");
+		}
+		return value;
+	}
+
+	private static String requiredAuthenticationToken(JsonObject object, String field) {
+		String value = requiredString(object, field, AUTHENTICATION_TOKEN_LENGTH);
+		if (value.length() != AUTHENTICATION_TOKEN_LENGTH || !value.matches("[A-Za-z0-9_-]+")) {
+			throw new BridgeProtocolException("INVALID_AUTHENTICATION_TOKEN", field + " must be a 32-byte base64url value");
+		}
+		return value;
+	}
+
+	private String newAuthenticationNonce() {
+		byte[] bytes = new byte[AUTHENTICATION_NONCE_BYTES];
+		authenticationRandom.nextBytes(bytes);
+		return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
+	}
+
+	private String authenticationProof(
+			String role,
+			String clientNonce,
+			String serverNonce,
+			String instanceId,
+			String launchId
+	) {
+		return authenticationProof(secret, role, clientNonce, serverNonce, instanceId, launchId);
+	}
+
+	static String authenticationProof(
+			String secret,
+			String role,
+			String clientNonce,
+			String serverNonce,
+			String instanceId,
+			String launchId
+	) {
+		if (!Set.of("server", "coordinator").contains(role)) throw new IllegalArgumentException("authentication role is invalid");
+		String context = String.join("\0", AUTHENTICATION_CONTEXT, role, clientNonce, serverNonce, instanceId)
+				+ ("coordinator".equals(role) ? "\0" + Objects.toString(launchId, "") : "");
+		try {
+			Mac mac = Mac.getInstance("HmacSHA256");
+			mac.init(new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), "HmacSHA256"));
+			return Base64.getUrlEncoder().withoutPadding().encodeToString(mac.doFinal(context.getBytes(StandardCharsets.UTF_8)));
+		} catch (GeneralSecurityException exception) {
+			throw new IllegalStateException("HmacSHA256 is unavailable", exception);
+		}
+	}
+
+	static String actionResultReplayProof(
+			String secret,
+			String clientNonce,
+			String serverNonce,
+			String instanceId,
+			String agentId,
+			long goalRevision,
+			String actionId
+	) {
+		String context = String.join("\0", ACTION_RESULT_REPLAY_CONTEXT, clientNonce, serverNonce, instanceId,
+				agentId, Long.toString(goalRevision), actionId);
+		try {
+			Mac mac = Mac.getInstance("HmacSHA256");
+			mac.init(new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), "HmacSHA256"));
+			return Base64.getUrlEncoder().withoutPadding().encodeToString(mac.doFinal(context.getBytes(StandardCharsets.UTF_8)));
+		} catch (GeneralSecurityException exception) {
+			throw new IllegalStateException("HmacSHA256 is unavailable", exception);
+		}
+	}
+
+	private static String validatePreparedSecret(String secret) {
+		String value = Objects.requireNonNull(secret, "prepared bridge secret must not be null").trim();
+		if (value.length() < MIN_SECRET_LENGTH || value.length() > MAX_SECRET_LENGTH) {
+			throw new BridgeProtocolException(
+					"BRIDGE_SECRET_INVALID",
+					"Bridge secret must contain " + MIN_SECRET_LENGTH + "-" + MAX_SECRET_LENGTH + " characters"
+			);
+		}
+		return value;
+	}
+
+	private static String optionalLaunchId(JsonObject object) {
+		if (!object.has("launchId")) return null;
+		String value = requiredString(object, "launchId");
+		try {
+			String canonical = UUID.fromString(value).toString();
+			if (value.length() != 36 || !canonical.equalsIgnoreCase(value)) throw new IllegalArgumentException();
+			return canonical;
+		} catch (IllegalArgumentException invalid) {
+			throw new BridgeProtocolException("INVALID_LAUNCH_ID", "launchId must be a UUID", invalid);
+		}
+	}
+
+	private static String requiredTraceId(JsonObject object, String field) {
+		String value = requiredString(object, field);
+		if (value.getBytes(StandardCharsets.UTF_8).length > 128
+				|| value.codePoints().anyMatch(codePoint -> codePoint < 0x20 || codePoint == 0x7f)) {
+			throw new BridgeProtocolException("INVALID_TRACE_ID", field + " must be at most 128 UTF-8 bytes");
+		}
+		return value;
+	}
+
+	/** The expected block of a break request when it is a plain string, otherwise null. */
+	private static String expectedBlockId(JsonObject arguments) {
+		JsonElement value = arguments == null ? null : arguments.get("expectedBlockId");
+		return value != null && value.isJsonPrimitive() && value.getAsJsonPrimitive().isString() ? value.getAsString() : null;
+	}
+
+	private static String nullableString(JsonObject object, String field) {
+		return object.has(field) && !object.get(field).isJsonNull() ? object.get(field).getAsString() : null;
+	}
+
+	private static String requiredStatusString(JsonObject object, String field) {
+		if (!object.has(field) || !object.get(field).isJsonPrimitive() || !object.get(field).getAsJsonPrimitive().isString()) {
+			throw new BridgeProtocolException("INVALID_COORDINATOR_STATUS", field + " must be a string");
+		}
+		String value = object.get(field).getAsString();
+		if (value.isBlank() || value.length() > 256) {
+			throw new BridgeProtocolException("INVALID_COORDINATOR_STATUS", field + " must be nonblank and at most 256 characters");
+		}
+		return value;
+	}
+
+	private static String requiredNullableStatusString(JsonObject object, String field) {
+		if (!object.has(field)) throw new BridgeProtocolException("MISSING_FIELD", field);
+		if (object.get(field).isJsonNull()) return null;
+		return requiredStatusString(object, field);
+	}
+
+	private static Long requiredNullableStatusLong(JsonObject object, String field) {
+		if (!object.has(field)) throw new BridgeProtocolException("MISSING_FIELD", field);
+		return object.get(field).isJsonNull() ? null : requiredLong(object, field);
+	}
+
+	private static String requiredProvenanceString(JsonObject object, String field) {
+		if (!object.has(field) || !object.get(field).isJsonPrimitive() || !object.get(field).getAsJsonPrimitive().isString()) {
+			throw new BridgeProtocolException("MISSING_FIELD", "provenance." + field);
+		}
+		return object.get(field).getAsString();
+	}
+
+	private static JsonObject requiredObject(JsonObject object, String field) {
+		if (!object.has(field) || !object.get(field).isJsonObject()) throw new BridgeProtocolException("MISSING_FIELD", field);
+		return object.getAsJsonObject(field);
+	}
+
+	private static JsonArray requiredArray(JsonObject object, String field, int maximum) {
+		if (!object.has(field) || !object.get(field).isJsonArray()) throw new BridgeProtocolException("MISSING_FIELD", field);
+		JsonArray value = object.getAsJsonArray(field);
+		if (value.size() > maximum) throw new BridgeProtocolException("INVALID_FIELD", field);
+		return value;
+	}
+
+	private static List<String> stringList(JsonObject object, String field, int maximum) {
+		JsonArray values = requiredArray(object, field, maximum);
+		ArrayList<String> result = new ArrayList<>(values.size());
+		for (var value : values) {
+			if (!value.isJsonPrimitive() || !value.getAsJsonPrimitive().isString()) {
+				throw new BridgeProtocolException("INVALID_MODEL_CATALOG", field + " entries must be strings");
+			}
+			result.add(value.getAsString());
+		}
+		return List.copyOf(result);
+	}
+
+	private static boolean requiredBoolean(JsonObject object, String field) {
+		if (!object.has(field) || !object.get(field).isJsonPrimitive() || !object.get(field).getAsJsonPrimitive().isBoolean()) {
+			throw new BridgeProtocolException("MISSING_FIELD", field);
+		}
+		return object.get(field).getAsBoolean();
+	}
+
+	private static int requiredInt(JsonObject object, String field) {
+		if (!object.has(field) || !object.get(field).isJsonPrimitive() || !object.get(field).getAsJsonPrimitive().isNumber()) {
+			throw new BridgeProtocolException("MISSING_FIELD", field);
+		}
+		double value = object.get(field).getAsDouble();
+		if (!Double.isFinite(value) || value < 0.0 || value > Integer.MAX_VALUE || value != Math.rint(value)) {
+			throw new BridgeProtocolException("INVALID_FIELD", field);
+		}
+		return (int) value;
+	}
+
+	private static double requiredDouble(JsonObject object, String field) {
+		if (!object.has(field) || !object.get(field).isJsonPrimitive() || !object.get(field).getAsJsonPrimitive().isNumber()) {
+			throw new BridgeProtocolException("MISSING_FIELD", field);
+		}
+		double value = object.get(field).getAsDouble();
+		if (!Double.isFinite(value)) throw new BridgeProtocolException("INVALID_FIELD", field);
+		return value;
+	}
+
+	private static double requiredNonNegativeDouble(JsonObject object, String field) {
+		double value = requiredDouble(object, field);
+		if (value < 0.0D) throw new BridgeProtocolException("INVALID_FIELD", field);
+		return value;
+	}
+
+	/** Serializes observation delivery with session identity, queue, and baseline lifecycle. */
+	static final class ObservationPublication {
+		enum Result { COMMITTED, SUPPRESSED, STALE_SESSION, DELIVERY_RETRY }
+		static final String DROP_AHEAD_FACT = "player.dropAhead";
+
+		@FunctionalInterface
+		interface Writer {
+			boolean send(AgentId agentId, JsonObject payload);
+		}
+
+		private final Object lifecycleLock;
+		private final ObservationDispatchQueue<AgentId> queue;
+		private final PublishedObservationState published;
+		private final int queueCapacity;
+		private final int perTickLimit;
+		private final int heartbeatMinimumIntervalTicks;
+		private final java.util.function.BiFunction<AgentId, JsonObject, ServerObservationWireBudget.Fitted> fitter;
+		private final LinkedHashSet<AgentId> urgent = new LinkedHashSet<>();
+		private final Set<AgentId> heartbeatPending = new HashSet<>();
+		private final Map<AgentId, Long> nextHeartbeatTick = new HashMap<>();
+		private final AtomicLong sequences = new AtomicLong();
+		private Object activeSession;
+		private int heartbeatCursor;
+		private long heartbeatTick;
+
+		ObservationPublication(int queueCapacity, int perTickLimit) {
+			this(queueCapacity, perTickLimit, DEFAULT_HEARTBEAT_MIN_INTERVAL_TICKS,
+					(agentId, observation) -> new ServerObservationWireBudget.Fitted(observation, List.of()));
+		}
+
+		ObservationPublication(
+				int queueCapacity,
+				int perTickLimit,
+				java.util.function.BiFunction<AgentId, JsonObject, ServerObservationWireBudget.Fitted> fitter
+		) {
+			this(queueCapacity, perTickLimit, DEFAULT_HEARTBEAT_MIN_INTERVAL_TICKS, fitter);
+		}
+
+		ObservationPublication(int queueCapacity, int perTickLimit, int heartbeatMinimumIntervalTicks) {
+			this(queueCapacity, perTickLimit, heartbeatMinimumIntervalTicks,
+					(agentId, observation) -> new ServerObservationWireBudget.Fitted(observation, List.of()));
+		}
+
+		ObservationPublication(
+				int queueCapacity,
+				int perTickLimit,
+				int heartbeatMinimumIntervalTicks,
+				java.util.function.BiFunction<AgentId, JsonObject, ServerObservationWireBudget.Fitted> fitter
+		) {
+			this(new Object(), queueCapacity, perTickLimit, heartbeatMinimumIntervalTicks, fitter);
+		}
+
+		private ObservationPublication(
+				Object lifecycleLock,
+				int queueCapacity,
+				int perTickLimit,
+				int heartbeatMinimumIntervalTicks,
+				java.util.function.BiFunction<AgentId, JsonObject, ServerObservationWireBudget.Fitted> fitter
+		) {
+			// Production shares the session publication monitor: enqueue and baseline commit
+			// must finish together before teardown can clear either session's observation state.
+			this.lifecycleLock = Objects.requireNonNull(lifecycleLock, "lifecycle lock must not be null");
+			if (heartbeatMinimumIntervalTicks < 1) {
+				throw new IllegalArgumentException("heartbeat minimum interval must be positive");
+			}
+			this.queueCapacity = queueCapacity;
+			this.perTickLimit = perTickLimit;
+			this.heartbeatMinimumIntervalTicks = heartbeatMinimumIntervalTicks;
+			queue = new ObservationDispatchQueue<>(queueCapacity, perTickLimit);
+			published = new PublishedObservationState(queueCapacity);
+			this.fitter = Objects.requireNonNull(fitter, "fitter must not be null");
+		}
+
+		void activate(Object session) {
+			synchronized (lifecycleLock) {
+				if (activeSession != null && activeSession != session) clearLocked();
+				activeSession = Objects.requireNonNull(session, "session must not be null");
+			}
+		}
+
+		void deactivate(Object session) {
+			synchronized (lifecycleLock) {
+				if (activeSession == session) {
+					activeSession = null;
+					clearLocked();
+				}
+			}
+		}
+
+		void reset() {
+			synchronized (lifecycleLock) {
+				clearLocked();
+			}
+		}
+
+		boolean offer(AgentId agentId) {
+			Objects.requireNonNull(agentId, "agentId must not be null");
+			synchronized (lifecycleLock) {
+				if (urgent.contains(agentId)) return true;
+				heartbeatPending.remove(agentId);
+				try {
+					return queue.offer(agentId);
+				} catch (IllegalStateException exception) {
+					return false;
+				}
+			}
+		}
+
+		boolean offerHeartbeat(AgentId agentId) {
+			Objects.requireNonNull(agentId, "agentId must not be null");
+			synchronized (lifecycleLock) {
+				if (urgent.contains(agentId)) return true;
+				try {
+					if (queue.offer(agentId) || queue.contains(agentId)) {
+						heartbeatPending.add(agentId);
+						return true;
+					}
+				} catch (IllegalStateException ignored) {
+					// Backpressure remains bounded; the rotating heartbeat will retry later.
+				}
+				return false;
+			}
+		}
+
+		boolean offerUrgent(AgentId agentId) {
+			Objects.requireNonNull(agentId, "agentId must not be null");
+			synchronized (lifecycleLock) {
+				if (urgent.contains(agentId)) return true;
+				if (urgent.size() >= queueCapacity) return false;
+				queue.remove(agentId);
+				heartbeatPending.remove(agentId);
+				urgent.add(agentId);
+				return true;
+			}
+		}
+
+		/** Queues one due heartbeat per call and rotates fairly across the supplied roster. */
+		void scheduleIdleHeartbeat(List<AgentId> agents) {
+			Objects.requireNonNull(agents, "agents must not be null");
+			List<AgentId> roster = agents.stream()
+					.map(Objects::requireNonNull)
+					.distinct()
+					.toList();
+			synchronized (lifecycleLock) {
+				if (heartbeatTick < Long.MAX_VALUE) heartbeatTick += 1L;
+				nextHeartbeatTick.keySet().removeIf(agentId -> !roster.contains(agentId));
+				heartbeatPending.removeIf(agentId -> !roster.contains(agentId));
+				if (roster.isEmpty()) {
+					heartbeatCursor = 0;
+					return;
+				}
+				int start = Math.floorMod(heartbeatCursor, roster.size());
+				for (int offset = 0; offset < roster.size(); offset++) {
+					int index = (start + offset) % roster.size();
+					AgentId agentId = roster.get(index);
+					if (urgent.contains(agentId) || !heartbeatDue(agentId)) continue;
+					try {
+						boolean queued = queue.offer(agentId) || queue.contains(agentId);
+						if (queued) {
+							heartbeatPending.add(agentId);
+							heartbeatCursor = (index + 1) % roster.size();
+							return;
+						}
+					} catch (IllegalStateException ignored) {
+						// A full coalescing queue defers this heartbeat to a later rotation.
+						return;
+					}
+				}
+				// No agent was due; keep rotating from the next roster member on the next tick.
+				heartbeatCursor = (start + 1) % roster.size();
+			}
+		}
+
+		private boolean heartbeatDue(AgentId agentId) {
+			Long due = nextHeartbeatTick.get(agentId);
+			return due == null || due <= heartbeatTick;
+		}
+
+		/** Whether the agent's last delivery is younger than the heartbeat interval, so a heartbeat is still to come. */
+		boolean heartbeatWindowOpen(AgentId agentId) {
+			synchronized (lifecycleLock) {
+				return published.hasDelivered(agentId) && !heartbeatDue(agentId);
+			}
+		}
+
+		boolean takeHeartbeat(AgentId agentId) {
+			synchronized (lifecycleLock) {
+				return heartbeatPending.remove(agentId);
+			}
+		}
+
+		void drain(java.util.function.Consumer<AgentId> consumer) {
+			Objects.requireNonNull(consumer, "consumer must not be null");
+			for (int emitted = 0; emitted < perTickLimit; emitted++) {
+				AgentId agentId;
+				synchronized (lifecycleLock) {
+					var iterator = urgent.iterator();
+					if (iterator.hasNext()) {
+						agentId = iterator.next();
+						iterator.remove();
+					} else {
+						agentId = queue.poll();
+					}
+					if (agentId == null) return;
+				}
+				consumer.accept(agentId);
+			}
+		}
+
+		void remove(AgentId agentId) {
+			Objects.requireNonNull(agentId, "agentId must not be null");
+			synchronized (lifecycleLock) {
+				queue.remove(agentId);
+				urgent.remove(agentId);
+				heartbeatPending.remove(agentId);
+				nextHeartbeatTick.remove(agentId);
+				published.remove(agentId);
+			}
+		}
+		boolean markDirty(AgentId agentId) { return published.markDirty(agentId); }
+		boolean markAttention(AgentId agentId) { return published.markAttention(agentId); }
+		boolean markSample(AgentId agentId) { return published.markSample(agentId); }
+		void requireObservedTarget(AgentId agentId, long eventSequence, String targetId) {
+			published.requireObservedTarget(agentId, eventSequence, targetId);
+		}
+		void retainConversationSource(AgentId agentId, String sourceId) {
+			published.retainConversationSource(agentId, sourceId);
+		}
+		void requireDirectMessageRecipient(AgentId agentId, long eventSequence, String recipientId) {
+			published.requireDirectMessageRecipient(agentId, eventSequence, recipientId);
+		}
+		int pendingCount() {
+			synchronized (lifecycleLock) {
+				return queue.pendingCount() + urgent.size();
+			}
+		}
+		int retainedCount() { return published.retainedCount(); }
+
+		PublishedObservationState publishedState() { return published; }
+		boolean hasActiveSession() {
+			synchronized (lifecycleLock) {
+				return activeSession != null;
+			}
+		}
+
+		Result publish(AgentId agentId, Object sourceSession, JsonObject observation, Writer writer) {
+			return publish(agentId, sourceSession, observation, writer, false);
+		}
+
+		Result publish(AgentId agentId, Object sourceSession, JsonObject observation, Writer writer, boolean allowUnchanged) {
+			return publish(agentId, sourceSession, observation, writer, allowUnchanged, fitter);
+		}
+
+		Result publish(AgentId agentId, Object sourceSession, JsonObject observation, Writer writer, boolean allowUnchanged,
+				java.util.function.BiFunction<AgentId, JsonObject, ServerObservationWireBudget.Fitted> deliveryFitter) {
+			Objects.requireNonNull(observation, "observation must not be null");
+			return publishOwned(agentId, sourceSession, observation.deepCopy(), writer, allowUnchanged, deliveryFitter);
+		}
+
+		/**
+		 * As {@link #publish}, for a freshly collected tree nothing else holds: the publication annotates, fits, sends and
+		 * keeps it as the delivered baseline without a single copy. The writer must not mutate or retain the payload, and
+		 * the fitter may return, trim or mutate the tree it is given. The caller must not touch the tree afterwards.
+		 */
+		Result publishOwned(AgentId agentId, Object sourceSession, JsonObject observation, Writer writer, boolean allowUnchanged,
+				java.util.function.BiFunction<AgentId, JsonObject, ServerObservationWireBudget.Fitted> deliveryFitter) {
+			return publishOwned(agentId, sourceSession, observation, writer, allowUnchanged, deliveryFitter, null);
+		}
+
+		/**
+		 * As {@link #publishOwned}, with the full latched threat signal set ("uuid:signal") the observation was collected
+		 * with. It stays server-side: threat attention compares it with the set last delivered, and the eight serialized
+		 * rows only carry details. Null keeps the row comparison.
+		 */
+		Result publishOwned(AgentId agentId, Object sourceSession, JsonObject observation, Writer writer, boolean allowUnchanged,
+				java.util.function.BiFunction<AgentId, JsonObject, ServerObservationWireBudget.Fitted> deliveryFitter,
+				Set<String> threatSignalKeys) {
+			Objects.requireNonNull(agentId, "agentId must not be null");
+			Objects.requireNonNull(sourceSession, "sourceSession must not be null");
+			Objects.requireNonNull(observation, "observation must not be null");
+			Objects.requireNonNull(writer, "writer must not be null");
+			synchronized (lifecycleLock) {
+				if (activeSession != sourceSession) return Result.STALE_SESSION;
+				long eventSequence = sequences.incrementAndGet();
+				long observedAtEpochMs = observation.get("observedAtEpochMs").getAsLong();
+				AttentionFactDelta delta = outgoingDelta(agentId, observation, eventSequence, observedAtEpochMs, threatSignalKeys);
+				// A sample published only for the drop ahead (requested by the raw sampler, or a delta whose only change is
+				// the drop): never a heartbeat or a first delivery, and skipped when the delivered drop is identical.
+				boolean sampleOnly = !allowUnchanged && published.hasDelivered(agentId) && !delta.attention()
+						&& observation.has("ready") && observation.get("ready").getAsBoolean()
+						&& (published.sampleRequested(agentId) || onlyDropAheadChanged(agentId, observation, eventSequence, observedAtEpochMs, threatSignalKeys))
+						&& !published.sameDropAhead(agentId, observation);
+				if (!allowUnchanged && published.hasDelivered(agentId) && !delta.attention() && !sampleOnly) {
+					published.clearSample(agentId);
+					return Result.SUPPRESSED;
+				}
+				JsonObject delivery = observation;
+				attachDelta(delivery, delta, sampleOnly);
+				ServerObservationWireBudget.Fitted fitted = deliveryFitter.apply(agentId, delivery);
+				delivery = fitted.takeObservation();
+				if (!fitted.reductions().isEmpty()) {
+					delta = outgoingDelta(agentId, delivery, eventSequence, observedAtEpochMs, threatSignalKeys);
+					attachDelta(delivery, delta, sampleOnly && !delta.attention());
+					delivery = deliveryFitter.apply(agentId, delivery).takeObservation();
+					delta = outgoingDelta(agentId, delivery, eventSequence, observedAtEpochMs, threatSignalKeys);
+					attachDelta(delivery, delta, sampleOnly && !delta.attention());
+				}
+				if (!writer.send(agentId, delivery)) return Result.DELIVERY_RETRY;
+				published.commitOwned(agentId, delivery, threatSignalKeys);
+				BridgeTap.delivered(agentId, delivery);
+				nextHeartbeatTick.put(agentId, nextHeartbeatDeadline());
+				return Result.COMMITTED;
+			}
+		}
+
+		/** Grants only the entities in a delivered focused page, without replacing the full observation baseline. */
+		Result deliverInspection(AgentId agentId, Object sourceSession, JsonObject inspection, Writer writer) {
+			synchronized (lifecycleLock) {
+				if (activeSession != sourceSession) return Result.STALE_SESSION;
+				long sequence = published.inspectionSequence(agentId, inspection);
+				Set<String> targets = PublishedObservationState.inspectionTargetIds(inspection);
+				published.checkInspectionTargets(agentId, sequence, targets);
+				JsonObject delivery = inspection.deepCopy();
+				delivery.addProperty("eventSequence", sequence);
+				if (!writer.send(agentId, delivery)) return Result.DELIVERY_RETRY;
+				if (activeSession != sourceSession) return Result.STALE_SESSION;
+				published.retainInspectionTargets(agentId, sequence, targets);
+				return Result.COMMITTED;
+			}
+		}
+
+		private static void attachDelta(JsonObject observation, AttentionFactDelta delta, boolean sampleOnly) {
+			observation.addProperty("eventSequence", delta.eventSequence());
+			observation.addProperty("attention", delta.attention());
+			JsonArray changedFacts = new JsonArray();
+			delta.changedFacts().forEach(changedFacts::add);
+			observation.add("changedFacts", changedFacts);
+			if (sampleOnly) observation.addProperty("sampleOnly", true);
+			else observation.remove("sampleOnly");
+		}
+
+		/**
+		 * The delta the coordinator receives. A known edge ahead is about a second away at walking speed, faster than any
+		 * model round, so the drop alone never sets attention: it stays in the sample for authored orders and watchers.
+		 * Forced attention and every other changed fact keep their meaning.
+		 */
+		private AttentionFactDelta outgoingDelta(AgentId agentId, JsonObject observation, long eventSequence, long observedAtEpochMs,
+				Set<String> threatSignalKeys) {
+			AttentionFactDelta delta = published.delta(agentId, observation, eventSequence, observedAtEpochMs, threatSignalKeys);
+			if (!dropAheadOnly(agentId, delta)) return delta;
+			return new AttentionFactDelta(eventSequence, false, List.of(), observedAtEpochMs);
+		}
+
+		private boolean onlyDropAheadChanged(AgentId agentId, JsonObject observation, long eventSequence, long observedAtEpochMs,
+				Set<String> threatSignalKeys) {
+			return dropAheadOnly(agentId, published.delta(agentId, observation, eventSequence, observedAtEpochMs, threatSignalKeys));
+		}
+
+		private boolean dropAheadOnly(AgentId agentId, AttentionFactDelta delta) {
+			return !published.attentionForced(agentId) && !delta.changedFacts().isEmpty()
+					&& delta.changedFacts().stream().allMatch(DROP_AHEAD_FACT::equals);
+		}
+
+		private void clearLocked() {
+			queue.clear();
+			urgent.clear();
+			heartbeatPending.clear();
+			nextHeartbeatTick.clear();
+			heartbeatCursor = 0;
+			heartbeatTick = 0L;
+			published.clear();
+		}
+
+		private long nextHeartbeatDeadline() {
+			long interval = heartbeatMinimumIntervalTicks;
+			return heartbeatTick > Long.MAX_VALUE - interval ? Long.MAX_VALUE : heartbeatTick + interval;
+		}
+	}
+
+	/** Retains only successfully delivered baselines and a bounded retry marker. */
+	public static final class PublishedObservationState {
+		private final int retryCapacity;
+		private final Map<AgentId, JsonObject> delivered = new HashMap<>();
+		private final Map<AgentId, FootingBaseline> deliveredFooting = new HashMap<>();
+		// Full latched threat signals ("uuid.signal") of each delivered baseline; absent when it was delivered without them.
+		private final Map<AgentId, Set<String>> deliveredThreatSignals = new HashMap<>();
+		private final Set<AgentId> threatRepublish = new HashSet<>();
+		private final Set<AgentId> dirty = new HashSet<>();
+		private final Set<AgentId> forcedAttention = new HashSet<>();
+		private final Set<AgentId> sampleRequests = new HashSet<>();
+		private final Map<AgentId, ObservationTargetHistory> targetHistory = new java.util.LinkedHashMap<>();
+		private final Map<AgentId, java.util.LinkedHashSet<String>> conversationSources = new java.util.LinkedHashMap<>();
+
+		public PublishedObservationState(int retryCapacity) {
+			if (retryCapacity < 1) throw new IllegalArgumentException("retryCapacity must be positive");
+			this.retryCapacity = retryCapacity;
+		}
+
+		public synchronized AttentionFactDelta delta(AgentId agentId, JsonObject current, long eventSequence, long observedAtEpochMs) {
+			return delta(agentId, current, eventSequence, observedAtEpochMs, null);
+		}
+
+		/**
+		 * Threat edges come from the full latched set ("uuid:signal") against the signals last delivered, so a row re-entering
+		 * the eight serialized entries is detail, not attention. Each side without a full set uses its serialized rows.
+		 */
+		public synchronized AttentionFactDelta delta(AgentId agentId, JsonObject current, long eventSequence, long observedAtEpochMs,
+				Set<String> threatSignalKeys) {
+			Objects.requireNonNull(agentId, "agentId must not be null");
+			Set<String> after = threatSignalKeys == null ? null : AttentionSignalPolicy.threatFacts(threatSignalKeys);
+			AttentionFactDelta delta = AttentionFactDelta.between(delivered.get(agentId), current,
+					after == null ? null : threatBaseline(agentId), after, eventSequence, observedAtEpochMs);
+			return forcedAttention.contains(agentId) && !delta.attention()
+					? new AttentionFactDelta(delta.eventSequence(), true, delta.changedFacts(), delta.observedAtEpochMs())
+					: delta;
+		}
+
+		public synchronized void commit(AgentId agentId, JsonObject deliveredObservation) {
+			commitOwned(agentId, deliveredObservation.deepCopy());
+		}
+
+		/** As {@link #commit}, keeping the tree itself as the baseline: the caller never touches it again. */
+		synchronized void commitOwned(AgentId agentId, JsonObject deliveredObservation) {
+			commitOwned(agentId, deliveredObservation, null);
+		}
+
+		/**
+		 * As {@link #commitOwned(AgentId, JsonObject)}, keeping the threat signals now delivered as the threat baseline: those
+		 * already known, and new ones only if this delivery reported them as changed facts. A new signal left out (no row, or
+		 * over the fact cap) stays owed to a later publication. The first delivery of a session is the whole current state.
+		 */
+		synchronized void commitOwned(AgentId agentId, JsonObject deliveredObservation, Set<String> threatSignalKeys) {
+			Set<String> before = threatBaseline(agentId);
+			boolean first = !delivered.containsKey(agentId);
+			delivered.put(agentId, deliveredObservation);
+			if (threatSignalKeys == null) deliveredThreatSignals.remove(agentId);
+			else {
+				Set<String> after = AttentionSignalPolicy.threatFacts(threatSignalKeys);
+				Set<String> reported = new HashSet<>();
+				if (deliveredObservation.get("changedFacts") instanceof com.google.gson.JsonArray facts) {
+					for (com.google.gson.JsonElement fact : facts) {
+						if (fact.isJsonPrimitive() && fact.getAsString().startsWith("threats.")) reported.add(fact.getAsString().substring("threats.".length()));
+					}
+				}
+				Set<String> baseline = new java.util.TreeSet<>();
+				for (String signal : after) if (first || before == null || before.contains(signal) || reported.contains(signal)) baseline.add(signal);
+				deliveredThreatSignals.put(agentId, Set.copyOf(baseline));
+				// More new threats than rows: each delivery announces some, so ask for the next one at once.
+				if (!reported.isEmpty() && !baseline.containsAll(after)) threatRepublish.add(agentId);
+				else threatRepublish.remove(agentId);
+			}
+			JsonObject player = deliveredObservation.getAsJsonObject("player");
+			if (player != null && player.has("footing")) {
+				FootingBaseline baseline = footingBaseline(deliveredObservation);
+				if (baseline == null) deliveredFooting.remove(agentId);
+				else deliveredFooting.put(agentId, baseline);
+			}
+			if (deliveredObservation.has("eventSequence") && deliveredObservation.get("eventSequence").isJsonPrimitive()
+					&& deliveredObservation.get("eventSequence").getAsJsonPrimitive().isNumber()) {
+				long eventSequence = deliveredObservation.get("eventSequence").getAsLong();
+				if (!targetHistory.containsKey(agentId) && targetHistory.size() >= AgentConstants.DEFAULT_AGENT_LIMIT) {
+					targetHistory.remove(targetHistory.keySet().iterator().next());
+				}
+				targetHistory.computeIfAbsent(agentId, ignored -> new ObservationTargetHistory())
+						.retain(eventSequence, observedTargetIds(deliveredObservation));
+			}
+			dirty.remove(agentId);
+			forcedAttention.remove(agentId);
+			sampleRequests.remove(agentId);
+		}
+
+		/** The threat signals last delivered: the full set when known, otherwise those in the delivered rows; null before any. */
+		public synchronized Set<String> threatBaseline(AgentId agentId) {
+			Set<String> full = deliveredThreatSignals.get(agentId);
+			if (full != null) return full;
+			JsonObject previous = delivered.get(agentId);
+			return previous == null ? null : AttentionSignalPolicy.threatSignals(previous);
+		}
+
+		/** True once after a delivery that announced new threat signals but left others owed. */
+		public synchronized boolean takeThreatRepublish(AgentId agentId) {
+			return threatRepublish.remove(agentId);
+		}
+
+		public synchronized void omitUnchangedFooting(AgentId agentId, JsonObject observation) {
+			JsonObject player = observation.getAsJsonObject("player");
+			if (player == null || !player.has("footing")) {
+				deliveredFooting.remove(agentId);
+			} else {
+				FootingBaseline baseline = footingBaseline(observation);
+				if (baseline != null && baseline.equals(deliveredFooting.get(agentId))) player.remove("footing");
+			}
+		}
+
+		private record FootingBaseline(JsonObject footing, double x, double y, double z, String dimension) {}
+
+		private static FootingBaseline footingBaseline(JsonObject observation) {
+			// The collector publishes coordinates in the top-level position object, not inside player.
+			JsonObject player = observation.getAsJsonObject("player"), world = observation.getAsJsonObject("world"),
+					position = observation.getAsJsonObject("position");
+			if (player == null || world == null || position == null || !world.has("dimension")
+					|| !position.has("x") || !position.has("y") || !position.has("z")) return null;
+			return new FootingBaseline(player.getAsJsonObject("footing").deepCopy(),
+					Math.floor(position.get("x").getAsDouble()), Math.floor(position.get("y").getAsDouble()),
+					Math.floor(position.get("z").getAsDouble()), world.get("dimension").getAsString());
+		}
+
+		public synchronized boolean hasDelivered(AgentId agentId) {
+			return delivered.containsKey(Objects.requireNonNull(agentId, "agentId must not be null"));
+		}
+
+		private synchronized long inspectionSequence(AgentId agentId, JsonObject inspection) {
+			JsonObject baseline = delivered.get(agentId);
+			if (baseline == null || !baseline.has("eventSequence")) {
+				throw new AgentDomainException("STALE_FACTS", "Read a full observation before focused inspection");
+			}
+			JsonObject world = baseline.has("world") && baseline.get("world").isJsonObject() ? baseline.getAsJsonObject("world") : null;
+			if (world == null || !inspection.has("dimension") || !inspection.has("worldId")
+					|| !Objects.equals(world.get("dimension"), inspection.get("dimension"))
+					|| !Objects.equals(world.get("worldId"), inspection.get("worldId"))) {
+				throw new AgentDomainException("STALE_FACTS", "World changed; read a full observation before focused inspection");
+			}
+			return baseline.get("eventSequence").getAsLong();
+		}
+
+		private synchronized void checkInspectionTargets(AgentId agentId, long sequence, Set<String> targets) {
+			ObservationTargetHistory history = targetHistory.get(agentId);
+			if (history == null || !history.contains(sequence)) throw new AgentDomainException("STALE_FACTS", "Inspection baseline is no longer retained");
+			Set<String> combined = new HashSet<>(history.targets(sequence));
+			combined.addAll(targets);
+			if (combined.size() > MAX_TARGET_IDS_WITH_INSPECTIONS) {
+				throw new AgentDomainException("INSPECTION_AUTHORITY_LIMIT", "Read a new full observation before inspecting more entity targets");
+			}
+		}
+
+		private synchronized void retainInspectionTargets(AgentId agentId, long sequence, Set<String> targets) {
+			if (targets.isEmpty()) return;
+			checkInspectionTargets(agentId, sequence, targets);
+			ObservationTargetHistory history = targetHistory.get(agentId);
+			HashSet<String> combined = new HashSet<>(history.targets(sequence));
+			combined.addAll(targets);
+			history.observations.put(sequence, Set.copyOf(combined));
+		}
+
+		private static Set<String> inspectionTargetIds(JsonObject inspection) {
+			if (!inspection.has("section") || !"entities".equals(inspection.get("section").getAsString())) return Set.of();
+			if (!inspection.has("entries") || !inspection.get("entries").isJsonArray()
+					|| inspection.getAsJsonArray("entries").size() > 32) {
+				throw new AgentDomainException("INVALID_INSPECTION", "Entity inspection must be one bounded page");
+			}
+			HashSet<String> result = new HashSet<>();
+			for (JsonElement entry : inspection.getAsJsonArray("entries")) {
+				if (!entry.isJsonObject()) throw new AgentDomainException("INVALID_INSPECTION", "Invalid inspected entity");
+				JsonElement uuid = entry.getAsJsonObject().get("uuid");
+				if (uuid == null || !uuid.isJsonPrimitive() || !uuid.getAsJsonPrimitive().isString()) {
+					throw new AgentDomainException("INVALID_INSPECTION", "Inspected entity requires a UUID");
+				}
+				String id = uuid.getAsString();
+				try {
+					if (!UUID.fromString(id).toString().equals(id)) throw new IllegalArgumentException();
+				} catch (IllegalArgumentException exception) {
+					throw new AgentDomainException("INVALID_INSPECTION", "Invalid inspected entity UUID");
+				}
+				result.add(id);
+			}
+			return Set.copyOf(result);
+		}
+
+		/** Requires a target id to be present in the exact bounded observation selected by provenance. */
+		public synchronized void requireObservedTarget(AgentId agentId, long eventSequence, String targetId) {
+			Objects.requireNonNull(agentId, "agentId must not be null");
+			Objects.requireNonNull(targetId, "targetId must not be null");
+			ObservationTargetHistory history = targetHistory.get(agentId);
+			if (history == null || !history.contains(eventSequence)) {
+				if (history != null && history.isOlderThanRetained(eventSequence)) {
+					throw new AgentDomainException("STALE_FACTS", "Action facts event sequence is no longer retained");
+				}
+				throw new AgentDomainException("TARGET_NOT_OBSERVED", "Target was not present in the delivered observation");
+			}
+			if (!history.targets(eventSequence).contains(targetId)) {
+				throw new AgentDomainException("TARGET_NOT_OBSERVED", "Target was not present in the delivered observation");
+			}
+		}
+
+		public synchronized boolean markDirty(AgentId agentId) {
+			if (dirty.contains(agentId)) return true;
+			if (dirty.size() >= retryCapacity) return false;
+			dirty.add(agentId);
+			return true;
+		}
+
+		/** Allows direct replies to authenticated player messages even after the sender leaves view. */
+		public synchronized void retainConversationSource(AgentId agentId, String sourceId) {
+			Objects.requireNonNull(agentId, "agentId must not be null");
+			UUID.fromString(Objects.requireNonNull(sourceId, "sourceId must not be null"));
+			if (!conversationSources.containsKey(agentId)
+					&& conversationSources.size() >= AgentConstants.DEFAULT_AGENT_LIMIT) {
+				conversationSources.remove(conversationSources.keySet().iterator().next());
+			}
+			java.util.LinkedHashSet<String> sources = conversationSources.computeIfAbsent(
+					agentId, ignored -> new java.util.LinkedHashSet<>()
+			);
+			sources.remove(sourceId);
+			sources.add(sourceId);
+			while (sources.size() > MAX_CONVERSATION_SOURCES_PER_AGENT) {
+				sources.remove(sources.iterator().next());
+			}
+		}
+
+		public synchronized void requireDirectMessageRecipient(AgentId agentId, long eventSequence, String recipientId) {
+			Set<String> trustedSources = conversationSources.get(agentId);
+			if (trustedSources != null && trustedSources.contains(recipientId)) return;
+			requireObservedTarget(agentId, eventSequence, recipientId);
+		}
+
+		public synchronized boolean markAttention(AgentId agentId) {
+			Objects.requireNonNull(agentId, "agentId must not be null");
+			if (forcedAttention.contains(agentId)) return true;
+			if (forcedAttention.size() >= retryCapacity) return false;
+			forcedAttention.add(agentId);
+			return true;
+		}
+
+		/** Requests that the next publication goes out even without an attention delta, as a sample for orders and watchers. */
+		public synchronized boolean markSample(AgentId agentId) {
+			Objects.requireNonNull(agentId, "agentId must not be null");
+			if (sampleRequests.contains(agentId)) return true;
+			if (sampleRequests.size() >= retryCapacity) return false;
+			sampleRequests.add(agentId);
+			return true;
+		}
+
+		synchronized boolean sampleRequested(AgentId agentId) { return sampleRequests.contains(agentId); }
+
+		synchronized void clearSample(AgentId agentId) { sampleRequests.remove(agentId); }
+
+		synchronized boolean attentionForced(AgentId agentId) { return forcedAttention.contains(agentId); }
+
+		/** Whether the delivered baseline already holds exactly this drop ahead (or both have none). */
+		synchronized boolean sameDropAhead(AgentId agentId, JsonObject current) {
+			JsonObject baseline = delivered.get(agentId);
+			return baseline != null && Objects.equals(dropAhead(baseline), dropAhead(current));
+		}
+
+		private static com.google.gson.JsonElement dropAhead(JsonObject observation) {
+			return observation.get("player") instanceof JsonObject player ? player.get("dropAhead") : null;
+		}
+
+		public synchronized void remove(AgentId agentId) {
+			delivered.remove(agentId);
+			deliveredFooting.remove(agentId);
+			deliveredThreatSignals.remove(agentId);
+			threatRepublish.remove(agentId);
+			dirty.remove(agentId);
+			forcedAttention.remove(agentId);
+			sampleRequests.remove(agentId);
+			targetHistory.remove(agentId);
+			conversationSources.remove(agentId);
+		}
+
+		public synchronized int retainedCount() {
+			return delivered.size() + dirty.size();
+		}
+
+		public synchronized void clear() {
+			delivered.clear();
+			deliveredFooting.clear();
+			deliveredThreatSignals.clear();
+			threatRepublish.clear();
+			dirty.clear();
+			forcedAttention.clear();
+			sampleRequests.clear();
+			targetHistory.clear();
+			conversationSources.clear();
+		}
+
+		private static Set<String> observedTargetIds(JsonObject observation) {
+			if (!observation.has("entities") || !observation.get("entities").isJsonArray()) return Set.of();
+			HashSet<String> result = new HashSet<>();
+			for (var element : observation.getAsJsonArray("entities")) {
+				if (!element.isJsonObject()) continue;
+				JsonObject entity = element.getAsJsonObject();
+				String targetId = null;
+				if (entity.has("uuid") && entity.get("uuid").isJsonPrimitive() && entity.get("uuid").getAsJsonPrimitive().isString()) {
+					targetId = entity.get("uuid").getAsString();
+				} else if (entity.has("stableId") && entity.get("stableId").isJsonPrimitive() && entity.get("stableId").getAsJsonPrimitive().isString()) {
+					targetId = entity.get("stableId").getAsString();
+				}
+				if (targetId != null && result.size() < MAX_TARGET_IDS_PER_OBSERVATION) result.add(targetId);
+			}
+			return Set.copyOf(result);
+		}
+
+		private static final class ObservationTargetHistory {
+			private final java.util.LinkedHashMap<Long, Set<String>> observations = new java.util.LinkedHashMap<>();
+			private Set<String> lastTargets = Set.of();
+			private boolean hasLastTargets;
+
+			void retain(long eventSequence, Set<String> targetIds) {
+				if (!hasLastTargets || !lastTargets.equals(targetIds)) {
+					lastTargets = Set.copyOf(targetIds);
+					hasLastTargets = true;
+				}
+				observations.put(eventSequence, lastTargets);
+				while (observations.size() > OBSERVATION_HISTORY_CAPACITY) {
+					observations.remove(observations.keySet().iterator().next());
+				}
+			}
+
+			boolean contains(long eventSequence) { return observations.containsKey(eventSequence); }
+			Set<String> targets(long eventSequence) { return observations.getOrDefault(eventSequence, Set.of()); }
+			boolean isOlderThanRetained(long eventSequence) {
+				return !observations.isEmpty() && eventSequence < observations.keySet().iterator().next();
+			}
+		}
+	}
+
+	private static void requireKeysAllowing(JsonObject object, Set<String> required, Set<String> optional, String field) {
+		for (String key : object.keySet()) {
+			if (!required.contains(key) && !optional.contains(key)) throw new BridgeProtocolException("INVALID_FIELD", field);
+		}
+		if (!object.keySet().containsAll(required)) throw new BridgeProtocolException("INVALID_FIELD", field);
+	}
+
+	private static void requireKeys(JsonObject object, Set<String> expected, String field) {
+		if (!object.keySet().equals(expected)) throw new BridgeProtocolException("INVALID_FIELD", field);
+	}
+
+	private static long requiredLong(JsonObject object, String field) {
+		if (!object.has(field)) throw new BridgeProtocolException("MISSING_FIELD", field);
+		if (!object.get(field).isJsonPrimitive() || !object.get(field).getAsJsonPrimitive().isNumber()) {
+			throw new BridgeProtocolException("INVALID_FIELD", field + " must be a JSON number");
+		}
+		try {
+			long value = object.get(field).getAsBigDecimal().longValueExact();
+			if (value < 0L || value > ActionProvenance.MAX_SAFE_INTEGER) throw new ArithmeticException();
+			return value;
+		} catch (ArithmeticException exception) {
+			throw new BridgeProtocolException("INVALID_GOAL_REVISION", field + " must be a nonnegative safe integer", exception);
+		}
+	}
+
+	private static long requiredSafeLong(JsonObject object, String field) {
+		if (!object.has(field) || !object.get(field).isJsonPrimitive() || !object.get(field).getAsJsonPrimitive().isNumber()) {
+			throw new BridgeProtocolException("MISSING_FIELD", "provenance." + field);
+		}
+		try {
+			long value = object.get(field).getAsBigDecimal().longValueExact();
+			if (value < 0L || value > ActionProvenance.MAX_SAFE_INTEGER) throw new ArithmeticException();
+			return value;
+		} catch (ArithmeticException exception) {
+			throw new BridgeProtocolException("INVALID_PROVENANCE", "provenance." + field + " must be a nonnegative safe integer");
+		}
+	}
+
+	private final class Session implements AutoCloseable {
+		private final Socket socket;
+		private final ArrayBlockingQueue<BridgeEnvelope> outbound = new ArrayBlockingQueue<>(CONNECTION_QUEUE_CAP);
+		private final Map<String, Integer> queuedByAgent = new HashMap<>();
+		private final Map<BridgeEnvelope, Long> queuedBytesByEnvelope = new java.util.IdentityHashMap<>();
+		private long queuedBytes;
+		private final Map<BridgeEnvelope, List<AgentRecord>> registrySnapshots = new java.util.IdentityHashMap<>();
+		private static final long MAX_QUEUED_BYTES = (long) CONNECTION_QUEUE_CAP * BridgeEnvelopeCodec.MAX_LINE_BYTES;
+		private final Set<String> inboundIds = new java.util.LinkedHashSet<>();
+		private final AtomicBoolean open = new AtomicBoolean(true);
+		private final AtomicBoolean authenticated = new AtomicBoolean();
+		private final long handshakeStartedNanos;
+		private final long handshakeTimeoutNanos = TimeUnit.MILLISECONDS.toNanos(HANDSHAKE_TIMEOUT_MS);
+		private volatile boolean registryFragments;
+		private volatile boolean actionTiming;
+		private volatile boolean blockTags;
+		private volatile boolean planFacts;
+		private volatile boolean bodyFacts;
+		private volatile boolean breakExposureFacts;
+		private volatile boolean breakOutcomeFacts;
+		private volatile boolean placementFacts;
+		private volatile boolean dropAheadFacts;
+		private volatile String clientNonce;
+		private volatile String serverNonce;
+		private volatile String authResponseMessageId;
+		private volatile String authenticatedLaunchId;
+		private volatile long authenticatedSessionGeneration;
+		private volatile Thread readerThread;
+		private volatile Thread writerThread;
+
+		Session(Socket socket) throws IOException {
+			this.socket = socket;
+			handshakeStartedNanos = System.nanoTime();
+			socket.setTcpNoDelay(true);
+			 socket.setSoTimeout(HANDSHAKE_TIMEOUT_MS);
+		}
+
+		long handshakeRemainingNanos() {
+			return handshakeTimeoutNanos - (System.nanoTime() - handshakeStartedNanos);
+		}
+
+		private void checkQueuedBytes(long addition) { checkQueuedBytes(addition, false); }
+
+		private void checkQueuedBytes(long addition, boolean singleEntry) {
+			// A legal large entry can travel alone; subsequent publications backpressure
+			// until it drains, rather than multiplying its size by the queue count.
+			if (singleEntry && queuedBytes == 0 && addition <= BridgeEnvelopeCodec.MAX_REGISTRY_ENTRY_BYTES + BridgeEnvelopeCodec.MAX_LINE_BYTES) return;
+			if (addition > MAX_QUEUED_BYTES - queuedBytes) throw new BridgeProtocolException("CONNECTION_BACKPRESSURE", "Outbound byte capacity exceeded");
+		}
+
+		private void retainQueuedBytes(BridgeEnvelope envelope, long bytes) {
+			queuedBytesByEnvelope.put(envelope, bytes);
+			queuedBytes += bytes;
+		}
+
+		void start() {
+			readerThread = Thread.ofPlatform().daemon().name("arenaagents-v2-reader").start(this::readLoop);
+			writerThread = Thread.ofPlatform().daemon().name("arenaagents-v2-writer").start(this::writeLoop);
+		}
+
+		synchronized void beginAuthentication(String clientNonce, String serverNonce, BridgeEnvelope response) {
+			if (!open.get() || authenticated.get() || this.clientNonce != null) {
+				throw new BridgeProtocolException("DUPLICATE_HANDSHAKE", "Bridge authentication challenge was already processed");
+			}
+			if (!"auth_response".equals(response.type())) throw new IllegalArgumentException("authentication response type is invalid");
+			this.clientNonce = clientNonce;
+			this.serverNonce = serverNonce;
+			this.authResponseMessageId = response.messageId();
+			long responseBytes = codec.publicationBytes(response, false);
+			checkQueuedBytes(responseBytes);
+			if (!outbound.offer(response)) throw new BridgeProtocolException("CONNECTION_BACKPRESSURE", "Could not publish server authentication response");
+			queuedByAgent.merge(response.agentId(), 1, Integer::sum);
+			retainQueuedBytes(response, responseBytes);
+		}
+
+		synchronized void completeHandshake(List<BridgeEnvelope> envelopes, String launchId, long sessionGeneration) {
+			completeHandshake(envelopes, launchId, sessionGeneration, null);
+		}
+
+		synchronized void completeHandshake(List<BridgeEnvelope> envelopes, String launchId, long sessionGeneration, List<AgentRecord> records) {
+			if (!open.get()) throw new BridgeProtocolException("COORDINATOR_DISCONNECTED", "Bridge session closed during authentication");
+			if (authenticated.get()) throw new BridgeProtocolException("DUPLICATE_HANDSHAKE", "Bridge session is already authenticated");
+			List<BridgeEnvelope> ordered = List.copyOf(Objects.requireNonNull(envelopes, "envelopes must not be null"));
+			if (ordered.isEmpty() || !"hello_ack".equals(ordered.getFirst().type())) {
+				throw new IllegalArgumentException("handshake must begin with hello_ack");
+			}
+			Map<BridgeEnvelope, Long> bytesByEnvelope = new java.util.IdentityHashMap<>();
+			long totalBytes = 0;
+			for (BridgeEnvelope envelope : ordered) {
+				long bytes = codec.publicationBytes(envelope, registryFragments);
+				bytesByEnvelope.put(envelope, bytes);
+				totalBytes += bytes;
+			}
+			checkQueuedBytes(totalBytes);
+			if (outbound.remainingCapacity() < ordered.size()) {
+				throw new BridgeProtocolException("CONNECTION_BACKPRESSURE", "Outbound queue cannot publish handshake replay batch");
+			}
+			Map<String, Integer> additions = new HashMap<>();
+			for (BridgeEnvelope envelope : ordered) {
+				int added = additions.merge(envelope.agentId(), 1, Integer::sum);
+				if (queuedByAgent.getOrDefault(envelope.agentId(), 0) + added > AGENT_QUEUE_CAP) {
+					throw new BridgeProtocolException("AGENT_BACKPRESSURE", envelope.agentId());
+				}
+			}
+			if (records != null) {
+				if (records.size() > BridgeEnvelopeCodec.MAX_REGISTRY_AGENTS) throw new BridgeProtocolException("REGISTRY_CAP_EXCEEDED", "Registry exceeds configured protocol capacity");
+				registrySnapshots.put(ordered.getFirst(), List.copyOf(records));
+			}
+			authenticatedLaunchId = launchId;
+			authenticatedSessionGeneration = sessionGeneration;
+			authenticated.set(true);
+			for (BridgeEnvelope envelope : ordered) {
+				if (!outbound.offer(envelope)) throw new IllegalStateException("preflighted handshake queue rejected an envelope");
+				queuedByAgent.merge(envelope.agentId(), 1, Integer::sum);
+				retainQueuedBytes(envelope, bytesByEnvelope.get(envelope));
+			}
+		}
+
+		void enqueue(BridgeEnvelope envelope) {
+			long bytes = codec.publicationBytes(envelope, registryFragments);
+			synchronized (publicationLock) {
+				synchronized (this) {
+					if (!open.get() || !authenticated.get()) {
+						throw new BridgeProtocolException("COORDINATOR_DISCONNECTED", "Bridge session closed before publication");
+					}
+					checkQueuedBytes(bytes, true);
+					int agentQueued = queuedByAgent.getOrDefault(envelope.agentId(), 0);
+					if (agentQueued >= AGENT_QUEUE_CAP) throw new BridgeProtocolException("AGENT_BACKPRESSURE", envelope.agentId());
+					if (!outbound.offer(envelope)) throw new BridgeProtocolException("CONNECTION_BACKPRESSURE", "Outbound queue is full");
+					queuedByAgent.put(envelope.agentId(), agentQueued + 1);
+					retainQueuedBytes(envelope, bytes);
+				}
+			}
+		}
+
+		void enqueuePair(BridgeEnvelope first, BridgeEnvelope second, Runnable beforeEnqueue) {
+			long firstBytes = codec.publicationBytes(first, registryFragments);
+			long secondBytes = codec.publicationBytes(second, registryFragments);
+			synchronized (publicationLock) {
+				synchronized (this) {
+					if (!open.get() || !authenticated.get()) throw new BridgeProtocolException("COORDINATOR_DISCONNECTED", "Bridge session closed before paired publication");
+					if (!first.agentId().equals(second.agentId())) throw new IllegalArgumentException("paired envelopes must belong to one agent");
+					checkQueuedBytes(firstBytes + secondBytes);
+					int agentQueued = queuedByAgent.getOrDefault(first.agentId(), 0);
+					if (agentQueued > AGENT_QUEUE_CAP - 2) throw new BridgeProtocolException("AGENT_BACKPRESSURE", first.agentId());
+					if (outbound.remainingCapacity() < 2) throw new BridgeProtocolException("CONNECTION_BACKPRESSURE", "Outbound queue cannot atomically publish paired messages");
+					beforeEnqueue.run();
+					if (!outbound.offer(first) || !outbound.offer(second)) {
+						outbound.remove(first);
+						outbound.remove(second);
+						throw new IllegalStateException("preflighted paired publication queue rejected an envelope");
+					}
+					queuedByAgent.put(first.agentId(), agentQueued + 2);
+					retainQueuedBytes(first, firstBytes);
+					retainQueuedBytes(second, secondBytes);
+				}
+			}
+		}
+
+		void enqueueAtomically(BridgeEnvelope envelope, Runnable beforeEnqueue) {
+			long bytes = codec.publicationBytes(envelope, registryFragments);
+			synchronized (publicationLock) {
+				synchronized (this) {
+					if (!open.get() || !authenticated.get()) throw new BridgeProtocolException("COORDINATOR_DISCONNECTED", "Bridge session closed before atomic publication");
+					checkQueuedBytes(bytes, true);
+					int agentQueued = queuedByAgent.getOrDefault(envelope.agentId(), 0);
+					if (agentQueued >= AGENT_QUEUE_CAP) throw new BridgeProtocolException("AGENT_BACKPRESSURE", envelope.agentId());
+					if (outbound.remainingCapacity() < 1) throw new BridgeProtocolException("CONNECTION_BACKPRESSURE", "Outbound queue cannot publish transaction");
+					beforeEnqueue.run();
+					if (!open.get() || !authenticated.get()) {
+						throw new BridgeProtocolException("COORDINATOR_DISCONNECTED", "Bridge session closed during atomic publication");
+					}
+					if (!outbound.offer(envelope)) {
+						throw new BridgeProtocolException("CONNECTION_BACKPRESSURE", "Atomic publication failed");
+					}
+					queuedByAgent.put(envelope.agentId(), agentQueued + 1);
+					retainQueuedBytes(envelope, bytes);
+				}
+			}
+		}
+
+		private void readLoop() {
+			try (BufferedInputStream input = new BufferedInputStream(socket.getInputStream())) {
+				while (open.get()) {
+					String line = authenticated.get() ? readLine(input) : readHandshakeLine(input);
+					if (line == null) break;
+					BridgeEnvelope envelope = codec.decode(line);
+					synchronized (this) {
+						if (!inboundIds.add(envelope.messageId())) throw new BridgeProtocolException("DUPLICATE_MESSAGE", envelope.messageId());
+						while (inboundIds.size() > MAX_TRACKED_IDS) inboundIds.remove(inboundIds.iterator().next());
+					}
+					accept(envelope, this);
+					if (authenticated.get()) socket.setSoTimeout(0);
+				}
+			} catch (SocketTimeoutException exception) {
+				LOGGER.warn("Codex bridge authentication timed out");
+			} catch (RuntimeException | IOException exception) {
+				if (open.get()) LOGGER.warn("Codex bridge session closed: {}", exception.getMessage());
+			} finally {
+				close();
+			}
+		}
+
+		private String readHandshakeLine(BufferedInputStream input) throws IOException {
+			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+			while (true) {
+				long remaining = handshakeTimeoutNanos - (System.nanoTime() - handshakeStartedNanos);
+				if (remaining <= 0L) throw new SocketTimeoutException("Coordinator handshake deadline expired");
+				long remainingMs = Math.max(1L, Math.ceilDiv(remaining, 1_000_000L));
+				socket.setSoTimeout((int) Math.min(Integer.MAX_VALUE, remainingMs));
+				int value = input.read();
+				if (value < 0) return bytes.size() == 0 ? null : bytes.toString(StandardCharsets.UTF_8);
+				if (value == '\n') return bytes.toString(StandardCharsets.UTF_8);
+				if (value != '\r') bytes.write(value);
+				if (bytes.size() > BridgeEnvelopeCodec.MAX_LINE_BYTES) {
+					throw new BridgeProtocolException("LINE_TOO_LARGE", "Inbound line exceeds limit");
+				}
+			}
+		}
+
+		private void writeLoop() {
+			try (BufferedOutputStream output = new BufferedOutputStream(socket.getOutputStream())) {
+				while (open.get()) {
+					BridgeEnvelope envelope = outbound.take();
+					List<AgentRecord> records;
+					synchronized (this) {
+						if (!open.get()) return;
+						records = registrySnapshots.remove(envelope);
+					}
+					if (records == null) codec.writePublication(envelope, registryFragments, () -> "server-" + messageIds.incrementAndGet(), output);
+					else codec.writeRegistrySnapshot(envelope, records.size(),
+							() -> records.stream().map(MultiplexedServerBridge::registeredPayload).iterator(),
+							() -> "server-" + messageIds.incrementAndGet(), output);
+					output.flush();
+					synchronized (this) {
+						queuedByAgent.computeIfPresent(envelope.agentId(), (id, count) -> count <= 1 ? null : count - 1);
+						Long bytes = queuedBytesByEnvelope.remove(envelope);
+						if (bytes != null) queuedBytes -= bytes;
+					}
+				}
+			} catch (InterruptedException exception) {
+				Thread.currentThread().interrupt();
+			} catch (RuntimeException | IOException exception) {
+				if (open.get()) LOGGER.warn("Codex bridge writer failed: {}", exception.getMessage());
+			} finally {
+				close();
+			}
+		}
+
+		@Override
+		public void close() {
+			boolean wasAuthenticated;
+			synchronized (publicationLock) {
+				synchronized (this) {
+					if (!open.compareAndSet(true, false)) return;
+					wasAuthenticated = authenticated.get();
+					outbound.clear();
+					queuedByAgent.clear();
+					queuedBytesByEnvelope.clear();
+					registrySnapshots.clear();
+					queuedBytes = 0;
+				}
+				terminalResults.sessionClosed(this);
+				preauthSessions.remove(this);
+				if (session == this) {
+					verboseState.clearActivity();
+					MultiplexedServerBridge.onSessionClosed(observationPublication, this);
+					session = null;
+					protocolKnownAgentIds.clear();
+					coordinatorReadyAgentIds.clear();
+					catalogProfiles = Set.of();
+					catalogModels = List.of();
+					catalogLoaded = false;
+					catalogDiscoveryPending = false;
+					catalogDiscoveryAttempts = 0;
+					catalogDiscoveryRetryAtNanos = 0L;
+					catalogDiscoveryGeneration = 0L;
+					catalogDiscoveryFailureCode = null;
+					CoordinatorStatusStore.clear(manager.server());
+				}
+				if (wasAuthenticated) coordinatorDisconnectPending.set(true);
+				publicationLock.notifyAll();
+			}
+			interruptPeer(readerThread);
+			interruptPeer(writerThread);
+			try { socket.close(); } catch (IOException ignored) { }
+		}
+
+		private static void interruptPeer(Thread thread) {
+			if (thread != null && thread != Thread.currentThread()) thread.interrupt();
+		}
+	}
+
+	private static String readLine(BufferedInputStream input) throws IOException {
+		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+		while (true) {
+			int value = input.read();
+			if (value < 0) return bytes.size() == 0 ? null : bytes.toString(StandardCharsets.UTF_8);
+			if (value == '\n') return bytes.toString(StandardCharsets.UTF_8);
+			if (value != '\r') bytes.write(value);
+			if (bytes.size() > BridgeEnvelopeCodec.MAX_LINE_BYTES) throw new BridgeProtocolException("LINE_TOO_LARGE", "Inbound line exceeds limit");
+		}
+	}
+}

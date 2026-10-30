@@ -1,0 +1,28 @@
+{
+  "noticeAt": "2026-10-25T12:08:23.088785+00:00",
+  "reason": "User-directed Desktop restart; active runs are void, not gameplay.",
+  "voidCandidateTags": [
+    "d39-pearls4-987654321-r2",
+    "d39-pearls4-20261024-r2"
+  ],
+  "instructions": "Start no Desktop jobs until SSH has answered steadily for several minutes and win-long.sh desktop-lan status succeeds.",
+  "physicalRule": "The two explicitly identified active physical trials are void. Absence of a completion receipt from the older snapshot does not prove that a trial was still active at reboot.",
+  "queueRule": "Desktop queue games active at the user restart notice are void, not gameplay.",
+  "systemBootAt": "2026-10-25T12:06:48.5000000Z",
+  "effectiveAt": "2026-10-25T12:05:48.500000+00:00",
+  "boundaryBasis": "Conservative one-minute window before the verified reboot, because the user notice was received after reboot. Active candidate tags are explicitly void regardless of timestamps.",
+  "desktopReady": {
+    "steadyChecks": 11,
+    "steadySeconds": 304,
+    "runnerStatusExit": 0,
+    "runnerStatusCheckedAt": "2026-10-25T12:21:08+00:00"
+  },
+  "voidPhysicalTrials": [
+    "base/20261024-r3-retry1",
+    "base/987654321-r2-retry1"
+  ],
+  "voidCandidateRuns": {
+    "d39-pearls4-987654321-r2": "q-np7cho-7f39-LONG-r1-f0a4984c",
+    "d39-pearls4-20261024-r2": "q-nqvsw8-b362-LONG-r1-0829b8bd"
+  }
+}

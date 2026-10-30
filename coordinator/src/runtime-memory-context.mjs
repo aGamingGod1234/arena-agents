@@ -1,0 +1,255 @@
+import { randomUUID } from 'node:crypto';
+import { types as nodeTypes } from 'node:util';
+import { ModelNotebook } from './model-notebook.mjs';
+import { TaskMemoryStore } from './task-memory-store.mjs';
+import { normalizeMinecraftToolCall } from './native-minecraft-tools.mjs';
+import { validateAction } from './schema.mjs';
+import { defaultServiceTier } from './constants.mjs';
+
+const TERMINAL_STATES = new Set(['SUCCEEDED', 'FAILED', 'CANCELLED', 'TIMED_OUT']);
+const AUTHOR_FIELDS = ['provider', 'model', 'reasoningEffort', 'serviceTier'];
+const AUTHOR_IDS = ['programId', 'sourceStepId', 'turnId', 'callId'];
+
+/** Shares scoped model notes and factual action receipts across execution modes. */
+export class RuntimeMemoryContext {
+	#notebook; #sessionId; #contexts = new Map(); #dispatches = new Map(); #onReceipt;
+	#tasks; #taskPending = new Map(); #taskContexts = new Map();
+	#lookupScopes = new Map();
+	#recoveryDeaths = new Map();
+	constructor({ notebook = new ModelNotebook(), taskMemory = new TaskMemoryStore(), sessionId = randomUUID(), onReceipt = null } = {}) {
+		for (const method of ['writeNote', 'query', 'recordDispatch', 'recordUnknown', 'recordReceipt', 'findReceipt']) {
+			if (typeof notebook?.[method] !== 'function') throw new TypeError(`notebook.${method} is required`);
+		}
+		this.#notebook = notebook;
+		if (onReceipt !== null && typeof onReceipt !== 'function') throw new TypeError('onReceipt must be a function');
+		this.#onReceipt = onReceipt;
+		for (const method of ['observe', 'summary', 'query', 'remember', 'flush']) if (typeof taskMemory?.[method] !== 'function') throw new TypeError(`taskMemory.${method} is required`);
+		this.#tasks = taskMemory;
+		this.#sessionId = boundedText(sessionId, 'sessionId', 128);
+	}
+	get notebook() { return this.#notebook; }
+	get sessionId() { return this.#sessionId; }
+
+	// `owned` promises the observation is an immutable snapshot nobody else will change, so it is not copied again.
+	observe(record, observation, { owned = false, recoveryDeath = null } = {}) {
+		const { agentId, goalRevision } = recordIdentity(record);
+		const source = ownRecord(observation, 'observation');
+		const world = source.world === undefined ? {} : ownRecord(source.world, 'observation.world');
+		const previous = this.#contexts.get(agentId);
+		const suppliedWorld = world.worldId ?? source.worldId;
+		const worldId = suppliedWorld === undefined
+			? previous?.worldId ?? `session:${this.#sessionId}`
+			: boundedText(suppliedWorld, 'worldId', 256);
+		const dimension = world.dimension ?? world.dimensionId ?? source.dimension ?? source.death?.dimensionId ?? (previous?.worldId === worldId ? previous.dimension : undefined);
+		const context = { goalRevision, worldId,
+			...(typeof dimension === 'string' ? { dimension: boundedText(dimension, 'dimension', 128) } : {}),
+			...(Number.isSafeInteger(source.worldTick) && source.worldTick >= 0 ? { tick: source.worldTick } : {}),
+		};
+		if (previous?.goalRevision !== goalRevision || previous?.worldId !== worldId || previous?.dimension !== context.dimension) this.#lookupScopes.set(agentId, {});
+		this.#contexts.set(agentId, context);
+		this.#recoveryDeaths.set(agentId, recoveryDeath);
+		if (!worldId.startsWith('session:') && context.dimension !== undefined) {
+			const scope = { agentId, ...context };
+			const picked = pick(source, ['world', 'worldTick', 'observedAtEpochMs', 'position', 'player', 'ready', 'death', 'inventory', 'lastLiveInventory', 'blocks', 'landmarks', 'nearbyContainers', 'interaction', 'continuity']);
+			const snapshot = owned ? picked : structuredClone(picked);
+			const pending = Promise.resolve(this.#taskPending.get(agentId)).catch(() => {}).then(async () => {
+				await this.#tasks.observe(scope, snapshot);
+				this.#taskContexts.set(agentId, await this.#tasks.summary(scope, { recoveryDeath }));
+			});
+			this.#taskPending.set(agentId, pending);
+			pending.catch(() => {}); // taskContext/flush surface failures; observation delivery stays synchronous.
+		}
+		return { ...context };
+	}
+	peekTaskContext(record) {
+		const context = this.#contexts.get(record.agentId), summary = this.#taskContexts.get(record.agentId);
+		return summary?.worldId === context?.worldId && summary?.dimension === context?.dimension ? structuredClone(summary) : null;
+	}
+	async taskContext(record) {
+		await this.#taskPending.get(record.agentId);
+		const context = this.#contexts.get(record.agentId);
+		if (context?.goalRevision !== record.goalRevision || !context?.dimension || context.worldId.startsWith('session:')) return null;
+		const summary = await this.#tasks.summary({ agentId: record.agentId, ...context }, { recoveryDeath: this.#recoveryDeaths.get(record.agentId) });
+		this.#taskContexts.set(record.agentId, summary);
+		return summary;
+	}
+	async flush() { await Promise.all(this.#taskPending.values()); await this.#tasks.flush(); }
+	worldId(record) {
+		const { agentId, goalRevision } = recordIdentity(record);
+		const context = this.#contexts.get(agentId);
+		return context?.goalRevision === goalRevision ? context.worldId : null;
+	}
+	forget(agentId) { this.#contexts.delete(boundedText(agentId, 'agentId', 256)); this.#taskContexts.delete(agentId); this.#lookupScopes.delete(agentId); this.#recoveryDeaths.delete(agentId); }
+	unresolved(record, page = {}) { return this.execute(record, { operation: 'query', arguments: { ...ownRecord(page, 'memory page'), kind: 'unresolved' } }); }
+
+	async execute(record, request) {
+		const { agentId, goalRevision } = recordIdentity(record);
+		const worldId = this.worldId(record);
+		if (worldId === null) throw codedError('WORLD_ID_REQUIRED', 'Observe the current agent world before accessing memory');
+		const source = ownRecord(request, 'memory request');
+		if (source.operation === 'task') {
+			await this.#taskPending.get(agentId);
+			const scope = { agentId, ...this.#contexts.get(agentId) };
+			if (scope.goalRevision !== goalRevision || scope.worldId !== worldId) throw codedError('STALE_GOAL', 'Task memory request belongs to an obsolete goal or world');
+			if (!scope.dimension || worldId.startsWith('session:')) throw codedError('WORLD_ID_REQUIRED', 'Task memory requires an observed persistent world and dimension');
+			const tool = normalizeMinecraftToolCall('taskMemory', source.arguments);
+			if (tool.operation === 'query') return { state: 'SUCCEEDED', reasonCode: 'TASK_MEMORY_QUERIED', ...await this.#tasks.query(scope, tool.query) };
+			const entry = await this.#tasks.remember(scope, tool.entry);
+			await this.taskContext(record);
+			return { state: 'SUCCEEDED', reasonCode: 'TASK_MEMORY_WRITTEN', entry };
+		}
+		if (!['write', 'query', 'find_note'].includes(source.operation)) throw codedError('INVALID_MEMORY_OPERATION', 'Memory operation must be write, query, or find_note');
+		const normalized = normalizeMinecraftToolCall(source.operation === 'write' ? 'notebook' : 'queryMemory', source.arguments);
+		if (source.operation === 'find_note') {
+			// Internal exact lookup uses query-shaped arguments for legacy adapters.
+			// Identity comes only from the observed context, never request arguments.
+			const key = boundedText(normalized.text, 'key', 128);
+			if (normalized.memoryKind !== 'notes') throw codedError('INVALID_MEMORY_OPERATION', 'Exact lookup requires notes');
+			const scope = this.#lookupScopes.get(agentId);
+			const check = () => {
+				if (record.goalRevision !== goalRevision || this.#lookupScopes.get(agentId) !== scope) throw codedError('STALE_GOAL', 'Note lookup belongs to an obsolete goal or world');
+			};
+			let note;
+			if (typeof this.#notebook.findNote === 'function') {
+				note = await this.#notebook.findNote(agentId, { worldId, key });
+				check();
+			} else {
+				let offset = 0;
+				for (;;) {
+					const page = await this.#notebook.query(agentId, { worldId, kind: 'notes', text: key, offset, limit: 64 });
+					check();
+					note = page.entries?.find(entry => entry.key === key && (entry.worldId === undefined || entry.worldId === worldId));
+					if (note || !Number.isSafeInteger(page.nextOffset) || page.nextOffset <= offset) break;
+					offset = page.nextOffset;
+				}
+			}
+			return { state: 'SUCCEEDED', reasonCode: 'NOTE_LOOKED_UP', note: note?.key === key && (note.worldId === undefined || note.worldId === worldId) ? note : null };
+		}
+		if (source.operation === 'write') {
+			const provenance = noteAuthor(record, source.provenance);
+			const note = await this.#notebook.writeNote(agentId, { worldId, goalRevision, key: normalized.key, text: normalized.text, provenance });
+			return { state: 'SUCCEEDED', reasonCode: 'NOTE_WRITTEN', note };
+		}
+		const result = await this.#notebook.query(agentId, { worldId, kind: normalized.memoryKind, limit: normalized.limit,
+			...(normalized.offset === undefined ? {} : { offset: normalized.offset }), ...(normalized.text === undefined ? {} : { text: normalized.text }) });
+		return { state: 'SUCCEEDED', reasonCode: 'MEMORY_QUERIED', ...result };
+	}
+
+	async recordDispatch(record, payload) {
+		const { agentId, goalRevision } = recordIdentity(record);
+		const context = this.#contexts.get(agentId);
+		if (context?.goalRevision !== goalRevision) throw codedError('WORLD_ID_REQUIRED', 'Observe the current agent world before dispatch');
+		const source = ownRecord(payload, 'action dispatch');
+		if (source.goalRevision !== goalRevision) throw codedError('STALE_GOAL', 'Dispatch does not match the current goal');
+		const actionId = boundedText(source.actionId, 'actionId', 256);
+		const args = ownRecord(source.arguments, 'action arguments');
+		if (Object.hasOwn(args, 'type')) throw codedError('INVALID_ACTION', 'Action arguments cannot override action type');
+		const { type: actionType, ...argumentsValue } = validateAction({ ...args, type: source.actionType });
+		const entry = { ...context, actionId, actionType, arguments: argumentsValue };
+		const dispatches = this.#dispatches.get(agentId) ?? new Map();
+		const previous = dispatches.get(actionId);
+		if (previous !== undefined) {
+			if (JSON.stringify(previous.entry) !== JSON.stringify(entry)) throw codedError('RECEIPT_CONFLICT', 'Action identity is already dispatched in another context');
+			return previous.pending;
+		}
+		if (dispatches.size >= 256) throw codedError('RECEIPT_LIMIT', 'Too many unreconciled actions');
+		const pending = this.#notebook.recordDispatch(agentId, entry);
+		dispatches.set(actionId, { entry, pending });
+		this.#dispatches.set(agentId, dispatches);
+		try { return await pending; }
+		catch (error) { dispatches.delete(actionId); throw error; }
+	}
+
+	async recordResult(record, payload) {
+		const { agentId } = recordIdentity(record);
+		const source = ownRecord(payload, 'action result');
+		if (!TERMINAL_STATES.has(source.state)) return false;
+		const actionId = boundedText(source.actionId, 'actionId', 256);
+		const active = this.#dispatches.get(agentId)?.get(actionId);
+		if (active !== undefined) await active.pending;
+		const previous = active?.entry ?? await this.#notebook.findReceipt(agentId, { actionId });
+		if (previous === null || previous === undefined) return false;
+		if (source.goalRevision !== undefined && source.goalRevision !== previous.goalRevision) return false;
+		const observation = source.actionObservation === undefined ? {} : ownRecord(source.actionObservation, 'action observation');
+		if (typeof source.reasonCode !== 'string' || source.reasonCode.length > 128) throw new TypeError('reasonCode must be text up to 128 characters');
+		const terminal = { worldId: previous.worldId, actionId, state: source.state, reasonCode: source.reasonCode,
+			...pick(previous, ['goalRevision', 'actionType', 'dimension', 'arguments']),
+			...pick(source, ['executionStarted', 'physicalAttempted', 'observedAtEpochMs']),
+			...(source.actionObservation === undefined ? {} : { actionObservation: observation }),
+			...(Number.isSafeInteger(observation.worldTick) && observation.worldTick >= 0 ? { tick: observation.worldTick } : {}),
+		};
+		await this.#notebook.recordReceipt(agentId, terminal);
+		// The break tally of a held-attack control is not persisted with the receipt, but the task view counts it.
+		const breakOutcome = Number.isSafeInteger(source.breakOutcome?.blocks) ? { breakOutcome: { blocks: source.breakOutcome.blocks } } : {};
+		// The result text (a missed shot, a blocked line) is read by the task view's repeat count, not persisted.
+		const message = typeof source.message === 'string' ? { message: source.message.slice(0, 600) } : {};
+		if (this.#onReceipt !== null) await this.#onReceipt({ agentId, goalRevision: previous.goalRevision }, { ...terminal, ...breakOutcome, ...message });
+		if (source.state === 'SUCCEEDED' && (previous.actionType === 'place_block' && source.reasonCode === 'BLOCK_PLACED' || previous.actionType === 'break_block' && source.reasonCode === 'BLOCK_BROKEN')
+			&& previous.dimension && !previous.worldId.startsWith('session:') && typeof this.#tasks.recordReceipt === 'function') {
+			const scope = { agentId, worldId: previous.worldId, dimension: previous.dimension, goalRevision: previous.goalRevision };
+			const pending = Promise.resolve(this.#taskPending.get(agentId)).catch(() => {}).then(async () => {
+				const changed = await this.#tasks.recordReceipt(scope, { ...terminal, observedAtEpochMs: source.observedAtEpochMs });
+				const current = this.#contexts.get(agentId);
+				if (changed && current?.worldId === scope.worldId && current?.dimension === scope.dimension) this.#taskContexts.set(agentId, await this.#tasks.summary({ agentId, ...current }));
+			});
+			this.#taskPending.set(agentId, pending);
+			await pending;
+		}
+		this.#dispatches.get(agentId)?.delete(actionId);
+		return true;
+	}
+
+	async markUnknown(agentId = undefined, reason = 'RUNTIME_DISCONNECTED') {
+		const reasonCode = boundedText(reason, 'reasonCode', 128);
+		const agents = agentId === undefined ? [...this.#dispatches.keys()] : [boundedText(agentId, 'agentId', 256)];
+		const results = [];
+		for (const id of agents) {
+			const dispatches = this.#dispatches.get(id);
+			for (const active of [...dispatches?.values() ?? []]) {
+				const { entry, pending } = active;
+				await pending;
+				results.push(await this.#notebook.recordUnknown(id, { ...entry, reasonCode }));
+				if (dispatches.get(entry.actionId) === active) dispatches.delete(entry.actionId);
+			}
+		}
+		return results;
+	}
+}
+
+function noteAuthor(record, value) {
+	const source = ownRecord(value, 'note provenance');
+	const provenance = { goalRevision: record.goalRevision };
+	for (const key of AUTHOR_FIELDS) {
+		const expected = record[key] ?? (key === 'serviceTier' ? defaultServiceTier(record.provider) : undefined);
+		if (source[key] !== expected) throw codedError('INVALID_MEMORY_PROVENANCE', 'Note author does not match the active model');
+		provenance[key] = boundedText(source[key], key, 256);
+	}
+	if (source.goalRevision !== record.goalRevision) throw codedError('INVALID_MEMORY_PROVENANCE', 'Note author does not match the active goal');
+	for (const key of AUTHOR_IDS) if (source[key] !== undefined) provenance[key] = boundedText(source[key], key, 256);
+	if (source.programVersion !== undefined) provenance.programVersion = nonnegativeInteger(source.programVersion, 'programVersion');
+	return provenance;
+}
+function recordIdentity(record) {
+	const source = ownRecord(record, 'agent record');
+	return { agentId: boundedText(source.agentId, 'agentId', 256), goalRevision: nonnegativeInteger(source.goalRevision, 'goalRevision') };
+}
+function ownRecord(value, label) {
+	if (value === null || typeof value !== 'object' || Array.isArray(value) || nodeTypes.isProxy(value) || ![null, Object.prototype].includes(Object.getPrototypeOf(value))) throw new TypeError(`${label} must be a plain record`);
+	const result = {};
+	for (const key of Reflect.ownKeys(value)) {
+		const descriptor = Object.getOwnPropertyDescriptor(value, key);
+		if (typeof key !== 'string' || ['__proto__', 'constructor', 'prototype'].includes(key) || !descriptor?.enumerable || !Object.hasOwn(descriptor, 'value')) throw new TypeError(`${label} must contain only own data`);
+		result[key] = descriptor.value;
+	}
+	return result;
+}
+function boundedText(value, field, maximum) {
+	if (typeof value !== 'string' || value.trim().length === 0 || value.length > maximum) throw new TypeError(`${field} must be nonblank text up to ${maximum} characters`);
+	return value;
+}
+function nonnegativeInteger(value, field) {
+	if (!Number.isSafeInteger(value) || value < 0) throw new TypeError(`${field} must be a nonnegative integer`);
+	return value;
+}
+function pick(source, keys) { return Object.fromEntries(keys.filter((key) => source[key] !== undefined).map((key) => [key, source[key]])); }
+function codedError(code, message) { return Object.assign(new Error(message), { code }); }

@@ -1,0 +1,79 @@
+{
+  "baseCommit": "a68669f5104b126b20aced30c324aecf021a702d",
+  "branch": "claude/d38-measure",
+  "machine": "Desktop",
+  "javaChanged": false,
+  "gradleRequired": false,
+  "coordinatorNpmTest": {
+    "tests": 7043,
+    "passed": 7012,
+    "failed": 16,
+    "skipped": 15,
+    "exitCode": 1
+  },
+  "baseFailureReproduction": {
+    "tests": 60,
+    "passed": 44,
+    "failed": 16,
+    "sameFailureLocations": true,
+    "failureLocations": [
+      "test\\decision-eval-opencode-pool.test.mjs:89:1",
+      "test\\g26-paired-timeout.test.mjs:8:1",
+      "test\\local-speech-provider.test.mjs:52:1",
+      "test\\local-speech-provider.test.mjs:66:1",
+      "test\\local-speech-provider.test.mjs:86:1",
+      "test\\opencode-service.test.mjs:195:1",
+      "test\\paired-cli-abba.test.mjs:6:1",
+      "test\\paired-cli-passed_wrong_profile.test.mjs:6:1",
+      "test\\paired-cli-passed_wrong_seed.test.mjs:6:1",
+      "test\\paired-cli-single.test.mjs:9:1",
+      "test\\paired-output-drain.test.mjs:8:1",
+      "test\\strict-smoke.test.mjs:109:1",
+      "test\\strict-smoke.test.mjs:198:1",
+      "test\\strict-smoke.test.mjs:207:178",
+      "test\\strict-smoke.test.mjs:222:1",
+      "test\\strict-smoke.test.mjs:232:1"
+    ],
+    "scope": "Only the failing test files were run on the unmodified base; this is not a second full-suite run."
+  },
+  "contracts": {
+    "tests": 634,
+    "passed": 634,
+    "failed": 0
+  },
+  "focusedChecks": {
+    "tests": 211,
+    "passed": 210,
+    "skipped": 1,
+    "failed": 0
+  },
+  "shippingStageAndLongRunChecks": {
+    "tests": 37,
+    "passed": 37,
+    "failed": 0
+  },
+  "receiptRedactionAndScorerChecks": {
+    "tests": 6,
+    "passed": 6,
+    "failed": 0
+  },
+  "scorerSha256": "042ea074ea7874e80fc966b1a44ca7ae1294b164fe878517a87ab95647bb2e22",
+  "budgetsRaised": false,
+  "windowsWrapperEntryChecks": {
+    "status": "stopped",
+    "signalExitCode": 0,
+    "reasonMatch": true,
+    "runRecordUpdated": true,
+    "requestedTimePresent": true,
+    "stoppedTimePresent": true,
+    "pidFileRemoved": true,
+    "usesLocalStopSource": true,
+    "stalePidRejected": true
+  },
+  "finalStopStatusScorerChecks": {
+    "tests": 6,
+    "passed": 6,
+    "failed": 0,
+    "stalePidCreatesNoStopRecord": true
+  }
+}

@@ -1,0 +1,374 @@
+package dev.agaminggod.arenaagents.server.runtime.controller;
+
+import dev.agaminggod.arenaagents.client.navigation.GridPosition;
+import dev.agaminggod.arenaagents.client.navigation.LocalPathfinder;
+import dev.agaminggod.arenaagents.client.navigation.PathOutcome;
+import dev.agaminggod.arenaagents.client.navigation.PathPlan;
+import dev.agaminggod.arenaagents.client.navigation.WalkabilityView;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
+
+public final class ServerPathPlannerVerification {
+	private ServerPathPlannerVerification() {
+	}
+
+	public static void main(String[] arguments) {
+		System.out.println("Server path planner verification passed: " + verify() + " assertions");
+	}
+
+	public static int verify() {
+		ServerPathPlanner planner = new ServerPathPlanner();
+		Set<GridPosition> blocked = new HashSet<>();
+		blocked.add(new GridPosition(1, 64, 0));
+
+		WalkabilityView view = position -> {
+			if (blocked.contains(position)) {
+				return WalkabilityView.Cell.BLOCKED;
+			}
+			if (position.y() == 63) {
+				return WalkabilityView.Cell.SAFE_SUPPORT;
+			}
+			return position.y() >= 64 && position.y() <= 65
+					? WalkabilityView.Cell.CLEAR
+					: WalkabilityView.Cell.BLOCKED;
+		};
+
+		PathPlan first = planner.findPath(
+				view,
+				new GridPosition(0, 64, 0),
+				new GridPosition(2, 64, 0)
+		);
+		PathPlan second = planner.findPath(
+				view,
+				new GridPosition(0, 64, 0),
+				new GridPosition(2, 64, 0)
+		);
+
+		assertEquals(PathOutcome.FOUND, first.outcome(), "server planner finds a bounded route");
+		assertEquals(first.nodes(), second.nodes(), "server planning is deterministic");
+		assertTrue(first.nodes().stream().noneMatch(node -> blocked.contains(node.position())),
+				"server plan does not cross blocked cells");
+		return 3 + verifyElevationAndHoleSafety() + verifyDeferredPlanningIsRetryable() + verifySharedElapsedBudget()
+				+ verifyRoundRobinAdmissionEventuallyServesAll() + verifyContentionDeferralWindow()
+				+ verifyTickScopeRestoresPreviousBudget() + verifyRetainedSearchUsesSharedTickBudget()
+				+ verifyMinedTrunkHeadroom() + verifyGoalMembershipOrder() + verifyNoPathExplainsExploredArea();
+	}
+
+	private static int verifyNoPathExplainsExploredArea() {
+		// A three-cell pocket sealed on every side, with the destination outside it.
+		WalkabilityView pocket = p -> p.y() == 63 && p.z() == 0 && p.x() >= 0 && p.x() <= 2 ? WalkabilityView.Cell.SAFE_SUPPORT
+				: p.y() >= 64 && p.y() <= 65 && p.z() == 0 && p.x() >= 0 && p.x() <= 2 ? WalkabilityView.Cell.CLEAR
+				: WalkabilityView.Cell.BLOCKED;
+		LocalPathfinder.Search sealed = new LocalPathfinder().beginSearch(new GridPosition(0, 64, 0),
+				Set.of(new GridPosition(20, 64, 0)), new GridPosition(20, 64, 0), 32, Set.of());
+		PathPlan sealedPlan = sealed.advance(pocket, new LocalPathfinder.SearchBudget(256, 1_000_000_000L, () -> 0L));
+		assertEquals(PathOutcome.NO_PATH, sealedPlan.outcome(), "a sealed pocket has no route out");
+		assertEquals("; the walkable area here is closed: 3 cells, all within 2 blocks",
+				ServerNavigationController.exploredDetail(sealed, true), "NO_PATH names the closed pocket and its size");
+		// An open corridor whose only edge cell was already a route end.
+		WalkabilityView corridor = p -> p.x() < 0 || p.z() != 0 ? WalkabilityView.Cell.BLOCKED : p.y() == 63 ? WalkabilityView.Cell.SAFE_SUPPORT
+				: p.y() >= 64 && p.y() <= 65 ? WalkabilityView.Cell.CLEAR : WalkabilityView.Cell.BLOCKED;
+		LocalPathfinder.Search tried = new LocalPathfinder().beginSearch(new GridPosition(0, 64, 0),
+				Set.of(new GridPosition(40, 64, 0)), new GridPosition(40, 64, 0), 8, Set.of(new GridPosition(8, 64, 0)));
+		PathPlan triedPlan = tried.advance(corridor, new LocalPathfinder.SearchBudget(256, 1_000_000_000L, () -> 0L));
+		assertEquals(PathOutcome.NO_PATH, triedPlan.outcome(), "an exhausted edge does not repeat as a route");
+		assertEquals("; walking reaches 9 cells up to 8 blocks away, and none leads to an untried edge",
+				ServerNavigationController.exploredDetail(tried, true), "NO_PATH separates an open but exhausted area from a closed pocket");
+		assertEquals("", ServerNavigationController.exploredDetail(null, true), "no detail without a finished search");
+		assertEquals("", ServerNavigationController.exploredDetail(sealed, false), "raw hidden corridor size is omitted");
+		assertEquals("", ServerNavigationController.exploredDetail(tried, false), "raw exhausted-edge geometry is omitted");
+		WalkabilityView unknown = p -> p.x() == 0 && p.z() == 0 ? pocket.cellAt(p) : WalkabilityView.Cell.UNLOADED;
+		LocalPathfinder.Search unseen = new LocalPathfinder().beginSearch(new GridPosition(0, 64, 0),
+				Set.of(new GridPosition(20, 64, 0)), new GridPosition(20, 64, 0), 32, Set.of());
+		unseen.advance(unknown, new LocalPathfinder.SearchBudget(256, 1_000_000_000L, () -> 0L));
+		assertEquals("", ServerNavigationController.exploredDetail(unseen, false), "unknown neighbours cannot establish closedness");
+		return 8;
+	}
+
+	private static int verifyGoalMembershipOrder() {
+		GridPosition first = new GridPosition(4, 64, 1);
+		GridPosition second = new GridPosition(4, 64, -1);
+		PathPlan wide = goalOrderPlan(List.of(first, second), 8192);
+		PathPlan reversed = goalOrderPlan(List.of(second, first), 8192);
+		PathPlan sliced = goalOrderPlan(List.of(first, second), 1);
+		PathPlan slicedReverse = goalOrderPlan(List.of(second, first), 1);
+		assertEquals(PathOutcome.FOUND, wide.outcome(), "tied goals yield an actual route");
+		assertEquals(wide.nodes(), reversed.nodes(), "goal enumeration order does not prioritize ties");
+		assertEquals(wide.nodes(), sliced.nodes(), "slicing preserves the route");
+		assertEquals(wide.nodes(), slicedReverse.nodes(), "reversed goals preserve resumed routes");
+		GridPosition chosen = wide.nodes().getLast().position();
+		PathPlan changed = goalOrderPlan(List.of(chosen.equals(first) ? second : first), 1);
+		assertTrue(!chosen.equals(changed.nodes().getLast().position()), "changing membership changes the endpoint");
+		return 5;
+	}
+
+	private static PathPlan goalOrderPlan(List<GridPosition> goals, int work) {
+		ServerPathPlanner planner = new ServerPathPlanner();
+		WalkabilityView floor = p -> p.y() == 63 ? WalkabilityView.Cell.SAFE_SUPPORT : WalkabilityView.Cell.CLEAR;
+		LocalPathfinder.Search search = planner.beginSearch(new GridPosition(0, 64, 0), Set.copyOf(goals),
+				new GridPosition(5, 64, 0), 8, Set.of());
+		for (int i = 0; i < 512; i++) {
+			try (ServerPathPlanner.TickScope scope = ServerPathPlanner.beginServerTick(work, 1_000_000L, () -> 0L)) {
+				ServerPathPlanner.PlanningResult result = planner.resume(search, floor);
+				if (!result.deferred()) return result.plan();
+			}
+		}
+		throw new AssertionError("small fixture search failed to finish");
+	}
+
+	private static int verifyMinedTrunkHeadroom() {
+		ServerPathPlanner planner = new ServerPathPlanner();
+		GridPosition trunk = new GridPosition(7, 201, -4);
+		GridPosition start = new GridPosition(7, 201, -2);
+		Set<GridPosition> logs = new HashSet<>(Set.of(trunk.above(), trunk.offset(0, 2, 0), trunk.offset(0, 3, 0)));
+		WalkabilityView view = position -> position.y() == 200 || logs.contains(position)
+				? WalkabilityView.Cell.SAFE_SUPPORT : WalkabilityView.Cell.CLEAR;
+		assertTrue(!view.isStandable(trunk), "removing only a trunk's bottom log leaves blocked head space");
+		assertEquals(PathOutcome.INVALID, planner.planPath(view, start, trunk,
+				new ServerPathPlanner.TickBudget(64, Long.MAX_VALUE, () -> 0L)).plan().outcome(),
+				"the rehearsal target under the remaining log cannot become a standing destination");
+		assertEquals(PathOutcome.FOUND, planner.planPath(view, start, trunk.offset(0, 0, 1),
+				new ServerPathPlanner.TickBudget(64, Long.MAX_VALUE, () -> 0L)).plan().outcome(),
+				"the observed approach beside the trunk remains reachable");
+		logs.remove(trunk.above());
+		assertTrue(view.isStandable(trunk), "mining the second log opens real standing headroom");
+		assertEquals(PathOutcome.FOUND, planner.planPath(view, start, trunk,
+				new ServerPathPlanner.TickBudget(64, Long.MAX_VALUE, () -> 0L)).plan().outcome(),
+				"the same trunk destination becomes reachable after its head space is cleared");
+		return 5;
+	}
+
+	private static int verifyRetainedSearchUsesSharedTickBudget() {
+		ServerPathPlanner planner = new ServerPathPlanner();
+		WalkabilityView view = position -> position.y() == 63 ? WalkabilityView.Cell.SAFE_SUPPORT
+				: position.y() >= 64 && position.y() <= 65 ? WalkabilityView.Cell.CLEAR : WalkabilityView.Cell.BLOCKED;
+		GridPosition firstGoal = new GridPosition(4, 64, 0);
+		GridPosition secondGoal = new GridPosition(4, 64, 1);
+		LocalPathfinder.Search[] searches = {
+				planner.beginSearch(new GridPosition(0, 64, 0), Set.of(firstGoal), firstGoal, 8, Set.of()),
+				planner.beginSearch(new GridPosition(0, 64, 1), Set.of(secondGoal), secondGoal, 8, Set.of())
+		};
+		int expanded = 0;
+		for (int tick = 0; tick < 8; tick++) {
+			try (ServerPathPlanner.TickScope scope = ServerPathPlanner.beginServerTick(2, LocalPathfinder.MAX_PLANNING_TIME_NANOS, () -> 0L)) {
+				for (int offset = 0; offset < searches.length; offset++) {
+					LocalPathfinder.Search search = searches[(tick + offset) % searches.length];
+					if (search.finished()) continue;
+					ServerPathPlanner.PlanningResult result = planner.resume(search, view);
+					if (!result.deferred()) assertEquals(PathOutcome.FOUND, result.plan().outcome(), "retained controller search finishes its selected route");
+				}
+				assertTrue(scope.budget().expandedNodes() <= 2, "resumed searches share one tick expansion limit");
+				expanded += scope.budget().expandedNodes();
+			}
+		}
+		assertTrue(searches[0].finished() && searches[1].finished(), "both retained requests make progress under rotating admission");
+		assertEquals(8, expanded, "retained requests do not repay previous expansion work");
+		return 12;
+	}
+
+	private static int verifyElevationAndHoleSafety() {
+		ServerPathPlanner planner = new ServerPathPlanner();
+		GridPosition hole = new GridPosition(1, 64, 0);
+		GridPosition lava = new GridPosition(1, 64, 1);
+		WalkabilityView detour = position -> {
+			if (position.equals(lava)) return WalkabilityView.Cell.HAZARD;
+			if (position.y() == 63 && position.x() == hole.x() && position.z() == hole.z()) return WalkabilityView.Cell.CLEAR;
+			if (position.y() == 63) return WalkabilityView.Cell.SAFE_SUPPORT;
+			return position.y() == 64 || position.y() == 65
+					? WalkabilityView.Cell.CLEAR
+					: WalkabilityView.Cell.BLOCKED;
+		};
+		PathPlan aroundHole = planner.findPath(detour, new GridPosition(0, 64, 0), new GridPosition(2, 64, 0));
+		assertEquals(PathOutcome.FOUND, aroundHole.outcome(), "planner deterministically routes around a hole and lava");
+		assertTrue(aroundHole.nodes().stream().noneMatch(node -> node.position().equals(hole) || node.position().equals(lava)),
+				"hole and lava cells never enter the route");
+
+		WalkabilityView elevation = position -> {
+			if (position.equals(new GridPosition(1, 64, 0))) return WalkabilityView.Cell.SAFE_SUPPORT;
+			if (position.y() == 63) return WalkabilityView.Cell.SAFE_SUPPORT;
+			return position.y() >= 64 && position.y() <= 66
+					? WalkabilityView.Cell.CLEAR
+					: WalkabilityView.Cell.BLOCKED;
+		};
+		PathPlan stepUp = planner.findPath(elevation, new GridPosition(0, 64, 0), new GridPosition(1, 65, 0));
+		assertEquals(PathOutcome.FOUND, stepUp.outcome(), "one-block elevation has a bounded route");
+		assertEquals(dev.agaminggod.arenaagents.client.navigation.TraversalType.JUMP_UP,
+				stepUp.nodes().get(stepUp.nodes().size() - 1).traversal(),
+				"one-block elevation requires the safe jump-up traversal");
+		return 5;
+	}
+
+	private static int verifyDeferredPlanningIsRetryable() {
+		ServerPathPlanner planner = new ServerPathPlanner();
+		WalkabilityView view = position -> position.y() == 63
+				? WalkabilityView.Cell.SAFE_SUPPORT
+				: position.y() >= 64 && position.y() <= 65
+						? WalkabilityView.Cell.CLEAR
+						: WalkabilityView.Cell.BLOCKED;
+		ServerPathPlanner.TickBudget budget = new ServerPathPlanner.TickBudget(
+				1,
+				LocalPathfinder.MAX_PLANNING_TIME_NANOS,
+				() -> 0L
+		);
+		ServerPathPlanner.PlanningResult first = planner.planPath(
+				view,
+				new GridPosition(0, 64, 0),
+				new GridPosition(1, 64, 0),
+				budget
+		);
+		ServerPathPlanner.PlanningResult deferred = planner.planPath(
+				view,
+				new GridPosition(0, 64, 0),
+				new GridPosition(1, 64, 0),
+				budget
+		);
+
+		assertTrue(!first.deferred(), "first planner request is admitted");
+		assertTrue(deferred.deferred(), "aggregate exhaustion defers the next planner request");
+		assertEquals(PathOutcome.NODE_LIMIT, deferred.plan().outcome(),
+				"deferred planning retains the bounded search diagnostic without becoming a terminal action failure");
+
+		ServerPathPlanner.TickBudget retryBudget = new ServerPathPlanner.TickBudget(
+				LocalPathfinder.MAX_EXPANDED_NODES,
+				LocalPathfinder.MAX_PLANNING_TIME_NANOS,
+				() -> 0L
+		);
+		ServerPathPlanner.PlanningResult retry = planner.planPath(
+				view,
+				new GridPosition(0, 64, 0),
+				new GridPosition(1, 64, 0),
+				retryBudget
+		);
+		assertTrue(!retry.deferred(), "a later tick retries deferred planning");
+		assertEquals(PathOutcome.FOUND, retry.plan().outcome(), "a later tick eventually serves the request");
+		return 4;
+	}
+
+	private static int verifyRoundRobinAdmissionEventuallyServesAll() {
+		ServerPathPlanner planner = new ServerPathPlanner();
+		WalkabilityView view = position -> position.y() == 63
+				? WalkabilityView.Cell.SAFE_SUPPORT
+				: position.y() >= 64 && position.y() <= 65
+						? WalkabilityView.Cell.CLEAR
+						: WalkabilityView.Cell.BLOCKED;
+		int agentCount = 16;
+		Set<Integer> served = new HashSet<>();
+		for (int tick = 0; tick < agentCount; tick++) {
+			ServerPathPlanner.TickBudget budget = new ServerPathPlanner.TickBudget(
+					2,
+					LocalPathfinder.MAX_PLANNING_TIME_NANOS,
+					() -> 0L
+			);
+			int start = tick % agentCount;
+			for (int offset = 0; offset < agentCount; offset++) {
+				int agent = (start + offset) % agentCount;
+				ServerPathPlanner.PlanningResult result = planner.planPath(
+						view,
+						new GridPosition(0, 64, agent),
+						new GridPosition(1, 64, agent),
+						budget
+				);
+				if (!result.deferred() && result.plan().outcome() == PathOutcome.FOUND) served.add(agent);
+			}
+			assertTrue(budget.expandedNodes() <= 2,
+					"one server tick never exceeds its aggregate expansion budget");
+		}
+		assertEquals(agentCount, served.size(), "sixteen retrying agents eventually receive service");
+		return 1;
+	}
+
+	private static int verifySharedElapsedBudget() {
+		ServerPathPlanner planner = new ServerPathPlanner();
+		WalkabilityView view = position -> position.y() == 63
+				? WalkabilityView.Cell.SAFE_SUPPORT
+				: position.y() >= 64 && position.y() <= 65
+						? WalkabilityView.Cell.CLEAR
+						: WalkabilityView.Cell.BLOCKED;
+		AtomicLong clock = new AtomicLong();
+		ServerPathPlanner.TickBudget budget = new ServerPathPlanner.TickBudget(
+				LocalPathfinder.MAX_EXPANDED_NODES,
+				40L,
+				() -> clock.getAndAdd(41L)
+		);
+		ServerPathPlanner.PlanningResult first = planner.planPath(
+				view,
+				new GridPosition(0, 64, 0),
+				new GridPosition(1, 64, 0),
+				budget
+		);
+		ServerPathPlanner.PlanningResult second = planner.planPath(
+				view,
+				new GridPosition(0, 64, 1),
+				new GridPosition(1, 64, 1),
+				budget
+		);
+		assertTrue(first.deferred(), "elapsed tick budget defers the first request at its deadline");
+		assertEquals(PathOutcome.TIME_LIMIT, first.plan().outcome(), "elapsed exhaustion reports time limit");
+		assertTrue(second.deferred(), "elapsed tick budget defers every later request in the same tick");
+		assertEquals(0, budget.expandedNodes(), "elapsed exhaustion performs no expansion");
+		return 4;
+	}
+
+	private static int verifyContentionDeferralWindow() {
+		ServerPathPlanner planner = new ServerPathPlanner();
+		WalkabilityView view = position -> position.y() == 63
+				? WalkabilityView.Cell.SAFE_SUPPORT
+				: position.y() >= 64 && position.y() <= 65
+						? WalkabilityView.Cell.CLEAR
+						: WalkabilityView.Cell.BLOCKED;
+		for (int tick = 0; tick < 6; tick++) {
+			ServerPathPlanner.TickBudget budget = new ServerPathPlanner.TickBudget(
+					1,
+					LocalPathfinder.MAX_PLANNING_TIME_NANOS,
+					() -> 0L
+			);
+			ServerPathPlanner.PlanningResult admitted = planner.planPath(
+					view,
+					new GridPosition(0, 64, tick),
+					new GridPosition(1, 64, tick),
+					budget
+			);
+			ServerPathPlanner.PlanningResult deferred = planner.planPath(
+					view,
+					new GridPosition(0, 64, tick + 100),
+					new GridPosition(1, 64, tick + 100),
+					budget
+			);
+			assertEquals(PathOutcome.FOUND, admitted.plan().outcome(), "contention admits the first agent");
+			assertTrue(deferred.deferred(), "contention defers the second agent without terminal failure");
+		}
+		return 12;
+	}
+
+	private static int verifyTickScopeRestoresPreviousBudget() {
+		assertTrue(ServerPathPlanner.currentBudget() == null, "planner scope starts clear");
+		ServerPathPlanner.TickScope scope = ServerPathPlanner.beginServerTick(
+				1,
+				LocalPathfinder.MAX_PLANNING_TIME_NANOS,
+				() -> 0L
+		);
+		try {
+			assertTrue(ServerPathPlanner.currentBudget() == scope.budget(),
+					"nested navigation sees the current server tick budget");
+		} finally {
+			scope.close();
+		}
+		assertTrue(ServerPathPlanner.currentBudget() == null, "planner scope clears after the server tick");
+		return 2;
+	}
+
+	private static void assertEquals(Object expected, Object actual, String message) {
+		if (!expected.equals(actual)) {
+			throw new AssertionError(message + " (expected=" + expected + ", actual=" + actual + ")");
+		}
+	}
+
+	private static void assertTrue(boolean condition, String message) {
+		if (!condition) {
+			throw new AssertionError(message);
+		}
+	}
+}

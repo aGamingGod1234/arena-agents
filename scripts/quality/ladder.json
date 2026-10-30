@@ -1,0 +1,2674 @@
+{
+  "version": 1,
+  "description": "Route links and alternative branches, not proof of unassisted end-to-end completion.",
+  "scenarios": [
+    {
+      "id": "L-A1",
+      "name": "l-a1",
+      "phase": "A",
+      "seed": "20261009",
+      "goal": "Get a wooden pickaxe and a stone pickaxe.",
+      "durationBudgetMs": 600000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": false
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          134.5,
+          80,
+          488.5
+        ],
+        "surface": true,
+        "groundBelowCanopy": true,
+        "naturalGround": true,
+        "time": 1000,
+        "weather": "clear",
+        "freezeUntilGoalStart": true,
+        "commands": [],
+        "inventory": [],
+        "armour": {},
+        "effects": [],
+        "locate": {
+          "type": "biome",
+          "id": "minecraft:forest",
+          "offset": [
+            0,
+            0
+          ]
+        },
+        "expectedBiome": "minecraft:forest"
+      },
+      "notes": "Fresh natural forest start; retain the wooden pickaxe for the compound check.",
+      "successCheck": "inventory: wooden_pickaxe >=1 AND stone_pickaxe >=1",
+      "handoffFrom": [],
+      "startState": "Empty inventory, morning, natural forest"
+    },
+    {
+      "id": "L-A1b",
+      "name": "l-a1b",
+      "phase": "A",
+      "seed": "20261009",
+      "goal": "Get a stone axe, a stone sword and a furnace.",
+      "durationBudgetMs": 600000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": false
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          134.5,
+          80,
+          488.5
+        ],
+        "surface": true,
+        "groundBelowCanopy": true,
+        "naturalGround": true,
+        "time": 1000,
+        "weather": "clear",
+        "freezeUntilGoalStart": true,
+        "commands": [],
+        "inventory": [
+          {
+            "item": "minecraft:wooden_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:stone_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:oak_log",
+            "count": 8
+          },
+          {
+            "item": "minecraft:cobblestone",
+            "count": 12
+          },
+          {
+            "item": "minecraft:crafting_table",
+            "count": 1
+          }
+        ],
+        "armour": {},
+        "effects": [],
+        "locate": {
+          "type": "biome",
+          "id": "minecraft:forest",
+          "offset": [
+            0,
+            0
+          ]
+        },
+        "expectedBiome": "minecraft:forest"
+      },
+      "notes": "Expand basic tools into the mining/cooking kit.",
+      "successCheck": "inventory: stone_axe, stone_sword, furnace >=1",
+      "handoffFrom": [
+        "L-A1"
+      ],
+      "startState": "Wooden and stone picks, 8 logs, 12 cobble, table"
+    },
+    {
+      "id": "L-A2",
+      "name": "l-a2",
+      "phase": "A",
+      "seed": "20261009",
+      "goal": "Get 3 iron ingots.",
+      "durationBudgetMs": 600000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": false
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          134.5,
+          80,
+          488.5
+        ],
+        "surface": true,
+        "groundBelowCanopy": true,
+        "naturalGround": true,
+        "time": 1000,
+        "weather": "clear",
+        "freezeUntilGoalStart": true,
+        "commands": [
+          "execute at {agent} run setblock ~4 ~ ~ minecraft:iron_ore",
+          "execute at {agent} run setblock ~4 ~1 ~ minecraft:iron_ore",
+          "execute at {agent} run setblock ~5 ~ ~ minecraft:iron_ore"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:wooden_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:stone_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:stone_axe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:stone_sword",
+            "count": 1
+          },
+          {
+            "item": "minecraft:furnace",
+            "count": 1
+          },
+          {
+            "item": "minecraft:coal",
+            "count": 8
+          },
+          {
+            "item": "minecraft:cobblestone",
+            "count": 32
+          },
+          {
+            "item": "minecraft:oak_log",
+            "count": 12
+          },
+          {
+            "item": "minecraft:oak_planks",
+            "count": 32
+          },
+          {
+            "item": "minecraft:stick",
+            "count": 8
+          },
+          {
+            "item": "minecraft:crafting_table",
+            "count": 1
+          }
+        ],
+        "armour": {},
+        "effects": [],
+        "locate": {
+          "type": "biome",
+          "id": "minecraft:forest",
+          "offset": [
+            0,
+            0
+          ]
+        },
+        "expectedBiome": "minecraft:forest"
+      },
+      "notes": "Three exposed ore cells provide repeatable mining and smelting opportunity. Ingot predicate does not prove smelting provenance; inspect metrics.progressV1.first.iron_ingot.source.",
+      "successCheck": "inventory: iron_ingot >=3",
+      "handoffFrom": [
+        "L-A1b"
+      ],
+      "startState": "Stone kit, fuel, exposed 3 iron ore"
+    },
+    {
+      "id": "L-A2b",
+      "name": "l-a2b",
+      "phase": "A",
+      "seed": "20261009",
+      "goal": "Get 8 iron ingots.",
+      "durationBudgetMs": 300000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": false
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          134.5,
+          80,
+          488.5
+        ],
+        "surface": true,
+        "groundBelowCanopy": true,
+        "naturalGround": true,
+        "time": 1000,
+        "weather": "clear",
+        "freezeUntilGoalStart": true,
+        "commands": [],
+        "inventory": [
+          {
+            "item": "minecraft:wooden_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:stone_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:stone_axe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:stone_sword",
+            "count": 1
+          },
+          {
+            "item": "minecraft:furnace",
+            "count": 1
+          },
+          {
+            "item": "minecraft:coal",
+            "count": 8
+          },
+          {
+            "item": "minecraft:cobblestone",
+            "count": 32
+          },
+          {
+            "item": "minecraft:oak_log",
+            "count": 12
+          },
+          {
+            "item": "minecraft:oak_planks",
+            "count": 32
+          },
+          {
+            "item": "minecraft:stick",
+            "count": 8
+          },
+          {
+            "item": "minecraft:crafting_table",
+            "count": 1
+          },
+          {
+            "item": "minecraft:raw_iron",
+            "count": 8
+          }
+        ],
+        "armour": {},
+        "effects": [],
+        "locate": {
+          "type": "biome",
+          "id": "minecraft:forest",
+          "offset": [
+            0,
+            0
+          ]
+        },
+        "expectedBiome": "minecraft:forest"
+      },
+      "notes": "Isolates furnace transactions and collecting output, with raw iron already mined.",
+      "successCheck": "inventory: iron_ingot >=8",
+      "handoffFrom": [
+        "L-A2"
+      ],
+      "startState": "Stone kit, 8 raw iron, coal, furnace"
+    },
+    {
+      "id": "L-A3",
+      "name": "l-a3",
+      "phase": "A",
+      "seed": "20261009",
+      "goal": "Get an iron pickaxe, a bucket, a shield and flint and steel.",
+      "durationBudgetMs": 300000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": false
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          134.5,
+          80,
+          488.5
+        ],
+        "surface": true,
+        "groundBelowCanopy": true,
+        "naturalGround": true,
+        "time": 1000,
+        "weather": "clear",
+        "freezeUntilGoalStart": true,
+        "commands": [],
+        "inventory": [
+          {
+            "item": "minecraft:wooden_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:stone_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:stone_axe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:stone_sword",
+            "count": 1
+          },
+          {
+            "item": "minecraft:furnace",
+            "count": 1
+          },
+          {
+            "item": "minecraft:coal",
+            "count": 8
+          },
+          {
+            "item": "minecraft:cobblestone",
+            "count": 32
+          },
+          {
+            "item": "minecraft:oak_log",
+            "count": 12
+          },
+          {
+            "item": "minecraft:oak_planks",
+            "count": 32
+          },
+          {
+            "item": "minecraft:stick",
+            "count": 8
+          },
+          {
+            "item": "minecraft:crafting_table",
+            "count": 1
+          },
+          {
+            "item": "minecraft:iron_ingot",
+            "count": 8
+          },
+          {
+            "item": "minecraft:flint",
+            "count": 1
+          }
+        ],
+        "armour": {},
+        "effects": [],
+        "locate": {
+          "type": "biome",
+          "id": "minecraft:forest",
+          "offset": [
+            0,
+            0
+          ]
+        },
+        "expectedBiome": "minecraft:forest"
+      },
+      "notes": "Eight ingots exactly cover 3+3+1+1; no spare iron silently supplied.",
+      "successCheck": "inventory: iron_pickaxe, bucket, shield, flint_and_steel >=1",
+      "handoffFrom": [
+        "L-A2b"
+      ],
+      "startState": "Stone kit, 8 iron ingots, flint, planks"
+    },
+    {
+      "id": "L-A3b",
+      "name": "l-a3b",
+      "phase": "A",
+      "seed": "20261009",
+      "goal": "Get an iron helmet, an iron chestplate, iron leggings, iron boots and an iron sword.",
+      "durationBudgetMs": 600000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": false
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          134.5,
+          80,
+          488.5
+        ],
+        "surface": true,
+        "groundBelowCanopy": true,
+        "naturalGround": true,
+        "time": 1000,
+        "weather": "clear",
+        "freezeUntilGoalStart": true,
+        "commands": [],
+        "inventory": [
+          {
+            "item": "minecraft:wooden_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:stone_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:stone_axe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:stone_sword",
+            "count": 1
+          },
+          {
+            "item": "minecraft:furnace",
+            "count": 1
+          },
+          {
+            "item": "minecraft:coal",
+            "count": 8
+          },
+          {
+            "item": "minecraft:cobblestone",
+            "count": 32
+          },
+          {
+            "item": "minecraft:oak_log",
+            "count": 12
+          },
+          {
+            "item": "minecraft:oak_planks",
+            "count": 32
+          },
+          {
+            "item": "minecraft:stick",
+            "count": 8
+          },
+          {
+            "item": "minecraft:crafting_table",
+            "count": 1
+          },
+          {
+            "item": "minecraft:iron_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:bucket",
+            "count": 1
+          },
+          {
+            "item": "minecraft:shield",
+            "count": 1
+          },
+          {
+            "item": "minecraft:flint_and_steel",
+            "count": 1
+          },
+          {
+            "item": "minecraft:raw_iron",
+            "count": 26
+          }
+        ],
+        "armour": {},
+        "effects": [],
+        "locate": {
+          "type": "biome",
+          "id": "minecraft:forest",
+          "offset": [
+            0,
+            0
+          ]
+        },
+        "expectedBiome": "minecraft:forest"
+      },
+      "notes": "Smelt 26 mined raw iron into 24 armour ingots plus a 2-ingot sword; prior tools, bucket, shield and ignition remain usable. Natural ore sourcing is isolated in L-A2.",
+      "successCheck": "inventory: iron_helmet, iron_chestplate, iron_leggings, iron_boots, iron_sword >=1",
+      "handoffFrom": [
+        "L-A3"
+      ],
+      "startState": "Iron pick, empty bucket, shield, ignition, stone kit, 26 raw iron, furnace/fuel"
+    },
+    {
+      "id": "L-A4",
+      "name": "l-a4",
+      "phase": "A",
+      "seed": "20261009",
+      "goal": "Get at least 20 cooked beef or cooked porkchops in total.",
+      "durationBudgetMs": 900000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": false
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          134.5,
+          80,
+          488.5
+        ],
+        "surface": true,
+        "groundBelowCanopy": true,
+        "naturalGround": true,
+        "time": 1000,
+        "weather": "clear",
+        "freezeUntilGoalStart": true,
+        "commands": [],
+        "inventory": [
+          {
+            "item": "minecraft:iron_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:iron_sword",
+            "count": 1
+          },
+          {
+            "item": "minecraft:shield",
+            "count": 1
+          },
+          {
+            "item": "minecraft:water_bucket",
+            "count": 1
+          },
+          {
+            "item": "minecraft:flint_and_steel",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cobblestone",
+            "count": 64
+          },
+          {
+            "item": "minecraft:oak_planks",
+            "count": 32
+          },
+          {
+            "item": "minecraft:crafting_table",
+            "count": 1
+          },
+          {
+            "item": "minecraft:furnace",
+            "count": 1
+          },
+          {
+            "item": "minecraft:coal",
+            "count": 8
+          }
+        ],
+        "armour": {
+          "head": "minecraft:iron_helmet",
+          "chest": "minecraft:iron_chestplate",
+          "legs": "minecraft:iron_leggings",
+          "feet": "minecraft:iron_boots"
+        },
+        "effects": [],
+        "mobs": [
+          {
+            "id": "minecraft:cow",
+            "offset": [
+              5,
+              0,
+              4
+            ],
+            "naturalGround": true,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:cow",
+            "offset": [
+              7,
+              0,
+              4
+            ],
+            "naturalGround": true,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:cow",
+            "offset": [
+              9,
+              0,
+              4
+            ],
+            "naturalGround": true,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:cow",
+            "offset": [
+              11,
+              0,
+              4
+            ],
+            "naturalGround": true,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:cow",
+            "offset": [
+              5,
+              0,
+              6
+            ],
+            "naturalGround": true,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:cow",
+            "offset": [
+              7,
+              0,
+              6
+            ],
+            "naturalGround": true,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:cow",
+            "offset": [
+              9,
+              0,
+              6
+            ],
+            "naturalGround": true,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:cow",
+            "offset": [
+              11,
+              0,
+              6
+            ],
+            "naturalGround": true,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:cow",
+            "offset": [
+              5,
+              0,
+              8
+            ],
+            "naturalGround": true,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:cow",
+            "offset": [
+              7,
+              0,
+              8
+            ],
+            "naturalGround": true,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:cow",
+            "offset": [
+              9,
+              0,
+              8
+            ],
+            "naturalGround": true,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:cow",
+            "offset": [
+              11,
+              0,
+              8
+            ],
+            "naturalGround": true,
+            "nbt": "{PersistenceRequired:1b}"
+          }
+        ],
+        "locate": {
+          "type": "biome",
+          "id": "minecraft:forest",
+          "offset": [
+            0,
+            0
+          ]
+        },
+        "expectedBiome": "minecraft:forest"
+      },
+      "notes": "Hunt and cook a Phase A food reserve; natural cattle drop counts vary.",
+      "successCheck": "inventory_contains_any: cooked_beef|cooked_porkchop >=20",
+      "handoffFrom": [
+        "L-A3b"
+      ],
+      "startState": "Iron armour/tools, furnace, fuel; no food; 12 nearby cattle"
+    },
+    {
+      "id": "L-A5",
+      "name": "l-a5",
+      "phase": "A",
+      "seed": "20261009",
+      "goal": "Enter the Nether.",
+      "durationBudgetMs": 1200000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": false
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          134.5,
+          80,
+          488.5
+        ],
+        "surface": true,
+        "groundBelowCanopy": true,
+        "naturalGround": true,
+        "time": 1000,
+        "weather": "clear",
+        "freezeUntilGoalStart": true,
+        "commands": [
+          "execute at {agent} run fill ~-14 ~-14 ~-14 ~14 ~2 ~14 minecraft:stone replace minecraft:water",
+          "execute at {agent} run fill ~-14 ~-14 ~-14 ~14 ~2 ~14 minecraft:stone replace minecraft:seagrass",
+          "execute at {agent} run fill ~-14 ~-14 ~-14 ~14 ~2 ~14 minecraft:stone replace minecraft:tall_seagrass",
+          "execute at {agent} run fill ~-14 ~-14 ~-14 ~14 ~2 ~14 minecraft:stone replace minecraft:kelp",
+          "execute at {agent} run fill ~-14 ~-14 ~-14 ~14 ~2 ~14 minecraft:stone replace minecraft:kelp_plant",
+          "execute at {agent} run fill ~5 ~-2 ~-2 ~11 ~-1 ~4 minecraft:stone",
+          "execute at {agent} run fill ~6 ~-1 ~-1 ~10 ~-1 ~3 minecraft:lava",
+          "execute at {agent} run fill ~5 ~ ~-2 ~11 ~3 ~4 minecraft:air"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:iron_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:iron_sword",
+            "count": 1
+          },
+          {
+            "item": "minecraft:shield",
+            "count": 1
+          },
+          {
+            "item": "minecraft:water_bucket",
+            "count": 1
+          },
+          {
+            "item": "minecraft:flint_and_steel",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 24
+          },
+          {
+            "item": "minecraft:cobblestone",
+            "count": 64
+          },
+          {
+            "item": "minecraft:oak_planks",
+            "count": 32
+          },
+          {
+            "item": "minecraft:crafting_table",
+            "count": 1
+          }
+        ],
+        "armour": {
+          "head": "minecraft:iron_helmet",
+          "chest": "minecraft:iron_chestplate",
+          "legs": "minecraft:iron_leggings",
+          "feet": "minecraft:iron_boots"
+        },
+        "effects": [],
+        "locate": {
+          "type": "biome",
+          "id": "minecraft:forest",
+          "offset": [
+            0,
+            0
+          ]
+        },
+        "expectedBiome": "minecraft:forest"
+      },
+      "notes": "Command-placed 5x5 lava source pool in natural terrain; every water and water plant block within 14 blocks of the start is replaced by stone first so the agent never starts at or near a lake (the first L-A5 runs drowned in one). Water bucket, no obsidian or diamond pickaxe: casting route. Predicate proves entry, not a particular construction method.",
+      "successCheck": "advancement: story/enter_the_nether",
+      "handoffFrom": [
+        "L-A4"
+      ],
+      "startState": "Phase A exit kit; water bucket beside lava pool"
+    },
+    {
+      "id": "L-A5b",
+      "name": "l-a5b",
+      "phase": "A",
+      "seed": "20261009",
+      "goal": "Enter the Nether.",
+      "durationBudgetMs": 900000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": false
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          134.5,
+          80,
+          488.5
+        ],
+        "surface": true,
+        "groundBelowCanopy": true,
+        "naturalGround": true,
+        "time": 1000,
+        "weather": "clear",
+        "freezeUntilGoalStart": true,
+        "commands": [],
+        "inventory": [
+          {
+            "item": "minecraft:iron_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:iron_sword",
+            "count": 1
+          },
+          {
+            "item": "minecraft:shield",
+            "count": 1
+          },
+          {
+            "item": "minecraft:water_bucket",
+            "count": 1
+          },
+          {
+            "item": "minecraft:flint_and_steel",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 24
+          },
+          {
+            "item": "minecraft:cobblestone",
+            "count": 64
+          },
+          {
+            "item": "minecraft:oak_planks",
+            "count": 32
+          },
+          {
+            "item": "minecraft:crafting_table",
+            "count": 1
+          },
+          {
+            "item": "minecraft:obsidian",
+            "count": 14
+          },
+          {
+            "item": "minecraft:diamond_pickaxe",
+            "count": 1
+          }
+        ],
+        "armour": {
+          "head": "minecraft:iron_helmet",
+          "chest": "minecraft:iron_chestplate",
+          "legs": "minecraft:iron_leggings",
+          "feet": "minecraft:iron_boots"
+        },
+        "effects": [],
+        "locate": {
+          "type": "structure",
+          "id": "minecraft:ruined_portal",
+          "offset": [
+            0,
+            0
+          ]
+        }
+      },
+      "notes": "Natural ruined portal varies; 14 obsidian and diamond pick allow replacement of crying obsidian or buried pieces. Alternative to casting.",
+      "successCheck": "advancement: story/enter_the_nether",
+      "handoffFrom": [
+        "L-A4"
+      ],
+      "startState": "Ruined portal; iron kit, diamond pick, 14 obsidian, ignition"
+    },
+    {
+      "id": "L-A6",
+      "name": "l-a6",
+      "phase": "A",
+      "seed": "20261009",
+      "goal": "Stay alive for 550 seconds without dying.",
+      "durationBudgetMs": 600000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": false
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          134.5,
+          80,
+          488.5
+        ],
+        "surface": true,
+        "groundBelowCanopy": true,
+        "naturalGround": true,
+        "time": 13000,
+        "weather": "clear",
+        "freezeUntilGoalStart": true,
+        "commands": [],
+        "inventory": [
+          {
+            "item": "minecraft:wooden_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:stone_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:stone_axe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:stone_sword",
+            "count": 1
+          },
+          {
+            "item": "minecraft:furnace",
+            "count": 1
+          },
+          {
+            "item": "minecraft:coal",
+            "count": 8
+          },
+          {
+            "item": "minecraft:cobblestone",
+            "count": 32
+          },
+          {
+            "item": "minecraft:oak_log",
+            "count": 12
+          },
+          {
+            "item": "minecraft:oak_planks",
+            "count": 32
+          },
+          {
+            "item": "minecraft:stick",
+            "count": 8
+          },
+          {
+            "item": "minecraft:crafting_table",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 8
+          }
+        ],
+        "armour": {},
+        "effects": [],
+        "locate": {
+          "type": "biome",
+          "id": "minecraft:plains",
+          "offset": [
+            0,
+            0
+          ]
+        },
+        "expectedBiome": "minecraft:plains"
+      },
+      "notes": "Nightfall at tick 13000; 11000 ticks reaches dawn at 24000 if time advances at 20 TPS. Duration predicate cannot directly test morning; slow TPS can exhaust wall budget. Shelter or evasion, no bed.",
+      "successCheck": "survive_duration: 11000 ticks; any death fails attempt",
+      "handoffFrom": [
+        "L-A1b"
+      ],
+      "startState": "Plains, stone tools, 8 food, nightfall"
+    },
+    {
+      "id": "L-B1",
+      "name": "l-b1",
+      "phase": "B",
+      "seed": "20261009",
+      "goal": "Enter a Nether fortress or a bastion remnant.",
+      "durationBudgetMs": 1200000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": false
+      },
+      "setup": {
+        "dimension": "minecraft:the_nether",
+        "position": [
+          68.5,
+          42,
+          64.5
+        ],
+        "surface": false,
+        "groundBelowCanopy": false,
+        "naturalGround": true,
+        "time": 1000,
+        "weather": "clear",
+        "freezeUntilGoalStart": true,
+        "commands": [
+          "execute at {agent} run fill ~-3 ~-1 ~-3 ~5 ~-1 ~3 minecraft:obsidian",
+          "execute at {agent} run fill ~-3 ~ ~-3 ~5 ~4 ~3 minecraft:air",
+          "execute at {agent} run fill ~2 ~ ~-1 ~2 ~4 ~2 minecraft:obsidian",
+          "execute at {agent} run fill ~2 ~1 ~ ~2 ~3 ~1 minecraft:nether_portal[axis=z]"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:iron_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:iron_sword",
+            "count": 1
+          },
+          {
+            "item": "minecraft:shield",
+            "count": 1
+          },
+          {
+            "item": "minecraft:water_bucket",
+            "count": 1
+          },
+          {
+            "item": "minecraft:flint_and_steel",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 24
+          },
+          {
+            "item": "minecraft:cobblestone",
+            "count": 64
+          },
+          {
+            "item": "minecraft:oak_planks",
+            "count": 32
+          },
+          {
+            "item": "minecraft:crafting_table",
+            "count": 1
+          }
+        ],
+        "armour": {
+          "head": "minecraft:iron_helmet",
+          "chest": "minecraft:iron_chestplate",
+          "legs": "minecraft:iron_leggings",
+          "feet": "minecraft:iron_boots"
+        },
+        "effects": [],
+        "naturalCave": true,
+        "caveMaxY": 100,
+        "caveMinY": 32
+      },
+      "notes": "Fresh lit arrival portal on an authored safe pad within natural Nether. Exploration is not pre-located.",
+      "successCheck": "any advancement: nether/find_fortress OR nether/find_bastion",
+      "handoffFrom": [
+        "L-A5",
+        "L-A5b"
+      ],
+      "startState": "Iron armour, Phase A kit, fresh arrival portal"
+    },
+    {
+      "id": "L-B2",
+      "name": "l-b2",
+      "phase": "B",
+      "seed": "20261009",
+      "goal": "Get a golden helmet.",
+      "durationBudgetMs": 300000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": false
+      },
+      "setup": {
+        "dimension": "minecraft:the_nether",
+        "position": [
+          68.5,
+          42,
+          64.5
+        ],
+        "surface": false,
+        "groundBelowCanopy": false,
+        "naturalGround": true,
+        "time": 1000,
+        "weather": "clear",
+        "freezeUntilGoalStart": true,
+        "commands": [
+          "execute at {agent} run fill ~-3 ~-1 ~-3 ~5 ~-1 ~3 minecraft:obsidian",
+          "execute at {agent} run fill ~-3 ~ ~-3 ~5 ~4 ~3 minecraft:air",
+          "execute at {agent} run fill ~2 ~ ~-1 ~2 ~4 ~2 minecraft:obsidian",
+          "execute at {agent} run fill ~2 ~1 ~ ~2 ~3 ~1 minecraft:nether_portal[axis=z]"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:iron_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:iron_sword",
+            "count": 1
+          },
+          {
+            "item": "minecraft:shield",
+            "count": 1
+          },
+          {
+            "item": "minecraft:water_bucket",
+            "count": 1
+          },
+          {
+            "item": "minecraft:flint_and_steel",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 24
+          },
+          {
+            "item": "minecraft:cobblestone",
+            "count": 64
+          },
+          {
+            "item": "minecraft:oak_planks",
+            "count": 32
+          },
+          {
+            "item": "minecraft:crafting_table",
+            "count": 1
+          },
+          {
+            "item": "minecraft:gold_ingot",
+            "count": 5
+          }
+        ],
+        "armour": {
+          "head": "minecraft:iron_helmet",
+          "chest": "minecraft:iron_chestplate",
+          "legs": "minecraft:iron_leggings",
+          "feet": "minecraft:iron_boots"
+        },
+        "effects": [],
+        "naturalCave": true,
+        "caveMaxY": 100,
+        "caveMinY": 32
+      },
+      "notes": "Gold armour preparation isolated from sourcing; helmet must be in inventory, equipping is a subsequent action.",
+      "successCheck": "inventory: golden_helmet >=1",
+      "handoffFrom": [
+        "L-B1"
+      ],
+      "startState": "Arrival supplies plus 5 mined gold ingots"
+    },
+    {
+      "id": "L-B3",
+      "name": "l-b3",
+      "phase": "B",
+      "seed": "20261009",
+      "goal": "Get at least 64 gold ingots.",
+      "durationBudgetMs": 1200000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": false
+      },
+      "setup": {
+        "dimension": "minecraft:the_nether",
+        "position": [
+          68.5,
+          42,
+          64.5
+        ],
+        "surface": false,
+        "groundBelowCanopy": false,
+        "naturalGround": true,
+        "time": 1000,
+        "weather": "clear",
+        "freezeUntilGoalStart": true,
+        "commands": [],
+        "inventory": [
+          {
+            "item": "minecraft:iron_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:iron_sword",
+            "count": 1
+          },
+          {
+            "item": "minecraft:shield",
+            "count": 1
+          },
+          {
+            "item": "minecraft:water_bucket",
+            "count": 1
+          },
+          {
+            "item": "minecraft:flint_and_steel",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 24
+          },
+          {
+            "item": "minecraft:cobblestone",
+            "count": 64
+          },
+          {
+            "item": "minecraft:oak_planks",
+            "count": 32
+          },
+          {
+            "item": "minecraft:crafting_table",
+            "count": 1
+          }
+        ],
+        "armour": {
+          "head": "minecraft:golden_helmet",
+          "chest": "minecraft:iron_chestplate",
+          "legs": "minecraft:iron_leggings",
+          "feet": "minecraft:iron_boots"
+        },
+        "effects": [],
+        "naturalCave": true,
+        "caveMaxY": 100,
+        "caveMinY": 32,
+        "locate": {
+          "type": "structure",
+          "id": "minecraft:bastion_remnant",
+          "offset": [
+            0,
+            0
+          ]
+        },
+        "requireCover": false,
+        "standingOn": "minecraft:polished_blackstone_bricks"
+      },
+      "notes": "Gold sourcing link: mine natural bastion blocks or Nether gold ore, loot, then craft ingots. No supplied gold. Golden helmet prevents ordinary piglin hostility until provoked. Start on natural bastion masonry, so the gold source is identifiable from the surrounding blocks without hidden directions.",
+      "successCheck": "inventory: gold_ingot >=64",
+      "handoffFrom": [
+        "L-B2"
+      ],
+      "startState": "Natural bastion masonry, golden helmet, iron tools, food, blocks; no gold"
+    },
+    {
+      "id": "L-C1",
+      "name": "l-c1",
+      "phase": "C",
+      "seed": "20261009",
+      "goal": "Get at least 4 ender pearls.",
+      "durationBudgetMs": 1200000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": false
+      },
+      "setup": {
+        "dimension": "minecraft:the_nether",
+        "position": [
+          68.5,
+          42,
+          64.5
+        ],
+        "surface": false,
+        "groundBelowCanopy": false,
+        "naturalGround": true,
+        "time": 1000,
+        "weather": "clear",
+        "freezeUntilGoalStart": true,
+        "commands": [
+          "random reset minecraft:gameplay/piglin_bartering 13 false true"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:iron_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:iron_sword",
+            "count": 1
+          },
+          {
+            "item": "minecraft:shield",
+            "count": 1
+          },
+          {
+            "item": "minecraft:water_bucket",
+            "count": 1
+          },
+          {
+            "item": "minecraft:flint_and_steel",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 24
+          },
+          {
+            "item": "minecraft:cobblestone",
+            "count": 64
+          },
+          {
+            "item": "minecraft:oak_planks",
+            "count": 32
+          },
+          {
+            "item": "minecraft:crafting_table",
+            "count": 1
+          },
+          {
+            "item": "minecraft:gold_ingot",
+            "count": 64
+          }
+        ],
+        "armour": {
+          "head": "minecraft:golden_helmet",
+          "chest": "minecraft:iron_chestplate",
+          "legs": "minecraft:iron_leggings",
+          "feet": "minecraft:iron_boots"
+        },
+        "effects": [],
+        "naturalCave": true,
+        "caveMaxY": 100,
+        "caveMinY": 32,
+        "locate": {
+          "type": "structure",
+          "id": "minecraft:bastion_remnant",
+          "offset": [
+            32,
+            0
+          ]
+        },
+        "mobs": [
+          {
+            "id": "minecraft:piglin",
+            "offset": [
+              7,
+              0,
+              0
+            ],
+            "naturalGround": true,
+            "tag": "ladder_trader",
+            "nbt": "{IsBaby:0b,PersistenceRequired:1b,Tags:[\"ladder_trader\"]}"
+          }
+        ],
+        "requireCover": true
+      },
+      "notes": "Natural bastion vicinity and an adult trader. Reset only the barter sequence to seed 13 (independent of world seed), retaining vanilla loot and 64 gold. Fixed reproducible RNG isolates bartering skill; provider-free draws validate that the supplied gold can reach 4 pearls. Goal does not prove bartering provenance.",
+      "successCheck": "inventory: ender_pearl >=4",
+      "handoffFrom": [
+        "L-B3"
+      ],
+      "startState": "Near bastion, golden helmet, iron kit, 64 gold"
+    },
+    {
+      "id": "L-C2",
+      "name": "l-c2",
+      "phase": "C",
+      "seed": "20261009",
+      "goal": "Get at least 4 ender pearls.",
+      "durationBudgetMs": 1200000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": false
+      },
+      "setup": {
+        "dimension": "minecraft:the_nether",
+        "position": [
+          68.5,
+          42,
+          64.5
+        ],
+        "surface": false,
+        "groundBelowCanopy": false,
+        "naturalGround": true,
+        "time": 1000,
+        "weather": "clear",
+        "freezeUntilGoalStart": true,
+        "commands": [],
+        "inventory": [
+          {
+            "item": "minecraft:iron_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:iron_sword",
+            "count": 1
+          },
+          {
+            "item": "minecraft:shield",
+            "count": 1
+          },
+          {
+            "item": "minecraft:water_bucket",
+            "count": 1
+          },
+          {
+            "item": "minecraft:flint_and_steel",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 24
+          },
+          {
+            "item": "minecraft:cobblestone",
+            "count": 64
+          },
+          {
+            "item": "minecraft:oak_planks",
+            "count": 32
+          },
+          {
+            "item": "minecraft:crafting_table",
+            "count": 1
+          }
+        ],
+        "armour": {
+          "head": "minecraft:iron_helmet",
+          "chest": "minecraft:iron_chestplate",
+          "legs": "minecraft:iron_leggings",
+          "feet": "minecraft:iron_boots"
+        },
+        "effects": [],
+        "naturalCave": true,
+        "caveMaxY": 89,
+        "caveMinY": 89,
+        "locate": {
+          "type": "biome",
+          "id": "minecraft:warped_forest",
+          "offset": [
+            2,
+            10
+          ]
+        },
+        "expectedBiome": "minecraft:warped_forest",
+        "mobs": [
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              4,
+              0,
+              -4
+            ],
+            "naturalGround": false,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              6,
+              0,
+              -4
+            ],
+            "naturalGround": false,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              6,
+              0,
+              -5
+            ],
+            "naturalGround": false,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              5,
+              0,
+              -1
+            ],
+            "naturalGround": false,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              6,
+              0,
+              -1
+            ],
+            "naturalGround": false,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              6,
+              0,
+              -3
+            ],
+            "naturalGround": false,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              4,
+              0,
+              3
+            ],
+            "naturalGround": false,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              6,
+              0,
+              2
+            ],
+            "naturalGround": false,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              6,
+              0,
+              1
+            ],
+            "naturalGround": false,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              4,
+              0,
+              5
+            ],
+            "naturalGround": false,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              6,
+              0,
+              5
+            ],
+            "naturalGround": false,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              6,
+              0,
+              6
+            ],
+            "naturalGround": false,
+            "nbt": "{PersistenceRequired:1b}"
+          }
+        ],
+        "standingOn": "minecraft:warped_nylium"
+      },
+      "notes": "Alternative pearl source. Twelve natural-ground Endermen bound spawn wait; drops remain random, more can spawn naturally. Spawn and all supplied Endermen use surveyed natural nylium at y=89 below the huge-fungus canopy; mob count and biome are unchanged.",
+      "successCheck": "inventory: ender_pearl >=4",
+      "handoffFrom": [
+        "L-B1"
+      ],
+      "startState": "Warped forest, iron sword, food, blocks, 12 Endermen"
+    },
+    {
+      "id": "L-C3",
+      "name": "l-c3",
+      "phase": "C",
+      "seed": "20261009",
+      "goal": "Get at least 14 ender pearls.",
+      "durationBudgetMs": 1200000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": false
+      },
+      "setup": {
+        "dimension": "minecraft:the_nether",
+        "position": [
+          68.5,
+          42,
+          64.5
+        ],
+        "surface": false,
+        "groundBelowCanopy": false,
+        "naturalGround": true,
+        "time": 1000,
+        "weather": "clear",
+        "freezeUntilGoalStart": true,
+        "commands": [],
+        "inventory": [
+          {
+            "item": "minecraft:iron_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:iron_sword",
+            "count": 1
+          },
+          {
+            "item": "minecraft:shield",
+            "count": 1
+          },
+          {
+            "item": "minecraft:water_bucket",
+            "count": 1
+          },
+          {
+            "item": "minecraft:flint_and_steel",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 24
+          },
+          {
+            "item": "minecraft:cobblestone",
+            "count": 64
+          },
+          {
+            "item": "minecraft:oak_planks",
+            "count": 32
+          },
+          {
+            "item": "minecraft:crafting_table",
+            "count": 1
+          },
+          {
+            "item": "minecraft:ender_pearl",
+            "count": 4
+          }
+        ],
+        "armour": {
+          "head": "minecraft:iron_helmet",
+          "chest": "minecraft:iron_chestplate",
+          "legs": "minecraft:iron_leggings",
+          "feet": "minecraft:iron_boots"
+        },
+        "effects": [],
+        "naturalCave": true,
+        "caveMaxY": 89,
+        "caveMinY": 89,
+        "locate": {
+          "type": "biome",
+          "id": "minecraft:warped_forest",
+          "offset": [
+            2,
+            10
+          ]
+        },
+        "expectedBiome": "minecraft:warped_forest",
+        "mobs": [
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              4,
+              0,
+              -4
+            ],
+            "naturalGround": false,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              6,
+              0,
+              -4
+            ],
+            "naturalGround": false,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              6,
+              0,
+              -5
+            ],
+            "naturalGround": false,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              6,
+              0,
+              -3
+            ],
+            "naturalGround": false,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              5,
+              0,
+              -1
+            ],
+            "naturalGround": false,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              6,
+              0,
+              -1
+            ],
+            "naturalGround": false,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              6,
+              0,
+              1
+            ],
+            "naturalGround": false,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              6,
+              0,
+              2
+            ],
+            "naturalGround": false,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              4,
+              0,
+              3
+            ],
+            "naturalGround": false,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              6,
+              0,
+              3
+            ],
+            "naturalGround": false,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              5,
+              0,
+              2
+            ],
+            "naturalGround": false,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              6,
+              0,
+              5
+            ],
+            "naturalGround": false,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              4,
+              0,
+              5
+            ],
+            "naturalGround": false,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              6,
+              0,
+              6
+            ],
+            "naturalGround": false,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              6,
+              0,
+              7
+            ],
+            "naturalGround": false,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              7,
+              0,
+              9
+            ],
+            "naturalGround": false,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              4,
+              0,
+              8
+            ],
+            "naturalGround": false,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              6,
+              0,
+              8
+            ],
+            "naturalGround": false,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              7,
+              0,
+              10
+            ],
+            "naturalGround": false,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              6,
+              0,
+              9
+            ],
+            "naturalGround": false,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              4,
+              0,
+              11
+            ],
+            "naturalGround": false,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              6,
+              0,
+              11
+            ],
+            "naturalGround": false,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              6,
+              0,
+              10
+            ],
+            "naturalGround": false,
+            "nbt": "{PersistenceRequired:1b}"
+          },
+          {
+            "id": "minecraft:enderman",
+            "offset": [
+              6,
+              0,
+              12
+            ],
+            "naturalGround": false,
+            "nbt": "{PersistenceRequired:1b}"
+          }
+        ],
+        "standingOn": "minecraft:warped_nylium"
+      },
+      "notes": "Top up the 4-pearl branch result to the route reserve. Twenty-four nearby Endermen bound spawn wait; drops remain random. Fourteen pearls support twelve portal eyes plus two locator losses. Spawn and all supplied Endermen use surveyed natural nylium at y=89 below the huge-fungus canopy; mob count and biome are unchanged.",
+      "successCheck": "inventory: ender_pearl >=14",
+      "handoffFrom": [
+        "L-C1",
+        "L-C2"
+      ],
+      "startState": "Warped forest, 4 pearls, iron kit, 24 Endermen"
+    },
+    {
+      "id": "L-D1",
+      "name": "l-d1",
+      "phase": "D",
+      "seed": "20261009",
+      "goal": "Get at least 7 blaze rods.",
+      "durationBudgetMs": 1200000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": false
+      },
+      "setup": {
+        "dimension": "minecraft:the_nether",
+        "position": [
+          68.5,
+          42,
+          64.5
+        ],
+        "surface": false,
+        "groundBelowCanopy": false,
+        "naturalGround": true,
+        "time": 1000,
+        "weather": "clear",
+        "freezeUntilGoalStart": true,
+        "commands": [],
+        "inventory": [
+          {
+            "item": "minecraft:iron_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:iron_sword",
+            "count": 1
+          },
+          {
+            "item": "minecraft:shield",
+            "count": 1
+          },
+          {
+            "item": "minecraft:water_bucket",
+            "count": 1
+          },
+          {
+            "item": "minecraft:flint_and_steel",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 24
+          },
+          {
+            "item": "minecraft:cobblestone",
+            "count": 64
+          },
+          {
+            "item": "minecraft:oak_planks",
+            "count": 32
+          },
+          {
+            "item": "minecraft:crafting_table",
+            "count": 1
+          },
+          {
+            "item": "minecraft:ender_pearl",
+            "count": 14
+          }
+        ],
+        "armour": {
+          "head": "minecraft:iron_helmet",
+          "chest": "minecraft:iron_chestplate",
+          "legs": "minecraft:iron_leggings",
+          "feet": "minecraft:iron_boots"
+        },
+        "effects": [],
+        "naturalCave": true,
+        "caveMaxY": 90,
+        "caveMinY": 40,
+        "locate": {
+          "type": "structure",
+          "id": "minecraft:fortress",
+          "offset": [
+            0,
+            0
+          ]
+        },
+        "standingOn": "minecraft:nether_bricks",
+        "requireCover": true
+      },
+      "notes": "Natural fortress brick footing; no supplied rods or blazes. Find spawner, shield and fight. Seven rods make fourteen powder.",
+      "successCheck": "inventory: blaze_rod >=7",
+      "handoffFrom": [
+        "L-C3"
+      ],
+      "startState": "Fortress, iron armour/sword/shield, 24 food, 64 blocks, 14 pearls"
+    },
+    {
+      "id": "L-E1",
+      "name": "l-e1",
+      "phase": "E",
+      "seed": "20261009",
+      "goal": "Get 12 eyes of ender and stand within 6 blocks of 2, 81, 0 in the Overworld.",
+      "durationBudgetMs": 600000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": false
+      },
+      "setup": {
+        "dimension": "minecraft:the_nether",
+        "position": [
+          0.5,
+          80,
+          0.5
+        ],
+        "surface": false,
+        "groundBelowCanopy": false,
+        "naturalGround": true,
+        "time": 1000,
+        "weather": "clear",
+        "freezeUntilGoalStart": true,
+        "commands": [
+          "execute at {agent} run fill ~-3 ~-1 ~-3 ~5 ~-1 ~3 minecraft:obsidian",
+          "execute at {agent} run fill ~-3 ~ ~-3 ~5 ~4 ~3 minecraft:air",
+          "execute at {agent} run fill ~2 ~ ~-1 ~2 ~4 ~2 minecraft:obsidian",
+          "execute at {agent} run fill ~2 ~1 ~ ~2 ~3 ~1 minecraft:nether_portal[axis=z]",
+          "execute in minecraft:overworld run fill -3 79 -3 5 79 3 minecraft:obsidian",
+          "execute in minecraft:overworld run fill -3 80 -3 5 85 3 minecraft:air",
+          "execute in minecraft:overworld run fill 2 80 -1 2 84 2 minecraft:obsidian",
+          "execute in minecraft:overworld run fill 2 81 0 2 83 1 minecraft:nether_portal[axis=z]"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:iron_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:iron_sword",
+            "count": 1
+          },
+          {
+            "item": "minecraft:shield",
+            "count": 1
+          },
+          {
+            "item": "minecraft:water_bucket",
+            "count": 1
+          },
+          {
+            "item": "minecraft:flint_and_steel",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 24
+          },
+          {
+            "item": "minecraft:cobblestone",
+            "count": 64
+          },
+          {
+            "item": "minecraft:oak_planks",
+            "count": 32
+          },
+          {
+            "item": "minecraft:crafting_table",
+            "count": 1
+          },
+          {
+            "item": "minecraft:blaze_rod",
+            "count": 7
+          },
+          {
+            "item": "minecraft:ender_pearl",
+            "count": 12
+          },
+          {
+            "item": "minecraft:obsidian",
+            "count": 14
+          }
+        ],
+        "armour": {
+          "head": "minecraft:iron_helmet",
+          "chest": "minecraft:iron_chestplate",
+          "legs": "minecraft:iron_leggings",
+          "feet": "minecraft:iron_boots"
+        },
+        "effects": [],
+        "naturalCave": false,
+        "caveMaxY": 100,
+        "caveMinY": 32,
+        "loadChunks": [
+          {
+            "dimension": "minecraft:overworld",
+            "position": [
+              -3,
+              81,
+              -3
+            ]
+          },
+          {
+            "dimension": "minecraft:overworld",
+            "position": [
+              -3,
+              81,
+              3
+            ]
+          },
+          {
+            "dimension": "minecraft:overworld",
+            "position": [
+              3,
+              81,
+              -3
+            ]
+          },
+          {
+            "dimension": "minecraft:overworld",
+            "position": [
+              3,
+              81,
+              3
+            ]
+          }
+        ]
+      },
+      "notes": "Matched lit return portals at known 8:1 coordinates. Compound predicate proves return plus eyes; twelve pearls leaves no locator-loss reserve.",
+      "successCheck": "all: inventory ender_eye >=12 AND position_within overworld (2,81,0) radius6",
+      "handoffFrom": [
+        "L-D1"
+      ],
+      "startState": "Nether return portal, 7 rods, 12 pearls, exit kit"
+    },
+    {
+      "id": "L-E2",
+      "name": "l-e2",
+      "phase": "E",
+      "seed": "20261009",
+      "goal": "Return to the Overworld within 1024 blocks of 0, 80, 0.",
+      "durationBudgetMs": 900000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": false
+      },
+      "setup": {
+        "dimension": "minecraft:the_nether",
+        "position": [
+          68.5,
+          42,
+          64.5
+        ],
+        "surface": false,
+        "groundBelowCanopy": false,
+        "naturalGround": true,
+        "time": 1000,
+        "weather": "clear",
+        "freezeUntilGoalStart": true,
+        "commands": [],
+        "inventory": [
+          {
+            "item": "minecraft:iron_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:iron_sword",
+            "count": 1
+          },
+          {
+            "item": "minecraft:shield",
+            "count": 1
+          },
+          {
+            "item": "minecraft:water_bucket",
+            "count": 1
+          },
+          {
+            "item": "minecraft:flint_and_steel",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 24
+          },
+          {
+            "item": "minecraft:cobblestone",
+            "count": 64
+          },
+          {
+            "item": "minecraft:oak_planks",
+            "count": 32
+          },
+          {
+            "item": "minecraft:crafting_table",
+            "count": 1
+          },
+          {
+            "item": "minecraft:blaze_rod",
+            "count": 7
+          },
+          {
+            "item": "minecraft:ender_pearl",
+            "count": 14
+          },
+          {
+            "item": "minecraft:obsidian",
+            "count": 14
+          }
+        ],
+        "armour": {
+          "head": "minecraft:iron_helmet",
+          "chest": "minecraft:iron_chestplate",
+          "legs": "minecraft:iron_leggings",
+          "feet": "minecraft:iron_boots"
+        },
+        "effects": [],
+        "naturalCave": true,
+        "caveMaxY": 100,
+        "caveMinY": 32
+      },
+      "notes": "Lost original portal branch: obsidian and ignition available, natural Nether start near origin. Building method is advisory; resulting Overworld position is factual.",
+      "successCheck": "position_within overworld (0,80,0) radius1024",
+      "handoffFrom": [
+        "L-D1"
+      ],
+      "startState": "Nether, no portal, 14 obsidian, ignition, 7 rods, 14 pearls"
+    },
+    {
+      "id": "L-F1",
+      "name": "l-f1",
+      "phase": "F",
+      "seed": "20261009",
+      "goal": "Enter a stronghold.",
+      "durationBudgetMs": 1200000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": false
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          134.5,
+          80,
+          488.5
+        ],
+        "surface": true,
+        "groundBelowCanopy": true,
+        "naturalGround": true,
+        "time": 1000,
+        "weather": "clear",
+        "freezeUntilGoalStart": true,
+        "commands": [],
+        "inventory": [
+          {
+            "item": "minecraft:iron_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:iron_sword",
+            "count": 1
+          },
+          {
+            "item": "minecraft:shield",
+            "count": 1
+          },
+          {
+            "item": "minecraft:water_bucket",
+            "count": 1
+          },
+          {
+            "item": "minecraft:flint_and_steel",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 24
+          },
+          {
+            "item": "minecraft:cobblestone",
+            "count": 64
+          },
+          {
+            "item": "minecraft:oak_planks",
+            "count": 32
+          },
+          {
+            "item": "minecraft:crafting_table",
+            "count": 1
+          },
+          {
+            "item": "minecraft:ender_eye",
+            "count": 16
+          },
+          {
+            "item": "minecraft:ender_pearl",
+            "count": 2
+          },
+          {
+            "item": "minecraft:obsidian",
+            "count": 14
+          }
+        ],
+        "armour": {
+          "head": "minecraft:iron_helmet",
+          "chest": "minecraft:iron_chestplate",
+          "legs": "minecraft:iron_leggings",
+          "feet": "minecraft:iron_boots"
+        },
+        "effects": [],
+        "locate": {
+          "type": "structure",
+          "id": "minecraft:stronghold",
+          "offset": [
+            800,
+            0
+          ]
+        }
+      },
+      "notes": "Starts ~800 horizontal blocks east of located stronghold, on surface. Sixteen eyes include 4 reserve for locator losses per route.",
+      "successCheck": "advancement: story/follow_ender_eye",
+      "handoffFrom": [
+        "L-E1",
+        "L-E2"
+      ],
+      "startState": "Overworld surface ~800 blocks from stronghold, 16 eyes, iron kit"
+    },
+    {
+      "id": "L-G1",
+      "name": "l-g1",
+      "phase": "G",
+      "seed": "20261009",
+      "goal": "Enter the End.",
+      "durationBudgetMs": 1200000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": false
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          134.5,
+          80,
+          488.5
+        ],
+        "surface": false,
+        "groundBelowCanopy": false,
+        "naturalGround": true,
+        "time": 1000,
+        "weather": "clear",
+        "freezeUntilGoalStart": true,
+        "commands": [],
+        "inventory": [
+          {
+            "item": "minecraft:iron_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:iron_sword",
+            "count": 1
+          },
+          {
+            "item": "minecraft:shield",
+            "count": 1
+          },
+          {
+            "item": "minecraft:water_bucket",
+            "count": 1
+          },
+          {
+            "item": "minecraft:flint_and_steel",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 24
+          },
+          {
+            "item": "minecraft:cobblestone",
+            "count": 64
+          },
+          {
+            "item": "minecraft:oak_planks",
+            "count": 32
+          },
+          {
+            "item": "minecraft:crafting_table",
+            "count": 1
+          },
+          {
+            "item": "minecraft:ender_eye",
+            "count": 12
+          },
+          {
+            "item": "minecraft:bow",
+            "count": 1
+          },
+          {
+            "item": "minecraft:arrow",
+            "count": 64
+          },
+          {
+            "item": "minecraft:ender_pearl",
+            "count": 2
+          }
+        ],
+        "armour": {
+          "head": "minecraft:iron_helmet",
+          "chest": "minecraft:iron_chestplate",
+          "legs": "minecraft:iron_leggings",
+          "feet": "minecraft:iron_boots"
+        },
+        "effects": [],
+        "locate": {
+          "type": "structure",
+          "id": "minecraft:stronghold",
+          "offset": [
+            4,
+            4
+          ]
+        },
+        "standingOn": "#minecraft:stone_bricks",
+        "caveMaxY": 48,
+        "caveMinY": -60,
+        "airBlock": "minecraft:cave_air"
+      },
+      "notes": "Natural stronghold interior on stone-brick floor; room and eye counts vary, 12 eyes suffice. Final End kit includes bow/arrows, water and blocks.",
+      "successCheck": "advancement: story/enter_the_end",
+      "handoffFrom": [
+        "L-F1"
+      ],
+      "startState": "Inside stronghold, 12 eyes, iron kit, bow, 64 arrows, 2 pearls"
+    },
+    {
+      "id": "L-H0",
+      "name": "l-h0",
+      "phase": "H",
+      "seed": "20261009",
+      "goal": "Reach within 40 blocks of 0, 64, 0 in the End.",
+      "durationBudgetMs": 600000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": false
+      },
+      "setup": {
+        "dimension": "minecraft:the_end",
+        "position": [
+          100.5,
+          49,
+          0.5
+        ],
+        "surface": false,
+        "groundBelowCanopy": false,
+        "naturalGround": true,
+        "time": 1000,
+        "weather": "clear",
+        "freezeUntilGoalStart": true,
+        "commands": [
+          "execute in minecraft:the_end run fill 98 48 -2 102 48 2 minecraft:obsidian",
+          "execute in minecraft:the_end run fill 98 49 -2 102 52 2 minecraft:air"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:iron_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:iron_sword",
+            "count": 1
+          },
+          {
+            "item": "minecraft:shield",
+            "count": 1
+          },
+          {
+            "item": "minecraft:water_bucket",
+            "count": 1
+          },
+          {
+            "item": "minecraft:flint_and_steel",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 24
+          },
+          {
+            "item": "minecraft:cobblestone",
+            "count": 64
+          },
+          {
+            "item": "minecraft:oak_planks",
+            "count": 32
+          },
+          {
+            "item": "minecraft:crafting_table",
+            "count": 1
+          },
+          {
+            "item": "minecraft:bow",
+            "count": 1
+          },
+          {
+            "item": "minecraft:arrow",
+            "count": 64
+          },
+          {
+            "item": "minecraft:ender_pearl",
+            "count": 2
+          }
+        ],
+        "armour": {
+          "head": "minecraft:iron_helmet",
+          "chest": "minecraft:iron_chestplate",
+          "legs": "minecraft:iron_leggings",
+          "feet": "minecraft:iron_boots"
+        },
+        "effects": [],
+        "loadChunks": [
+          {
+            "dimension": "minecraft:the_end",
+            "position": [
+              0,
+              80,
+              0
+            ]
+          }
+        ],
+        "settleTicks": 100
+      },
+      "notes": "Separate platform-to-main-island link; natural dragon and crystals stay alive. Authored vanilla-sized obsidian entry platform.",
+      "successCheck": "position_within the_end (0,64,0) radius40",
+      "handoffFrom": [
+        "L-G1"
+      ],
+      "startState": "End obsidian platform, Phase G exit kit"
+    },
+    {
+      "id": "L-H1",
+      "name": "l-h1",
+      "phase": "H",
+      "seed": "20261009",
+      "goal": "Defeat the Ender Dragon.",
+      "durationBudgetMs": 1200000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": false
+      },
+      "setup": {
+        "dimension": "minecraft:the_end",
+        "position": [
+          100.5,
+          49,
+          0.5
+        ],
+        "surface": false,
+        "groundBelowCanopy": false,
+        "naturalGround": true,
+        "time": 1000,
+        "weather": "clear",
+        "freezeUntilGoalStart": true,
+        "commands": [
+          "execute in minecraft:the_end run fill 98 48 -2 102 48 2 minecraft:obsidian",
+          "execute in minecraft:the_end run fill 98 49 -2 102 52 2 minecraft:air"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:iron_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:iron_sword",
+            "count": 1
+          },
+          {
+            "item": "minecraft:shield",
+            "count": 1
+          },
+          {
+            "item": "minecraft:water_bucket",
+            "count": 1
+          },
+          {
+            "item": "minecraft:flint_and_steel",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 24
+          },
+          {
+            "item": "minecraft:cobblestone",
+            "count": 64
+          },
+          {
+            "item": "minecraft:oak_planks",
+            "count": 32
+          },
+          {
+            "item": "minecraft:crafting_table",
+            "count": 1
+          },
+          {
+            "item": "minecraft:bow",
+            "count": 1
+          },
+          {
+            "item": "minecraft:arrow",
+            "count": 64
+          },
+          {
+            "item": "minecraft:ender_pearl",
+            "count": 2
+          }
+        ],
+        "armour": {
+          "head": "minecraft:iron_helmet",
+          "chest": "minecraft:iron_chestplate",
+          "legs": "minecraft:iron_leggings",
+          "feet": "minecraft:iron_boots"
+        },
+        "effects": [],
+        "loadChunks": [
+          {
+            "dimension": "minecraft:the_end",
+            "position": [
+              0,
+              80,
+              0
+            ]
+          }
+        ],
+        "settleTicks": 100
+      },
+      "notes": "Full final link includes platform escape, crystals and dragon. Real naturally generated dragon; no weakened boss, effects or artificial ammunition replenishment.",
+      "successCheck": "entity_killed_by_agent: ender_dragon afterGoalStart",
+      "handoffFrom": [
+        "L-G1",
+        "L-H0"
+      ],
+      "startState": "End obsidian platform, iron armour, bow/64 arrows, 64 blocks, 24 food"
+    }
+  ]
+}

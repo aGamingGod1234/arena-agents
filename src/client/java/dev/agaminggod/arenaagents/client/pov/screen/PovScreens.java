@@ -1,0 +1,376 @@
+package dev.agaminggod.arenaagents.client.pov.screen;
+
+import com.mojang.authlib.GameProfile;
+import dev.agaminggod.arenaagents.client.pov.PovClient;
+import dev.agaminggod.arenaagents.client.pov.PovClientSession;
+import dev.agaminggod.arenaagents.client.pov.input.OperatorInputSender;
+import dev.agaminggod.arenaagents.pov.AgentPovBookPayload;
+import dev.agaminggod.arenaagents.pov.AgentPovMenuPayload;
+import dev.agaminggod.arenaagents.pov.AgentPovStatePayload;
+import dev.agaminggod.arenaagents.pov.OperatorAction;
+import dev.agaminggod.arenaagents.pov.PovDeath;
+import dev.agaminggod.arenaagents.pov.PovMenu;
+import java.nio.charset.StandardCharsets;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.BookEditScreen;
+import net.minecraft.client.gui.screens.inventory.BookViewScreen;
+import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.protocol.game.ClientboundMerchantOffersPacket;
+import net.minecraft.network.protocol.game.ClientboundPlaceGhostRecipePacket;
+import net.minecraft.world.inventory.MerchantMenu;
+import net.minecraft.world.item.component.WritableBookContent;
+import net.minecraft.client.gui.screens.inventory.MenuAccess;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.player.RemotePlayer;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerInput;
+import net.minecraft.world.inventory.MenuType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Mirrors the agent's open menu and death state. Mirrored screens are built over a stand-in inventory,
+ * never become LocalPlayer.containerMenu and never reach vanilla container packets.
+ */
+public final class PovScreens {
+	private static final Logger LOGGER = LoggerFactory.getLogger(PovScreens.class);
+	private static final int NONE = Integer.MIN_VALUE;
+	private static final int INVENTORY_CONTAINER_ID = 0;
+	private static final long INVENTORY_REQUEST_NANOS = TimeUnit.SECONDS.toNanos(2);
+	private static final UUID PROXY_ID = UUID.nameUUIDFromBytes("arenaagents:pov-mirror".getBytes(StandardCharsets.UTF_8));
+	private static Supplier<Inventory> proxyInventory = PovScreens::ownProxyInventory;
+	private static RemotePlayer ownProxy;
+	private static PovClientSession session;
+	private static Screen mirrorScreen;
+	private static AbstractContainerMenu mirrorMenu;
+	private static int mirrorContainerId = NONE;
+	private static MenuType<?> mirrorType;
+	private static int dismissedContainerId = NONE;
+	private static boolean inventoryRequested;
+	private static long inventoryRequestedAt;
+	private static AgentPovMenuPayload lastMenu;
+	private static ClientboundMerchantOffersPacket lastOffers;
+	private static int agentBookSlot = NONE;
+	private static boolean registered;
+
+	private PovScreens() {
+	}
+
+	public static synchronized void register() {
+		if (registered) return;
+		registered = true;
+		ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
+			adoptCreativeInventory(client, screen);
+			if (screen != mirrorScreen) return;
+			// Spectators look but never click or scroll; in a takeover bundle scrolling is relayed to the agent.
+			ScreenMouseEvents.allowMouseClick(screen).register((target, event) -> PovClient.isTakeover());
+			ScreenMouseEvents.allowMouseScroll(screen).register((target, x, y, horizontal, vertical) -> PovClient.isTakeover());
+		});
+	}
+
+	/** Lets integration share the HUD stand-in's inventory; the default is a private unregistered RemotePlayer. */
+	public static void setProxyInventory(Supplier<Inventory> supplier) {
+		proxyInventory = supplier == null ? PovScreens::ownProxyInventory : supplier;
+	}
+
+	public static void onState(PovClientSession session, AgentPovStatePayload state) {
+		Minecraft client = Minecraft.getInstance();
+		if (session == null || state == null || client.player == null || client.level == null) return;
+		adoptSession(session);
+		OperatorInputSender.observeServerSlot(state.inventory().selectedSlot());
+		syncMirror(client);
+		PovDeath death = state.death().orElse(null);
+		if (death != null) {
+			showDeath(client, session, death);
+			return;
+		}
+		if (client.gui.screen() instanceof AgentPovDeathScreen) client.gui.setScreen(null);
+		PovMenu menu = state.menu().orElse(null);
+		if (menu == null) {
+			// The agent has no screen open: close whichever mirror is showing, including its inventory.
+			dismissedContainerId = NONE;
+			if (mirrorScreen != null) closeMirrorLocally(client);
+			return;
+		}
+		if (menu.containerId() != dismissedContainerId) dismissedContainerId = NONE;
+		MenuType<?> type = menu.menuType().orElse(null);
+		if (type == null) {
+			// The agent's own inventory screen: opened by the takeover operator (E) or by the agent to craft in
+			// its 2x2 grid. Contents arrive through onMenu right after this state.
+			if (mirrorType != null) closeMirrorLocally(client);
+			if (mirrorScreen == null && menu.containerId() != dismissedContainerId && screenFree(client)) {
+				openInventory(client);
+			}
+			return;
+		}
+		if (mirrorScreen != null && mirrorType == type && mirrorContainerId == menu.containerId()) return;
+		// A screen the operator opened (chat, pause) is never replaced; the next state retries.
+		if (menu.containerId() == dismissedContainerId || !screenFree(client)) return;
+		openContainer(client, type, menu);
+	}
+
+	public static void onMenu(PovClientSession session, AgentPovMenuPayload menu) {
+		Minecraft client = Minecraft.getInstance();
+		if (session == null || menu == null || client.player == null || menu.sessionId() != session.sessionId()) return;
+		adoptSession(session);
+		syncMirror(client);
+		lastMenu = menu;
+		if (mirrorScreen == null && menu.containerId() == INVENTORY_CONTAINER_ID && inventoryRequestPending()
+				&& screenFree(client) && !(client.gui.screen() instanceof AgentPovDeathScreen)) {
+			openInventory(client);
+		}
+		if (mirrorMenu != null && mirrorContainerId == menu.containerId()) PovContainerScreens.fill(mirrorMenu, menu);
+	}
+
+	public static void closeAll() {
+		Minecraft client = Minecraft.getInstance();
+		boolean povScreen = isPovScreen(client.gui.screen());
+		clearMirror();
+		dismissedContainerId = NONE;
+		inventoryRequested = false;
+		lastMenu = null;
+		lastOffers = null;
+		agentBookSlot = NONE;
+		session = null;
+		if (povScreen) client.gui.setScreen(null);
+	}
+
+	public static boolean isPovScreen(Screen screen) {
+		return screen != null && (screen == mirrorScreen || screen instanceof AgentPovDeathScreen);
+	}
+
+	/** Takeover E press: the mirrored inventory opens when the agent's inventory contents arrive. */
+	public static void requestInventory() {
+		inventoryRequested = true;
+		inventoryRequestedAt = System.nanoTime();
+		if (dismissedContainerId == INVENTORY_CONTAINER_ID) dismissedContainerId = NONE;
+	}
+
+	/** LocalPlayer.closeContainer for a mirrored screen: close locally, tell the server only in takeover. */
+	public static boolean interceptCloseContainer(Minecraft client) {
+		Screen screen = client.gui.screen();
+		if (screen == null || screen != mirrorScreen) return false;
+		int containerId = mirrorContainerId;
+		clearMirror();
+		dismissedContainerId = containerId;
+		if (PovClient.isTakeover()) OperatorInputSender.sendAction(OperatorAction.CLOSE_MENU, containerId, 0, 0);
+		client.gui.setScreen(null);
+		return true;
+	}
+
+	public static boolean interceptContainerInput(int containerId, int slot, int button, ContainerInput input) {
+		Screen screen = Minecraft.getInstance().gui.screen();
+		if (!isPovScreen(screen)) return false;
+		if (screen == mirrorScreen && containerId == mirrorContainerId && PovClient.isTakeover()) {
+			OperatorInputSender.sendAction(OperatorAction.MENU_CLICK, slot, button, input.ordinal());
+		}
+		return true;
+	}
+
+	public static boolean interceptButtonClick(int containerId, int buttonId) {
+		Screen screen = Minecraft.getInstance().gui.screen();
+		if (!isPovScreen(screen)) return false;
+		if (screen == mirrorScreen && containerId == mirrorContainerId && PovClient.isTakeover()) {
+			OperatorInputSender.sendAction(OperatorAction.MENU_BUTTON, buttonId, 0, 0);
+		}
+		return true;
+	}
+
+	/** True while a mirrored screen is showing; its menu packets are relayed (takeover) or dropped (spectate). */
+	public static boolean blocksVanillaMenuPackets() {
+		return isPovScreen(Minecraft.getInstance().gui.screen());
+	}
+
+	/**
+	 * The agent's merchant offers, forwarded by the server when trading opens and refreshed while it stays open.
+	 * Kept for a mirror that opens later; false (vanilla handles it) outside an agent view.
+	 */
+	public static boolean acceptMerchantOffers(ClientboundMerchantOffersPacket packet) {
+		if (session == null || !PovClient.isActive()) return false;
+		lastOffers = packet;
+		applyOffers(packet);
+		return true;
+	}
+
+	private static void applyOffers(ClientboundMerchantOffersPacket packet) {
+		if (!(mirrorMenu instanceof MerchantMenu merchant) || mirrorContainerId != packet.getContainerId()) return;
+		// ClientPacketListener.handleMerchantOffers, applied to the mirror instead of LocalPlayer.containerMenu.
+		merchant.setOffers(packet.getOffers());
+		merchant.setXp(packet.getVillagerXp());
+		merchant.setMerchantLevel(packet.getVillagerLevel());
+		merchant.setShowProgressBar(packet.showProgress());
+		merchant.setCanRestock(packet.canRestock());
+	}
+
+	/** ClientPacketListener.handlePlaceRecipe for the mirrored screen: the agent's recipe book could not place it. */
+	public static boolean acceptGhostRecipe(ClientboundPlaceGhostRecipePacket packet) {
+		if (!PovClient.isTakeover() || mirrorScreen == null) return false;
+		Minecraft client = Minecraft.getInstance();
+		if (client.gui.screen() == mirrorScreen && mirrorContainerId == packet.containerId()
+				&& mirrorScreen instanceof RecipeUpdateListener listener) {
+			listener.fillGhostRecipe(packet.recipeDisplay());
+		}
+		return true;
+	}
+
+	/** The container id of the mirrored screen on display, or {@code fallback} when none is showing. */
+	public static int mirrorContainerId(int fallback) {
+		return mirrorScreen != null && Minecraft.getInstance().gui.screen() == mirrorScreen ? mirrorContainerId : fallback;
+	}
+
+	/** The inventory the recipe book counts: the agent's items while a mirrored screen is open. */
+	public static Inventory recipeInventory(Inventory fallback) {
+		if (mirrorScreen == null || Minecraft.getInstance().gui.screen() != mirrorScreen) return fallback;
+		Inventory proxy = proxyInventory.get();
+		return proxy == null ? fallback : proxy;
+	}
+
+	/** Slot named by an edited book's packet: the agent's book slot from the server, or -1 when none is open. */
+	public static int agentBookSlot() {
+		return agentBookSlot == NONE ? -1 : agentBookSlot;
+	}
+
+	/** The agent opened a book: the editor for a writable book, the reader for a written one, as vanilla would. */
+	public static void openBook(PovClientSession current, AgentPovBookPayload payload) {
+		Minecraft client = Minecraft.getInstance();
+		if (current == null || !current.takeover() || payload.sessionId() != current.sessionId() || client.player == null) return;
+		if (!screenFree(client)) return;
+		WritableBookContent writable = payload.book().get(DataComponents.WRITABLE_BOOK_CONTENT);
+		if (writable != null) {
+			agentBookSlot = payload.slot();
+			// The agent signs it, so the signing screen previews the agent as author; the slot comes from the payload.
+			Player agent = PovClient.agentPlayer();
+			client.gui.setScreen(new BookEditScreen(agent != null ? agent : client.player, payload.book(), payload.hand(), writable));
+			return;
+		}
+		BookViewScreen.BookAccess access = BookViewScreen.BookAccess.fromItem(payload.book());
+		if (access != null) client.gui.setScreen(new BookViewScreen(access));
+	}
+
+	/** The mirrored inventory shows the agent's body instead of the operator's; null hides the model. */
+	public static LivingEntity displayEntity(Screen screen, LivingEntity fallback) {
+		if (screen == null || screen != mirrorScreen) return fallback;
+		ClientLevel level = Minecraft.getInstance().level;
+		PovClientSession current = session;
+		return level == null || current == null ? null : level.getPlayerByUUID(current.agentUuid());
+	}
+
+	private static void adoptSession(PovClientSession next) {
+		if (session != null && session.sessionId() == next.sessionId()) {
+			session = next;
+			return;
+		}
+		if (session != null) closeAll();
+		session = next;
+	}
+
+	private static void showDeath(Minecraft client, PovClientSession current, PovDeath death) {
+		if (client.gui.screen() instanceof AgentPovDeathScreen screen) {
+			screen.update(death, current.takeover());
+			return;
+		}
+		if (!screenFree(client)) return;
+		clearMirror();
+		client.gui.setScreen(new AgentPovDeathScreen(current.agentName(), death, current.takeover()));
+	}
+
+	private static void openContainer(Minecraft client, MenuType<?> type, PovMenu menu) {
+		Inventory inventory = proxyInventory.get();
+		if (inventory == null) return;
+		Screen screen = PovContainerScreens.create(type, menu.containerId(), inventory, menu.title());
+		if (!(screen instanceof MenuAccess<?> access)) {
+			LOGGER.warn("No mirrored screen for agent menu type {}", type);
+			dismissedContainerId = menu.containerId();
+			return;
+		}
+		setMirror(screen, access.getMenu(), menu.containerId(), type);
+		// Vanilla sends the offers right after opening, usually before this mirror exists.
+		if (lastOffers != null) applyOffers(lastOffers);
+		client.gui.setScreen(screen);
+		AgentPovMenuPayload contents = lastMenu;
+		if (contents != null && contents.containerId() == menu.containerId() && mirrorMenu != null) {
+			PovContainerScreens.fill(mirrorMenu, contents);
+		}
+	}
+
+	private static void openInventory(Minecraft client) {
+		Inventory inventory = proxyInventory.get();
+		if (inventory == null) return;
+		Player owner = inventory.player;
+		InventoryScreen screen = new InventoryScreen(owner);
+		inventoryRequested = false;
+		setMirror(screen, owner.inventoryMenu, INVENTORY_CONTAINER_ID, null);
+		client.gui.setScreen(screen);
+	}
+
+	private static boolean inventoryRequestPending() {
+		if (inventoryRequested && System.nanoTime() - inventoryRequestedAt > INVENTORY_REQUEST_NANOS) inventoryRequested = false;
+		return inventoryRequested;
+	}
+
+	private static boolean screenFree(Minecraft client) {
+		return client.gui.screen() == null || isPovScreen(client.gui.screen());
+	}
+
+	private static void setMirror(Screen screen, AbstractContainerMenu menu, int containerId, MenuType<?> type) {
+		// Set before setScreen so AFTER_INIT recognises the screen.
+		mirrorScreen = screen;
+		mirrorMenu = menu;
+		mirrorContainerId = containerId;
+		mirrorType = type;
+	}
+
+	/**
+	 * The mirrored inventory of a creative agent turns into vanilla's creative screen (InventoryScreen.init asks the
+	 * local player, which answers for the agent in a takeover). That screen only works on LocalPlayer.inventoryMenu,
+	 * so it becomes the mirror: the agent's inventory is shown there, its slot changes go to the agent as creative
+	 * slot packets, and closing it makes the server resend the operator's real inventory.
+	 */
+	private static void adoptCreativeInventory(Minecraft client, Screen screen) {
+		if (!(screen instanceof CreativeModeInventoryScreen) || screen == mirrorScreen || client.player == null) return;
+		if (!PovClient.isTakeover() || session == null) return;
+		setMirror(screen, client.player.inventoryMenu, INVENTORY_CONTAINER_ID, null);
+		AgentPovMenuPayload contents = lastMenu;
+		if (contents != null && contents.containerId() == INVENTORY_CONTAINER_ID) PovContainerScreens.fill(mirrorMenu, contents);
+	}
+
+	/** Forget a mirror that something else (a vanilla screen, a server close packet) already replaced. */
+	private static void syncMirror(Minecraft client) {
+		if (mirrorScreen != null && client.gui.screen() != mirrorScreen) clearMirror();
+	}
+
+	private static void closeMirrorLocally(Minecraft client) {
+		Screen screen = mirrorScreen;
+		clearMirror();
+		if (screen != null && client.gui.screen() == screen) client.gui.setScreen(null);
+	}
+
+	private static void clearMirror() {
+		mirrorScreen = null;
+		mirrorMenu = null;
+		mirrorContainerId = NONE;
+		mirrorType = null;
+	}
+
+	private static Inventory ownProxyInventory() {
+		ClientLevel level = Minecraft.getInstance().level;
+		if (level == null) return null;
+		if (ownProxy == null || ownProxy.level() != level) {
+			// Never added to the level; it only owns the slots the mirrored menus write into.
+			ownProxy = new RemotePlayer(level, new GameProfile(PROXY_ID, "PovMirror"));
+		}
+		return ownProxy.getInventory();
+	}
+}

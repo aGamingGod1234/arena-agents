@@ -1,0 +1,18 @@
+{
+  "noticeAt": "2026-10-25T13:28:17.728165+00:00",
+  "reason": "User-directed complete Desktop stop for usability; no Desktop commands, copies or polling until orchestrator authorization.",
+  "voidCandidateTags": [
+    "d39-pearls4-987654321-r3",
+    "d39-pearls4-20261024-r3"
+  ],
+  "voidCopies": [
+    "physical-base202-r3-retry2-error.json"
+  ],
+  "localTransferAndReadProcessesStopped": [],
+  "replaceOn": "Mini PC via slot.sh",
+  "voidQueueTags": [
+    "d39-nether-gold10-28",
+    "d39-nether-29"
+  ],
+  "timestampNote": "noticeAt is the local acknowledgement timestamp. The actual stop happened earlier; the interrupted Desktop queue tags are explicitly void rather than inferred from that timestamp."
+}

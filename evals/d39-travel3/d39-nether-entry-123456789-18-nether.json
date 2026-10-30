@@ -1,0 +1,59 @@
+{
+  "protocol": "/home/agaminggod/Desktop/Projects/aa-run-4682f12e/runtime/headless-runs/run-1792916871970-151e31e8/q-nkew1o-9b51-LONG-r1-3bdb5d53/quality-protocol.jsonl",
+  "playingWindow": {
+    "startedAt": 1792916917789,
+    "endedAt": 1792922317393
+  },
+  "netherMinutes": 89.97651666666667,
+  "pathBlocks": 5265.508736048152,
+  "path10Blocks": 3397.9344279588418,
+  "blocksPerNetherMinute": 37.76468076161549,
+  "sampledPathBlocksPerNetherMinute": 58.520922248580995,
+  "maxFromEntry": 432.8768959844139,
+  "maxDisplacementPerNetherMinute": 4.810998602980821,
+  "firstFortress": {
+    "netherMinutes": 39.5407,
+    "wallMinutes": 39.5407,
+    "wallFromGameStartMinutes": 39.54946666666667,
+    "at": {
+      "x": -149.30000001192093,
+      "y": 48,
+      "z": -177.42438216771063
+    },
+    "seen": {
+      "x": -148,
+      "y": 45,
+      "z": -189,
+      "blockId": "minecraft:nether_bricks",
+      "distance": 11.49605629813292,
+      "bearing": 19.600616455078125,
+      "elevation": -18.571278987880778,
+      "tags": [
+        "#minecraft:mineable/pickaxe"
+      ]
+    }
+  },
+  "deaths": 0,
+  "travel": {
+    "calls": 106,
+    "activeMinutes": 38.9908,
+    "netGain": 1491,
+    "netBlocksPerActiveMinute": 38.239789899155696,
+    "reasons": {
+      "HOSTILE_NEAR": 4,
+      "ACTION_CANCELLED": 16,
+      "OUT_OF_BLOCKS": 8,
+      "ARRIVED": 29,
+      "NO_ROUTE": 33,
+      "TARGET_SEEN": 2,
+      "TRAVEL_TIMEOUT": 13,
+      "BUILD_FAILED": 1
+    }
+  },
+  "serverTickRate": 20.000218575550544,
+  "sampling": {
+    "displacementCadenceSeconds": 10,
+    "gapsOver5s": 0,
+    "excludedJumps": 0
+  }
+}

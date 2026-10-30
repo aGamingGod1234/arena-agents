@@ -1,0 +1,117 @@
+{
+  "checkpoint": "9-nether-entry-sol-bed-gold.json",
+  "sha256": "4751c54242322207ff935188d97259c4f097dfc10a67514fa4c1ab250d8160f2",
+  "seed": "-8891462362762682724",
+  "jar": "/home/agaminggod/Desktop/Projects/arena-beat-game/jars/d25-bb227cbc.jar",
+  "modelCalls": 0,
+  "startedAt": "2026-10-24T12:29:55.898Z",
+  "summon": "Creating Probe. It will be ready when its player joins.",
+  "setup": {
+    "pos": [
+      9.504781968142293,
+      37,
+      24.5
+    ],
+    "dimension": "Probe has the following entity data: \"minecraft:the_nether\"",
+    "bedReceipt": null
+  },
+  "kit": {
+    "expected": {
+      "minecraft:stone_pickaxe": 2,
+      "minecraft:flint_and_steel": 1,
+      "minecraft:stone_sword": 1,
+      "minecraft:cobblestone": 109,
+      "minecraft:diorite": 38,
+      "minecraft:iron_pickaxe": 1,
+      "minecraft:bucket": 3,
+      "minecraft:oak_log": 1,
+      "minecraft:crafting_table": 1,
+      "minecraft:cobbled_deepslate": 49,
+      "minecraft:stone_axe": 1,
+      "minecraft:granite": 3,
+      "minecraft:stick": 1,
+      "minecraft:andesite": 23,
+      "minecraft:wooden_pickaxe": 1,
+      "minecraft:cooked_beef": 8,
+      "minecraft:oak_planks": 7,
+      "minecraft:shield": 1
+    },
+    "actual": {
+      "minecraft:stone_pickaxe": 2,
+      "minecraft:flint_and_steel": 1,
+      "minecraft:stone_sword": 1,
+      "minecraft:cobblestone": 109,
+      "minecraft:diorite": 38,
+      "minecraft:iron_pickaxe": 1,
+      "minecraft:bucket": 3,
+      "minecraft:oak_log": 1,
+      "minecraft:crafting_table": 1,
+      "minecraft:cobbled_deepslate": 49,
+      "minecraft:stone_axe": 1,
+      "minecraft:granite": 3,
+      "minecraft:stick": 1,
+      "minecraft:andesite": 23,
+      "minecraft:wooden_pickaxe": 1,
+      "minecraft:cooked_beef": 8,
+      "minecraft:oak_planks": 7,
+      "minecraft:shield": 1
+    },
+    "equipment": {
+      "head": {
+        "id": "minecraft:golden_helmet",
+        "damage": null
+      }
+    },
+    "pass": true
+  },
+  "safety": {
+    "samples": [],
+    "wallMs": 5006,
+    "ticks": 0,
+    "skipped": "Spawn-control baseline only",
+    "minHealth": null,
+    "pass": false
+  },
+  "respawnConfig": "Probe has the following entity data: {pos: [I; -18, -54, 94], forced: 1b, pitch: 0.0f, dimension: \"minecraft:overworld\", yaw: 0.0f}",
+  "bedRespawn": {
+    "pos": [
+      -17.5,
+      -54,
+      93.5
+    ],
+    "dimension": "Probe has the following entity data: \"minecraft:overworld\"",
+    "health": 20,
+    "action": "CANCELLED",
+    "reasonCode": "ACTION_CANCELLED",
+    "pass": true
+  },
+  "spareKit": {
+    "chest": "The target block is not a block entity",
+    "table": "",
+    "pass": false
+  },
+  "route": {
+    "pass": true,
+    "kind": "surface-camp",
+    "checks": 0
+  },
+  "brokenBedRespawn": {
+    "pos": [
+      -17.5,
+      -54,
+      94.5
+    ],
+    "dimension": "Probe has the following entity data: \"minecraft:overworld\"",
+    "health": 20,
+    "action": "CANCELLED",
+    "reasonCode": "ACTION_CANCELLED",
+    "expectedWorldSpawn": [
+      4096.5,
+      300,
+      4096.5
+    ],
+    "pass": false
+  },
+  "pass": false,
+  "finishedAt": "2026-10-24T12:31:30.108Z"
+}

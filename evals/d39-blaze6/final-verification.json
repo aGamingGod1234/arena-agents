@@ -1,0 +1,20 @@
+{
+  "sourceAndJarHashesVerified": true,
+  "comparisonManifestsMatchExceptJar": true,
+  "d31NoRegressedIncident": true,
+  "htmlPreviews": [
+    {
+      "width": 1180,
+      "contentHeight": 850,
+      "consoleMessages": []
+    },
+    {
+      "width": 390,
+      "contentHeight": 1417,
+      "consoleMessages": []
+    }
+  ],
+  "naturalBarPassed": false,
+  "conditionalSolGamesRun": 0,
+  "ownLiveWorkersExited": true
+}

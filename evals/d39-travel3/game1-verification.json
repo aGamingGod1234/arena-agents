@@ -1,0 +1,26 @@
+{
+  "tag": "d39-travel3-123456789-r3",
+  "playedMinutes": 90.00001666666667,
+  "profile": {
+    "provider": "codex",
+    "model": "gpt-6.1-sol",
+    "reasoningEffort": "low",
+    "serviceTier": "default"
+  },
+  "build": {
+    "commit": null,
+    "jar": {
+      "path": "/home/agaminggod/Desktop/Projects/arena-beat-game/jars/d25-6345839e.jar",
+      "sha256": "53545d9bf635763da270c9077888de9e675d4587f86e833149c20eb52670f88f"
+    },
+    "coordinatorSha256": "23a75cdf2428218e02ccecb702ca909b53cce1bb13504859778ab14ab39be885"
+  },
+  "sourceChangedDuringRun": false,
+  "observerErrors": [],
+  "nativeExitCode": 0,
+  "measurementStatus": "INCOMPLETE",
+  "nativeDeadline": 1792953593108,
+  "nativeEndedAt": 1792953593109,
+  "deathCause": "Blaze fireball",
+  "deathAtGameMinute": 83.42911666666667
+}

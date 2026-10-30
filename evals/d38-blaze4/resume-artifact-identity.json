@@ -1,0 +1,16 @@
+{
+  "source": "b618143be2b7a9828d51e750029d1ecd1657f60c",
+  "oldJarSha256": "056be600acbbba4df670396a8fb156f5e88188d752ea9138be202a6f9c18a534",
+  "rebuiltJarSha256": "393d65d584ea4f519f79adae5234454a70dc69c843e8a12ec2389c3a2ec8f7a8",
+  "classes": 1564,
+  "differentClasses": [
+    "dev/agaminggod/arenaagents/server/runtime/ServerActionExecutor$3.class"
+  ],
+  "centeringFixSource": "1103ad7c",
+  "centeringFixJarSha256": "f5afb27d30cdb92abdfe2ba7243d193256188cea118ff4b9ccde9c024f940cfb",
+  "baselineVsCenteringDifferentClasses": [
+    "dev/agaminggod/arenaagents/server/runtime/ServerActionExecutor$3.class",
+    "dev/agaminggod/arenaagents/server/runtime/controller/ServerShelterController.class"
+  ],
+  "candidateJavaTreeSource": "1103ad7c"
+}

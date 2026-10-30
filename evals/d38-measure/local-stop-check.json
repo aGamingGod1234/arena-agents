@@ -1,0 +1,8 @@
+{
+  "machine": "minipc",
+  "scope": "light shell stop of an owned sleep fixture; no server/build/game",
+  "exit": 0,
+  "workerExit": -15,
+  "reasonPersisted": true,
+  "timePersisted": true
+}

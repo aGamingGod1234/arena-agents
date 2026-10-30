@@ -1,0 +1,670 @@
+{
+  "version": 1,
+  "validatedAt": "2026-10-18T10:06:07.694Z",
+  "device": "Linux shared test host",
+  "minecraft": "26.1.2",
+  "java": 25,
+  "seed": "20261009",
+  "jar": "candidate-ladder-fixtures-1/arena-agents.jar",
+  "jarSha256": "1212b6926cbaa21e2ef3aab973c7fcec8520a09daa3c846a85d56cd876116fed",
+  "method": "Real Fabric server, zero model calls, disposable shared seed-20261009 world. Revalidated L-B3/L-C1/L-C2/L-C3 only; other fixture results and old smoke results retain the previous validation date.",
+  "rawEvidence": "runtime/ladder-fixtures/validation-final.json",
+  "pass": true,
+  "fixtureResults": [
+    {
+      "id": "L-A1",
+      "pass": true,
+      "position": {
+        "x": 126.5,
+        "y": 26,
+        "z": 488.5
+      },
+      "dimension": "minecraft:overworld",
+      "checksPassed": 5,
+      "checksTotal": 5,
+      "failedChecks": []
+    },
+    {
+      "id": "L-A1b",
+      "pass": true,
+      "position": {
+        "x": 126.5,
+        "y": 26,
+        "z": 488.5
+      },
+      "dimension": "minecraft:overworld",
+      "checksPassed": 10,
+      "checksTotal": 10,
+      "failedChecks": []
+    },
+    {
+      "id": "L-A2",
+      "pass": true,
+      "position": {
+        "x": 126.5,
+        "y": 26,
+        "z": 488.5
+      },
+      "dimension": "minecraft:overworld",
+      "checksPassed": 16,
+      "checksTotal": 16,
+      "failedChecks": []
+    },
+    {
+      "id": "L-A2b",
+      "pass": true,
+      "position": {
+        "x": 126.5,
+        "y": 26,
+        "z": 488.5
+      },
+      "dimension": "minecraft:overworld",
+      "checksPassed": 17,
+      "checksTotal": 17,
+      "failedChecks": []
+    },
+    {
+      "id": "L-A3",
+      "pass": true,
+      "position": {
+        "x": 126.5,
+        "y": 26,
+        "z": 488.5
+      },
+      "dimension": "minecraft:overworld",
+      "checksPassed": 18,
+      "checksTotal": 18,
+      "failedChecks": []
+    },
+    {
+      "id": "L-A3b",
+      "pass": true,
+      "position": {
+        "x": 126.5,
+        "y": 26,
+        "z": 488.5
+      },
+      "dimension": "minecraft:overworld",
+      "checksPassed": 21,
+      "checksTotal": 21,
+      "failedChecks": []
+    },
+    {
+      "id": "L-A4",
+      "pass": true,
+      "position": {
+        "x": 126.5,
+        "y": 26,
+        "z": 488.5
+      },
+      "dimension": "minecraft:overworld",
+      "checksPassed": 20,
+      "checksTotal": 20,
+      "failedChecks": []
+    },
+    {
+      "id": "L-A5",
+      "pass": true,
+      "position": {
+        "x": 126.5,
+        "y": 26,
+        "z": 488.5
+      },
+      "dimension": "minecraft:overworld",
+      "checksPassed": 18,
+      "checksTotal": 18,
+      "failedChecks": []
+    },
+    {
+      "id": "L-A5b",
+      "pass": true,
+      "position": {
+        "x": -287.5,
+        "y": 63,
+        "z": -527.5
+      },
+      "dimension": "minecraft:overworld",
+      "checksPassed": 21,
+      "checksTotal": 21,
+      "failedChecks": []
+    },
+    {
+      "id": "L-A6",
+      "pass": true,
+      "position": {
+        "x": 390.5,
+        "y": 67,
+        "z": 392.5
+      },
+      "dimension": "minecraft:overworld",
+      "checksPassed": 18,
+      "checksTotal": 18,
+      "failedChecks": []
+    },
+    {
+      "id": "L-B1",
+      "pass": true,
+      "position": {
+        "x": 68.5,
+        "y": 42,
+        "z": 64.5
+      },
+      "dimension": "minecraft:the_nether",
+      "checksPassed": 18,
+      "checksTotal": 18,
+      "failedChecks": []
+    },
+    {
+      "id": "L-B2",
+      "pass": true,
+      "position": {
+        "x": 68.5,
+        "y": 42,
+        "z": 64.5
+      },
+      "dimension": "minecraft:the_nether",
+      "checksPassed": 19,
+      "checksTotal": 19,
+      "failedChecks": []
+    },
+    {
+      "id": "L-B3",
+      "pass": true,
+      "position": {
+        "x": -383.5,
+        "y": 39,
+        "z": 616.5
+      },
+      "dimension": "minecraft:the_nether",
+      "checksPassed": 21,
+      "checksTotal": 21,
+      "failedChecks": [],
+      "validatedAt": "2026-10-18T10:06:07.694Z"
+    },
+    {
+      "id": "L-C1",
+      "pass": true,
+      "position": {
+        "x": -335.5,
+        "y": 45,
+        "z": 640.5
+      },
+      "dimension": "minecraft:the_nether",
+      "checksPassed": 25,
+      "checksTotal": 25,
+      "failedChecks": [],
+      "validatedAt": "2026-10-18T10:06:07.694Z"
+    },
+    {
+      "id": "L-C2",
+      "pass": true,
+      "position": {
+        "x": -537.5,
+        "y": 89,
+        "z": 554.5
+      },
+      "dimension": "minecraft:the_nether",
+      "checksPassed": 38,
+      "checksTotal": 38,
+      "failedChecks": [],
+      "validatedAt": "2026-10-18T10:06:07.694Z"
+    },
+    {
+      "id": "L-C3",
+      "pass": true,
+      "position": {
+        "x": -537.5,
+        "y": 89,
+        "z": 554.5
+      },
+      "dimension": "minecraft:the_nether",
+      "checksPassed": 51,
+      "checksTotal": 51,
+      "failedChecks": [],
+      "validatedAt": "2026-10-18T10:06:07.694Z"
+    },
+    {
+      "id": "L-D1",
+      "pass": true,
+      "position": {
+        "x": 16.5,
+        "y": 58,
+        "z": 48.5
+      },
+      "dimension": "minecraft:the_nether",
+      "checksPassed": 21,
+      "checksTotal": 21,
+      "failedChecks": []
+    },
+    {
+      "id": "L-E1",
+      "pass": true,
+      "position": {
+        "x": 0.5,
+        "y": 80,
+        "z": 0.5
+      },
+      "dimension": "minecraft:the_nether",
+      "checksPassed": 21,
+      "checksTotal": 21,
+      "failedChecks": []
+    },
+    {
+      "id": "L-E2",
+      "pass": true,
+      "position": {
+        "x": 68.5,
+        "y": 42,
+        "z": 64.5
+      },
+      "dimension": "minecraft:the_nether",
+      "checksPassed": 21,
+      "checksTotal": 21,
+      "failedChecks": []
+    },
+    {
+      "id": "L-F1",
+      "pass": true,
+      "position": {
+        "x": 1048.5,
+        "y": 63,
+        "z": 2536.5
+      },
+      "dimension": "minecraft:overworld",
+      "checksPassed": 22,
+      "checksTotal": 22,
+      "failedChecks": []
+    },
+    {
+      "id": "L-G1",
+      "pass": true,
+      "position": {
+        "x": 260.5,
+        "y": -12,
+        "z": 2548.5
+      },
+      "dimension": "minecraft:overworld",
+      "checksPassed": 24,
+      "checksTotal": 24,
+      "failedChecks": []
+    },
+    {
+      "id": "L-H0",
+      "pass": true,
+      "position": {
+        "x": 100.5,
+        "y": 49,
+        "z": 0.5
+      },
+      "dimension": "minecraft:the_end",
+      "checksPassed": 23,
+      "checksTotal": 23,
+      "failedChecks": []
+    },
+    {
+      "id": "L-H1",
+      "pass": true,
+      "position": {
+        "x": 100.5,
+        "y": 49,
+        "z": 0.5
+      },
+      "dimension": "minecraft:the_end",
+      "checksPassed": 23,
+      "checksTotal": 23,
+      "failedChecks": []
+    }
+  ],
+  "smoke": [
+    {
+      "scenario": "L-A1",
+      "provider": "codex",
+      "model": "gpt-6.1-sol",
+      "repetition": 1,
+      "result": "FAIL",
+      "measurementStatus": "INCOMPLETE",
+      "minutesToGoal": null,
+      "observedMinutes": 1.00015,
+      "deaths": 0,
+      "bodyBusyPct": null,
+      "failures": {
+        "REACHED_FRONTIER": 2
+      },
+      "termination": "TIMEOUT",
+      "observerErrors": []
+    },
+    {
+      "scenario": "L-A3",
+      "provider": "codex",
+      "model": "gpt-6.1-sol",
+      "repetition": 1,
+      "result": "FAIL",
+      "measurementStatus": "INCOMPLETE",
+      "minutesToGoal": null,
+      "observedMinutes": 1.0002333333333333,
+      "deaths": 0,
+      "bodyBusyPct": 7.729863031959205,
+      "failures": {
+        "ITEM_NOT_IN_HOTBAR": 1
+      },
+      "termination": "TIMEOUT",
+      "observerErrors": []
+    }
+  ],
+  "smokeEvidence": "C:\\Users\\player\\aa-ladder\\runtime\\ladder-smoke-1",
+  "tests": {
+    "coordinator": {
+      "command": "CI=1 npm test",
+      "tests": 6796,
+      "passed": 6709,
+      "failed": 11,
+      "skipped": 76,
+      "failures": "Only the 11 existing Windows-dependent Linux failures. The existing CI setting skips the shared-host timing benchmark. Plain npm test also failed that timing assertion (p95 6.424ms against <5ms); isolated retry 6.059ms."
+    },
+    "quality": {
+      "tests": 134,
+      "passed": 132,
+      "failed": 0,
+      "skipped": 2
+    },
+    "core": {
+      "command": "./gradlew build verifyCore",
+      "pass": true,
+      "assertions": 2556532
+    },
+    "ladder": {
+      "command": "node --test coordinator/test/quality-ladder.test.mjs",
+      "tests": 18,
+      "passed": 18,
+      "failed": 0
+    }
+  },
+  "previousValidation": {
+    "validatedAt": "2026-10-15T08:09:17.407Z",
+    "jar": "feelint-dc17f1a9.jar",
+    "jarSha256": "87199dd5eb1a1629ada9fda77e1873b7c58bde6d2a52ed1d6e33a261594886bb",
+    "rawEvidence": "C:\\Users\\player\\aa-ladder\\runtime\\fixtures-final\\fixture-validation.json"
+  },
+  "revalidatedScenarios": [
+    "L-B3",
+    "L-C1",
+    "L-C2",
+    "L-C3"
+  ],
+  "fixtureSourceSha256": "c257746e82cefbc81cfb3d2e69e32544b0e557082d9c28a94c1bbe54f79bbb8f",
+  "validatorSourceSha256": "2eb6d770d2366e552a58ed131ffcf852ec9aa2587db79370e83b3ccf14151872",
+  "barterValidation": [
+    {
+      "name": "barter-fixture-reproducibly-reachable",
+      "pass": true,
+      "observed": [
+        {
+          "seed": 13,
+          "draws": 64,
+          "pearls": 7,
+          "firstGoalDraw": 42
+        },
+        {
+          "seed": 13,
+          "draws": 64,
+          "pearls": 7,
+          "firstGoalDraw": 42
+        }
+      ]
+    },
+    {
+      "name": "barter-typical-streams",
+      "pass": true,
+      "observed": {
+        "successful": 8,
+        "total": 16,
+        "trials": [
+          {
+            "seed": 0,
+            "draws": 64,
+            "pearls": 3,
+            "firstGoalDraw": null
+          },
+          {
+            "seed": 1,
+            "draws": 64,
+            "pearls": 9,
+            "firstGoalDraw": 29
+          },
+          {
+            "seed": 2,
+            "draws": 64,
+            "pearls": 8,
+            "firstGoalDraw": 36
+          },
+          {
+            "seed": 3,
+            "draws": 64,
+            "pearls": 3,
+            "firstGoalDraw": null
+          },
+          {
+            "seed": 4,
+            "draws": 64,
+            "pearls": 2,
+            "firstGoalDraw": null
+          },
+          {
+            "seed": 5,
+            "draws": 64,
+            "pearls": 0,
+            "firstGoalDraw": null
+          },
+          {
+            "seed": 6,
+            "draws": 64,
+            "pearls": 8,
+            "firstGoalDraw": 27
+          },
+          {
+            "seed": 7,
+            "draws": 64,
+            "pearls": 2,
+            "firstGoalDraw": null
+          },
+          {
+            "seed": 8,
+            "draws": 64,
+            "pearls": 8,
+            "firstGoalDraw": 26
+          },
+          {
+            "seed": 9,
+            "draws": 64,
+            "pearls": 8,
+            "firstGoalDraw": 19
+          },
+          {
+            "seed": 10,
+            "draws": 64,
+            "pearls": 11,
+            "firstGoalDraw": 4
+          },
+          {
+            "seed": 11,
+            "draws": 64,
+            "pearls": 0,
+            "firstGoalDraw": null
+          },
+          {
+            "seed": 12,
+            "draws": 64,
+            "pearls": 2,
+            "firstGoalDraw": null
+          },
+          {
+            "seed": 13,
+            "draws": 64,
+            "pearls": 7,
+            "firstGoalDraw": 42
+          },
+          {
+            "seed": 14,
+            "draws": 64,
+            "pearls": 2,
+            "firstGoalDraw": null
+          },
+          {
+            "seed": 15,
+            "draws": 64,
+            "pearls": 4,
+            "firstGoalDraw": 63
+          }
+        ]
+      }
+    }
+  ],
+  "fixtureLive": [
+    {
+      "scenario": "L-B3",
+      "provider": "codex",
+      "model": "gpt-6.1-sol",
+      "repetition": 1,
+      "result": "FAIL",
+      "goalCompleted": false,
+      "evaluatorPass": false,
+      "evaluatorSource": null,
+      "measurementStatus": "INCOMPLETE",
+      "minutesToGoal": null,
+      "observedMinutes": 2.1352333333333333,
+      "deaths": 1,
+      "bodyBusyPct": 28.25452331517242,
+      "failures": {
+        "REACHED_FRONTIER": 2,
+        "TARGET_NOT_VISIBLE": 1,
+        "NO_PLACEMENT_SUPPORT": 1,
+        "FIGHT_TIMED_OUT": 1,
+        "ACTION_CANCELLED": 1,
+        "FLEE_TIMED_OUT": 1,
+        "TASK_ALREADY_ACTIVE": 1,
+        "STANDING_ORDER_WOULD_PAUSE": 1,
+        "STALE_PROGRAM": 1
+      },
+      "termination": "DEAD",
+      "runnerTermination": "DEAD",
+      "passedThen": null,
+      "passTicks": null,
+      "observerErrors": [
+        "Coordinator or JAR changed during measurement"
+      ],
+      "effort": "medium",
+      "serviceTier": "default",
+      "evidence": "/home/agaminggod/Desktop/Projects/arena-beat-game/sub/runs/fixtures1-codex-L-B3-r1"
+    },
+    {
+      "scenario": "L-C1",
+      "provider": "codex",
+      "model": "gpt-6.1-sol",
+      "repetition": 1,
+      "result": "PASS",
+      "goalCompleted": true,
+      "evaluatorPass": true,
+      "evaluatorSource": "samples",
+      "measurementStatus": "INCOMPLETE",
+      "minutesToGoal": 8.941083333333333,
+      "observedMinutes": 8.939066666666667,
+      "deaths": 0,
+      "bodyBusyPct": null,
+      "failures": {
+        "TARGET_OBSTRUCTED": 4,
+        "ACTION_CANCELLED": 2,
+        "TARGET_NOT_VISIBLE": 2,
+        "REACHED_FRONTIER": 3,
+        "NO_STANDABLE_PATH": 2,
+        "STALE_PROGRAM": 2,
+        "STALE_PROGRAM_DECISION": 1
+      },
+      "termination": "EVALUATOR_PASS",
+      "runnerTermination": "PASSED",
+      "passedThen": null,
+      "passTicks": 10686,
+      "observerErrors": [],
+      "effort": "medium",
+      "serviceTier": "default",
+      "evidence": "/home/agaminggod/Desktop/Projects/arena-beat-game/sub/runs/fixtures1-codex-L-C1-r1"
+    },
+    {
+      "scenario": "L-C2",
+      "provider": "codex",
+      "model": "gpt-6.1-sol",
+      "repetition": 1,
+      "result": "FAIL",
+      "goalCompleted": false,
+      "evaluatorPass": false,
+      "evaluatorSource": null,
+      "measurementStatus": "INCOMPLETE",
+      "minutesToGoal": null,
+      "observedMinutes": 16.4408,
+      "deaths": 1,
+      "bodyBusyPct": null,
+      "failures": {
+        "TARGET_NOT_OBSERVED": 1,
+        "TARGET_NOT_VISIBLE": 5,
+        "NO_PLACEMENT_SUPPORT": 8,
+        "TARGET_ESCAPED": 2,
+        "REACHED_FRONTIER": 9,
+        "ACTION_CANCELLED": 9,
+        "FIGHT_TIMED_OUT": 5,
+        "TARGET_UNAVAILABLE": 2,
+        "PATH_BLOCKED": 1,
+        "MISSED_LANDING": 1,
+        "NO_STANDABLE_PATH": 2,
+        "STALE_PROGRAM_DECISION": 7,
+        "STANDING_ORDER_WOULD_PAUSE": 1,
+        "NATIVE_PROGRAM_IN_PROGRESS": 1,
+        "REJECTED": 1
+      },
+      "termination": "DEAD",
+      "runnerTermination": "DEAD",
+      "passedThen": null,
+      "passTicks": null,
+      "observerErrors": [],
+      "effort": "medium",
+      "serviceTier": "default",
+      "evidence": "/home/agaminggod/Desktop/Projects/arena-beat-game/sub/runs/fixtures1-codex-L-C2-r1"
+    },
+    {
+      "scenario": "L-C3",
+      "provider": "codex",
+      "model": "gpt-6.1-sol",
+      "repetition": 1,
+      "result": "FAIL",
+      "goalCompleted": false,
+      "evaluatorPass": false,
+      "evaluatorSource": null,
+      "measurementStatus": "INCOMPLETE",
+      "minutesToGoal": null,
+      "observedMinutes": 8.102766666666666,
+      "deaths": 1,
+      "bodyBusyPct": null,
+      "failures": {
+        "NO_PLACEMENT_SUPPORT": 3,
+        "REACHED_FRONTIER": 2,
+        "ACTION_CANCELLED": 3,
+        "TARGET_ESCAPED": 3,
+        "FIGHT_TIMED_OUT": 1,
+        "TARGET_NOT_VISIBLE": 1,
+        "ITEM_NOT_FOUND": 1,
+        "SHIELD_USE_INTERRUPTED": 1,
+        "TASK_ALREADY_ACTIVE": 1,
+        "STALE_PROGRAM_DECISION": 12,
+        "NATIVE_PROGRAM_IN_PROGRESS": 1,
+        "NATIVE_ACTION_CANCELLED": 1
+      },
+      "termination": "DEAD",
+      "runnerTermination": "DEAD",
+      "passedThen": null,
+      "passTicks": null,
+      "observerErrors": [],
+      "effort": "medium",
+      "serviceTier": "default",
+      "evidence": "/home/agaminggod/Desktop/Projects/arena-beat-game/sub/runs/fixtures1-codex-L-C3-r1"
+    }
+  ],
+  "fixtureLiveLimitations": "All subscription runs have incomplete per-call token accounting; evaluator inventory and deaths remain observed. B3 also changed its coordinator fingerprint when npm test generated an ignored Python bytecode cache. C2/C3 each gained one pearl before an enderman-induced fall after moving away from the starting patch."
+}

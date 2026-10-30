@@ -1,0 +1,51 @@
+{
+  "candidateRepairPassed": true,
+  "candidateRepairCaseCount": 8,
+  "baseExpectedFailure": {
+    "traceId": "replay-2",
+    "goalRevision": 1,
+    "actionId": "replay-2",
+    "commandId": "replay-2",
+    "actionType": "build_shelter",
+    "state": "FAILED",
+    "reasonCode": "SHELTER_BLOCKED",
+    "message": "Shelter interior=0, 101, 0; opening=east; placed=0; cleared=0; completed=7/9; Could not place -1, 103, 0: TARGET_NOT_VISIBLE: Placement destination is not currently seen or touched",
+    "elapsedMs": 4399,
+    "observedAtEpochMs": 1792909800018,
+    "executionStarted": true,
+    "physicalAttempted": true,
+    "timing": {
+      "acceptedAtEpochMs": 1792909795619,
+      "startedAtEpochMs": 1792909795633,
+      "startedTick": 304,
+      "endedTick": 392
+    },
+    "replayProof": "6RDk8cRZooIrkYo8ibexIM9JEpgDtS66VtqUAG_ir4Y"
+  },
+  "candidateIntactRepair": {
+    "traceId": "replay-2",
+    "goalRevision": 1,
+    "actionId": "replay-2",
+    "commandId": "replay-2",
+    "actionType": "build_shelter",
+    "state": "SUCCEEDED",
+    "reasonCode": "SHELTER_BUILT",
+    "message": "Shelter interior=0, 101, 0; opening=east; placed=0; cleared=0; completed=9/9; stay inside, fight through the east eye-height window above the sill with pursue:false",
+    "elapsedMs": 899,
+    "observedAtEpochMs": 1792909729770,
+    "executionStarted": true,
+    "physicalAttempted": true,
+    "timing": {
+      "acceptedAtEpochMs": 1792909728871,
+      "startedAtEpochMs": 1792909728885,
+      "startedTick": 300,
+      "endedTick": 318
+    },
+    "replayProof": "nxNDVYtJopchWT_XoAVY2DhI1wToqTzW3GELiQ8j3Ts"
+  },
+  "blockedCallWallMs": 59,
+  "dynamicBlockReturnWallMs": 52,
+  "rangedCases": 6,
+  "allRangedCasesPassed": true,
+  "initialFixtureExcluded": "candidate2-repair: its glass barrier left a real edge line and the arrow correctly hit the target; widening the barrier is the only selected fixture correction, with no runtime source change."
+}

@@ -1,0 +1,480 @@
+{
+  "runtimeSource": "1103ad7c",
+  "integration": "9203dd1e",
+  "acceptancePassed": false,
+  "candidateRepeatsPassed": 1,
+  "requiredRepeats": 6,
+  "rows": [
+    {
+      "gap": "gap0",
+      "repeat": 1,
+      "base_melee": {
+        "rodsAtEnd": 0,
+        "deaths": 1,
+        "kills": 7,
+        "seconds": 206,
+        "approxTps": 19.971310323437333,
+        "minHealth": 0,
+        "maxInventoryInsideWindow": 1,
+        "initialBuild": null,
+        "passed": false
+      },
+      "shelter_melee": {
+        "rodsAtEnd": 0,
+        "deaths": 1,
+        "kills": 0,
+        "seconds": 40,
+        "approxTps": 20.000493839354057,
+        "minHealth": 0,
+        "maxInventoryInsideWindow": 0,
+        "initialBuild": "ACTION_EXCEPTION",
+        "passed": false
+      },
+      "base_bow": {
+        "rodsAtEnd": 3,
+        "deaths": 0,
+        "kills": 8,
+        "seconds": 240,
+        "approxTps": 20.01949870008666,
+        "minHealth": 16.880001068115234,
+        "maxInventoryInsideWindow": 3,
+        "initialBuild": "SHELTER_BUILT",
+        "passed": true
+      },
+      "candidate_bow": {
+        "rodsAtEnd": 3,
+        "deaths": 0,
+        "kills": 18,
+        "seconds": 240,
+        "approxTps": 20,
+        "minHealth": 11.413331985473633,
+        "maxInventoryInsideWindow": 3,
+        "initialBuild": "SHELTER_BUILT",
+        "passed": true
+      }
+    },
+    {
+      "gap": "gap0",
+      "repeat": 2,
+      "base_melee": {
+        "rodsAtEnd": 0,
+        "deaths": 1,
+        "kills": 1,
+        "seconds": 122,
+        "approxTps": 20.003115239258573,
+        "minHealth": 0,
+        "maxInventoryInsideWindow": 1,
+        "initialBuild": null,
+        "passed": false
+      },
+      "shelter_melee": {
+        "rodsAtEnd": 0,
+        "deaths": 0,
+        "kills": 0,
+        "seconds": 240,
+        "approxTps": 19.99875033845,
+        "minHealth": 0.606663703918457,
+        "maxInventoryInsideWindow": 0,
+        "initialBuild": "SHELTER_BUILT",
+        "passed": false
+      },
+      "base_bow": {
+        "rodsAtEnd": 0,
+        "deaths": 1,
+        "kills": 0,
+        "seconds": 27,
+        "approxTps": 19.999250964383357,
+        "minHealth": 0,
+        "maxInventoryInsideWindow": 0,
+        "initialBuild": "MISSED_LANDING",
+        "passed": false
+      },
+      "candidate_bow": {
+        "rodsAtEnd": 0,
+        "deaths": 1,
+        "kills": 9,
+        "seconds": 176,
+        "approxTps": 20.0007943577901,
+        "minHealth": 0,
+        "maxInventoryInsideWindow": 3,
+        "initialBuild": "SHELTER_BUILT",
+        "passed": false
+      }
+    },
+    {
+      "gap": "gap0",
+      "repeat": 3,
+      "base_melee": {
+        "rodsAtEnd": 0,
+        "deaths": 1,
+        "kills": 0,
+        "seconds": 101,
+        "approxTps": 19.999012394449657,
+        "minHealth": 0,
+        "maxInventoryInsideWindow": 0,
+        "initialBuild": null,
+        "passed": false
+      },
+      "shelter_melee": {
+        "rodsAtEnd": 0,
+        "deaths": 1,
+        "kills": 0,
+        "seconds": 40,
+        "approxTps": 20,
+        "minHealth": 0,
+        "maxInventoryInsideWindow": 0,
+        "initialBuild": "ACTION_EXCEPTION",
+        "passed": false
+      },
+      "base_bow": {
+        "rodsAtEnd": 0,
+        "deaths": 1,
+        "kills": 0,
+        "seconds": 23,
+        "approxTps": 20.004274417610603,
+        "minHealth": 0,
+        "maxInventoryInsideWindow": 0,
+        "initialBuild": "ACTION_CANCELLED",
+        "passed": false
+      },
+      "candidate_bow": {
+        "rodsAtEnd": 0,
+        "deaths": 0,
+        "kills": 12,
+        "seconds": 240,
+        "approxTps": 19.998666755549632,
+        "minHealth": 16.880001068115234,
+        "maxInventoryInsideWindow": 0,
+        "initialBuild": "SHELTER_BUILT",
+        "passed": false
+      }
+    },
+    {
+      "gap": "gap5",
+      "repeat": 1,
+      "base_melee": {
+        "rodsAtEnd": 0,
+        "deaths": 1,
+        "kills": 1,
+        "seconds": 137,
+        "approxTps": 20.003656975681114,
+        "minHealth": 0,
+        "maxInventoryInsideWindow": 1,
+        "initialBuild": null,
+        "passed": false
+      },
+      "shelter_melee": {
+        "rodsAtEnd": 0,
+        "deaths": 0,
+        "kills": 0,
+        "seconds": 240,
+        "approxTps": 19.99991666701389,
+        "minHealth": 20,
+        "maxInventoryInsideWindow": 0,
+        "initialBuild": "SHELTER_BUILT",
+        "passed": false
+      },
+      "base_bow": {
+        "rodsAtEnd": 0,
+        "deaths": 1,
+        "kills": 0,
+        "seconds": 218,
+        "approxTps": 20.001376873121142,
+        "minHealth": 0,
+        "maxInventoryInsideWindow": 0,
+        "initialBuild": "SHELTER_BUILT",
+        "passed": false
+      },
+      "candidate_bow": {
+        "rodsAtEnd": 0,
+        "deaths": 0,
+        "kills": 2,
+        "seconds": 240,
+        "approxTps": 20.00033326945669,
+        "minHealth": 20,
+        "maxInventoryInsideWindow": 0,
+        "initialBuild": "SHELTER_BUILT",
+        "passed": false
+      }
+    },
+    {
+      "gap": "gap5",
+      "repeat": 2,
+      "base_melee": {
+        "rodsAtEnd": 0,
+        "deaths": 1,
+        "kills": 1,
+        "seconds": 151,
+        "approxTps": 20.000661835269202,
+        "minHealth": 0,
+        "maxInventoryInsideWindow": 1,
+        "initialBuild": null,
+        "passed": false
+      },
+      "shelter_melee": {
+        "rodsAtEnd": 0,
+        "deaths": 0,
+        "kills": 0,
+        "seconds": 240,
+        "approxTps": 20.00108316634519,
+        "minHealth": 20,
+        "maxInventoryInsideWindow": 0,
+        "initialBuild": "SHELTER_BUILT",
+        "passed": false
+      },
+      "base_bow": {
+        "rodsAtEnd": 0,
+        "deaths": 1,
+        "kills": 0,
+        "seconds": 65,
+        "approxTps": 19.999384634318947,
+        "minHealth": 0,
+        "maxInventoryInsideWindow": 0,
+        "initialBuild": "ACTION_EXCEPTION",
+        "passed": false
+      },
+      "candidate_bow": {
+        "rodsAtEnd": 2,
+        "deaths": 0,
+        "kills": 3,
+        "seconds": 240,
+        "approxTps": 19.999166874947928,
+        "minHealth": 20,
+        "maxInventoryInsideWindow": 2,
+        "initialBuild": "SHELTER_BUILT",
+        "passed": false
+      }
+    },
+    {
+      "gap": "gap5",
+      "repeat": 3,
+      "base_melee": {
+        "rodsAtEnd": 0,
+        "deaths": 1,
+        "kills": 3,
+        "seconds": 146,
+        "approxTps": 20.00382717568103,
+        "minHealth": 0,
+        "maxInventoryInsideWindow": 1,
+        "initialBuild": null,
+        "passed": false
+      },
+      "shelter_melee": {
+        "rodsAtEnd": 0,
+        "deaths": 1,
+        "kills": 0,
+        "seconds": 47,
+        "approxTps": 20.003855132680815,
+        "minHealth": 0,
+        "maxInventoryInsideWindow": 0,
+        "initialBuild": "ACTION_EXCEPTION",
+        "passed": false
+      },
+      "base_bow": {
+        "rodsAtEnd": 0,
+        "deaths": 1,
+        "kills": 0,
+        "seconds": 106,
+        "approxTps": 20.00414008543631,
+        "minHealth": 0,
+        "maxInventoryInsideWindow": 0,
+        "initialBuild": "SHELTER_BUILT",
+        "passed": false
+      },
+      "candidate_bow": {
+        "rodsAtEnd": 1,
+        "deaths": 0,
+        "kills": 2,
+        "seconds": 240,
+        "approxTps": 19.999750003124962,
+        "minHealth": 1.7600011825561523,
+        "maxInventoryInsideWindow": 1,
+        "initialBuild": "SHELTER_BUILT",
+        "passed": false
+      }
+    }
+  ],
+  "d31": {
+    "incidents": 10,
+    "survived": 10,
+    "died": 0,
+    "errors": 0
+  },
+  "baseD31": {
+    "incidents": 10,
+    "survived": 10,
+    "died": 0,
+    "errors": 0
+  },
+  "verification": {
+    "source": "1103ad7c",
+    "integration": "9203dd1e7414129e248d10ce900ac1b1130cdc24",
+    "javaTree": "23ba87ea9568e2efb1dfe733a15682ab38245a4c",
+    "jarSha256": "f5afb27d30cdb92abdfe2ba7243d193256188cea118ff4b9ccde9c024f940cfb",
+    "build": {
+      "passed": true,
+      "command": "JAVA_HOME=/usr/lib/jvm/temurin-25-jdk-amd64 slot.sh gradle ./gradlew --no-daemon --max-workers=2 build verifyCore verifyShippingCore",
+      "firstResumedBuildWasOnline": true,
+      "coreAssertions": 2577412,
+      "shippingAssertions": 19811,
+      "log": "resume-build-fix.log"
+    },
+    "coordinator": {
+      "tests": 7070,
+      "passed": 6984,
+      "skipped": 75,
+      "failed": 11,
+      "onlyKnownWindowsDependentFailures": true,
+      "failedTitles": [
+        "parses the headless matrix CLI contract and rejects missing flags (1.15369ms)",
+        "PowerShell wrapper samples a fast-exit tracked runner before completion (5.007235ms)",
+        "PowerShell resource sampling reuses one process snapshot per sampling phase (1.771855ms)",
+        "PowerShell process tracking rejects a reused PID before sampling or cleanup (1.871576ms)",
+        "PowerShell snapshot refuses to adopt an unverified child after its parent exits (1.849945ms)",
+        "native A/B trial contains missing service-module failures at the CLI root (95.952989ms)",
+        "native A/B runner contains child module failures at the CLI root (914.192011ms)",
+        "the Windows job wrapper starts System32 PowerShell even when the provider PATH omits it (1.753701ms)",
+        "reports a broken CLI when --version exits non-zero, including a sanitized stderr excerpt (2.581737ms)",
+        "reports a broken CLI when --version times out or cannot start (0.732704ms)",
+        "an npm .cmd shim without the package beside it gets install advice instead of \"reinstall\" (0.729858ms)"
+      ],
+      "log": "resume-final-npm.log"
+    },
+    "contracts": {
+      "tests": 639,
+      "passed": 639,
+      "failed": 0,
+      "log": "resume-final-contracts.log"
+    },
+    "byteBudgetIncrease": 0,
+    "evidenceRoot": "/home/agaminggod/Desktop/Projects/arena-beat-game/evals/d38-blaze4"
+  },
+  "repairPilot": {
+    "rodsAtEnd": 0,
+    "deaths": 0,
+    "kills": 3,
+    "seconds": 240,
+    "approxTps": 19.99800019998,
+    "minHealth": 4.880001068115234,
+    "calls": {
+      "use_ranged": 16,
+      "pick_up_item": 1,
+      "break_block": 1,
+      "fight_target": 5,
+      "use_item": 2
+    },
+    "rangedResults": {
+      "OWNED_PROJECTILE_CONFIRMED": 14,
+      "TARGET_NOT_VISIBLE": 1,
+      "FIXTURE_RUN_DEADLINE": 1
+    },
+    "maxInventoryInsideWindow": 0,
+    "initialBuild": "SHELTER_BUILT"
+  },
+  "snowball": {
+    "rodsAtEnd": 0,
+    "deaths": 0,
+    "kills": 0,
+    "seconds": 240,
+    "approxTps": 19.995835068721366,
+    "minHealth": 18.5,
+    "calls": {
+      "use_item": 16,
+      "wait": 201,
+      "look_at": 75,
+      "fight_target": 3
+    },
+    "rangedResults": null,
+    "maxInventoryInsideWindow": 0,
+    "initialBuild": "SHELTER_BUILT"
+  },
+  "constructionGuardPilot": {
+    "rodsAtEnd": 0,
+    "deaths": 1,
+    "kills": 0,
+    "seconds": 222,
+    "approxTps": 20.001173618853734,
+    "minHealth": 0,
+    "calls": {
+      "break_block": 1,
+      "wait": 1,
+      "use_ranged": 15,
+      "look_at": 4,
+      "fight_target": 2
+    },
+    "rangedResults": {
+      "OWNED_PROJECTILE_CONFIRMED": 7,
+      "TARGET_NOT_VISIBLE": 5,
+      "RANGED_USE_TIMED_OUT": 3
+    },
+    "maxInventoryInsideWindow": 0,
+    "initialBuild": "SHELTER_BUILT"
+  },
+  "isolatedRanged": {
+    "passed": 6,
+    "cases": [
+      {
+        "opening": "north",
+        "range": 6,
+        "rise": 0,
+        "roof": true,
+        "weapon": "bow",
+        "guardReady": true,
+        "initialHealth": 20,
+        "finalHealth": 0
+      },
+      {
+        "opening": "east",
+        "range": 10,
+        "rise": 1,
+        "roof": true,
+        "weapon": "bow",
+        "guardReady": true,
+        "initialHealth": 20,
+        "finalHealth": 0
+      },
+      {
+        "opening": "south",
+        "range": 14,
+        "rise": 2,
+        "roof": true,
+        "weapon": "bow",
+        "guardReady": true,
+        "initialHealth": 20,
+        "finalHealth": 0
+      },
+      {
+        "opening": "west",
+        "range": 6,
+        "rise": 0,
+        "roof": false,
+        "weapon": "bow",
+        "guardReady": true,
+        "initialHealth": 20,
+        "finalHealth": 0
+      },
+      {
+        "opening": "east",
+        "range": 6,
+        "rise": 0,
+        "roof": true,
+        "weapon": "snowball",
+        "guardReady": true,
+        "initialHealth": 20,
+        "finalHealth": 0
+      },
+      {
+        "opening": "east",
+        "range": 6,
+        "rise": 0,
+        "roof": false,
+        "weapon": "bow",
+        "guardReady": true,
+        "initialHealth": 20,
+        "finalHealth": 0
+      }
+    ]
+  },
+  "providerFree": true,
+  "solGamesRun": 0
+}

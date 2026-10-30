@@ -1,0 +1,3179 @@
+import { createHash, createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
+import { EventEmitter } from 'node:events';
+import net from 'node:net';
+
+import {
+	DEFAULT_AGENT_MESSAGE_QUEUE_CAP,
+	DEFAULT_CONNECTION_QUEUE_CAP,
+	BLOCK_FACES,
+	LOOPBACK_HOST,
+	MAX_BRIDGE_SECRET_LENGTH,
+	MAX_BLOCKS,
+	MAX_LANDMARKS,
+	MAX_CHAT_LENGTH,
+	MAX_CONVERSATION_LENGTH,
+	MAX_COMMAND_ID_LENGTH,
+	MAX_EFFECTS,
+	MAX_ENTITIES,
+	MAX_GOAL_LENGTH,
+	MAX_PLANNER_GOAL_LENGTH,
+	MAX_IDENTIFIER_LENGTH,
+	MAX_INVENTORY_SUMMARIES,
+	MAX_OBSERVATION_TAGS,
+	MAX_TAG_COUNT_ENTRIES,
+	MAX_LINE_BYTES,
+	MAX_REASON_CODE_LENGTH,
+	MAX_RESULT_MESSAGE_LENGTH,
+	MAX_SUMMARY_LENGTH,
+	MULTIPLEXED_PROTOCOL_VERSION,
+	defaultServiceTier,
+} from './constants.mjs';
+import { encodeJsonLine, JsonlDecoder } from './jsonl.mjs';
+import { MessageIdGenerator } from './message-id.mjs';
+import { ValidationError, validateAction, validateActionCommandPayload } from './schema.mjs';
+import { parseGoalSpec, parseGoalSpecProposal, parseGoalSpecRequest } from './goal-spec.mjs';
+import { assertProviderServiceTier, normalizeProviderId } from './provider-identity.mjs';
+import { validateRegisteredAgentContract } from './registered-agent-contract.mjs';
+import { validateTaskPlan } from './live-task-view.mjs';
+
+const MAX_COORDINATOR_CIRCUITS = 32;
+
+export const COORDINATOR_TO_SERVER_TYPES = Object.freeze([
+	'auth_challenge',
+	'hello',
+	'catalog_snapshot',
+	'coordinator_status',
+	'agent_ready',
+	'planning_state',
+	'goal_completed',
+	'director_script_result',
+	'goal_spec_proposal',
+	'task_request',
+	'conversation_wake_ack',
+	'request_observation',
+	'inspection_request',
+	'action_command',
+	'action_cancel',
+	'action_result_ack',
+	'agent_error',
+	'agent_notice',
+	'verbose_event',
+	'task_view',
+	'reflex_update',
+	'heartbeat',
+]);
+
+export const SERVER_TO_COORDINATOR_TYPES = Object.freeze([
+	'auth_response',
+	'hello_ack',
+	'registry_entry',
+	'registry_complete',
+	'registry_fragment',
+	'catalog_request',
+	'agent_registered',
+	'agent_removed',
+	'goal_control',
+	'observation',
+	'inspection_result',
+	'conversation_event',
+	'conversation_wake',
+	'action_progress',
+	'action_result',
+	'goal_completion_result',
+	'director_script_request',
+	'goal_spec_request',
+	'plan_facts',
+	'advancement_granted',
+	'entity_killed',
+	'goal_spec_result',
+	'task_request_result',
+	'verbose_control',
+	'task_view_request',
+	'heartbeat',
+	'shutdown',
+]);
+
+const COORDINATOR_TYPES = new Set(COORDINATOR_TO_SERVER_TYPES);
+const SERVER_TYPES = new Set(SERVER_TO_COORDINATOR_TYPES);
+const REVISION_GUARDED_INBOUND_TYPES = new Set(['plan_facts', 'advancement_granted', 'entity_killed', 'observation', 'inspection_result', 'conversation_event', 'action_progress', 'action_result', 'goal_completion_result']);
+const REVISION_GUARDED_OUTBOUND_TYPES = new Set(['agent_ready', 'planning_state', 'goal_completed', 'conversation_wake_ack', 'request_observation', 'inspection_request', 'action_command', 'action_cancel', 'agent_error', 'verbose_event']);
+const TERMINAL_ACTION_STATES = new Set(['SUCCEEDED', 'FAILED', 'CANCELLED', 'TIMED_OUT']);
+// Snapshots that the next message of the same type supersedes. When the payload of one of these fails only because the
+// server emits something this schema does not know (SCHEMA_DRIFT_REPAIRS), the message is dropped and reported instead of
+// closing the session: a reconnect cannot cure an emitter and schema that disagree, it replays the same message while
+// in-flight actions are lost. Containment runs after the same guards a valid message passes (duplicate ID, server
+// instance, fragment ordering, agent identity, goal revision), so corruption behind the drift still closes the connection.
+const SUPERSEDED_INBOUND_TYPES = new Set(['observation', 'action_progress']);
+// Only these errors supply a repair that removes schema drift from a private validation copy.
+// Missing or mistyped facts, bad numbers/identifiers and oversized arrays never supply a repair.
+const SCHEMA_DRIFT_REPAIRS = new WeakMap();
+const MAX_TRACKED_PAYLOAD_REJECTIONS = 64;
+const MAX_TRACKED_MESSAGE_IDS = 4_096;
+const MAX_TRACKED_TERMINAL_ACTION_IDS = 4_096;
+const DEFAULT_INBOUND_DISPATCH_BATCH = 32;
+const INSPECTION_OUTBOUND_TYPES = new Set(['inspection_request', 'request_observation']);
+const RESERVED_OUTBOUND_TYPES = new Set(['agent_ready', 'goal_completed', 'conversation_wake_ack', 'action_command', 'action_cancel', 'action_result_ack', 'agent_error', 'heartbeat']);
+// Keep the existing ordinary capacity, plus bounded room for readiness, command,
+// cancellation and acknowledgement even when inspections occupy every ordinary slot.
+const AGENT_CONTROL_RESERVE = 4;
+const CONNECTION_CONTROL_RESERVE = 64;
+const OUTBOUND_CONTROL_BURST = 4;
+const DEFAULT_HANDSHAKE_TIMEOUT_MS = 5_000;
+const DEFAULT_HEARTBEAT_INTERVAL_MS = 5_000;
+const DEFAULT_HEARTBEAT_TIMEOUT_MS = 15_000;
+const PENDING_SERVER_INSTANCE_ID = 'pending';
+const MAX_CATALOG_MODELS = 512;
+/** The task view carries the selected agent's plan and events plus every agent's usage; Minecraft enforces the same bound. */
+export const TASK_VIEW_MAX_BYTES = 49_152;
+const MAX_MODEL_CAPABILITIES = 32;
+const MAX_REGISTRY_SNAPSHOT_AGENTS = 1_024;
+// Covers 256 queued goals, each with escaped request text, 64 item identifiers and
+// 16 predicate leaves with 16 properties of 64+128 chars, plus the current goal and record metadata. No goal is truncated.
+const MAX_REGISTRY_ENTRY_BYTES = 128 * 1024 * 1024;
+const REGISTRY_FRAGMENT_BYTES = 24 * 1024;
+const FRAGMENTED_TYPES = new Set(['registry_entry', 'agent_registered', 'goal_control', 'conversation_wake']);
+const MAX_NEARBY_TRANSACTION_TARGETS = 16;
+const MAX_COMPLETION_FACTS = 16;
+const MAX_CHANGED_FACTS = 256;
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const AUTHENTICATION_TOKEN_PATTERN = /^[A-Za-z0-9_-]{43}$/;
+const AUTHENTICATION_CONTEXT = 'arena-agents-v2';
+const ACTION_RESULT_REPLAY_CONTEXT = 'arena-agents-v2-action-result-replay';
+export const MAX_VERBOSE_MESSAGE_LENGTH = 256;
+export const AGENT_NOTICE_SEVERITIES = Object.freeze(['error', 'warning', 'info']);
+const AGENT_NOTICE_SEVERITY_SET = new Set(AGENT_NOTICE_SEVERITIES);
+export const VERBOSE_STAGES = Object.freeze([
+	'conversation', 'lifecycle', 'planner', 'provider', 'output', 'decision',
+	'action', 'progress', 'result', 'retry', 'error',
+]);
+const VERBOSE_STAGE_SET = new Set(VERBOSE_STAGES);
+const FACTUAL_PLAYER_FIELDS = new Set([
+	'health', 'maxHealth', 'armor', 'foodLevel', 'saturation', 'gameMode', 'onGround', 'inWater',
+	'onFire', 'air', 'maxAir', 'suffocating', 'fallDistance', 'lastAttacker', 'effects', 'dropAhead', 'clouds',
+]);
+const FACTUAL_TOP_LEVEL_PATHS = new Set([
+	'ready', 'status', 'position', 'velocity', 'view', 'inventory', 'entities', 'blocks', 'landmarks', 'nearbyContainers', 'furnaces', 'routeMemory', 'world', 'currentAction', 'lastResult', 'perception', 'heard', 'sighted',
+]);
+const TRUSTED_ENVELOPES = new WeakSet();
+const TRUSTED_PAYLOAD_TYPES = new WeakMap();
+const PLAYER_DETAIL_FIELDS = ['clouds', 'harm', 'absorption', 'recentDamage', 'fallDamage', 'footing', 'stand', 'pose', 'underWater', 'airSecondsLeft', 'waterMotion', 'waterAbove', 'breathable', 'operatorControlled', 'swimming', 'gliding', 'sprinting', 'crouching', 'onClimbable', 'inLava', 'horizontalCollision', 'verticalCollision', 'passenger', 'vehicle', 'skyOpen', 'teleportTick', 'hazard', 'fireTicks', 'exits', 'hurtBy', 'lavaSeen', 'lavaFlow', 'dropAhead', 'groundAhead', 'brink', 'edges'];
+const STACK_DETAIL_FIELDS = ['displayName', 'fingerprint', 'maxStackSize', 'tooltip', 'tooltipTruncated'];
+const MENU_STACK_DETAIL_FIELDS = ['damage', 'maxDamage', ...STACK_DETAIL_FIELDS];
+const ENTITY_DETAIL_FIELDS = ['velocity', 'yaw', 'pitch', 'pose', 'bounds', 'equipment', 'usingItem', 'onFire', 'pickable', 'parentId', 'partName',
+	'alive', 'hostile', 'health', 'maxHealth', 'targetingAgent', 'swelling', 'fuse', 'perceivedBy', 'potentialRisk', 'risk', 'expectedHitDamage', 'blastDamageIfBroken', 'arrowFromHere', 'appearance'];
+// Must equal the Java mod's ThreatPerception.SIGNALS and SurvivalPerception.SIGNALS; a contract test in
+// test/protocol-v2.test.mjs compares both lists and checks that the Java classes emit nothing outside them.
+export const THREAT_SIGNAL_VALUES = Object.freeze(['targeting', 'swelling', 'creeper_close', 'ranged_sight', 'ranged_aiming', 'attacked', 'imminent']);
+export const SURVIVAL_SIGNAL_VALUES = Object.freeze(['heal_opportunity', 'low_health_no_food']);
+const THREAT_SIGNALS = new Set(THREAT_SIGNAL_VALUES);
+const SURVIVAL_SIGNALS = new Set(SURVIVAL_SIGNAL_VALUES);
+const THREAT_FACT_PATH = new RegExp(`^threats\\.[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\\.(?:${THREAT_SIGNAL_VALUES.join('|')})$`, 'i');
+const SURVIVAL_FACT_PATH = new RegExp(`^survival\\.(?:${SURVIVAL_SIGNAL_VALUES.join('|')})$`);
+const MAX_THREAT_ENTRIES = 8;
+const BLOCK_DETAIL_FIELDS = ['state', 'bounds', 'boundsTruncated', 'replaceable', 'fluid', 'appearance'];
+const MENU_DETAIL_FIELDS = ['containerId', 'stateId', 'slotCount', 'offset', 'hasMore', 'details'];
+
+function optionalObservedDetails(value, fields) {
+	return Object.fromEntries(fields.filter((field) => value[field] !== undefined).map((field) => [field, observedDetails(value[field], field)]));
+}
+
+function optionalMenuStackDetails(value, field) {
+	return {
+		...optionalObservedDetails(value, STACK_DETAIL_FIELDS),
+		...(value.damage === undefined ? {} : { damage: nonnegativeInteger(value.damage, `${field}.damage`) }),
+		...(value.maxDamage === undefined ? {} : { maxDamage: nonnegativeInteger(value.maxDamage, `${field}.maxDamage`) }),
+	};
+}
+
+export class ProtocolV2Error extends Error {
+	constructor(code, message, options) {
+		super(message, options);
+		this.name = 'ProtocolV2Error';
+		this.code = code;
+	}
+}
+
+export function createProtocolV2Envelope({ serverInstanceId, agentId, type, messageId, payload }) {
+	return validateProtocolV2Envelope({
+		protocolVersion: MULTIPLEXED_PROTOCOL_VERSION,
+		serverInstanceId,
+		agentId,
+		type,
+		messageId,
+		payload,
+	});
+}
+
+export function validateProtocolV2Envelope(value, { direction } = {}) {
+	if (value !== null && typeof value === 'object' && TRUSTED_ENVELOPES.has(value)) {
+		validateDirection(value.type, direction);
+		return value;
+	}
+	const { serverInstanceId, agentId, type, messageId } = validateEnvelopeHeader(value, direction);
+	const payload = validateProtocolV2Payload(type, value.payload);
+	if (type === 'conversation_event' && payload.recipientId !== agentId) {
+		throw new ProtocolV2Error('INVALID_AGENT_SCOPE', 'conversation_event recipientId must match the envelope agentId');
+	}
+	if (type === 'conversation_wake' && payload.event.recipientId !== agentId) {
+		throw new ProtocolV2Error('INVALID_AGENT_SCOPE', 'conversation_wake event recipientId must match the envelope agentId');
+	}
+	const normalized = deepFreeze({ protocolVersion: MULTIPLEXED_PROTOCOL_VERSION, serverInstanceId, agentId, type, messageId, payload });
+	TRUSTED_ENVELOPES.add(normalized);
+	return normalized;
+}
+
+/** Everything about an envelope except its payload contents, so a payload-only failure can be told apart. */
+function validateEnvelopeHeader(value, direction) {
+	if (!isPlainObject(value)) throw new ProtocolV2Error('INVALID_ENVELOPE', 'Protocol v2 envelope must be an object');
+	const keys = Object.keys(value);
+	const expectedKeys = ['protocolVersion', 'serverInstanceId', 'agentId', 'type', 'messageId', 'payload'];
+	for (const key of expectedKeys) if (!Object.hasOwn(value, key)) throw new ProtocolV2Error('MISSING_FIELD', `Protocol v2 envelope field '${key}' is required`);
+	for (const key of keys) if (!expectedKeys.includes(key)) throw new ProtocolV2Error('INVALID_FIELD', `Unknown protocol v2 envelope field '${key}'`);
+	if (value.protocolVersion !== MULTIPLEXED_PROTOCOL_VERSION) throw new ProtocolV2Error('UNSUPPORTED_VERSION', `Expected protocol version ${MULTIPLEXED_PROTOCOL_VERSION}`);
+	const serverInstanceId = requireIdentifier(value.serverInstanceId, 'serverInstanceId');
+	const agentId = requireIdentifier(value.agentId, 'agentId');
+	const type = requireIdentifier(value.type, 'type');
+	const messageId = requireText(value.messageId, 'messageId', MAX_COMMAND_ID_LENGTH);
+	if (!isPlainObject(value.payload)) throw new ProtocolV2Error('INVALID_PAYLOAD', 'Protocol v2 payload must be an object');
+	validateDirection(type, direction);
+	if ((type === 'auth_challenge' || type === 'auth_response' || type === 'hello' || type === 'hello_ack' || type === 'registry_complete' || type === 'catalog_request' || type === 'catalog_snapshot' || type === 'coordinator_status' || type === 'verbose_control' || type === 'heartbeat' || type === 'shutdown') && agentId !== 'server') {
+		throw new ProtocolV2Error('INVALID_AGENT_SCOPE', `Message type '${type}' must use agentId 'server'`);
+	}
+	if ((type === 'verbose_event' || type === 'agent_notice' || type === 'action_result_ack') && agentId === 'server') {
+		throw new ProtocolV2Error('INVALID_AGENT_SCOPE', `Message type '${type}' must use an agent ID`);
+	}
+	return { serverInstanceId, agentId, type, messageId };
+}
+
+export function validateProtocolV2Payload(type, value) {
+	if (value !== null && typeof value === 'object' && TRUSTED_PAYLOAD_TYPES.get(value) === type) return value;
+	const normalized = deepFreeze(normalizeProtocolV2Payload(type, value));
+	TRUSTED_PAYLOAD_TYPES.set(normalized, type);
+	return normalized;
+}
+
+function normalizeProtocolV2Payload(type, value) {
+	if (!isPlainObject(value)) throw new ProtocolV2Error('INVALID_PAYLOAD', `${type} payload must be an object`);
+	switch (type) {
+		case 'auth_challenge':
+			exactKeys(value, ['clientNonce'], ['clientNonce'], type);
+			return { clientNonce: authenticationToken(value.clientNonce, 'clientNonce') };
+		case 'auth_response':
+			exactKeys(value, ['replyTo', 'clientNonce', 'serverNonce', 'proof'], ['replyTo', 'clientNonce', 'serverNonce', 'proof'], type);
+			return {
+				replyTo: boundedText(value.replyTo, 'replyTo', MAX_COMMAND_ID_LENGTH),
+				clientNonce: authenticationToken(value.clientNonce, 'clientNonce'),
+				serverNonce: authenticationToken(value.serverNonce, 'serverNonce'),
+				proof: authenticationToken(value.proof, 'proof'),
+			};
+		case 'hello':
+			exactKeys(value, ['replyTo', 'clientNonce', 'serverNonce', 'proof', 'launchId', 'registryFragments', 'actionTiming', 'blockTags', 'planFacts', 'bodyFacts', 'breakExposureFacts', 'breakOutcomeFacts', 'placementFacts', 'dropAheadFacts'], ['replyTo', 'clientNonce', 'serverNonce', 'proof'], type);
+			return {
+				replyTo: boundedText(value.replyTo, 'replyTo', MAX_COMMAND_ID_LENGTH),
+				clientNonce: authenticationToken(value.clientNonce, 'clientNonce'),
+				serverNonce: authenticationToken(value.serverNonce, 'serverNonce'),
+				proof: authenticationToken(value.proof, 'proof'),
+				...(value.registryFragments === undefined ? {} : { registryFragments: boolean(value.registryFragments, 'registryFragments') }),
+				...(value.actionTiming === undefined ? {} : { actionTiming: boolean(value.actionTiming, 'actionTiming') }),
+				...(value.blockTags === undefined ? {} : { blockTags: boolean(value.blockTags, 'blockTags') }),
+				...(value.planFacts === undefined ? {} : { planFacts: boolean(value.planFacts, 'planFacts') }),
+				...(value.bodyFacts === undefined ? {} : { bodyFacts: boolean(value.bodyFacts, 'bodyFacts') }),
+				...(value.breakExposureFacts === undefined ? {} : { breakExposureFacts: boolean(value.breakExposureFacts, 'breakExposureFacts') }),
+				...(value.placementFacts === undefined ? {} : { placementFacts: boolean(value.placementFacts, 'placementFacts') }),
+				...(value.breakOutcomeFacts === undefined ? {} : { breakOutcomeFacts: boolean(value.breakOutcomeFacts, 'breakOutcomeFacts') }),
+				...(value.dropAheadFacts === undefined ? {} : { dropAheadFacts: boolean(value.dropAheadFacts, 'dropAheadFacts') }),
+				...(value.launchId === undefined ? {} : { launchId: launchIdentity(value.launchId) }),
+			};
+		case 'hello_ack':
+			exactKeys(value, ['replyTo', 'authenticated', 'registry', 'launchId', 'registryCount'], ['replyTo', 'authenticated', 'registry'], type);
+			if (value.authenticated !== true) throw new ProtocolV2Error('INVALID_PAYLOAD', 'hello_ack authenticated must be true');
+			return {
+				replyTo: boundedText(value.replyTo, 'replyTo', MAX_COMMAND_ID_LENGTH),
+				authenticated: true,
+				registry: boundedArray(value.registry, 'registry', MAX_REGISTRY_SNAPSHOT_AGENTS).map((entry) => normalizeRegisteredAgent(entry, 'registry entry')),
+				...(value.registryCount === undefined ? {} : { registryCount: nonnegativeInteger(value.registryCount, 'registryCount') }),
+				...(value.launchId === undefined ? {} : { launchId: launchIdentity(value.launchId) }),
+			};
+		case 'registry_fragment': {
+			exactKeys(value, ['messageId', 'type', 'index', 'totalBytes', 'data'], ['messageId', 'type', 'index', 'totalBytes', 'data'], type);
+			if (!FRAGMENTED_TYPES.has(value.type)) throw new ProtocolV2Error('INVALID_FRAGMENT', 'Unsupported fragmented type');
+			const totalBytes = nonnegativeInteger(value.totalBytes, 'totalBytes');
+			if (totalBytes < 1 || totalBytes > MAX_REGISTRY_ENTRY_BYTES) throw new ProtocolV2Error('INVALID_FRAGMENT', 'Fragmented entry exceeds the schema-derived byte bound');
+			const data = boundedText(value.data, 'data', REGISTRY_FRAGMENT_BYTES * 4 / 3);
+			if (!/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(data)) throw new ProtocolV2Error('INVALID_FRAGMENT', 'Fragment data must be canonical base64');
+			return { messageId: boundedText(value.messageId, 'messageId', MAX_COMMAND_ID_LENGTH), type: value.type, index: nonnegativeInteger(value.index, 'index'), totalBytes, data };
+		}
+		case 'registry_complete':
+			exactKeys(value, ['replyTo', 'count'], ['replyTo', 'count'], type);
+			return { replyTo: boundedText(value.replyTo, 'replyTo', MAX_COMMAND_ID_LENGTH), count: nonnegativeInteger(value.count, 'count') };
+		case 'registry_entry':
+			return normalizeRegisteredAgent(value, type);
+		case 'catalog_request':
+			exactKeys(value, [], [], type);
+			return {};
+		case 'catalog_snapshot':
+			return normalizeCatalogSnapshot(value);
+		case 'coordinator_status':
+			return normalizeCoordinatorStatus(value);
+		case 'agent_registered':
+			return normalizeRegisteredAgent(value, type);
+		case 'agent_removed':
+			exactKeys(value, ['goalRevision'], ['goalRevision'], type);
+			return { goalRevision: revision(value.goalRevision, 'goalRevision') };
+		case 'goal_control':
+			return normalizeGoalControl(value);
+		case 'observation':
+			return normalizeObservation(value);
+		case 'conversation_event':
+			return normalizeConversationEvent(value);
+		case 'conversation_wake':
+			return normalizeConversationWake(value);
+		case 'action_progress':
+			return normalizeActionProgress(value);
+		case 'action_result':
+			return normalizeActionResult(value);
+		case 'action_result_ack':
+			exactKeys(value, ['goalRevision', 'actionId'], ['goalRevision', 'actionId'], type);
+			return {
+				goalRevision: revision(value.goalRevision, 'goalRevision'),
+				actionId: requireIdentifier(value.actionId, 'actionId'),
+			};
+		case 'agent_ready':
+			exactKeys(value, ['goalRevision', 'reconciled'], ['goalRevision'], type);
+			return value.reconciled === undefined
+				? { goalRevision: revision(value.goalRevision, 'goalRevision') }
+				: { goalRevision: revision(value.goalRevision, 'goalRevision'), reconciled: boolean(value.reconciled, 'reconciled') };
+		case 'planning_state':
+			exactKeys(value, ['goalRevision', 'state'], ['goalRevision', 'state'], type);
+			return { goalRevision: revision(value.goalRevision, 'goalRevision'), state: boundedText(value.state, 'state', MAX_REASON_CODE_LENGTH) };
+		case 'goal_completed':
+			return normalizeGoalCompletionRequest(value);
+		case 'goal_completion_result':
+			exactKeys(value, ['goalRevision', 'traceId', 'goalFingerprint', 'verified', 'reasonCode', 'facts'], ['goalRevision', 'traceId', 'goalFingerprint', 'verified', 'reasonCode', 'facts'], type);
+			return {
+				goalRevision: revision(value.goalRevision, 'goalRevision'),
+				traceId: requireTraceId(value.traceId),
+				goalFingerprint: goalFingerprint(value.goalFingerprint),
+				verified: boolean(value.verified, 'verified'),
+				reasonCode: boundedText(value.reasonCode, 'reasonCode', MAX_REASON_CODE_LENGTH),
+				facts: boundedArray(value.facts, 'facts', MAX_COMPLETION_FACTS).map((fact, index) => normalizeCompletionFact(fact, index)),
+			};
+		case 'director_script_request':
+            exactKeys(value, ['requestId','description','actorName'], ['requestId','description','actorName'], type);
+            return {requestId:requireIdentifier(value.requestId,'requestId'), description:boundedText(value.description,'description',2048), actorName:boundedText(value.actorName,'actorName',64)};
+        case 'director_script_result':
+            exactKeys(value, ['requestId','script','error'], ['requestId','script','error'], type);
+            return {requestId:requireIdentifier(value.requestId,'requestId'), script:boundedText(value.script,'script',32768,0), error:boundedText(value.error,'error',400,0)};
+		case 'plan_facts': {
+			exactKeys(value, ['goalRevision', 'advancements', 'verifiedKills'], ['goalRevision', 'advancements', 'verifiedKills'], type);
+			const ids = field => boundedArray(value[field], field, 2048).map(id => {
+				if (typeof id !== 'string' || id.length > 128 || !/^[a-z0-9_.-]+:[a-z0-9_./-]+$/.test(id)) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field} requires namespaced IDs`);
+				return id;
+			});
+			return { goalRevision: nonnegativeInteger(value.goalRevision, 'goalRevision'), advancements: ids('advancements'), verifiedKills: ids('verifiedKills') };
+		}
+		case 'advancement_granted':
+		case 'entity_killed': {
+			const field = type === 'advancement_granted' ? 'advancementId' : 'entityType';
+			exactKeys(value, ['goalRevision', field], ['goalRevision', field], type);
+			const id = boundedText(value[field], field, 128);
+			if (!/^[a-z0-9_.-]+:[a-z0-9_./-]+$/.test(id)) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field} must be namespaced`);
+			return { goalRevision: nonnegativeInteger(value.goalRevision, 'goalRevision'), [field]: id };
+		}
+		case 'goal_spec_request':
+			return parseGoalSpecRequest(value);
+		case 'goal_spec_proposal':
+			return parseGoalSpecProposal(value);
+		case 'goal_spec_result': {
+			exactKeys(value, ['requestId', 'status', 'reasonCode'], ['requestId', 'status', 'reasonCode'], type);
+			const status = requireIdentifier(value.status, 'status');
+			if (!['accepted', 'rejected'].includes(status)) throw new ProtocolV2Error('INVALID_PAYLOAD', 'goal_spec_result status must be accepted or rejected');
+			return {
+				requestId: requireIdentifier(value.requestId, 'requestId'),
+				status,
+				reasonCode: requireIdentifier(value.reasonCode, 'reasonCode'),
+			};
+		}
+		case 'task_request':
+			// The model chose to adopt a player's conversational request; Minecraft decides whether it may start.
+			exactKeys(value, ['requestId', 'goalRevision', 'requesterId', 'conversationSequence', 'request', 'resume'], ['requestId', 'goalRevision', 'requesterId', 'conversationSequence', 'request', 'resume'], type);
+			if (typeof value.requesterId !== 'string' || !UUID_PATTERN.test(value.requesterId)) throw new ProtocolV2Error('INVALID_PAYLOAD', 'task_request.requesterId must be a player UUID');
+			return {
+				requestId: requireIdentifier(value.requestId, 'requestId'),
+				goalRevision: revision(value.goalRevision, 'goalRevision'),
+				requesterId: value.requesterId,
+				conversationSequence: nonnegativeInteger(value.conversationSequence, 'conversationSequence'),
+				request: boundedText(value.request, 'request', 512),
+				resume: boolean(value.resume, 'resume'),
+			};
+		case 'task_request_result': {
+			exactKeys(value, ['requestId', 'status', 'reasonCode', 'message', 'goalRevision'], ['requestId', 'status', 'reasonCode', 'message', 'goalRevision'], type);
+			const status = requireIdentifier(value.status, 'status');
+			if (!['accepted', 'pending', 'rejected'].includes(status)) throw new ProtocolV2Error('INVALID_PAYLOAD', 'task_request_result status must be accepted, pending or rejected');
+			return {
+				requestId: requireIdentifier(value.requestId, 'requestId'),
+				status,
+				reasonCode: boundedText(value.reasonCode, 'reasonCode', MAX_REASON_CODE_LENGTH),
+				message: boundedText(value.message, 'message', MAX_RESULT_MESSAGE_LENGTH),
+				goalRevision: revision(value.goalRevision, 'goalRevision'),
+			};
+		}
+		case 'conversation_wake_ack':
+			exactKeys(value, ['transactionId', 'goalRevision'], ['transactionId', 'goalRevision'], type);
+			return {
+				transactionId: requireIdentifier(value.transactionId, 'transactionId'),
+				goalRevision: revision(value.goalRevision, 'goalRevision'),
+			};
+		case 'request_observation':
+			exactKeys(value, ['goalRevision'], ['goalRevision'], type);
+			return { goalRevision: revision(value.goalRevision, 'goalRevision') };
+		case 'inspection_request':
+			exactKeys(value, ['goalRevision', 'requestId', 'query'], ['goalRevision', 'requestId', 'query'], type);
+			return { goalRevision: revision(value.goalRevision, 'goalRevision'), requestId: requireIdentifier(value.requestId, 'requestId'), query: normalizeInspectionQuery(value.query) };
+		case 'inspection_result': {
+			exactKeys(value, ['goalRevision', 'requestId', 'result', 'error'], ['goalRevision', 'requestId'], type);
+			if ((value.result === undefined) === (value.error === undefined)) throw new ProtocolV2Error('INVALID_PAYLOAD', 'Inspection needs exactly one result or error');
+			return { goalRevision: revision(value.goalRevision, 'goalRevision'), requestId: requireIdentifier(value.requestId, 'requestId'),
+				...(value.error === undefined ? { result: expandEmbeddedBlockTags(observedDetails(value.result, 'inspection.result')) } : { error: { code: requireIdentifier(value.error.code, 'error.code'), message: boundedText(value.error.message, 'error.message', 2048) } }) };
+		}
+		case 'action_command':
+			return normalizeActionCommand(value);
+		case 'action_cancel':
+			exactKeys(value, ['goalRevision', 'actionId'], ['goalRevision', 'actionId'], type);
+			return {
+				goalRevision: revision(value.goalRevision, 'goalRevision'),
+				actionId: requireIdentifier(value.actionId, 'actionId'),
+			};
+		case 'agent_error':
+			exactKeys(value, ['goalRevision', 'code', 'message'], ['goalRevision', 'code', 'message'], type);
+			return {
+				goalRevision: revision(value.goalRevision, 'goalRevision'),
+				code: boundedText(value.code, 'code', MAX_REASON_CODE_LENGTH),
+				message: boundedText(value.message, 'message', MAX_RESULT_MESSAGE_LENGTH),
+			};
+		case 'agent_notice': {
+			// Launch-time CLI notices are not revision guarded: an idle agent has no active goal yet.
+			exactKeys(value, ['severity', 'code', 'message'], ['severity', 'code', 'message'], type);
+			const severity = requireIdentifier(value.severity, 'severity');
+			if (!AGENT_NOTICE_SEVERITY_SET.has(severity)) throw new ProtocolV2Error('INVALID_PAYLOAD', `agent_notice severity '${severity}' is not allowed`);
+			return {
+				severity,
+				code: boundedText(value.code, 'code', MAX_REASON_CODE_LENGTH),
+				message: boundedText(value.message, 'message', MAX_RESULT_MESSAGE_LENGTH),
+			};
+		}
+		case 'reflex_update': {
+			// The model's complete reflex rule set for one agent; reflexes.mjs validated each rule. Not revision guarded:
+			// rules outlive goal revisions.
+			exactKeys(value, ['revision', 'rules', 'yield'], ['revision', 'rules', 'yield'], type);
+			const rules = boundedArray(value.rules, 'rules', 12);
+			if (!rules.every(isPlainObject) || Buffer.byteLength(JSON.stringify(rules)) > 16_384) throw new ProtocolV2Error('INVALID_PAYLOAD', 'Invalid reflex rules');
+			return { revision: nonnegativeInteger(value.revision, 'revision'), rules: structuredClone(rules), yield: boolean(value.yield, 'yield') };
+		}
+		case 'task_view_request':
+			exactKeys(value, ['goalRevision'], ['goalRevision'], type);
+			return { goalRevision: revision(value.goalRevision, 'goalRevision') };
+		case 'task_view': {
+			exactKeys(value, ['goalRevision', 'goal', 'active', 'verified', 'revision', 'plan', 'lastObserved', 'events', 'usage', 'allowance', 'roster', 'generatedAt'], ['goalRevision', 'goal', 'active', 'verified', 'revision', 'plan', 'lastObserved', 'events', 'usage', 'allowance', 'generatedAt'], type);
+			boolean(value.active, 'active'); boolean(value.verified, 'verified');
+			if (Buffer.byteLength(JSON.stringify(value)) > TASK_VIEW_MAX_BYTES) throw new ProtocolV2Error('INVALID_PAYLOAD', 'Task view exceeds the wire budget');
+			if (value.roster !== undefined && value.roster !== null && (!isPlainObject(value.roster) || !Array.isArray(value.roster.agents) || value.roster.agents.length > 16 || !Array.isArray(value.roster.accounts) || value.roster.accounts.length > 16)) throw new ProtocolV2Error('INVALID_PAYLOAD', 'Invalid usage roster');
+			revision(value.goalRevision, 'goalRevision'); revision(value.revision, 'revision'); nonnegativeInteger(value.generatedAt, 'generatedAt');
+			boundedText(value.goal, 'goal', 512, 0);
+			if (value.plan !== null) validateTaskPlan(value.plan);
+			if (!Array.isArray(value.events) || value.events.length > 256) throw new ProtocolV2Error('INVALID_PAYLOAD', 'Invalid task events');
+			for (const event of value.events) { boundedText(event.message, 'event.message', 2048); boundedText(event.stage, 'event.stage', 40); nonnegativeInteger(event.sequence, 'event.sequence'); nonnegativeInteger(event.at, 'event.at'); }
+			return structuredClone(value);
+		}
+		case 'verbose_control':
+			exactKeys(value, ['enabled'], ['enabled'], type);
+			return { enabled: boolean(value.enabled, 'enabled') };
+		case 'verbose_event': {
+			exactKeys(value, ['goalRevision', 'stage', 'message'], ['goalRevision', 'stage', 'message'], type);
+			const stage = requireIdentifier(value.stage, 'stage');
+			if (!VERBOSE_STAGE_SET.has(stage)) throw new ProtocolV2Error('INVALID_PAYLOAD', `verbose_event stage '${stage}' is not allowed`);
+			return {
+				goalRevision: revision(value.goalRevision, 'goalRevision'),
+				stage,
+				message: boundedText(value.message, 'message', MAX_VERBOSE_MESSAGE_LENGTH),
+			};
+		}
+		case 'heartbeat':
+			exactKeys(value, [], [], type);
+			return {};
+		case 'shutdown':
+			exactKeys(value, ['reason'], ['reason'], type);
+			return { reason: boundedText(value.reason, 'reason', MAX_REASON_CODE_LENGTH) };
+		default:
+			throw new ProtocolV2Error('INVALID_MESSAGE_TYPE', `Unsupported protocol v2 payload type '${String(type)}'`);
+	}
+}
+
+function validateDirection(type, direction) {
+	if (direction === 'coordinator_to_server' && !COORDINATOR_TYPES.has(type)) throw new ProtocolV2Error('INVALID_MESSAGE_TYPE', `Message type '${type}' is not coordinator-to-server`);
+	if (direction === 'server_to_coordinator' && !SERVER_TYPES.has(type)) throw new ProtocolV2Error('INVALID_MESSAGE_TYPE', `Message type '${type}' is not server-to-coordinator`);
+}
+
+function normalizeCompletionFact(value, index) {
+	const field = `facts[${index}]`;
+	if (!isPlainObject(value)) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field} must be an object`);
+	exactKeys(value, ['type', 'satisfied', 'expectedValue', 'observedValue'], ['type', 'satisfied', 'expectedValue', 'observedValue'], field);
+	return {
+		type: boundedText(value.type, `${field}.type`, MAX_REASON_CODE_LENGTH),
+		satisfied: boolean(value.satisfied, `${field}.satisfied`),
+		expectedValue: boundedText(value.expectedValue, `${field}.expectedValue`, 512),
+		observedValue: boundedText(value.observedValue, `${field}.observedValue`, 512, 0),
+	};
+}
+
+export class MultiplexedServerBridge extends EventEmitter {
+	#host;
+	#port;
+	#secret;
+	#launchId;
+	#expectedServerInstanceId;
+	#serverInstanceId;
+	#socketFactory;
+	#schedule;
+	#cancelSchedule;
+	#scheduleDeadline;
+	#cancelDeadline;
+	#currentRevision;
+	#handshakeTimeoutMs;
+	#heartbeatIntervalMs;
+	#heartbeatTimeoutMs;
+	#initialReconnectDelayMs;
+	#maxReconnectDelayMs;
+	#reconnectDelayMs;
+	#connectionQueueCap;
+	#agentQueueCap;
+	#inboundConnectionQueueCap;
+	#inboundAgentQueueCap;
+	#inboundDispatchBatch;
+	#trackedTerminalActionIdCap;
+	#messageIds;
+	#audit;
+	#randomNonce;
+	#scheduleInbound;
+	#socket = null;
+	#decoder = null;
+	#registryTransfer = null;
+	#registryFragment = null;
+	#running = false;
+	#ready = false;
+	#recovering = false;
+	#challengeMessageId = null;
+	#helloMessageId = null;
+	#clientNonce = null;
+	#serverNonce = null;
+	#reconnectHandle = null;
+	#handshakeDeadlineHandle = null;
+	#handshakeDeadlineToken = 0;
+	#heartbeatDeadlineHandle = null;
+	#heartbeatDeadlineToken = 0;
+	#heartbeatProbeHandle = null;
+	#heartbeatProbeToken = 0;
+	#connectionEpoch = 0;
+	#outboundQueue = [];
+	#outboundAgentOrder = [[], []];
+	#outboundControlBurst = 0;
+	#queuedByAgent = new Map();
+	#writeBlocked = false;
+	#blockedWriteEntry = null;
+	#inboundQueue = [];
+	#inboundEntries = new Set();
+	#inboundQueuedByAgent = new Map();
+	#inboundDispatchScheduled = false;
+	#inboundReadPaused = false;
+	#receivingData = false;
+	#inboundMessageIds = new Set();
+	#terminalActionIds = new Set();
+	#issuedActionIds = new Set();
+	#terminalActionsByGoal = new Map();
+	#terminalResultsByKey = new Map();
+	#acknowledgedTerminalActionIds = new Set();
+	#retiredTerminalActionIds = new Set();
+	#retiredTerminalResultsByKey = new Map();
+	#knownAgentIds = new Set();
+	#retiredAgentIds = new Set();
+	#observedRevisions = new Map();
+	#payloadRejections = new Map();
+
+	constructor(config, { audit = null, ...dependencies } = {}) {
+		super();
+		if (!isPlainObject(config)) throw new TypeError('multiplexed bridge config must be an object');
+		this.#host = config.host ?? LOOPBACK_HOST;
+		if (this.#host !== LOOPBACK_HOST) throw new ProtocolV2Error('LOOPBACK_REQUIRED', `Multiplexed bridge host must be ${LOOPBACK_HOST}`);
+		this.#port = requirePort(config.port);
+		this.#secret = requireSecret(config.secret);
+		const configuredLaunchId = config.launchId ?? process.env.ARENA_AGENT_COORDINATOR_LAUNCH_ID;
+		this.#launchId = configuredLaunchId === undefined || configuredLaunchId === null || configuredLaunchId === ''
+			? null
+			: launchIdentity(configuredLaunchId);
+		this.#expectedServerInstanceId = config.serverInstanceId === undefined ? null : requireIdentifier(config.serverInstanceId, 'serverInstanceId');
+		this.#serverInstanceId = this.#expectedServerInstanceId ?? PENDING_SERVER_INSTANCE_ID;
+		this.#socketFactory = dependencies.socketFactory ?? (() => net.createConnection({ host: this.#host, port: this.#port }));
+		this.#schedule = dependencies.schedule ?? ((callback, delay) => setTimeout(callback, delay));
+		this.#cancelSchedule = dependencies.cancelSchedule ?? clearTimeout;
+		this.#scheduleDeadline = dependencies.scheduleDeadline ?? defaultDeadlineSchedule;
+		this.#cancelDeadline = dependencies.cancelDeadline ?? clearTimeout;
+		this.#currentRevision = dependencies.currentRevision ?? (() => null);
+		this.#handshakeTimeoutMs = positiveInteger(config.handshakeTimeoutMs ?? DEFAULT_HANDSHAKE_TIMEOUT_MS, 'handshakeTimeoutMs');
+		this.#heartbeatIntervalMs = positiveInteger(config.heartbeatIntervalMs ?? DEFAULT_HEARTBEAT_INTERVAL_MS, 'heartbeatIntervalMs');
+		this.#heartbeatTimeoutMs = positiveInteger(config.heartbeatTimeoutMs ?? DEFAULT_HEARTBEAT_TIMEOUT_MS, 'heartbeatTimeoutMs');
+		if (this.#heartbeatTimeoutMs <= this.#heartbeatIntervalMs) throw new TypeError('heartbeatTimeoutMs must be greater than heartbeatIntervalMs');
+		this.#initialReconnectDelayMs = positiveInteger(config.reconnectDelayMs ?? 500, 'reconnectDelayMs');
+		this.#maxReconnectDelayMs = positiveInteger(config.maxReconnectDelayMs ?? 5_000, 'maxReconnectDelayMs');
+		if (this.#maxReconnectDelayMs < this.#initialReconnectDelayMs) throw new TypeError('maxReconnectDelayMs must be at least reconnectDelayMs');
+		this.#reconnectDelayMs = this.#initialReconnectDelayMs;
+		this.#connectionQueueCap = positiveInteger(config.connectionQueueCap ?? DEFAULT_CONNECTION_QUEUE_CAP, 'connectionQueueCap');
+		this.#agentQueueCap = positiveInteger(config.agentQueueCap ?? DEFAULT_AGENT_MESSAGE_QUEUE_CAP, 'agentQueueCap');
+		this.#inboundConnectionQueueCap = positiveInteger(config.inboundConnectionQueueCap ?? DEFAULT_CONNECTION_QUEUE_CAP, 'inboundConnectionQueueCap');
+		this.#inboundAgentQueueCap = positiveInteger(config.inboundAgentQueueCap ?? DEFAULT_AGENT_MESSAGE_QUEUE_CAP, 'inboundAgentQueueCap');
+		this.#inboundDispatchBatch = positiveInteger(config.inboundDispatchBatch ?? DEFAULT_INBOUND_DISPATCH_BATCH, 'inboundDispatchBatch');
+		this.#trackedTerminalActionIdCap = positiveInteger(config.trackedTerminalActionIdCap ?? MAX_TRACKED_TERMINAL_ACTION_IDS, 'trackedTerminalActionIdCap');
+		this.#messageIds = dependencies.messageIds ?? new MessageIdGenerator('coordinator-v2');
+		this.#randomNonce = dependencies.randomNonce ?? (() => randomBytes(32).toString('base64url'));
+		this.#scheduleInbound = dependencies.scheduleInbound ?? queueMicrotask;
+		if (audit !== null && typeof audit !== 'function') throw new TypeError('audit must be a function or null');
+		this.#audit = audit;
+	}
+
+	get ready() { return this.#ready; }
+	get connectionEpoch() { return this.#connectionEpoch; }
+	get serverInstanceId() { return this.#ready ? this.#serverInstanceId : null; }
+	get knownAgentIds() { return [...this.#knownAgentIds]; }
+
+	start() {
+		if (this.#running) return;
+		this.#running = true;
+		this.#connect();
+	}
+
+	stop() {
+		if (!this.#running) return;
+		this.#running = false;
+		this.#ready = false;
+		this.#recovering = false;
+		this.#clearConnectionDeadlines();
+		if (this.#reconnectHandle !== null) {
+			this.#cancelSchedule(this.#reconnectHandle);
+			this.#reconnectHandle = null;
+		}
+		this.#clearOutboundQueue(new ProtocolV2Error('BRIDGE_STOPPED', 'Multiplexed bridge stopped'));
+		this.#clearInboundQueue();
+		this.#socket?.destroy();
+		this.#socket = null;
+	}
+
+	async send(type, agentId, payload, { connectionEpoch = this.#connectionEpoch } = {}) {
+		if (!this.#ready) return Promise.reject(new ProtocolV2Error('BRIDGE_NOT_READY', 'Multiplexed bridge handshake is incomplete'));
+		if (connectionEpoch !== this.#connectionEpoch) return Promise.reject(new ProtocolV2Error('STALE_CONNECTION_EPOCH', `Bridge connection epoch ${connectionEpoch} is no longer active`));
+		if (agentId !== 'server' && !this.#knownAgentIds.has(agentId)
+				&& !this.#canAcknowledgeRetiredResult(type, agentId, payload)) {
+			throw new ProtocolV2Error('UNKNOWN_AGENT', `Cannot send a message for unknown agent '${agentId}'`);
+		}
+		const envelope = createProtocolV2Envelope({
+			serverInstanceId: this.#serverInstanceId,
+			agentId,
+			type,
+			messageId: this.#messageIds.next(),
+			payload,
+		});
+		validateProtocolV2Envelope(envelope, { direction: 'coordinator_to_server' });
+		this.#assertRevision(envelope, REVISION_GUARDED_OUTBOUND_TYPES);
+		if (type === 'verbose_event') return this.#sendLossy(envelope);
+		return this.#enqueue(envelope);
+	}
+
+	#connect() {
+		if (!this.#running) return;
+		const connectionEpoch = ++this.#connectionEpoch;
+		const socket = this.#socketFactory();
+		this.#socket = socket;
+		this.#decoder = new JsonlDecoder({ maxBytes: MAX_LINE_BYTES });
+		socket.setNoDelay?.(true);
+		socket.on('connect', () => this.#onConnect(socket, connectionEpoch));
+		socket.on('data', (chunk) => this.#onData(socket, connectionEpoch, chunk));
+		socket.on('drain', () => this.#onDrain(socket, connectionEpoch));
+		socket.on('error', (error) => {
+			if (this.#isCurrentConnection(socket, connectionEpoch)) this.#emitSafely('transportError', error);
+		});
+		socket.on('close', () => this.#onClose(socket, connectionEpoch));
+	}
+
+	#onConnect(socket, connectionEpoch) {
+		if (!this.#isCurrentConnection(socket, connectionEpoch)) return;
+		this.#inboundMessageIds.clear();
+		this.#observedRevisions.clear();
+		this.#clearInboundQueue();
+		this.#clientNonce = authenticationToken(this.#randomNonce(), 'clientNonce');
+		this.#serverNonce = null;
+		const messageId = this.#messageIds.next();
+		this.#challengeMessageId = messageId;
+		this.#helloMessageId = null;
+		const challenge = createProtocolV2Envelope({
+			serverInstanceId: this.#serverInstanceId,
+			agentId: 'server',
+			type: 'auth_challenge',
+			messageId,
+			payload: { clientNonce: this.#clientNonce },
+		});
+		const encoded = encodeJsonLine(challenge);
+		this.#invokeAudit('coordinator_to_server', challenge);
+		try {
+			socket.write(encoded);
+			this.#scheduleHandshakeDeadline(socket, connectionEpoch);
+		} catch (error) {
+			this.#fail(error, socket, connectionEpoch);
+		}
+	}
+
+	async #onData(socket, connectionEpoch, chunk) {
+		if (!this.#isCurrentConnection(socket, connectionEpoch)) return;
+		let messages;
+		try {
+			messages = this.#decoder.push(chunk);
+		} catch (error) {
+			this.#fail(error, socket, connectionEpoch);
+			return;
+		}
+		this.#receivingData = connectionEpoch;
+		try {
+			for (const value of messages) {
+				try {
+					if (!this.#isCurrentConnection(socket, connectionEpoch)) return;
+					if (this.#inboundEntries.size >= this.#inboundConnectionQueueCap
+							|| (this.#inboundQueuedByAgent.get(value?.agentId) ?? 0) >= this.#inboundAgentQueueCap) {
+						this.#drainInbound();
+						if (this.#inboundEntries.size >= this.#inboundConnectionQueueCap
+								|| (this.#inboundQueuedByAgent.get(value?.agentId) ?? 0) >= this.#inboundAgentQueueCap) {
+							// A TCP chunk is not a work batch. Let already-resolved waitUntil
+							// work finish while reads are paused before applying the hard cap.
+							socket.pause?.();
+							this.#inboundReadPaused = true;
+							await new Promise((resolve) => setImmediate(resolve));
+							if (!this.#isCurrentConnection(socket, connectionEpoch)) return;
+						}
+					}
+					this.#accept(value, socket, connectionEpoch);
+				} catch (error) {
+					this.#fail(withInboundEnvelopeContext(error, value), socket, connectionEpoch);
+					return;
+				}
+			}
+		} finally {
+			if (this.#receivingData === connectionEpoch) this.#receivingData = false;
+		}
+		if (this.#inboundQueue.length > 0) this.#drainInbound();
+		this.#resumeInboundReads(socket, connectionEpoch);
+	}
+
+	#accept(value, socket, connectionEpoch) {
+		let envelope;
+		let payloadError = null;
+		try {
+			envelope = validateProtocolV2Envelope(value, { direction: 'server_to_coordinator' });
+		} catch (error) {
+			if (!this.#ready || !SCHEMA_DRIFT_REPAIRS.has(error)) throw error;
+			const header = validateEnvelopeHeader(value, 'server_to_coordinator');
+			if (!SUPERSEDED_INBOUND_TYPES.has(header.type)) throw error;
+			// Revalidate a private copy after discarding only explicitly classified drift. A later malformed
+			// known fact remains fatal. This copy is never delivered: the whole snapshot is rejected below.
+			const payload = structuredClone(value.payload);
+			for (;;) {
+				try {
+					envelope = { ...header, payload: validateProtocolV2Payload(header.type, payload) };
+					break;
+				} catch (knownError) {
+					const discard = SCHEMA_DRIFT_REPAIRS.get(knownError);
+					if (discard === undefined) throw knownError;
+					discard();
+				}
+			}
+			payloadError = error;
+		}
+		if (payloadError === null) this.#invokeAudit('server_to_coordinator', envelope.type === 'auth_response'
+			? { ...envelope, payload: { ...envelope.payload, proof: '[REDACTED]' } }
+			: envelope);
+		if (this.#inboundMessageIds.has(envelope.messageId)) throw new ProtocolV2Error('DUPLICATE_MESSAGE', `Duplicate message ID '${envelope.messageId}'`);
+		rememberBounded(this.#inboundMessageIds, envelope.messageId, MAX_TRACKED_MESSAGE_IDS);
+		if (this.#serverNonce !== null && envelope.serverInstanceId !== this.#serverInstanceId) throw new ProtocolV2Error('SERVER_INSTANCE_MISMATCH', 'Server instance changed during authentication or registry delivery');
+		if (envelope.type === 'registry_fragment') {
+			this.#acceptRegistryFragment(envelope, socket, connectionEpoch);
+			return;
+		}
+		if (this.#registryFragment !== null) throw new ProtocolV2Error('INVALID_FRAGMENT', 'Fragmented message was interrupted');
+		if (this.#registryTransfer !== null) {
+			this.#acceptRegistryEntry(envelope, socket, connectionEpoch);
+			return;
+		}
+		if (envelope.type === 'registry_entry' || envelope.type === 'registry_complete') throw new ProtocolV2Error('INVALID_REGISTRY_SNAPSHOT', 'Registry transfer has not started');
+		if (!this.#ready) {
+			if (this.#serverNonce === null) this.#acceptAuthResponse(envelope, socket, connectionEpoch);
+			else this.#acceptHelloAck(envelope, socket, connectionEpoch);
+			return;
+		}
+		if (envelope.serverInstanceId !== this.#serverInstanceId) throw new ProtocolV2Error('SERVER_INSTANCE_MISMATCH', 'Server instance changed during an authenticated session');
+		this.#trackInboundRevision(envelope);
+		this.#assertRevision(envelope, REVISION_GUARDED_INBOUND_TYPES);
+		if (this.#trackTerminalResult(envelope)) {
+			void this.acknowledgeActionResult(envelope.agentId, envelope.payload, { connectionEpoch }).catch(() => {});
+			return;
+		}
+		if (envelope.type === 'agent_registered') {
+			this.#retiredAgentIds.delete(envelope.agentId);
+			if (!this.#knownAgentIds.has(envelope.agentId)) {
+				if (this.#knownAgentIds.size >= MAX_REGISTRY_SNAPSHOT_AGENTS) {
+					throw new ProtocolV2Error('REGISTRY_CAP_EXCEEDED', 'Live agent registry exceeds the bounded protocol capacity');
+				}
+				this.#knownAgentIds.add(envelope.agentId);
+			}
+		}
+		const retainedRetiredResult = envelope.type === 'action_result'
+			&& TERMINAL_ACTION_STATES.has(envelope.payload.state)
+			&& this.#retiredAgentIds.has(envelope.agentId);
+		if (envelope.agentId !== 'server' && !this.#knownAgentIds.has(envelope.agentId)
+				&& envelope.type !== 'agent_registered' && !retainedRetiredResult) {
+			throw new ProtocolV2Error('UNKNOWN_AGENT', `Message references unknown agent '${envelope.agentId}'`);
+		}
+		if (payloadError !== null) {
+			this.#reportRejectedPayload(envelope, value, payloadError, connectionEpoch);
+			return;
+		}
+		if (envelope.type === 'agent_removed') {
+			rememberBounded(this.#retiredAgentIds, envelope.agentId, MAX_TRACKED_TERMINAL_ACTION_IDS);
+			this.#knownAgentIds.delete(envelope.agentId);
+			this.#observedRevisions.delete(envelope.agentId);
+			this.#terminalActionsByGoal.delete(envelope.agentId);
+		}
+		if (envelope.type === 'heartbeat') this.#refreshHeartbeatDeadline(socket, connectionEpoch);
+		const event = { ...envelope, connectionEpoch };
+		this.#enqueueInbound(event, socket, connectionEpoch);
+	}
+
+	/** Report drift only after the normal delivery, identity and revision guards have passed. */
+	#reportRejectedPayload(header, value, error, connectionEpoch) {
+		const key = `${header.type}\0${error.message}`;
+		const count = (this.#payloadRejections.get(key) ?? 0) + 1;
+		this.#payloadRejections.delete(key);
+		if (this.#payloadRejections.size >= MAX_TRACKED_PAYLOAD_REJECTIONS) this.#payloadRejections.delete(this.#payloadRejections.keys().next().value);
+		this.#payloadRejections.set(key, count);
+		// Report the 1st, 2nd, 4th, 8th... repeat: a persistent mismatch stays visible without one line per message.
+		if ((count & (count - 1)) !== 0) return;
+		const contextual = withInboundEnvelopeContext(error, value);
+		const rejected = new ProtocolV2Error('INBOUND_MESSAGE_REJECTED',
+			`Dropped one ${header.type}, connection kept (${count} so far with this error): ${error.code ?? 'PROTOCOL_ERROR'} ${contextual.message}`,
+			{ cause: error });
+		this.#emitSafely('messageRejected', { error: rejected, type: header.type, agentId: header.agentId, messageId: header.messageId, count, connectionEpoch });
+	}
+
+	#acceptRegistryFragment(envelope, socket, connectionEpoch) {
+		const part = envelope.payload;
+		if (this.#serverNonce === null || (!this.#ready && this.#registryTransfer === null)
+				|| (part.type === 'registry_entry') !== (this.#registryTransfer !== null)) {
+			throw new ProtocolV2Error('INVALID_FRAGMENT', 'Fragment is outside its authenticated delivery phase');
+		}
+		let pending = this.#registryFragment;
+		if (pending === null) {
+			if (part.index !== 0) throw new ProtocolV2Error('INVALID_FRAGMENT', 'Fragment sequence must start at zero');
+			pending = this.#registryFragment = { messageId: part.messageId, type: part.type, agentId: envelope.agentId, totalBytes: part.totalBytes, index: 0, bytes: 0, chunks: [] };
+		}
+		if (part.index !== pending.index || part.messageId !== pending.messageId || part.type !== pending.type
+				|| envelope.agentId !== pending.agentId || part.totalBytes !== pending.totalBytes) throw new ProtocolV2Error('INVALID_FRAGMENT', 'Fragment identity or sequence changed');
+		const bytes = Buffer.from(part.data, 'base64');
+		const remaining = pending.totalBytes - pending.bytes;
+		if (bytes.toString('base64') !== part.data || bytes.length !== Math.min(REGISTRY_FRAGMENT_BYTES, remaining)) throw new ProtocolV2Error('INVALID_FRAGMENT', 'Fragment length does not match the declared message');
+		pending.chunks.push(bytes);
+		pending.bytes += bytes.length;
+		pending.index++;
+		if (pending.bytes !== pending.totalBytes) return;
+		this.#registryFragment = null;
+		// Use the real strict JSONL parser: duplicate fields and invalid UTF-8 stay errors.
+		const decoder = new JsonlDecoder({ maxBytes: MAX_REGISTRY_ENTRY_BYTES });
+		const messages = decoder.push(Buffer.concat([...pending.chunks, Buffer.from('\n')]));
+		if (messages.length !== 1) throw new ProtocolV2Error('INVALID_FRAGMENT', 'Fragmented payload must contain exactly one object');
+		const [payload] = messages;
+		decoder.finish();
+		this.#accept({ protocolVersion: 2, serverInstanceId: envelope.serverInstanceId, agentId: pending.agentId, type: pending.type, messageId: pending.messageId, payload }, socket, connectionEpoch);
+	}
+
+	#acceptRegistryEntry(envelope, socket, connectionEpoch) {
+		const transfer = this.#registryTransfer;
+		if (envelope.type === 'registry_entry') {
+			if (transfer.entries.length >= transfer.ack.payload.registryCount || envelope.agentId !== envelope.payload.agentId
+					|| transfer.ids.has(envelope.agentId)) throw new ProtocolV2Error('INVALID_REGISTRY_SNAPSHOT', 'Registry entry count or identity is invalid');
+			transfer.ids.add(envelope.agentId);
+			transfer.entries.push(envelope.payload);
+			return;
+		}
+		if (envelope.type !== 'registry_complete' || envelope.payload.replyTo !== transfer.ack.messageId
+				|| envelope.payload.count !== transfer.entries.length || transfer.entries.length !== transfer.ack.payload.registryCount) throw new ProtocolV2Error('INVALID_REGISTRY_SNAPSHOT', 'Registry completion does not match its snapshot');
+		this.#registryTransfer = null;
+		const { registryCount, ...payload } = transfer.ack.payload;
+		this.#acceptHelloAck({ ...transfer.ack, payload: { ...payload, registry: transfer.entries } }, socket, connectionEpoch);
+	}
+
+	#acceptAuthResponse(envelope, socket, connectionEpoch) {
+		if (envelope.type !== 'auth_response' || envelope.agentId !== 'server') {
+			throw new ProtocolV2Error('HANDSHAKE_REQUIRED', 'auth_response must be the first server message');
+		}
+		if (envelope.payload.replyTo !== this.#challengeMessageId || envelope.payload.clientNonce !== this.#clientNonce) {
+			throw new ProtocolV2Error('HANDSHAKE_MISMATCH', 'auth_response does not match the active coordinator challenge');
+		}
+		if (this.#expectedServerInstanceId !== null && envelope.serverInstanceId !== this.#expectedServerInstanceId) {
+			throw new ProtocolV2Error('SERVER_INSTANCE_MISMATCH', 'Connected server instance does not match configuration');
+		}
+		const expectedProof = createBridgeAuthenticationProof(this.#secret, 'server', {
+			clientNonce: this.#clientNonce,
+			serverNonce: envelope.payload.serverNonce,
+			serverInstanceId: envelope.serverInstanceId,
+		});
+		if (!secretsEqual(envelope.payload.proof, expectedProof)) {
+			throw new ProtocolV2Error('SERVER_AUTHENTICATION_FAILED', 'Bridge server did not prove possession of the configured secret');
+		}
+		this.#serverInstanceId = envelope.serverInstanceId;
+		this.#serverNonce = envelope.payload.serverNonce;
+		const messageId = this.#messageIds.next();
+		this.#helloMessageId = messageId;
+		const hello = createProtocolV2Envelope({
+			serverInstanceId: this.#serverInstanceId,
+			agentId: 'server',
+			type: 'hello',
+			messageId,
+			payload: {
+				replyTo: envelope.messageId,
+				clientNonce: this.#clientNonce,
+				serverNonce: this.#serverNonce,
+				proof: createBridgeAuthenticationProof(this.#secret, 'coordinator', {
+					clientNonce: this.#clientNonce,
+					serverNonce: this.#serverNonce,
+					serverInstanceId: this.#serverInstanceId,
+					launchId: this.#launchId,
+				}),
+				registryFragments: true,
+				actionTiming: true,
+				// Tells the server it may list each block type's tags once; a server that predates this ignores the field.
+				blockTags: true,
+				planFacts: true,
+				// Lets the server add player.teleportTick and actionObservation onGround/teleportTick; an older coordinator rejects them.
+				bodyFacts: true,
+				breakExposureFacts: true,
+				// Lets the server add action_result.breakOutcome (held item, correct tool, drops seen) for programs and scripts.
+				breakOutcomeFacts: true,
+				placementFacts: true,
+				// Lets the server add player.dropAhead and its attention path; an older coordinator rejects both.
+				dropAheadFacts: true,
+				...(this.#launchId === null ? {} : { launchId: this.#launchId }),
+			},
+		});
+		this.#invokeAudit('coordinator_to_server', { ...hello, payload: { ...hello.payload, proof: '[REDACTED]' } });
+		try {
+			socket.write(encodeJsonLine(hello));
+		} catch (error) {
+			this.#fail(error, socket, connectionEpoch);
+		}
+	}
+
+	#acceptHelloAck(envelope, socket, connectionEpoch) {
+		if (envelope.type !== 'hello_ack' || envelope.agentId !== 'server') throw new ProtocolV2Error('HANDSHAKE_REQUIRED', 'hello_ack must be the first server message');
+		if (envelope.payload.replyTo !== this.#helloMessageId) throw new ProtocolV2Error('HANDSHAKE_MISMATCH', 'hello_ack does not match the active hello');
+		if (envelope.payload.authenticated !== true) throw new ProtocolV2Error('AUTHENTICATION_FAILED', 'Server rejected bridge authentication');
+		if (this.#launchId !== null && envelope.payload.launchId !== this.#launchId) {
+			throw new ProtocolV2Error('LAUNCH_ID_MISMATCH', 'Server acknowledgement does not match this coordinator launch');
+		}
+		if (this.#expectedServerInstanceId !== null && envelope.serverInstanceId !== this.#expectedServerInstanceId) throw new ProtocolV2Error('SERVER_INSTANCE_MISMATCH', 'Connected server instance does not match configuration');
+		if (envelope.payload.registryCount !== undefined) {
+			if (envelope.payload.registry.length !== 0 || envelope.payload.registryCount > MAX_REGISTRY_SNAPSHOT_AGENTS) throw new ProtocolV2Error('INVALID_REGISTRY_SNAPSHOT', 'Registry begin must declare a bounded, empty snapshot');
+			this.#registryTransfer = { ack: envelope, entries: [], ids: new Set() };
+			return;
+		}
+		const registry = envelope.payload.registry ?? [];
+		if (!Array.isArray(registry)) throw new ProtocolV2Error('INVALID_REGISTRY_SNAPSHOT', 'hello_ack registry must be an array');
+		this.#serverInstanceId = envelope.serverInstanceId;
+		this.#knownAgentIds = new Set(registry.map((entry) => requireIdentifier(entry?.agentId, 'registry agentId')));
+		for (const agentId of this.#knownAgentIds) this.#retiredAgentIds.delete(agentId);
+		this.#observedRevisions = new Map(registry.map((entry) => [
+			requireIdentifier(entry?.agentId, 'registry agentId'),
+			revision(entry?.goalRevision, 'registry goalRevision'),
+		]));
+		if (this.#knownAgentIds.size !== registry.length) throw new ProtocolV2Error('DUPLICATE_AGENT', 'hello_ack registry contains duplicate agents');
+		this.#synchronizeTerminalGoals(registry);
+		const recovered = this.#recovering;
+		this.#recovering = false;
+		this.#ready = true;
+		this.#reconnectDelayMs = this.#initialReconnectDelayMs;
+		this.#clearHandshakeDeadline();
+		this.#refreshHeartbeatDeadline(socket, connectionEpoch);
+		this.#scheduleHeartbeatProbe(socket, connectionEpoch);
+		const connection = {
+			connectionEpoch,
+			serverInstanceId: this.#serverInstanceId,
+			registry: structuredClone(registry),
+			...(this.#launchId === null ? {} : { launchId: this.#launchId }),
+		};
+		this.#emitSafely('ready', connection);
+		if (recovered) this.#emitSafely('recovered', { ...connection, registry: structuredClone(registry) });
+	}
+
+	#enqueueInbound(event, socket, connectionEpoch) {
+		if (event.type === 'observation' && event.payload.ready === true) {
+			// Only replace an adjacent quiet snapshot. Attention and unavailable
+			// observations carry evidence that a later snapshot cannot reconstruct;
+			// intervening results/lifecycle events must keep their wire position.
+			const queued = this.#inboundQueue.at(-1);
+			if (queued !== undefined && !queued.dispatched
+				&& queued.event.type === 'observation'
+				&& queued.event.payload.ready === true
+				&& queued.event.payload.attention === false
+				&& queued.event.agentId === event.agentId
+				&& queued.event.payload.goalRevision === event.payload.goalRevision) {
+				queued.event = event;
+				return;
+			}
+		}
+		if (this.#inboundEntries.size >= this.#inboundConnectionQueueCap
+				|| (this.#inboundQueuedByAgent.get(event.agentId) ?? 0) >= this.#inboundAgentQueueCap) {
+			this.#drainInbound();
+			if (!this.#isCurrentConnection(socket, connectionEpoch)) return;
+		}
+		if (this.#inboundEntries.size >= this.#inboundConnectionQueueCap) {
+			throw new ProtocolV2Error('CONNECTION_INBOUND_BACKPRESSURE', 'Connection inbound work queue is full');
+		}
+		const agentCount = this.#inboundQueuedByAgent.get(event.agentId) ?? 0;
+		if (agentCount >= this.#inboundAgentQueueCap) {
+			throw new ProtocolV2Error('AGENT_INBOUND_BACKPRESSURE', `Inbound work queue for agent '${event.agentId}' is full`);
+		}
+		const entry = { event, socket, connectionEpoch, dispatched: false, released: false };
+		this.#inboundQueue.push(entry);
+		this.#inboundEntries.add(entry);
+		this.#inboundQueuedByAgent.set(event.agentId, agentCount + 1);
+		if (!this.#inboundReadPaused && this.#inboundEntries.size >= Math.max(1, Math.floor(this.#inboundConnectionQueueCap * 0.75))) {
+			socket.pause?.();
+			this.#inboundReadPaused = true;
+		}
+		if (!this.#receivingData) this.#scheduleInboundDrain();
+	}
+
+	#scheduleInboundDrain() {
+		if (this.#inboundDispatchScheduled) return;
+		this.#inboundDispatchScheduled = true;
+		this.#scheduleInbound(() => this.#drainInbound());
+	}
+
+	#drainInbound() {
+		this.#inboundDispatchScheduled = false;
+		let dispatched = 0;
+		while (dispatched < this.#inboundDispatchBatch && this.#inboundQueue.length > 0) {
+			const entry = this.#inboundQueue.shift();
+			if (entry.released) continue;
+			if (!this.#isCurrentConnection(entry.socket, entry.connectionEpoch) || !this.#ready) {
+				this.#releaseInbound(entry);
+				continue;
+			}
+			entry.dispatched = true;
+			const waits = [];
+			Object.defineProperty(entry.event, 'waitUntil', {
+				enumerable: false,
+				value: (operation) => waits.push(Promise.resolve(operation)),
+			});
+			this.#emitSafely(entry.event.type, entry.event);
+			this.#emitSafely('message', entry.event);
+			if (waits.length === 0) this.#releaseInbound(entry);
+			else void Promise.allSettled(waits).finally(() => this.#releaseInbound(entry));
+			dispatched++;
+		}
+		if (this.#inboundQueue.length > 0) this.#scheduleInboundDrain();
+	}
+
+	#releaseInbound(entry) {
+		if (entry.released) return;
+		entry.released = true;
+		this.#inboundEntries.delete(entry);
+		const count = this.#inboundQueuedByAgent.get(entry.event.agentId) ?? 0;
+		if (count <= 1) this.#inboundQueuedByAgent.delete(entry.event.agentId);
+		else this.#inboundQueuedByAgent.set(entry.event.agentId, count - 1);
+		this.#resumeInboundReads(entry.socket, entry.connectionEpoch);
+	}
+
+	#resumeInboundReads(socket, connectionEpoch) {
+		if (this.#inboundReadPaused && !this.#receivingData
+				&& this.#isCurrentConnection(socket, connectionEpoch)
+				&& this.#inboundEntries.size <= Math.floor(this.#inboundConnectionQueueCap * 0.5)) {
+			this.#inboundReadPaused = false;
+			socket.resume?.();
+		}
+	}
+
+	#clearInboundQueue() {
+		this.#registryTransfer = null;
+		this.#registryFragment = null;
+		for (const entry of this.#inboundEntries) entry.released = true;
+		this.#inboundQueue = [];
+		this.#inboundEntries.clear();
+		this.#inboundQueuedByAgent.clear();
+		this.#inboundDispatchScheduled = false;
+		this.#inboundReadPaused = false;
+	}
+
+	#assertRevision(envelope, guardedTypes) {
+		if (!guardedTypes.has(envelope.type)) return;
+		const revision = envelope.payload.goalRevision;
+		if (!Number.isSafeInteger(revision) || revision < 0) throw new ProtocolV2Error('INVALID_GOAL_REVISION', `${envelope.type} requires a nonnegative goalRevision`);
+		const current = this.#trackedRevision(envelope.agentId);
+		if (envelope.type === 'action_result' && current !== null && current !== undefined && revision < current) return;
+		if (current !== null && current !== undefined && revision !== current) throw new ProtocolV2Error('STALE_GOAL_REVISION', `Message revision ${revision} does not match current revision ${current}`);
+	}
+
+	#trackInboundRevision(envelope) {
+		if (envelope.type === 'agent_registered') {
+			this.#observedRevisions.set(envelope.agentId, envelope.payload.goalRevision);
+			this.#ensureTerminalGoal(envelope.agentId, envelope.payload.goalRevision);
+			return;
+		}
+		if (envelope.type !== 'goal_control' && envelope.type !== 'conversation_wake') return;
+		const control = envelope.type === 'conversation_wake' ? envelope.payload.control : envelope.payload;
+		const next = control.goalRevision;
+		const current = this.#trackedRevision(envelope.agentId);
+		if (current !== null && current !== undefined) {
+			if (['queue', 'dequeue'].includes(control.operation) && next !== current) {
+				throw new ProtocolV2Error('STALE_GOAL_REVISION', `Queued goal revision ${next} does not match current revision ${current}`);
+			}
+			if (!['queue', 'dequeue'].includes(control.operation) && next < current) {
+				throw new ProtocolV2Error('STALE_GOAL_REVISION', `Goal revision ${next} moved backwards from ${current}`);
+			}
+		}
+		this.#observedRevisions.set(envelope.agentId, next);
+		this.#ensureTerminalGoal(envelope.agentId, next);
+		if (!['queue', 'dequeue'].includes(control.operation) && (current === null || current === undefined || next > current)) {
+			this.#dropSupersededQueuedMessages(envelope.agentId, next);
+		}
+	}
+
+	#dropSupersededQueuedMessages(agentId, goalRevision) {
+		const retained = [];
+		for (const entry of this.#outboundQueue) {
+			if (entry.envelope.agentId !== agentId
+					|| !REVISION_GUARDED_OUTBOUND_TYPES.has(entry.envelope.type)
+					|| entry.envelope.payload.goalRevision === goalRevision) {
+				retained.push(entry);
+				continue;
+			}
+			this.#decrementQueued(agentId);
+			entry.reject(new ProtocolV2Error(
+				'STALE_GOAL_REVISION',
+				`Queued ${entry.envelope.type} revision ${entry.envelope.payload.goalRevision} was superseded by lifecycle revision ${goalRevision}`,
+			));
+		}
+		this.#outboundQueue = retained;
+		this.#outboundAgentOrder = this.#outboundAgentOrder.map((agents, lane) =>
+			agents.filter((id) => retained.some((entry) => entry.lane === lane && entry.envelope.agentId === id)));
+	}
+
+	#trackedRevision(agentId) {
+		const observed = this.#observedRevisions.get(agentId);
+		const applied = this.#currentRevision(agentId);
+		if (observed === undefined || observed === null) return applied;
+		if (applied === undefined || applied === null) return observed;
+		return Math.max(observed, applied);
+	}
+
+	#trackTerminalResult(envelope) {
+		if (envelope.type !== 'action_result' || !TERMINAL_ACTION_STATES.has(envelope.payload.state)) return;
+		const actionId = requireIdentifier(envelope.payload.actionId ?? envelope.payload.commandId, 'actionId');
+		const key = `${envelope.agentId}:${envelope.payload.goalRevision}:${actionId}`;
+		const fingerprint = terminalResultFingerprint(envelope.payload);
+		const previous = this.#terminalResultsByKey.get(key);
+		if (previous !== undefined) {
+			if (previous !== fingerprint) throw new ProtocolV2Error('DUPLICATE_TERMINAL_RESULT', `Action '${actionId}' changed its terminal result`);
+			return this.#acknowledgedTerminalActionIds.has(key);
+		}
+		const retired = this.#retiredTerminalResultsByKey.get(key);
+		if (retired !== undefined) {
+			if (retired.fingerprint !== fingerprint) throw new ProtocolV2Error('DUPLICATE_TERMINAL_RESULT', `Action '${actionId}' changed its terminal result`);
+			if (retired.acknowledged) return true;
+			this.#retiredTerminalResultsByKey.delete(key);
+			this.#retiredTerminalActionIds.delete(key);
+			this.#rememberTerminalResult(key, fingerprint);
+			return false;
+		}
+		if (!this.#issuedActionIds.has(key)) {
+			const expectedProof = this.#clientNonce === null || this.#serverNonce === null
+				? null
+				: createActionResultReplayProof(this.#secret, {
+					clientNonce: this.#clientNonce,
+					serverNonce: this.#serverNonce,
+					serverInstanceId: this.#serverInstanceId,
+					agentId: envelope.agentId,
+					goalRevision: envelope.payload.goalRevision,
+					actionId,
+				});
+			if (expectedProof === null || envelope.payload.replayProof === undefined
+					|| !secretsEqual(envelope.payload.replayProof, expectedProof)) {
+				throw new ProtocolV2Error('UNISSUED_ACTION_RESULT', `Action '${actionId}' was not issued by this coordinator`);
+			}
+			this.#rememberIssuedActionKey(key);
+		}
+		this.#ensureTerminalGoal(envelope.agentId, envelope.payload.goalRevision);
+		this.#rememberTerminalResult(key, fingerprint);
+		return false;
+	}
+
+	#rememberTerminalResult(key, fingerprint) {
+		this.#terminalResultsByKey.set(key, fingerprint);
+		const evicted = rememberBounded(this.#terminalActionIds, key, this.#trackedTerminalActionIdCap);
+		if (evicted !== undefined) this.#retireTerminalResult(evicted);
+	}
+
+	#retireTerminalResult(key) {
+		const fingerprint = this.#terminalResultsByKey.get(key);
+		if (fingerprint === undefined) return;
+		const proof = { fingerprint, acknowledged: this.#acknowledgedTerminalActionIds.has(key) };
+		this.#terminalResultsByKey.delete(key);
+		this.#acknowledgedTerminalActionIds.delete(key);
+		this.#retiredTerminalResultsByKey.set(key, proof);
+		const evicted = rememberBounded(this.#retiredTerminalActionIds, key, this.#trackedTerminalActionIdCap);
+		if (evicted !== undefined) this.#retiredTerminalResultsByKey.delete(evicted);
+	}
+
+	/** Acknowledges a result after the application has accepted or safely ignored it. */
+	acknowledgeActionResult(agentId, payload, { connectionEpoch = this.#connectionEpoch } = {}) {
+		const goalRevision = revision(payload?.goalRevision, 'goalRevision');
+		const actionId = requireIdentifier(payload?.actionId ?? payload?.commandId, 'actionId');
+		const key = `${agentId}:${goalRevision}:${actionId}`;
+		const fingerprint = terminalResultFingerprint(payload);
+		const tracked = this.#terminalResultsByKey.get(key);
+		const retired = this.#retiredTerminalResultsByKey.get(key);
+		if ((tracked === undefined || tracked !== fingerprint)
+				&& (retired === undefined || retired.fingerprint !== fingerprint)) {
+			return Promise.reject(new ProtocolV2Error('UNTRACKED_ACTION_RESULT', `Action '${actionId}' has no matching delivered terminal result`));
+		}
+		return Promise.resolve(this.send('action_result_ack', agentId, { goalRevision, actionId }, { connectionEpoch }))
+			.then((value) => {
+				if (this.#terminalResultsByKey.has(key)) this.#acknowledgedTerminalActionIds.add(key);
+				const retiredProof = this.#retiredTerminalResultsByKey.get(key);
+				if (retiredProof !== undefined) retiredProof.acknowledged = true;
+				return value;
+			});
+	}
+
+	#canAcknowledgeRetiredResult(type, agentId, payload) {
+		if (type !== 'action_result_ack' || !this.#retiredAgentIds.has(agentId)) return false;
+		if (!Number.isSafeInteger(payload?.goalRevision) || payload.goalRevision < 0) return false;
+		const actionId = payload?.actionId ?? payload?.commandId;
+		return typeof actionId === 'string'
+			&& (this.#terminalResultsByKey.has(`${agentId}:${payload.goalRevision}:${actionId}`)
+				|| this.#retiredTerminalResultsByKey.has(`${agentId}:${payload.goalRevision}:${actionId}`));
+	}
+
+	#synchronizeTerminalGoals(registry) {
+		const visible = new Set();
+		for (const record of registry) {
+			visible.add(record.agentId);
+			this.#ensureTerminalGoal(record.agentId, record.goalRevision);
+		}
+		for (const agentId of this.#terminalActionsByGoal.keys()) {
+			if (!visible.has(agentId)) {
+				this.#terminalActionsByGoal.delete(agentId);
+				if (!this.#retiredAgentIds.has(agentId)) this.#dropTerminalResultKeys(agentId);
+			}
+		}
+	}
+
+	#ensureTerminalGoal(agentId, goalRevision) {
+		let goal = this.#terminalActionsByGoal.get(agentId);
+		if (goal?.goalRevision !== goalRevision) {
+			if (goal !== undefined) this.#dropTerminalResultKeys(agentId, goal.goalRevision);
+			goal = { goalRevision };
+			this.#terminalActionsByGoal.set(agentId, goal);
+		}
+		return goal;
+	}
+
+	#dropTerminalResultKeys(agentId, goalRevision = null) {
+		const prefix = goalRevision === null ? `${agentId}:` : `${agentId}:${goalRevision}:`;
+		for (const key of this.#issuedActionIds) {
+			if (key.startsWith(prefix)) this.#issuedActionIds.delete(key);
+		}
+	}
+
+	#enqueue(envelope) {
+		const reserved = RESERVED_OUTBOUND_TYPES.has(envelope.type);
+		const connectionLimit = this.#connectionQueueCap + (reserved ? Math.min(this.#connectionQueueCap, CONNECTION_CONTROL_RESERVE) : 0);
+		const agentLimit = this.#agentQueueCap + (reserved ? Math.min(this.#agentQueueCap, AGENT_CONTROL_RESERVE) : 0);
+		if (this.#outboundQueue.length >= connectionLimit) return Promise.reject(new ProtocolV2Error('CONNECTION_BACKPRESSURE', 'Connection outbound queue is full'));
+		const agentCount = this.#queuedByAgent.get(envelope.agentId) ?? 0;
+		if (agentCount >= agentLimit) return Promise.reject(new ProtocolV2Error('AGENT_BACKPRESSURE', `Outbound queue for agent '${envelope.agentId}' is full`));
+		if (envelope.type === 'action_command') this.#rememberIssuedAction(envelope);
+		return new Promise((resolve, reject) => {
+			const lane = INSPECTION_OUTBOUND_TYPES.has(envelope.type) ? 1 : 0;
+			this.#outboundQueue.push({ envelope, encoded: encodeJsonLine(envelope), resolve, reject, lane });
+			if (!this.#outboundAgentOrder[lane].includes(envelope.agentId)) this.#outboundAgentOrder[lane].push(envelope.agentId);
+			this.#queuedByAgent.set(envelope.agentId, agentCount + 1);
+			this.#flush();
+		});
+	}
+
+	#takeNextOutbound() {
+		// Within an agent, only unwritten inspections can be overtaken. Other messages retain
+		// per-agent FIFO order, including readiness, command-before-cancel and ACKs.
+		// Round-robin agents in each lane; yield after a bounded control burst so
+		// fresh inspections also make progress under sustained control traffic.
+		const lane = this.#outboundAgentOrder[1].length > 0
+			&& (this.#outboundAgentOrder[0].length === 0 || this.#outboundControlBurst >= OUTBOUND_CONTROL_BURST) ? 1 : 0;
+		const agents = this.#outboundAgentOrder[lane];
+		const agentId = agents.shift();
+		const index = this.#outboundQueue.findIndex((entry) => entry.lane === lane && entry.envelope.agentId === agentId);
+		const [entry] = this.#outboundQueue.splice(index, 1);
+		if (this.#outboundQueue.some((queued) => queued.lane === lane && queued.envelope.agentId === agentId)) agents.push(agentId);
+		this.#outboundControlBurst = lane === 1 ? 0 : Math.min(this.#outboundControlBurst + 1, OUTBOUND_CONTROL_BURST);
+		if (this.#outboundQueue.length === 0) this.#outboundControlBurst = 0;
+		return entry;
+	}
+
+	#rememberIssuedAction(envelope) {
+		const actionId = requireIdentifier(envelope.payload.actionId, 'actionId');
+		this.#ensureTerminalGoal(envelope.agentId, envelope.payload.goalRevision);
+		const key = `${envelope.agentId}:${envelope.payload.goalRevision}:${actionId}`;
+		this.#rememberIssuedActionKey(key);
+	}
+
+	#rememberIssuedActionKey(key) {
+		rememberBounded(this.#issuedActionIds, key, this.#trackedTerminalActionIdCap);
+	}
+
+	#sendLossy(envelope) {
+		const socket = this.#socket;
+		if (this.#writeBlocked || this.#outboundQueue.length > 0 || socket === null || socket.destroyed) return Promise.resolve(null);
+		try {
+			this.#invokeAudit('coordinator_to_server', envelope);
+			if (!socket.write(encodeJsonLine(envelope))) this.#writeBlocked = true;
+			return Promise.resolve(envelope.messageId);
+		} catch (error) {
+			this.#fail(error);
+			return Promise.reject(error);
+		}
+	}
+
+	#flush() {
+		const socket = this.#socket;
+		if (!this.#ready || this.#writeBlocked || socket === null || socket.destroyed) return;
+		while (this.#outboundQueue.length > 0) {
+			const entry = this.#takeNextOutbound();
+			this.#decrementQueued(entry.envelope.agentId);
+			let writable;
+			try {
+				this.#invokeAudit('coordinator_to_server', entry.envelope);
+				writable = socket.write(entry.encoded);
+			} catch (error) { entry.reject(error); this.#fail(error); return; }
+			if (!writable) {
+				this.#writeBlocked = true;
+				this.#blockedWriteEntry = entry;
+				return;
+			}
+			entry.resolve(entry.envelope.messageId);
+		}
+	}
+
+	#onDrain(socket, connectionEpoch) {
+		if (!this.#isCurrentConnection(socket, connectionEpoch)) return;
+		this.#writeBlocked = false;
+		const blocked = this.#blockedWriteEntry;
+		this.#blockedWriteEntry = null;
+		blocked?.resolve(blocked.envelope.messageId);
+		this.#flush();
+	}
+
+	#emitSafely(eventName, ...arguments_) {
+		for (const listener of this.rawListeners(eventName)) {
+			try { Reflect.apply(listener, this, arguments_); }
+			catch (error) {
+				if (eventName !== 'listenerError') this.#emitSafely('listenerError', error, { eventName });
+			}
+		}
+	}
+
+	#invokeAudit(direction, envelope) {
+		if (this.#audit === null) return;
+		let result;
+		try { result = this.#audit(direction, structuredClone(envelope)); }
+		catch (error) { this.#reportAuditError(error); return; }
+		if (result !== null && result !== undefined && typeof result.then === 'function') {
+			Promise.resolve(result).catch((error) => this.#reportAuditError(error));
+		}
+	}
+
+	#reportAuditError(error) {
+		try { this.emit('auditError', error); } catch {}
+	}
+
+	#decrementQueued(agentId) {
+		const count = this.#queuedByAgent.get(agentId) ?? 0;
+		if (count <= 1) this.#queuedByAgent.delete(agentId);
+		else this.#queuedByAgent.set(agentId, count - 1);
+	}
+
+	#clearOutboundQueue(error) {
+		this.#blockedWriteEntry?.reject(error);
+		this.#blockedWriteEntry = null;
+		for (const entry of this.#outboundQueue.splice(0)) entry.reject(error);
+		this.#outboundAgentOrder = [[], []];
+		this.#outboundControlBurst = 0;
+		this.#queuedByAgent.clear();
+	}
+
+	#fail(error, socket = this.#socket, connectionEpoch = this.#connectionEpoch) {
+		if (!this.#isCurrentConnection(socket, connectionEpoch)) return;
+		this.#emitSafely('protocolError', error instanceof Error ? error : new ProtocolV2Error('PROTOCOL_ERROR', String(error)));
+		socket.destroy();
+	}
+
+	#onClose(socket, connectionEpoch) {
+		if (!this.#isCurrentConnection(socket, connectionEpoch, { requireRunning: false })) return;
+		this.#clearConnectionDeadlines();
+		if (this.#running) this.#recovering = true;
+		const wasReady = this.#ready;
+		this.#socket = null;
+		this.#ready = false;
+		this.#writeBlocked = false;
+		this.#challengeMessageId = null;
+		this.#helloMessageId = null;
+		for (const agentId of this.#knownAgentIds) {
+			rememberBounded(this.#retiredAgentIds, agentId, MAX_TRACKED_TERMINAL_ACTION_IDS);
+		}
+		this.#clientNonce = null;
+		this.#serverNonce = null;
+		this.#knownAgentIds.clear();
+		this.#clearInboundQueue();
+		this.#clearOutboundQueue(new ProtocolV2Error('BRIDGE_DISCONNECTED', 'Multiplexed bridge disconnected'));
+		if (wasReady) this.#emitSafely('disconnected', { connectionEpoch, serverInstanceId: this.#serverInstanceId });
+		if (!this.#running || this.#reconnectHandle !== null) return;
+		const delay = this.#reconnectDelayMs;
+		this.#reconnectDelayMs = Math.min(this.#maxReconnectDelayMs, this.#reconnectDelayMs * 2);
+		this.#reconnectHandle = this.#schedule(() => {
+			this.#reconnectHandle = null;
+			if (this.#running && this.#socket === null) this.#connect();
+		}, delay);
+	}
+
+	#scheduleHandshakeDeadline(socket, connectionEpoch) {
+		this.#clearHandshakeDeadline();
+		const token = this.#handshakeDeadlineToken;
+		this.#handshakeDeadlineHandle = this.#scheduleDeadline(() => {
+			if (token !== this.#handshakeDeadlineToken || this.#ready || !this.#isCurrentConnection(socket, connectionEpoch)) return;
+			this.#fail(new ProtocolV2Error('HANDSHAKE_TIMEOUT', 'Multiplexed bridge handshake timed out'), socket, connectionEpoch);
+		}, this.#handshakeTimeoutMs);
+		this.#handshakeDeadlineHandle?.unref?.();
+	}
+
+	#refreshHeartbeatDeadline(socket, connectionEpoch) {
+		this.#clearHeartbeatDeadline();
+		const token = this.#heartbeatDeadlineToken;
+		this.#heartbeatDeadlineHandle = this.#scheduleDeadline(() => {
+			if (token !== this.#heartbeatDeadlineToken || !this.#ready || !this.#isCurrentConnection(socket, connectionEpoch)) return;
+			this.#fail(new ProtocolV2Error('HEARTBEAT_TIMEOUT', 'Authenticated Minecraft bridge became silent'), socket, connectionEpoch);
+		}, this.#heartbeatTimeoutMs);
+		this.#heartbeatDeadlineHandle?.unref?.();
+	}
+
+	#scheduleHeartbeatProbe(socket, connectionEpoch) {
+		this.#clearHeartbeatProbe();
+		const token = this.#heartbeatProbeToken;
+		this.#heartbeatProbeHandle = this.#scheduleDeadline(() => {
+			if (token !== this.#heartbeatProbeToken || !this.#ready || !this.#isCurrentConnection(socket, connectionEpoch)) return;
+			void this.send('heartbeat', 'server', {}, { connectionEpoch }).catch(() => {});
+			this.#scheduleHeartbeatProbe(socket, connectionEpoch);
+		}, this.#heartbeatIntervalMs);
+		this.#heartbeatProbeHandle?.unref?.();
+	}
+
+	#clearConnectionDeadlines() {
+		this.#clearHandshakeDeadline();
+		this.#clearHeartbeatDeadline();
+		this.#clearHeartbeatProbe();
+	}
+
+	#clearHandshakeDeadline() {
+		this.#handshakeDeadlineToken += 1;
+		if (this.#handshakeDeadlineHandle !== null) this.#cancelDeadline(this.#handshakeDeadlineHandle);
+		this.#handshakeDeadlineHandle = null;
+	}
+
+	#clearHeartbeatDeadline() {
+		this.#heartbeatDeadlineToken += 1;
+		if (this.#heartbeatDeadlineHandle !== null) this.#cancelDeadline(this.#heartbeatDeadlineHandle);
+		this.#heartbeatDeadlineHandle = null;
+	}
+
+	#clearHeartbeatProbe() {
+		this.#heartbeatProbeToken += 1;
+		if (this.#heartbeatProbeHandle !== null) this.#cancelDeadline(this.#heartbeatProbeHandle);
+		this.#heartbeatProbeHandle = null;
+	}
+
+	#isCurrentConnection(socket, connectionEpoch, { requireRunning = true } = {}) {
+		return socket !== null && socket === this.#socket && connectionEpoch === this.#connectionEpoch && (!requireRunning || this.#running);
+	}
+}
+
+export function secretsEqual(left, right) {
+	if (typeof left !== 'string' || typeof right !== 'string') return false;
+	const leftBytes = Buffer.from(left, 'utf8');
+	const rightBytes = Buffer.from(right, 'utf8');
+	return leftBytes.length === rightBytes.length && timingSafeEqual(leftBytes, rightBytes);
+}
+
+export function createBridgeAuthenticationProof(secret, role, {
+	clientNonce,
+	serverNonce,
+	serverInstanceId,
+	launchId = null,
+}) {
+	const key = requireSecret(secret);
+	if (!['server', 'coordinator'].includes(role)) throw new TypeError('authentication proof role must be server or coordinator');
+	const fields = [
+		AUTHENTICATION_CONTEXT,
+		role,
+		authenticationToken(clientNonce, 'clientNonce'),
+		authenticationToken(serverNonce, 'serverNonce'),
+		requireIdentifier(serverInstanceId, 'serverInstanceId'),
+	];
+	if (role === 'coordinator') fields.push(launchId === null ? '' : launchIdentity(launchId));
+	return createHmac('sha256', key).update(fields.join('\0'), 'utf8').digest('base64url');
+}
+
+export function createActionResultReplayProof(secret, {
+	clientNonce,
+	serverNonce,
+	serverInstanceId,
+	agentId,
+	goalRevision,
+	actionId,
+}) {
+	const fields = [
+		ACTION_RESULT_REPLAY_CONTEXT,
+		authenticationToken(clientNonce, 'clientNonce'),
+		authenticationToken(serverNonce, 'serverNonce'),
+		requireIdentifier(serverInstanceId, 'serverInstanceId'),
+		requireIdentifier(agentId, 'agentId'),
+		String(revision(goalRevision, 'goalRevision')),
+		requireIdentifier(actionId, 'actionId'),
+	];
+	return createHmac('sha256', requireSecret(secret)).update(fields.join('\0'), 'utf8').digest('base64url');
+}
+
+function defaultDeadlineSchedule(callback, delay) {
+	const handle = setTimeout(callback, delay);
+	handle.unref?.();
+	return handle;
+}
+
+function normalizeCoordinatorStatus(value) {
+	const requiredKeys = ['reconciled', 'profiles', 'supportedProfileCount', 'rosterReadyCount', 'rosterCount', 'scheduler', 'circuits'];
+	const allowedKeys = [...requiredKeys, 'latencies', 'bridgeSessionEpoch', 'runtimeGeneration', 'components'];
+	exactKeys(value, allowedKeys, requiredKeys, 'coordinator_status');
+	const profiles = boundedArray(value.profiles, 'coordinator_status.profiles', 16).map((profile, index) => {
+		const field = `coordinator_status.profiles[${index}]`;
+		exactKeys(profile, ['agentId', 'provider', 'model', 'reasoningEffort', 'serviceTier'], ['agentId', 'provider', 'model', 'reasoningEffort'], field);
+		return {
+			agentId: requireIdentifier(profile.agentId, `${field}.agentId`),
+			provider: requireIdentifier(profile.provider, `${field}.provider`),
+			model: boundedText(profile.model, `${field}.model`, MAX_IDENTIFIER_LENGTH),
+			reasoningEffort: requireIdentifier(profile.reasoningEffort, `${field}.reasoningEffort`),
+			...(profile.serviceTier === undefined ? {} : { serviceTier: requireIdentifier(profile.serviceTier, `${field}.serviceTier`) }),
+		};
+	});
+	const supportedProfileCount = nonnegativeInteger(value.supportedProfileCount, 'coordinator_status.supportedProfileCount');
+	const rosterReadyCount = nonnegativeInteger(value.rosterReadyCount, 'coordinator_status.rosterReadyCount');
+	const rosterCount = nonnegativeInteger(value.rosterCount, 'coordinator_status.rosterCount');
+	if (supportedProfileCount !== profiles.length || rosterReadyCount > rosterCount || rosterCount > 16) {
+		throw new ProtocolV2Error('INVALID_PAYLOAD', 'coordinator_status profile and roster counts are inconsistent');
+	}
+	if (new Set(profiles.map((profile) => profile.agentId)).size !== profiles.length) throw new ProtocolV2Error('INVALID_PAYLOAD', 'coordinator_status profile identities must be unique');
+	const schedulerField = 'coordinator_status.scheduler';
+	const schedulerOptionalKeys = [
+		'mode', 'configuredTarget', 'target', 'minConcurrency', 'maxConcurrency', 'urgentReserve',
+		'ordinaryActiveLimit', 'activeOrdinary', 'activeUrgent', 'pendingOrdinary', 'pendingUrgent',
+		'growthCount', 'backoffCount', 'lastChangeReason', 'healthyCompletions',
+		'ordinaryReservationRejections', 'urgentReservationRejections',
+	];
+	exactKeys(value.scheduler, ['active', 'pending', 'maxConcurrent', 'maxPending', 'warning', ...schedulerOptionalKeys], ['active', 'pending', 'maxConcurrent', 'maxPending', 'warning'], schedulerField);
+	const scheduler = {
+		active: nonnegativeInteger(value.scheduler.active, `${schedulerField}.active`),
+		pending: nonnegativeInteger(value.scheduler.pending, `${schedulerField}.pending`),
+		maxConcurrent: nonnegativeInteger(value.scheduler.maxConcurrent, `${schedulerField}.maxConcurrent`),
+		maxPending: nonnegativeInteger(value.scheduler.maxPending, `${schedulerField}.maxPending`),
+		warning: boolean(value.scheduler.warning, `${schedulerField}.warning`),
+	};
+	const schedulerTarget = value.scheduler.target === undefined ? scheduler.maxConcurrent : nonnegativeInteger(value.scheduler.target, `${schedulerField}.target`);
+	const schedulerHardConcurrentLimit = value.scheduler.mode === 'adaptive' && value.scheduler.maxConcurrency !== undefined
+		? nonnegativeInteger(value.scheduler.maxConcurrency, `${schedulerField}.maxConcurrency`)
+		: scheduler.maxConcurrent;
+	if (scheduler.active > schedulerHardConcurrentLimit || scheduler.pending > scheduler.maxPending
+		|| scheduler.active + scheduler.pending > scheduler.maxConcurrent + scheduler.maxPending) {
+		throw new ProtocolV2Error('INVALID_PAYLOAD', 'coordinator_status scheduler counts exceed capacity');
+	}
+	if (scheduler.maxConcurrent < 1 || scheduler.maxConcurrent + scheduler.maxPending > 16) {
+		throw new ProtocolV2Error('INVALID_PAYLOAD', 'coordinator_status scheduler capacity must be in [1, 16]');
+	}
+	if (value.scheduler.mode !== undefined && !['fixed', 'adaptive'].includes(value.scheduler.mode)) throw new ProtocolV2Error('INVALID_PAYLOAD', `${schedulerField}.mode is invalid`);
+	if (value.scheduler.mode !== undefined) scheduler.mode = value.scheduler.mode;
+	for (const field of ['configuredTarget', 'minConcurrency', 'maxConcurrency', 'urgentReserve', 'ordinaryActiveLimit', 'activeOrdinary', 'activeUrgent', 'pendingOrdinary', 'pendingUrgent', 'growthCount', 'backoffCount', 'healthyCompletions', 'ordinaryReservationRejections', 'urgentReservationRejections']) {
+		if (value.scheduler[field] !== undefined) scheduler[field] = nonnegativeInteger(value.scheduler[field], `${schedulerField}.${field}`);
+	}
+	if (value.scheduler.target !== undefined) scheduler.target = schedulerTarget;
+	if (value.scheduler.lastChangeReason !== undefined) scheduler.lastChangeReason = boundedText(value.scheduler.lastChangeReason, `${schedulerField}.lastChangeReason`, MAX_REASON_CODE_LENGTH);
+	if (schedulerTarget < 1 || schedulerTarget > 16) throw new ProtocolV2Error('INVALID_PAYLOAD', `${schedulerField}.target must be in [1, 16]`);
+	if (scheduler.mode === 'adaptive') {
+		if (scheduler.minConcurrency !== undefined && scheduler.minConcurrency < 4) throw new ProtocolV2Error('INVALID_PAYLOAD', `${schedulerField}.minConcurrency must be at least 4 in adaptive mode`);
+		if (scheduler.maxConcurrency !== undefined && scheduler.maxConcurrency > 16) throw new ProtocolV2Error('INVALID_PAYLOAD', `${schedulerField}.maxConcurrency must not exceed 16`);
+		if (scheduler.minConcurrency !== undefined && schedulerTarget < scheduler.minConcurrency) throw new ProtocolV2Error('INVALID_PAYLOAD', `${schedulerField}.target is below its adaptive minimum`);
+		if (scheduler.maxConcurrency !== undefined && schedulerTarget > scheduler.maxConcurrency) throw new ProtocolV2Error('INVALID_PAYLOAD', `${schedulerField}.target exceeds its adaptive maximum`);
+	}
+	if (scheduler.urgentReserve !== undefined && scheduler.maxConcurrency !== undefined && scheduler.urgentReserve > scheduler.maxConcurrency) throw new ProtocolV2Error('INVALID_PAYLOAD', `${schedulerField}.urgentReserve exceeds maxConcurrency`);
+	if (scheduler.ordinaryActiveLimit !== undefined && scheduler.ordinaryActiveLimit > schedulerTarget) throw new ProtocolV2Error('INVALID_PAYLOAD', `${schedulerField}.ordinaryActiveLimit exceeds target`);
+	if (scheduler.activeOrdinary !== undefined && scheduler.activeUrgent !== undefined && scheduler.activeOrdinary + scheduler.activeUrgent !== scheduler.active) throw new ProtocolV2Error('INVALID_PAYLOAD', 'coordinator_status scheduler active priority counts are inconsistent');
+	if (scheduler.pendingOrdinary !== undefined && scheduler.pendingUrgent !== undefined && scheduler.pendingOrdinary + scheduler.pendingUrgent !== scheduler.pending) throw new ProtocolV2Error('INVALID_PAYLOAD', 'coordinator_status scheduler pending priority counts are inconsistent');
+	const circuits = boundedArray(value.circuits, 'coordinator_status.circuits', MAX_COORDINATOR_CIRCUITS).map((circuit, index) => {
+		const field = `coordinator_status.circuits[${index}]`;
+		exactKeys(circuit, ['provider', 'model', 'operation', 'count', 'p50Ms', 'p95Ms', 'failureRate', 'circuit'], ['provider', 'model', 'operation', 'count', 'p50Ms', 'p95Ms', 'failureRate', 'circuit'], field);
+		const state = requireIdentifier(circuit.circuit, `${field}.circuit`);
+		if (!['closed', 'open', 'half_open'].includes(state)) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field}.circuit is invalid`);
+		const failureRate = finiteNumber(circuit.failureRate, `${field}.failureRate`);
+		if (failureRate < 0 || failureRate > 1) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field}.failureRate must be in [0, 1]`);
+		return {
+			provider: requireIdentifier(circuit.provider, `${field}.provider`),
+			model: boundedText(circuit.model, `${field}.model`, MAX_IDENTIFIER_LENGTH),
+			operation: requireIdentifier(circuit.operation, `${field}.operation`),
+			count: nonnegativeInteger(circuit.count, `${field}.count`),
+			p50Ms: nonnegativeInteger(circuit.p50Ms, `${field}.p50Ms`),
+			p95Ms: nonnegativeInteger(circuit.p95Ms, `${field}.p95Ms`),
+			failureRate,
+			circuit: state,
+		};
+	});
+	if (new Set(circuits.map((circuit) => JSON.stringify([circuit.provider, circuit.model, circuit.operation]))).size !== circuits.length) throw new ProtocolV2Error('INVALID_PAYLOAD', 'coordinator_status circuit identities must be unique');
+	const latencies = boundedArray(value.latencies ?? [], 'coordinator_status.latencies', 16).map((latency, index) => {
+		const field = `coordinator_status.latencies[${index}]`;
+		exactKeys(latency, ['operation', 'count', 'p50Ms', 'p95Ms'], ['operation', 'count', 'p50Ms', 'p95Ms'], field);
+		return {
+			operation: requireIdentifier(latency.operation, `${field}.operation`),
+			count: nonnegativeInteger(latency.count, `${field}.count`),
+			p50Ms: nonnegativeFiniteNumber(latency.p50Ms, `${field}.p50Ms`),
+			p95Ms: nonnegativeFiniteNumber(latency.p95Ms, `${field}.p95Ms`),
+		};
+	});
+	if (new Set(latencies.map((latency) => latency.operation)).size !== latencies.length) {
+		throw new ProtocolV2Error('INVALID_PAYLOAD', 'coordinator_status latency operations must be unique');
+	}
+	const extendedFields = ['bridgeSessionEpoch', 'runtimeGeneration', 'components'];
+	const presentExtendedFields = extendedFields.filter((field) => value[field] !== undefined);
+	if (presentExtendedFields.length !== 0 && presentExtendedFields.length !== extendedFields.length) {
+		throw new ProtocolV2Error('MISSING_FIELD', 'extended coordinator_status recovery fields must be published together');
+	}
+	if (presentExtendedFields.length === 0) {
+		return { reconciled: boolean(value.reconciled, 'coordinator_status.reconciled'), profiles, supportedProfileCount, rosterReadyCount, rosterCount, scheduler, circuits, latencies };
+	}
+	const components = boundedArray(value.components, 'coordinator_status.components', 32).map((component, index) => {
+		const field = `coordinator_status.components[${index}]`;
+		const keys = ['component', 'state', 'fallbackMode', 'boundary', 'failureCode', 'consecutiveFailureCount', 'nextProbeAtEpochMs', 'generation', 'lastRecoveryAtEpochMs'];
+		exactKeys(component, [...keys, 'failedOperationCount', 'droppedCount', 'incompleteCapture'], keys, field);
+		const state = requireIdentifier(component.state, `${field}.state`);
+		if (!['ready', 'degraded', 'backoff', 'blocked_retryable', 'unknown'].includes(state)) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field}.state is invalid`);
+		return {
+			component: boundedText(component.component, `${field}.component`, 128),
+			state,
+			fallbackMode: nullableBoundedText(component.fallbackMode, `${field}.fallbackMode`, 128),
+			boundary: nullableBoundedText(component.boundary, `${field}.boundary`, 128),
+			failureCode: nullableBoundedText(component.failureCode, `${field}.failureCode`, 128),
+			consecutiveFailureCount: nonnegativeInteger(component.consecutiveFailureCount, `${field}.consecutiveFailureCount`),
+			nextProbeAtEpochMs: nullableNonnegativeInteger(component.nextProbeAtEpochMs, `${field}.nextProbeAtEpochMs`),
+			generation: nonnegativeInteger(component.generation, `${field}.generation`),
+			lastRecoveryAtEpochMs: nullableNonnegativeInteger(component.lastRecoveryAtEpochMs, `${field}.lastRecoveryAtEpochMs`),
+			...(Object.hasOwn(component, 'failedOperationCount') ? { failedOperationCount: nonnegativeInteger(component.failedOperationCount, `${field}.failedOperationCount`) } : {}),
+			...(Object.hasOwn(component, 'droppedCount') ? { droppedCount: nonnegativeInteger(component.droppedCount, `${field}.droppedCount`) } : {}),
+			...(Object.hasOwn(component, 'incompleteCapture') ? { incompleteCapture: boolean(component.incompleteCapture, `${field}.incompleteCapture`) } : {}),
+		};
+	});
+	if (new Set(components.map((component) => component.component)).size !== components.length) throw new ProtocolV2Error('INVALID_PAYLOAD', 'coordinator_status component identities must be unique');
+	const runtimeGeneration = value.runtimeGeneration === null
+		? null
+		: boundedText(value.runtimeGeneration, 'coordinator_status.runtimeGeneration', 64);
+	if (runtimeGeneration !== null && !/^[0-9a-f]{64}$/.test(runtimeGeneration)) throw new ProtocolV2Error('INVALID_PAYLOAD', 'coordinator_status.runtimeGeneration must be a lowercase SHA-256 value');
+	return {
+		reconciled: boolean(value.reconciled, 'coordinator_status.reconciled'), profiles, supportedProfileCount, rosterReadyCount,
+		rosterCount, scheduler, circuits, latencies,
+		bridgeSessionEpoch: nonnegativeInteger(value.bridgeSessionEpoch, 'coordinator_status.bridgeSessionEpoch'),
+		runtimeGeneration,
+		components,
+	};
+}
+
+function normalizeRegisteredAgent(value, field) {
+	if (!isPlainObject(value)) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field} must be an object`);
+	const keys = ['schemaVersion', 'agentId', 'entityUuid', 'name', 'provider', 'model', 'reasoningEffort', 'serviceTier', 'gameMode', 'skinVariant', 'state', 'currentGoal', 'currentGoalSpec', 'goalRevision', 'queue', 'queueGoalSpecs', 'lastSummary', 'death', 'createdAtEpochMs', 'updatedAtEpochMs', 'lastError'];
+	const required = ['schemaVersion', 'agentId', 'model', 'reasoningEffort', 'skinVariant', 'state', 'goalRevision', 'queue', 'createdAtEpochMs', 'updatedAtEpochMs'];
+	exactKeys(value, keys, required, field);
+	const queue = boundedArray(value.queue, `${field}.queue`, 256).map((goal, index) => boundedText(goal, `${field}.queue[${index}]`, MAX_GOAL_LENGTH));
+	const queueGoalSpecs = value.queueGoalSpecs === undefined ? [] : boundedArray(value.queueGoalSpecs, `${field}.queueGoalSpecs`, 256).map(parseGoalSpec);
+	if (queueGoalSpecs.length !== 0 && queueGoalSpecs.length !== queue.length) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field}.queueGoalSpecs must align with queue`);
+	let lastError = null;
+	if (value.lastError !== undefined) {
+		exactKeys(value.lastError, ['code', 'message'], ['code', 'message'], `${field}.lastError`);
+		lastError = { code: boundedText(value.lastError.code, `${field}.lastError.code`, MAX_REASON_CODE_LENGTH), message: boundedText(value.lastError.message, `${field}.lastError.message`, MAX_RESULT_MESSAGE_LENGTH) };
+	}
+	const state = boundedText(value.state, `${field}.state`, MAX_REASON_CODE_LENGTH);
+	const death = value.death === undefined ? null : normalizeDeath(value.death);
+	if (state === 'DEAD' && death === null) throw new ProtocolV2Error('MISSING_FIELD', `${field} DEAD state requires death facts`);
+	if (state !== 'DEAD' && death !== null) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field} death facts require DEAD state`);
+	const provider = normalizeProvider(value.provider ?? 'codex', `${field}.provider`);
+	const serviceTier = requireIdentifier(value.serviceTier ?? defaultServiceTier(provider), `${field}.serviceTier`);
+	assertProviderServiceTier(provider, serviceTier, `${field}.serviceTier`, { ErrorType: ProtocolV2Error, code: 'INVALID_PAYLOAD' });
+	const record = {
+		schemaVersion: nonnegativeInteger(value.schemaVersion, `${field}.schemaVersion`),
+		agentId: requireIdentifier(value.agentId, `${field}.agentId`),
+		entityUuid: value.entityUuid === undefined ? null : requireIdentifier(value.entityUuid, `${field}.entityUuid`),
+		name: value.name === undefined ? null : boundedText(value.name, `${field}.name`, MAX_IDENTIFIER_LENGTH),
+		provider,
+		model: requireIdentifier(value.model, `${field}.model`),
+		reasoningEffort: requireIdentifier(value.reasoningEffort, `${field}.reasoningEffort`),
+		serviceTier,
+		gameMode: requireIdentifier(value.gameMode ?? 'survival', `${field}.gameMode`),
+		skinVariant: requireIdentifier(value.skinVariant, `${field}.skinVariant`),
+		state,
+		currentGoal: value.currentGoal === undefined ? null : boundedText(value.currentGoal, `${field}.currentGoal`, MAX_PLANNER_GOAL_LENGTH),
+		currentGoalSpec: value.currentGoalSpec === undefined ? null : parseGoalSpec(value.currentGoalSpec),
+		goalRevision: revision(value.goalRevision, `${field}.goalRevision`),
+		queue: queue.map((goal, index) => ({ goal, goalRevision: index + 1, goalSpec: queueGoalSpecs[index] ?? null })),
+		lastSummary: value.lastSummary === undefined ? null : boundedText(value.lastSummary, `${field}.lastSummary`, MAX_SUMMARY_LENGTH),
+		death,
+		respawnPolicy: {},
+		createdAtEpochMs: nonnegativeInteger(value.createdAtEpochMs, `${field}.createdAtEpochMs`),
+		updatedAtEpochMs: nonnegativeInteger(value.updatedAtEpochMs, `${field}.updatedAtEpochMs`),
+		lastError,
+	};
+	return validateRegisteredAgentContract(record, (message) => new ProtocolV2Error('INVALID_PAYLOAD', `${field} ${message}`));
+}
+
+function normalizeCatalogSnapshot(value) {
+	exactKeys(value, ['refreshedAtEpochMs', 'models', 'providers'], ['refreshedAtEpochMs', 'models'], 'catalog_snapshot');
+	return {
+		...(value.providers === undefined ? {} : { providers: boundedArray(value.providers, 'providers', 16).map(normalizeCatalogProvider) }),
+		refreshedAtEpochMs: nonnegativeInteger(value.refreshedAtEpochMs, 'refreshedAtEpochMs'),
+		models: boundedArray(value.models, 'models', MAX_CATALOG_MODELS).map((model, index) => {
+			if (!isPlainObject(model)) throw new ProtocolV2Error('INVALID_PAYLOAD', `models[${index}] must be an object`);
+			exactKeys(model, ['provider', 'id', 'model', 'displayName', 'reasoningEfforts', 'serviceTiers'], ['id', 'model', 'displayName', 'reasoningEfforts', 'serviceTiers'], `models[${index}]`);
+			return {
+				provider: normalizeProvider(model.provider ?? 'codex', `models[${index}].provider`),
+				id: requireIdentifier(model.id, `models[${index}].id`),
+				model: requireIdentifier(model.model, `models[${index}].model`),
+				displayName: boundedText(model.displayName, `models[${index}].displayName`, MAX_IDENTIFIER_LENGTH),
+				reasoningEfforts: boundedArray(model.reasoningEfforts, `models[${index}].reasoningEfforts`, MAX_MODEL_CAPABILITIES)
+					.map((effort, effortIndex) => requireIdentifier(effort, `models[${index}].reasoningEfforts[${effortIndex}]`)),
+				serviceTiers: boundedArray(model.serviceTiers, `models[${index}].serviceTiers`, MAX_MODEL_CAPABILITIES)
+					.map((tier, tierIndex) => requireIdentifier(tier, `models[${index}].serviceTiers[${tierIndex}]`)),
+			};
+		}),
+	};
+}
+
+const CATALOG_PROVIDER_KEYS = Object.freeze(['id', 'label', 'color', 'installed', 'version', 'signedIn', 'account', 'plan', 'models', 'defaultModel', 'limitKind', 'limit', 'checkedAt']);
+const LIMIT_KIND_SET = new Set(['plan_percent', 'credits', 'requests', 'unknown']);
+
+/** What discovery found for one provider on this machine; nullable fields are unknown. */
+function normalizeCatalogProvider(value, index) {
+	const field = `providers[${index}]`;
+	exactKeys(value, CATALOG_PROVIDER_KEYS, CATALOG_PROVIDER_KEYS, field);
+	const optionalText = (text, name, maximum) => text === null ? null : boundedText(text, `${field}.${name}`, maximum);
+	const optionalBoolean = (flag, name) => flag === null ? null : boolean(flag, `${field}.${name}`);
+	if (!LIMIT_KIND_SET.has(value.limitKind)) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field}.limitKind is not allowed`);
+	if (!Number.isSafeInteger(value.color) || value.color < 0 || value.color > 0xffffff) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field}.color must be an RGB integer`);
+	return {
+		id: normalizeProvider(value.id, `${field}.id`),
+		label: boundedText(value.label, `${field}.label`, 48),
+		color: value.color,
+		installed: optionalBoolean(value.installed, 'installed'),
+		version: optionalText(value.version, 'version', 48),
+		signedIn: optionalBoolean(value.signedIn, 'signedIn'),
+		account: optionalText(value.account, 'account', 48),
+		plan: optionalText(value.plan, 'plan', 32),
+		models: boundedArray(value.models, `${field}.models`, 48).map((model, modelIndex) => {
+			const modelField = `${field}.models[${modelIndex}]`;
+			exactKeys(model, ['id', 'label', 'efforts', 'defaultEffort', 'tiers', 'free'], ['id', 'label', 'efforts', 'defaultEffort', 'tiers', 'free'], modelField);
+			return {
+				id: requireIdentifier(model.id, `${modelField}.id`),
+				label: boundedText(model.label, `${modelField}.label`, MAX_IDENTIFIER_LENGTH),
+				efforts: boundedArray(model.efforts, `${modelField}.efforts`, MAX_MODEL_CAPABILITIES).map((effort, effortIndex) => requireIdentifier(effort, `${modelField}.efforts[${effortIndex}]`)),
+				defaultEffort: model.defaultEffort === null ? null : requireIdentifier(model.defaultEffort, `${modelField}.defaultEffort`),
+				tiers: boundedArray(model.tiers, `${modelField}.tiers`, MAX_MODEL_CAPABILITIES).map((tier, tierIndex) => requireIdentifier(tier, `${modelField}.tiers[${tierIndex}]`)),
+				free: boolean(model.free, `${modelField}.free`),
+			};
+		}),
+		defaultModel: value.defaultModel === null ? null : requireIdentifier(value.defaultModel, `${field}.defaultModel`),
+		limitKind: value.limitKind,
+		limit: optionalText(value.limit, 'limit', 48),
+		checkedAt: nonnegativeInteger(value.checkedAt, `${field}.checkedAt`),
+	};
+}
+
+function normalizeProvider(value, field) {
+	return normalizeProviderId(requireIdentifier(value, field), field, { ErrorType: ProtocolV2Error, code: 'INVALID_PAYLOAD' });
+}
+
+function normalizeGoalControl(value) {
+	exactKeys(value, ['operation', 'goalRevision', 'updatedAtEpochMs', 'goal', 'goalSpec', 'death', 'resumeGoal'], ['operation', 'goalRevision', 'updatedAtEpochMs'], 'goal_control');
+	const operation = boundedText(value.operation, 'operation', MAX_REASON_CODE_LENGTH);
+	if (!['start', 'replace', 'stop', 'queue', 'dequeue', 'steer', 'resume', 'complete', 'fail', 'disconnect', 'dead', 'respawn'].includes(operation)) throw new ProtocolV2Error('INVALID_PAYLOAD', `Unsupported goal operation '${operation}'`);
+	const normalized = { operation, goalRevision: revision(value.goalRevision, 'goalRevision'), updatedAtEpochMs: nonnegativeInteger(value.updatedAtEpochMs, 'updatedAtEpochMs') };
+	if (value.goal !== undefined) normalized.goal = boundedText(value.goal, 'goal',
+		['start', 'replace', 'steer'].includes(operation) ? MAX_PLANNER_GOAL_LENGTH : MAX_GOAL_LENGTH);
+	if (value.goalSpec !== undefined) normalized.goalSpec = parseGoalSpec(value.goalSpec);
+	if (value.death !== undefined) normalized.death = normalizeDeath(value.death);
+	if (['start', 'replace', 'steer', 'queue', 'dequeue'].includes(operation) && normalized.goal === undefined) throw new ProtocolV2Error('MISSING_FIELD', `goal_control ${operation} requires goal`);
+	if (!['start', 'replace', 'steer', 'queue', 'dequeue'].includes(operation) && normalized.goal !== undefined) throw new ProtocolV2Error('INVALID_PAYLOAD', `goal_control ${operation} must not include goal`);
+	if (!['start', 'replace', 'steer', 'queue', 'dequeue'].includes(operation) && normalized.goalSpec !== undefined) throw new ProtocolV2Error('INVALID_PAYLOAD', `goal_control ${operation} must not include goalSpec`);
+	if (operation === 'dequeue' && normalized.goalSpec === undefined) throw new ProtocolV2Error('MISSING_FIELD', 'goal_control dequeue requires goalSpec');
+	if (operation === 'dead' && normalized.death === undefined) throw new ProtocolV2Error('MISSING_FIELD', 'goal_control dead requires death facts');
+	if (operation !== 'dead' && normalized.death !== undefined) throw new ProtocolV2Error('INVALID_PAYLOAD', `goal_control ${operation} must not include death facts`);
+	if (operation === 'respawn') normalized.resumeGoal = value.resumeGoal === undefined ? false : boolean(value.resumeGoal, 'resumeGoal');
+	else if (value.resumeGoal !== undefined) throw new ProtocolV2Error('INVALID_PAYLOAD', `goal_control ${operation} must not include resumeGoal`);
+	return normalized;
+}
+
+function normalizeDeath(value) {
+	exactKeys(
+		value,
+		['cause', 'dimensionId', 'x', 'y', 'z', 'respawnDimensionId', 'respawnX', 'respawnY', 'respawnZ', 'respawnYaw', 'respawnPitch', 'respawnForced', 'gameMode', 'diedAtEpochMs', 'score'],
+		['cause', 'dimensionId', 'x', 'y', 'z', 'respawnDimensionId', 'respawnX', 'respawnY', 'respawnZ', 'respawnYaw', 'respawnPitch', 'respawnForced', 'gameMode', 'diedAtEpochMs'],
+		'death',
+	);
+	const respawnDimensionId = nullableIdentifier(value.respawnDimensionId, 'death.respawnDimensionId');
+	const respawnX = nullableFiniteNumber(value.respawnX, 'death.respawnX');
+	const respawnY = nullableFiniteNumber(value.respawnY, 'death.respawnY');
+	const respawnZ = nullableFiniteNumber(value.respawnZ, 'death.respawnZ');
+	const respawnYaw = nullableFiniteNumber(value.respawnYaw, 'death.respawnYaw');
+	const respawnPitch = nullableFiniteNumber(value.respawnPitch, 'death.respawnPitch');
+	const respawnForced = nullableBoolean(value.respawnForced, 'death.respawnForced');
+	const respawnFacts = [respawnDimensionId, respawnX, respawnY, respawnZ, respawnYaw, respawnPitch, respawnForced];
+	if (respawnFacts.some((fact) => fact === null) && respawnFacts.some((fact) => fact !== null)) {
+		throw new ProtocolV2Error('INVALID_PAYLOAD', 'death vanilla respawn facts must be present together or all null');
+	}
+	const gameMode = requireIdentifier(value.gameMode, 'death.gameMode');
+	if (!['survival', 'creative', 'adventure', 'spectator'].includes(gameMode)) {
+		throw new ProtocolV2Error('INVALID_PAYLOAD', 'death.gameMode must be a vanilla game mode');
+	}
+	return Object.freeze({
+		cause: boundedText(value.cause, 'death.cause', MAX_RESULT_MESSAGE_LENGTH),
+		dimensionId: requireIdentifier(value.dimensionId, 'death.dimensionId'),
+		x: finiteNumber(value.x, 'death.x'), y: finiteNumber(value.y, 'death.y'), z: finiteNumber(value.z, 'death.z'),
+		respawnDimensionId, respawnX, respawnY, respawnZ, respawnYaw, respawnPitch, respawnForced, gameMode,
+		diedAtEpochMs: nonnegativeInteger(value.diedAtEpochMs, 'death.diedAtEpochMs'),
+		...(value.score === undefined ? {} : { score: integer(value.score, 'death.score') }),
+	});
+}
+
+function normalizeConversationEvent(value) {
+	exactKeys(
+		value,
+		['sequence', 'kind', 'sourceId', 'sourceName', 'operator', 'recipientId', 'scope', 'text', 'goalRevision', 'observedAtEpochMs'],
+		['sequence', 'kind', 'sourceId', 'recipientId', 'scope', 'text', 'goalRevision', 'observedAtEpochMs'],
+		'conversation_event',
+	);
+	if (value.operator !== undefined && typeof value.operator !== 'boolean') {
+		throw new ProtocolV2Error('INVALID_PAYLOAD', 'conversation_event.operator must be boolean');
+	}
+	const kind = requireIdentifier(value.kind, 'conversation_event.kind');
+	if (!['agent_message', 'player_message', 'player_steer', 'proximity_speech'].includes(kind)) {
+		throw new ProtocolV2Error('INVALID_PAYLOAD', 'conversation_event.kind is invalid');
+	}
+	const scope = requireIdentifier(value.scope, 'conversation_event.scope');
+	if (!['public', 'direct', 'proximity'].includes(scope)) {
+		throw new ProtocolV2Error('INVALID_PAYLOAD', 'conversation_event.scope is invalid');
+	}
+	return {
+		sequence: nonnegativeInteger(value.sequence, 'conversation_event.sequence'),
+		kind,
+		sourceId: boundedText(value.sourceId, 'conversation_event.sourceId', MAX_IDENTIFIER_LENGTH),
+		...(value.sourceName === undefined ? {} : { sourceName: boundedText(value.sourceName, 'conversation_event.sourceName', MAX_IDENTIFIER_LENGTH) }),
+		...(value.operator === true ? { operator: true } : {}),
+		recipientId: boundedText(value.recipientId, 'conversation_event.recipientId', MAX_IDENTIFIER_LENGTH),
+		scope,
+		text: boundedCodePointText(value.text, 'conversation_event.text', MAX_CONVERSATION_LENGTH),
+		goalRevision: revision(value.goalRevision, 'conversation_event.goalRevision'),
+		observedAtEpochMs: nonnegativeInteger(value.observedAtEpochMs, 'conversation_event.observedAtEpochMs'),
+	};
+}
+
+function normalizeConversationWake(value) {
+	exactKeys(value, ['transactionId', 'event', 'control'], ['transactionId', 'event', 'control'], 'conversation_wake');
+	const event = normalizeConversationEvent(value.event);
+	const control = normalizeGoalControl(value.control);
+	if (!['start', 'replace'].includes(control.operation)) {
+		throw new ProtocolV2Error('INVALID_PAYLOAD', 'conversation_wake control must be start or replace');
+	}
+	if (event.goalRevision === Number.MAX_SAFE_INTEGER || control.goalRevision !== event.goalRevision + 1) {
+		throw new ProtocolV2Error('INVALID_PAYLOAD', 'conversation_wake control revision must immediately follow the event revision');
+	}
+	return {
+		transactionId: requireIdentifier(value.transactionId, 'transactionId'),
+		event,
+		control,
+	};
+}
+
+const SURVEY_SECTIONS = Object.freeze(['structures', 'poi', 'biomes', 'built', 'blocks', 'caves', 'veins']);
+
+/** Survey include/exclude: section names, plus blocks:<namespaced id> searches in include only; at most 8 entries. */
+function surveySections(value, field, allowSearch) {
+	return boundedArray(value, `query.${field}`, 8).map((entry, index) => {
+		const text = boundedText(entry, `query.${field}[${index}]`, 263);
+		if (SURVEY_SECTIONS.includes(text) || (allowSearch && /^blocks:[a-z0-9_.-]+:[a-z0-9_./-]+$/.test(text))) return text;
+		throw new ProtocolV2Error('INVALID_PAYLOAD', `Unknown survey section: ${text}`);
+	});
+}
+
+export function normalizeInspectionQuery(value) {
+	exactKeys(value, ['section', 'offset', 'limit', 'slot', 'x', 'y', 'z', 'afterSequence', 'recipeId', 'entityType', 'outputItemId', 'include', 'exclude'], ['section'], 'inspection.query');
+	if (value.section === 'survey') {
+		exactKeys(value, ['section', 'limit', 'include', 'exclude'], ['section'], 'inspection.query');
+		const limit = positiveInteger(value.limit === undefined ? 4 : value.limit, 'query.limit');
+		if (limit > 8) throw new ProtocolV2Error('INVALID_PAYLOAD', 'Survey rows per section must be 1 to 8');
+		return { section: 'survey', limit, ...(value.include === undefined ? {} : { include: surveySections(value.include, 'include', true) }), ...(value.exclude === undefined ? {} : { exclude: surveySections(value.exclude, 'exclude', false) }) };
+	}
+	if (!['observation', 'inventory', 'menu', 'entities', 'blocks', 'item', 'block', 'events', 'landmarks', 'nearby_containers', 'recipes', 'mechanics', 'hud'].includes(value.section)) throw new ProtocolV2Error('INVALID_PAYLOAD', 'Unknown inspection section');
+	const sectionFields = { item: ['slot'], block: ['x', 'y', 'z'], events: ['afterSequence'], recipes: ['recipeId', 'outputItemId'], entities: ['entityType'] };
+	exactKeys(value, ['section', 'offset', 'limit', ...(sectionFields[value.section] ?? [])], ['section'], 'inspection.query');
+	const result = { section: value.section, offset: nonnegativeInteger(value.offset === undefined ? 0 : value.offset, 'query.offset'), limit: positiveInteger(value.limit === undefined ? 16 : value.limit, 'query.limit') };
+	if (result.offset > 4096 || result.limit > 32) throw new ProtocolV2Error('INVALID_PAYLOAD', 'Inspection page exceeds bounds');
+	for (const field of ['slot', 'x', 'y', 'z']) if (value[field] !== undefined) {
+		if (!Number.isSafeInteger(value[field]) || Math.abs(value[field]) > (field === 'y' ? 2048 : 30_000_000)) throw new ProtocolV2Error('INVALID_PAYLOAD', `Invalid inspection ${field}`);
+		result[field] = value[field];
+	}
+	if (value.section === 'item' && (!Number.isSafeInteger(result.slot) || result.slot < 0 || result.slot > 255)) throw new ProtocolV2Error('INVALID_PAYLOAD', 'Item inspection requires an inventory slot');
+	if (value.section === 'block' && ['x', 'y', 'z'].some((field) => result[field] === undefined)) throw new ProtocolV2Error('INVALID_PAYLOAD', 'Block inspection requires x/y/z');
+	if (value.afterSequence !== undefined && value.section !== 'events') throw new ProtocolV2Error('INVALID_PAYLOAD', 'afterSequence is only valid for event inspection');
+	if (value.section === 'events') {
+		result.afterSequence = value.afterSequence === undefined ? -1 : value.afterSequence;
+		if (!Number.isSafeInteger(result.afterSequence) || result.afterSequence < -1) throw new ProtocolV2Error('INVALID_PAYLOAD', 'afterSequence must be -1 or a nonnegative safe integer');
+	}
+	if (value.recipeId !== undefined && value.outputItemId !== undefined) throw new ProtocolV2Error('INVALID_PAYLOAD', 'Choose recipeId or outputItemId');
+	for (const field of ['recipeId', 'entityType', 'outputItemId']) if (value[field] !== undefined) {
+		if (typeof value[field] !== 'string' || value[field].length > 256 || !/^[a-z0-9_.-]+:[a-z0-9_./-]+$/.test(value[field])) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field} must be a namespaced identifier of at most 256 characters`);
+		result[field] = value[field];
+	}
+	return result;
+}
+
+function observedDetails(value, field, depth = 0) {
+	if (depth > 12) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field} exceeds detail depth`);
+	if (value === null || typeof value === 'boolean') return value;
+	if (typeof value === 'number') return finiteNumber(value, field);
+	if (typeof value === 'string') return boundedText(value, field, 8192, 0);
+	if (Array.isArray(value)) return boundedArray(value, field, 256).map((entry) => observedDetails(entry, field, depth + 1));
+	if (!isPlainObject(value) || Object.keys(value).length > 256) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field} must contain bounded JSON facts`);
+	const result = {};
+	for (const [key, child] of Object.entries(value)) {
+		if (['__proto__', 'prototype', 'constructor'].includes(key) || key.length > 256) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field} contains an invalid fact key`);
+		result[key] = observedDetails(child, `${field}.${key}`, depth + 1);
+	}
+	return result;
+}
+
+function normalizeObservation(value) {
+	const allowed = ['goalRevision', 'observedAtEpochMs', 'ready', 'status', 'eventSequence', 'attention', 'changedFacts', 'position', 'velocity', 'view', 'player', 'inventory', 'entities', 'blocks', 'landmarks', 'nearbyContainers', 'furnaces', 'routeMemory', 'world', 'currentAction', 'lastResult', 'interaction', 'coverage', 'perception', 'threats', 'survival', 'incomingProjectiles', 'heard', 'sighted', 'blockTags', 'deathScreen', 'sampleOnly', 'reflexes'];
+	exactKeys(value, allowed, ['goalRevision', 'observedAtEpochMs', 'ready', 'status'], 'observation');
+	const normalized = {
+		goalRevision: revision(value.goalRevision, 'goalRevision'),
+		observedAtEpochMs: nonnegativeInteger(value.observedAtEpochMs, 'observedAtEpochMs'),
+		ready: boolean(value.ready, 'ready'),
+		status: boundedText(value.status, 'status', MAX_REASON_CODE_LENGTH),
+	};
+	if (!normalized.ready) {
+		if (value.deathScreen !== undefined) normalized.deathScreen = observedDetails(value.deathScreen, 'deathScreen');
+		for (const key of allowed.slice(7).filter(field => !['deathScreen', 'sampleOnly'].includes(field))) if (Object.hasOwn(value, key)) throw new ProtocolV2Error('INVALID_PAYLOAD', 'Unavailable observation must not contain live entity fields');
+		if (Object.hasOwn(value, 'eventSequence')) normalized.eventSequence = positiveInteger(value.eventSequence, 'eventSequence');
+		if (Object.hasOwn(value, 'attention')) normalized.attention = boolean(value.attention, 'attention');
+		if (normalized.attention === false && Array.isArray(value.changedFacts) && value.changedFacts.length > 0) throw new ProtocolV2Error('INVALID_PAYLOAD', 'Non-attention observation cannot contain changedFacts');
+		if (Object.hasOwn(value, 'changedFacts')) normalized.changedFacts = changedFactPaths(value.changedFacts);
+		return normalized;
+	}
+	for (const key of allowed.slice(4).filter((field) => !['interaction', 'landmarks', 'coverage', 'perception', 'threats', 'survival', 'incomingProjectiles', 'heard', 'sighted', 'blockTags', 'deathScreen', 'sampleOnly', 'furnaces', 'routeMemory', 'reflexes'].includes(field))) if (!Object.hasOwn(value, key)) throw new ProtocolV2Error('MISSING_FIELD', `observation field '${key}' is required when ready`);
+	normalized.eventSequence = positiveInteger(value.eventSequence, 'eventSequence');
+	normalized.attention = boolean(value.attention, 'attention');
+	if (!normalized.attention && Array.isArray(value.changedFacts) && value.changedFacts.length > 0) throw new ProtocolV2Error('INVALID_PAYLOAD', 'Non-attention observation cannot contain changedFacts');
+	normalized.changedFacts = changedFactPaths(value.changedFacts);
+	// Published only so authored orders and watchers see the drop ahead change; it carries no wake reason.
+	if (Object.hasOwn(value, 'sampleOnly')) {
+		if (boolean(value.sampleOnly, 'sampleOnly') !== true || normalized.attention) throw new ProtocolV2Error('INVALID_PAYLOAD', 'sampleOnly is only true, on a non-attention observation');
+		normalized.sampleOnly = true;
+	}
+	normalized.position = vector(value.position, 'position');
+	normalized.velocity = vector(value.velocity, 'velocity');
+	normalized.view = numericObject(value.view, 'view', ['yaw', 'pitch']);
+	normalized.player = playerObservation(value.player);
+	normalized.inventory = inventoryObservation(value.inventory);
+	normalized.entities = boundedArray(value.entities, 'entities', MAX_ENTITIES).map(entityObservation);
+	const blockTags = blockTagDictionary(value.blockTags);
+	normalized.blocks = boundedArray(value.blocks, 'blocks', MAX_BLOCKS).map((row, index) => blockObservation(row, index, blockTags));
+	if (Object.hasOwn(value, 'landmarks')) normalized.landmarks = boundedArray(value.landmarks, 'landmarks', MAX_LANDMARKS).map((row, index) => landmarkObservation(row, index, blockTags));
+	normalized.nearbyContainers = boundedArray(value.nearbyContainers, 'nearbyContainers', MAX_NEARBY_TRANSACTION_TARGETS).map(nearbyContainerObservation);
+	if (value.furnaces !== undefined) normalized.furnaces = boundedArray(value.furnaces, 'furnaces', 256).map(furnaceObservation);
+	normalized.world = worldObservation(value.world);
+	normalized.currentAction = currentActionObservation(value.currentAction);
+	normalized.lastResult = lastResultObservation(value.lastResult);
+	if (value.interaction !== undefined) normalized.interaction = interactionObservation(value.interaction);
+	if (value.routeMemory !== undefined) normalized.routeMemory = observedDetails(value.routeMemory, 'routeMemory');
+	if (value.coverage !== undefined) normalized.coverage = observedDetails(value.coverage, 'coverage');
+	if (value.perception !== undefined) normalized.perception = perceptionObservation(value.perception);
+	if (value.threats !== undefined) normalized.threats = threatsObservation(value.threats);
+	if (value.survival !== undefined) normalized.survival = survivalObservation(value.survival);
+	if (value.incomingProjectiles !== undefined) normalized.incomingProjectiles = incomingProjectileObservation(value.incomingProjectiles);
+	if (value.heard !== undefined) normalized.heard = heardObservation(value.heard);
+	if (value.sighted !== undefined) normalized.sighted = sightedObservation(value.sighted);
+	if (value.reflexes !== undefined) normalized.reflexes = reflexStatusObservation(value.reflexes);
+	return normalized;
+}
+
+/** The agent's reflex rules as the mod runs them: state per rule, the current firing and the last firing reports. */
+function reflexStatusObservation(value) {
+	if (!isPlainObject(value)) throw new ProtocolV2Error('INVALID_PAYLOAD', 'reflexes must be an object');
+	exactKeys(value, ['revision', 'firing', 'rules', 'events', 'error'], ['revision', 'rules', 'events'], 'reflexes');
+	const text = (row, key, maximum) => row[key] === undefined ? {} : { [key]: boundedText(row[key], `reflexes.${key}`, maximum, 0) };
+	const result = {
+		revision: nonnegativeInteger(value.revision, 'reflexes.revision'),
+		rules: boundedArray(value.rules, 'reflexes.rules', 12).map((row) => {
+			if (!isPlainObject(row)) throw new ProtocolV2Error('INVALID_PAYLOAD', 'reflex rule status must be an object');
+			exactKeys(row, ['id', 'kind', 'state', 'fired', 'expiresInS', 'disabled', 'lacks'], ['id', 'kind', 'state', 'fired', 'expiresInS'], 'reflexes.rules');
+			return { id: boundedText(row.id, 'reflexes.rules.id', 32), kind: boundedText(row.kind, 'reflexes.rules.kind', 16), state: boundedText(row.state, 'reflexes.rules.state', 16),
+				fired: nonnegativeInteger(row.fired, 'reflexes.rules.fired'), expiresInS: nonnegativeInteger(row.expiresInS, 'reflexes.rules.expiresInS'), ...text(row, 'disabled', 240), ...text(row, 'lacks', 240) };
+		}),
+		events: boundedArray(value.events, 'reflexes.events', 16).map((row) => {
+			if (!isPlainObject(row)) throw new ProtocolV2Error('INVALID_PAYLOAD', 'reflex event must be an object');
+			exactKeys(row, ['seq', 'id', 'outcome', 'ms', 'detail', 'wake'], ['seq', 'id', 'outcome', 'ms'], 'reflexes.events');
+			return { seq: nonnegativeInteger(row.seq, 'reflexes.events.seq'), id: boundedText(row.id, 'reflexes.events.id', 32), outcome: boundedText(row.outcome, 'reflexes.events.outcome', 16),
+				ms: nonnegativeInteger(row.ms, 'reflexes.events.ms'), ...text(row, 'detail', 240), ...(row.wake === undefined ? {} : { wake: boolean(row.wake, 'reflexes.events.wake') }) };
+		}),
+	};
+	if (value.firing !== undefined) {
+		if (!isPlainObject(value.firing)) throw new ProtocolV2Error('INVALID_PAYLOAD', 'reflexes.firing must be an object');
+		exactKeys(value.firing, ['id', 'ms', 'detail'], ['id', 'ms'], 'reflexes.firing');
+		result.firing = { id: boundedText(value.firing.id, 'reflexes.firing.id', 32), ms: nonnegativeInteger(value.firing.ms, 'reflexes.firing.ms'), ...text(value.firing, 'detail', 240) };
+	}
+	if (value.error !== undefined) result.error = boundedText(value.error, 'reflexes.error', 240);
+	return result;
+}
+
+/**
+ * The server lists each block type's tags once (`blockTags`) and leaves them off the rows of that type. Rows get their
+ * tags back here, before anything else reads the observation, so every consumer sees the rows it always saw.
+ */
+function blockTagDictionary(value) {
+	if (value === undefined) return null;
+	if (!isPlainObject(value)) throw new ProtocolV2Error('INVALID_PAYLOAD', 'blockTags must be an object');
+	const entries = Object.entries(value);
+	if (entries.length > MAX_BLOCKS + MAX_LANDMARKS) throw new ProtocolV2Error('INVALID_PAYLOAD', `blockTags exceeds bound of ${MAX_BLOCKS + MAX_LANDMARKS}`);
+	return new Map(entries.map(([blockId, tags]) => [requireIdentifier(blockId, 'blockTags key'), observationTags(tags, `blockTags.${blockId}`)]));
+}
+
+/** A row's own tags, or its block type's tags from the dictionary (already validated; each row gets its own copy). */
+function rowTags(value, field, dictionary) {
+	if (value.tags !== undefined) return observationTags(value.tags, `${field}.tags`);
+	const shared = dictionary === null ? undefined : dictionary.get(value.blockId);
+	return shared === undefined ? undefined : [...shared];
+}
+
+function withBlockTags(row, dictionary) {
+	if (dictionary === null || !isPlainObject(row) || row.tags !== undefined || typeof row.blockId !== 'string') return row;
+	const tags = dictionary.get(row.blockId);
+	return tags === undefined ? row : { ...row, tags: [...tags] };
+}
+
+/** The same expansion for an observation embedded in an inspection result, which is kept as bounded JSON facts. */
+function expandEmbeddedBlockTags(result) {
+	const observation = result?.observation;
+	if (!isPlainObject(observation) || observation.blockTags === undefined) return result;
+	const dictionary = blockTagDictionary(observation.blockTags);
+	const { blockTags: _omitted, ...rest } = observation;
+	for (const section of ['blocks', 'landmarks']) {
+		if (Array.isArray(rest[section])) rest[section] = rest[section].map((row) => withBlockTags(row, dictionary));
+	}
+	return { ...result, observation: rest };
+}
+
+function sightedBlockIds(value, field) {
+	const ids = boundedArray(value, field, 4).map((id, index) => requireIdentifier(id, `${field}[${index}]`));
+	if (ids.length === 0) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field} must name at least one block`);
+	return ids;
+}
+
+// Far-sight rows (structures, built, biomes, poi, blocks) appear in passive updates only while newly sighted. A near
+// structure is named (structure); a far one gives clues (blocks seen, size) instead.
+const SIGHTED_ROWS = Object.freeze({
+	structures: { maximum: 4, required: {}, optional: { structure: requireIdentifier, blocks: sightedBlockIds, size: positiveInteger, new: boolean }, oneOf: ['structure', 'blocks'] },
+	caves: { maximum: 3, required: { air: positiveInteger }, optional: {} },
+	veins: { maximum: 4, required: { blockId: requireIdentifier, visible: positiveInteger }, optional: {} },
+	built: { maximum: 3, required: { blocks: sightedBlockIds, size: positiveInteger }, optional: { new: boolean } },
+	biomes: { maximum: 4, required: { biome: requireIdentifier }, optional: { new: boolean } },
+	poi: { maximum: 4, required: { blockId: requireIdentifier }, optional: { new: boolean } },
+	blocks: { maximum: 4, required: { blockId: requireIdentifier }, optional: { count: positiveInteger, new: boolean } },
+	// The visible frame nearest completion; x/y/z is its interior's low corner.
+	portalFrames: { maximum: 1, required: { axis: portalAxis, interior: portalInterior, obsidian: nonnegativeInteger, needed: positiveInteger, missing: portalCells, blocked: portalCells, lit: boolean }, optional: { unseenInterior: positiveInteger } },
+});
+
+function portalAxis(value, field) {
+	if (value !== 'x' && value !== 'z') throw new ProtocolV2Error('INVALID_PAYLOAD', `${field} must be x or z`);
+	return value;
+}
+
+function portalInterior(value, field) {
+	const size = boundedArray(value, field, 2).map((entry, index) => positiveInteger(entry, `${field}[${index}]`));
+	if (size.length !== 2) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field} must be [width, height]`);
+	return size;
+}
+
+/** [x, y, z, seen] rows; seen is a short block id, "air" or "unseen". */
+function portalCells(value, field) {
+	return boundedArray(value, field, 32).map((entry, index) => {
+		const cell = `${field}[${index}]`;
+		if (!Array.isArray(entry) || entry.length !== 4) throw new ProtocolV2Error('INVALID_PAYLOAD', `${cell} must be [x, y, z, seen]`);
+		return [integer(entry[0], `${cell}[0]`), integer(entry[1], `${cell}[1]`), integer(entry[2], `${cell}[2]`), boundedText(entry[3], `${cell}[3]`, 96)];
+	});
+}
+
+/** What the agent currently sees (structures, built clusters, biomes, points of interest, blocks, caves, veins); never unseen things. */
+function sightedObservation(value) {
+	exactKeys(value, Object.keys(SIGHTED_ROWS), [], 'sighted');
+	const normalized = {};
+	for (const [kind, { maximum, required, optional, oneOf }] of Object.entries(SIGHTED_ROWS)) {
+		if (value[kind] === undefined) continue;
+		normalized[kind] = boundedArray(value[kind], `sighted.${kind}`, maximum).map((entry, index) => {
+			const field = `sighted.${kind}[${index}]`;
+			const place = ['x', 'y', 'z', 'distance', 'bearing'];
+			exactKeys(entry, [...place, ...Object.keys(required), ...Object.keys(optional)], [...place, ...Object.keys(required)], field);
+			if (oneOf !== undefined && oneOf.filter((key) => entry[key] !== undefined).length !== 1) {
+				throw new ProtocolV2Error('INVALID_PAYLOAD', `${field} needs exactly one of ${oneOf.join(' or ')}`);
+			}
+			const bearing = finiteNumber(entry.bearing, `${field}.bearing`);
+			if (bearing < -180 || bearing > 180) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field}.bearing must be in [-180, 180]`);
+			const checks = { ...required, ...optional };
+			return {
+				...Object.fromEntries(Object.entries(checks).filter(([key]) => entry[key] !== undefined).map(([key, check]) => [key, check(entry[key], `${field}.${key}`)])),
+				x: integer(entry.x, `${field}.x`), y: integer(entry.y, `${field}.y`), z: integer(entry.z, `${field}.z`),
+				distance: nonnegativeFiniteNumber(entry.distance, `${field}.distance`), bearing,
+			};
+		});
+	}
+	return normalized;
+}
+
+const HEARD_DIRECTIONS = new Set(['front', 'front_right', 'right', 'back_right', 'back', 'back_left', 'left', 'front_left', 'here']);
+const HEARD_ELEVATIONS = new Set(['above', 'below', 'level']);
+const MAX_HEARD_ENTRIES = 6;
+
+/** Sounds the player hears (packets plus client-only ambience), most salient first; relative direction only. */
+function heardObservation(value) {
+	return boundedArray(value, 'heard', MAX_HEARD_ENTRIES).map((entry, index) => {
+		const field = `heard[${index}]`;
+		exactKeys(entry, ['sound', 'source', 'direction', 'elevation', 'distance', 'count', 'secondsAgo'], ['sound', 'direction', 'elevation', 'distance'], field);
+		if (!HEARD_DIRECTIONS.has(entry.direction)) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field}.direction is invalid`);
+		if (!HEARD_ELEVATIONS.has(entry.elevation)) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field}.elevation is invalid`);
+		return {
+			sound: boundedText(entry.sound, `${field}.sound`, 128),
+			...(entry.source === undefined ? {} : { source: requireIdentifier(entry.source, `${field}.source`) }),
+			direction: entry.direction,
+			elevation: entry.elevation,
+			distance: nonnegativeInteger(entry.distance, `${field}.distance`),
+			...(entry.count === undefined ? {} : { count: positiveInteger(entry.count, `${field}.count`) }),
+			...(entry.secondsAgo === undefined ? {} : { secondsAgo: nonnegativeInteger(entry.secondsAgo, `${field}.secondsAgo`) }),
+		};
+	});
+}
+
+/** Visible incoming flight, omitted when no projectile is on a short collision course. */
+function incomingProjectileObservation(value) {
+	return boundedArray(value, 'incomingProjectiles', 8).map((row, index) => {
+		const field = `incomingProjectiles[${index}]`;
+		exactKeys(row, ['uuid', 'type', 'bearing', 'etaSeconds', 'damaging', 'shieldBlockable', 'new', 'imminentNew'], ['uuid', 'type', 'bearing', 'etaSeconds', 'damaging'], field);
+		return { uuid: requireIdentifier(row.uuid, `${field}.uuid`), type: requireIdentifier(row.type, `${field}.type`), bearing: finiteNumber(row.bearing, `${field}.bearing`), etaSeconds: finiteNumber(row.etaSeconds, `${field}.etaSeconds`), damaging: boolean(row.damaging, `${field}.damaging`), ...(row.shieldBlockable === undefined ? {} : { shieldBlockable: boolean(row.shieldBlockable, `${field}.shieldBlockable`) }), ...(row.new === undefined ? {} : { new: boolean(row.new, `${field}.new`) }), ...(row.imminentNew === undefined ? {} : { imminentNew: boolean(row.imminentNew, `${field}.imminentNew`) }) };
+	});
+}
+
+/**
+ * Healing facts (present while hurt or signalling): safe, canHealNow, canEat, bestFood, healFood (the best safe food edible
+ * now, sent only when it differs from bestFood) and debounced signals.
+ */
+function survivalObservation(value) {
+	exactKeys(value, ['safe', 'canHealNow', 'canEat', 'bestFood', 'healFood', 'signals'], ['safe', 'canHealNow', 'signals'], 'survival');
+	const normalized = {
+		safe: boolean(value.safe, 'survival.safe'),
+		canHealNow: boolean(value.canHealNow, 'survival.canHealNow'),
+		...(value.canEat === undefined ? {} : { canEat: boolean(value.canEat, 'survival.canEat') }),
+		signals: boundedArray(value.signals, 'survival.signals', SURVIVAL_SIGNALS.size).map((signal, index) => {
+			if (!SURVIVAL_SIGNALS.has(signal)) {
+				boundedText(signal, 'survival.signals', MAX_IDENTIFIER_LENGTH);
+				throw schemaDriftError('INVALID_PAYLOAD', 'survival.signals contains an unknown signal', () => value.signals.splice(index, 1));
+			}
+			return signal;
+		}),
+	};
+	for (const key of ['bestFood', 'healFood']) {
+		const food = value[key];
+		if (food === undefined) continue;
+		exactKeys(food, ['slot', 'itemId', 'nutrition', 'alwaysEdible'], ['slot', 'itemId', 'nutrition'], `survival.${key}`);
+		normalized[key] = {
+			slot: nonnegativeInteger(food.slot, `survival.${key}.slot`),
+			itemId: requireIdentifier(food.itemId, `survival.${key}.itemId`),
+			nutrition: nonnegativeInteger(food.nutrition, `survival.${key}.nutrition`),
+			...(food.alwaysEdible === undefined ? {} : { alwaysEdible: boolean(food.alwaysEdible, `survival.${key}.alwaysEdible`) }),
+		};
+	}
+	return normalized;
+}
+
+/** Server-sensed threats (latched signals) plus the best hotbar weapon, present only while something threatens. */
+function threatsObservation(value) {
+	exactKeys(value, ['entries', 'bestWeapon'], ['entries'], 'threats');
+	const entries = boundedArray(value.entries, 'threats.entries', MAX_THREAT_ENTRIES).map((entry, index) => {
+		const field = `threats.entries[${index}]`;
+		const keys = ['uuid', 'type', 'distance', 'bearing', 'targeting', 'swelling', 'lineOfSight', 'signals'];
+		exactKeys(entry, [...keys, 'visible', 'targetable', 'dy', 'holding', 'shot', 'risk', 'riskFactors', 'expectedHitDamage', 'closingSpeed', 'approaching', 'etaSeconds', 'contactRisk'], keys, field);
+		const signals = boundedArray(entry.signals, `${field}.signals`, THREAT_SIGNALS.size).map((signal, signalIndex) => {
+			if (!THREAT_SIGNALS.has(signal)) {
+				boundedText(signal, `${field}.signals`, MAX_IDENTIFIER_LENGTH);
+				throw schemaDriftError('INVALID_PAYLOAD', `${field}.signals contains an unknown signal`, () => entry.signals.splice(signalIndex, 1));
+			}
+			return signal;
+		});
+		return {
+			uuid: requireIdentifier(entry.uuid, `${field}.uuid`), type: requireIdentifier(entry.type, `${field}.type`),
+			distance: finiteNumber(entry.distance, `${field}.distance`), bearing: finiteNumber(entry.bearing, `${field}.bearing`),
+			targeting: boolean(entry.targeting, `${field}.targeting`), swelling: boolean(entry.swelling, `${field}.swelling`),
+			lineOfSight: boolean(entry.lineOfSight, `${field}.lineOfSight`), signals,
+			...(entry.visible === undefined ? {} : { visible: boolean(entry.visible, `${field}.visible`) }),
+			...(entry.targetable === undefined ? {} : { targetable: boolean(entry.targetable, `${field}.targetable`) }),
+			...(entry.dy === undefined ? {} : { dy: finiteNumber(entry.dy, `${field}.dy`) }),
+			...(entry.holding === undefined ? {} : { holding: requireIdentifier(entry.holding, `${field}.holding`) }),
+			// Seen threats only: 'clear', or the block id a straight line from the eye to the threat's middle meets first.
+			...(entry.shot === undefined ? {} : { shot: requireIdentifier(entry.shot, `${field}.shot`) }),
+			// Open-ended risk (no upper bound) with its factors, and the expected hit after the agent's armour.
+			...(entry.risk === undefined ? {} : { risk: finiteNumber(entry.risk, `${field}.risk`) }),
+			...(entry.riskFactors === undefined ? {} : { riskFactors: observedDetails(entry.riskFactors, `${field}.riskFactors`) }),
+			...(entry.expectedHitDamage === undefined ? {} : { expectedHitDamage: finiteNumber(entry.expectedHitDamage, `${field}.expectedHitDamage`) }),
+			// Trend: blocks per second closing in (negative recedes), seconds to contact range, and the risk it carries there.
+			...(entry.closingSpeed === undefined ? {} : { closingSpeed: finiteNumber(entry.closingSpeed, `${field}.closingSpeed`) }),
+			...(entry.approaching === undefined ? {} : { approaching: boolean(entry.approaching, `${field}.approaching`) }),
+			...(entry.etaSeconds === undefined ? {} : { etaSeconds: finiteNumber(entry.etaSeconds, `${field}.etaSeconds`) }),
+			...(entry.contactRisk === undefined ? {} : { contactRisk: finiteNumber(entry.contactRisk, `${field}.contactRisk`) }),
+		};
+	});
+	if (value.bestWeapon === undefined) return { entries };
+	exactKeys(value.bestWeapon, ['slot', 'itemId'], ['slot', 'itemId'], 'threats.bestWeapon');
+	const slot = nonnegativeInteger(value.bestWeapon.slot, 'threats.bestWeapon.slot');
+	if (slot > 8) throw new ProtocolV2Error('INVALID_PAYLOAD', 'threats.bestWeapon.slot must be a hotbar slot');
+	return { entries, bestWeapon: { slot, itemId: requireIdentifier(value.bestWeapon.itemId, 'threats.bestWeapon.itemId') } };
+}
+
+function perceptionObservation(value) {
+	exactKeys(value, ['latestSequence', 'earliestSequence', 'events', 'bossBars'], ['latestSequence', 'earliestSequence', 'events', 'bossBars'], 'perception');
+	const latestSequence = nonnegativeInteger(value.latestSequence, 'perception.latestSequence');
+	const earliestSequence = positiveInteger(value.earliestSequence, 'perception.earliestSequence');
+	if (earliestSequence > latestSequence + 1) throw new ProtocolV2Error('INVALID_PAYLOAD', 'Invalid event retention range');
+	const events = boundedArray(value.events, 'perception.events', 8).map(perceptionEvent);
+	let previousSequence = earliestSequence - 1;
+	for (const event of events) {
+		if (event.sequence <= previousSequence || event.sequence > latestSequence) throw new ProtocolV2Error('INVALID_PAYLOAD', 'Perception events must have retained increasing sequence numbers');
+		previousSequence = event.sequence;
+	}
+	const bossBars = boundedArray(value.bossBars, 'perception.bossBars', 16).map((bar) => {
+		exactKeys(bar, ['barId', 'name', 'progress', 'nameTruncated', 'color', 'overlay'], ['barId'], 'bossBar');
+		return { barId: requireIdentifier(bar.barId, 'bossBar.barId'),
+			...(bar.name === undefined ? {} : { name: boundedText(bar.name, 'bossBar.name', 256, 0) }),
+			...(bar.progress === undefined ? {} : { progress: visibleProgress(bar.progress) }),
+			...optionalObservedDetails(bar, ['color', 'overlay']),
+			...(bar.nameTruncated === undefined ? {} : { nameTruncated: boolean(bar.nameTruncated, 'bossBar.nameTruncated') }),
+		};
+	});
+	return { latestSequence, earliestSequence, events, bossBars };
+}
+
+function perceptionEvent(value) {
+	const base = ['type', 'sequence', 'gameTime', 'dimension', 'observedAtEpochMs'];
+	const type = value?.type;
+	let detail;
+	if (type === 'sound') detail = ['soundId', 'direction', 'range', 'elevation'];
+	else if (type === 'boss_bar') detail = ['barId', 'name', 'progress', 'color', 'overlay'];
+	else if (type === 'boss_bar_removed') detail = ['barId'];
+	else if (['system_message', 'player_chat', 'advancement_toast', 'action_bar', 'title', 'subtitle'].includes(type)) detail = ['text', 'textTruncated'];
+	else if (type === 'eye_of_ender_flight') detail = ['flightId', 'from', 'to', 'droppedAt', 'yaw', 'heading', 'flewBlocks', 'lostFromView', 'vertical', 'outcome', 'cross', 'crossBlocks', 'crossFlightId'];
+	else throw new ProtocolV2Error('INVALID_PAYLOAD', 'Unknown player perception event');
+	exactKeys(value, [...base, ...detail], base, 'perception.event');
+	const result = { type, sequence: positiveInteger(value.sequence, 'event.sequence'), gameTime: nonnegativeInteger(value.gameTime, 'event.gameTime'),
+		dimension: requireIdentifier(value.dimension, 'event.dimension'), observedAtEpochMs: nonnegativeInteger(value.observedAtEpochMs, 'event.observedAtEpochMs') };
+	if (type === 'sound') {
+		result.soundId = boundedText(value.soundId, 'event.soundId', 256);
+		for (const [field, allowed] of Object.entries({ direction: ['front', 'front_right', 'right', 'back_right', 'back', 'back_left', 'left', 'front_left'], range: ['near', 'medium', 'far'], elevation: ['above', 'below', 'level'] })) {
+			if (!allowed.includes(value[field])) throw new ProtocolV2Error('INVALID_PAYLOAD', `Invalid sound ${field}`);
+			result[field] = value[field];
+		}
+	} else if (type === 'eye_of_ender_flight') {
+		// Positions the thrower saw of its own eye; the eye's hidden destination is never part of it.
+		if (value.flightId !== undefined) result.flightId = nonnegativeInteger(value.flightId, 'event.flightId');
+		result.from = vector(value.from, 'event.from');
+		if (value.droppedAt !== undefined) {
+			if (value.outcome !== 'dropped') throw new ProtocolV2Error('INVALID_PAYLOAD', 'Only a visible drop has an item position');
+			result.droppedAt = vector(value.droppedAt, 'event.droppedAt');
+		}
+		if (value.to !== undefined) result.to = vector(value.to, 'event.to');
+		if (value.yaw !== undefined) result.yaw = finiteNumber(value.yaw, 'event.yaw');
+		if (value.heading !== undefined) {
+			if (!['south', 'southwest', 'west', 'northwest', 'north', 'northeast', 'east', 'southeast'].includes(value.heading)) throw new ProtocolV2Error('INVALID_PAYLOAD', 'Invalid eye flight heading');
+			result.heading = value.heading;
+		}
+		if (value.flewBlocks !== undefined) result.flewBlocks = finiteNumber(value.flewBlocks, 'event.flewBlocks');
+		if (value.lostFromView !== undefined) {
+			if (value.lostFromView !== true || value.flewBlocks !== undefined) throw new ProtocolV2Error('INVALID_PAYLOAD', 'A flight lost from view has no travel length');
+			result.lostFromView = true;
+		}
+		if (value.cross !== undefined) {
+			// Where this throw's seen bearing meets an earlier one: arithmetic on seen positions, not the eye's hidden target.
+			if (typeof value.cross !== 'object' || value.cross === null || Object.keys(value.cross).sort().join() !== 'x,z') throw new ProtocolV2Error('INVALID_PAYLOAD', 'Invalid eye line crossing');
+			result.cross = { x: finiteNumber(value.cross.x, 'event.cross.x'), z: finiteNumber(value.cross.z, 'event.cross.z') };
+			result.crossBlocks = nonnegativeInteger(value.crossBlocks, 'event.crossBlocks');
+			result.crossFlightId = nonnegativeInteger(value.crossFlightId, 'event.crossFlightId');
+		} else if (value.crossBlocks !== undefined || value.crossFlightId !== undefined) throw new ProtocolV2Error('INVALID_PAYLOAD', 'Eye crossing details need a crossing');
+		if (value.vertical !== undefined) {
+			if (!['rose', 'sank', 'level'].includes(value.vertical)) throw new ProtocolV2Error('INVALID_PAYLOAD', 'Invalid eye flight vertical');
+			result.vertical = value.vertical;
+		}
+		if (!['dropped', 'shattered', 'unseen'].includes(value.outcome)) throw new ProtocolV2Error('INVALID_PAYLOAD', 'Invalid eye flight outcome');
+		result.outcome = value.outcome;
+	} else if (type.startsWith('boss_bar')) {
+		result.barId = requireIdentifier(value.barId, 'event.barId');
+		Object.assign(result, optionalObservedDetails(value, ['color', 'overlay']));
+		// The server bounds boss names by Unicode code points, as it does entity names.
+		if (value.name !== undefined) result.name = boundedCodePointText(value.name, 'event.name', 256, true);
+		if (value.progress !== undefined) result.progress = visibleProgress(value.progress);
+	} else {
+		result.text = boundedText(value.text, 'event.text', 512, 0);
+		if (value.textTruncated !== undefined) result.textTruncated = boolean(value.textTruncated, 'event.textTruncated');
+	}
+	return result;
+}
+
+function visibleProgress(value) {
+	const progress = finiteNumber(value, 'bossBar.progress');
+	if (progress < 0 || progress > 1) throw new ProtocolV2Error('INVALID_PAYLOAD', 'Boss bar progress must be between 0 and 1');
+	return progress;
+}
+
+function interactionObservation(value) {
+	exactKeys(
+		value,
+		['mainHandItemId', 'offHandItemId', 'usingItem', 'activeHand', 'useRemainingTicks', 'attackCooldown', 'input', 'menu', 'rayTarget'],
+		['mainHandItemId', 'offHandItemId', 'usingItem', 'activeHand', 'useRemainingTicks', 'attackCooldown', 'input', 'menu', 'rayTarget'],
+		'interaction',
+	);
+	const activeHand = requireIdentifier(value.activeHand, 'interaction.activeHand');
+	if (!['none', 'main_hand', 'off_hand'].includes(activeHand)) throw new ProtocolV2Error('INVALID_PAYLOAD', 'interaction.activeHand is invalid');
+	exactKeys(
+		value.input,
+		['active', 'forward', 'strafe', 'jump', 'sneak', 'sprint', 'attack', 'use', 'yaw', 'pitch', 'selectedSlot', 'hand'],
+		['active', 'forward', 'strafe', 'jump', 'sneak', 'sprint', 'attack', 'use', 'yaw', 'pitch', 'selectedSlot', 'hand'],
+		'interaction.input',
+	);
+	const hand = requireIdentifier(value.input.hand, 'interaction.input.hand');
+	if (!['main_hand', 'off_hand'].includes(hand)) throw new ProtocolV2Error('INVALID_PAYLOAD', 'interaction.input.hand is invalid');
+	const selectedSlot = nonnegativeInteger(value.input.selectedSlot, 'interaction.input.selectedSlot');
+	if (selectedSlot > 8) throw new ProtocolV2Error('INVALID_PAYLOAD', 'interaction.input.selectedSlot must be in [0, 8]');
+	exactKeys(value.menu, ['type', 'cursor', 'slots', 'capabilities', ...MENU_DETAIL_FIELDS], ['type', 'cursor', 'slots', 'capabilities'], 'interaction.menu');
+	exactKeys(value.menu.cursor, ['itemId', 'count', ...MENU_STACK_DETAIL_FIELDS], ['itemId', 'count'], 'interaction.menu.cursor');
+	const menuSlots = boundedArray(value.menu.slots, 'interaction.menu.slots', 64).map((slot, index) => {
+		exactKeys(slot, ['slot', 'itemId', 'count', 'x', 'y', 'slotLimit', 'pickupAllowed', ...MENU_STACK_DETAIL_FIELDS], ['slot', 'itemId', 'count'], `interaction.menu.slots[${index}]`);
+		const slotIndex = nonnegativeInteger(slot.slot, `interaction.menu.slots[${index}].slot`);
+		if (slotIndex > 255) throw new ProtocolV2Error('INVALID_PAYLOAD', `interaction.menu.slots[${index}].slot must be at most 255`);
+		return {
+			slot: slotIndex,
+			...optionalObservedDetails(slot, ['x', 'y', 'slotLimit', 'pickupAllowed']),
+			...optionalMenuStackDetails(slot, `interaction.menu.slots[${index}]`),
+			itemId: requireIdentifier(slot.itemId, `interaction.menu.slots[${index}].itemId`),
+			count: nonnegativeInteger(slot.count, `interaction.menu.slots[${index}].count`),
+		};
+	});
+	const menuCapabilities = boundedArray(value.menu.capabilities, 'interaction.menu.capabilities', 32)
+		.map((capability, index) => requireIdentifier(capability, `interaction.menu.capabilities[${index}]`));
+	const rayAllowed = ['type', 'x', 'y', 'z', 'face', 'blockId', 'uuid', 'entityType'];
+	exactKeys(value.rayTarget, rayAllowed, ['type'], 'interaction.rayTarget');
+	const rayType = requireIdentifier(value.rayTarget.type, 'interaction.rayTarget.type');
+	if (!['miss', 'block', 'entity'].includes(rayType)) throw new ProtocolV2Error('INVALID_PAYLOAD', 'interaction.rayTarget.type is invalid');
+	if (rayType === 'block') {
+		for (const field of ['x', 'y', 'z', 'face', 'blockId']) if (!Object.hasOwn(value.rayTarget, field)) throw new ProtocolV2Error('MISSING_FIELD', `interaction.rayTarget.${field} is required for a block`);
+	} else if (rayType === 'entity') {
+		exactKeys(value.rayTarget, ['type', 'uuid', 'entityType'], ['type', 'uuid', 'entityType'], 'interaction.rayTarget');
+	} else if (Object.keys(value.rayTarget).length !== 1) {
+		throw new ProtocolV2Error('INVALID_PAYLOAD', 'non-block ray targets must not contain block fields');
+	}
+	return {
+		mainHandItemId: requireIdentifier(value.mainHandItemId, 'interaction.mainHandItemId'),
+		offHandItemId: requireIdentifier(value.offHandItemId, 'interaction.offHandItemId'),
+		usingItem: boolean(value.usingItem, 'interaction.usingItem'),
+		activeHand,
+		useRemainingTicks: nonnegativeInteger(value.useRemainingTicks, 'interaction.useRemainingTicks'),
+		attackCooldown: finiteNumber(value.attackCooldown, 'interaction.attackCooldown'),
+		input: {
+			active: boolean(value.input.active, 'interaction.input.active'),
+			forward: finiteNumber(value.input.forward, 'interaction.input.forward'),
+			strafe: finiteNumber(value.input.strafe, 'interaction.input.strafe'),
+			jump: boolean(value.input.jump, 'interaction.input.jump'),
+			sneak: boolean(value.input.sneak, 'interaction.input.sneak'),
+			sprint: boolean(value.input.sprint, 'interaction.input.sprint'),
+			attack: boolean(value.input.attack, 'interaction.input.attack'),
+			use: boolean(value.input.use, 'interaction.input.use'),
+			yaw: finiteNumber(value.input.yaw, 'interaction.input.yaw'),
+			pitch: finiteNumber(value.input.pitch, 'interaction.input.pitch'),
+			selectedSlot,
+			hand,
+		},
+		menu: {
+			...optionalObservedDetails(value.menu, MENU_DETAIL_FIELDS),
+			type: requireIdentifier(value.menu.type, 'interaction.menu.type'),
+			cursor: {
+				...optionalMenuStackDetails(value.menu.cursor, 'interaction.menu.cursor'),
+				itemId: requireIdentifier(value.menu.cursor.itemId, 'interaction.menu.cursor.itemId'),
+				count: nonnegativeInteger(value.menu.cursor.count, 'interaction.menu.cursor.count'),
+			},
+			slots: menuSlots,
+			capabilities: menuCapabilities,
+		},
+		rayTarget: rayType === 'block' ? {
+			type: rayType,
+			x: integer(value.rayTarget.x, 'interaction.rayTarget.x'),
+			y: integer(value.rayTarget.y, 'interaction.rayTarget.y'),
+			z: integer(value.rayTarget.z, 'interaction.rayTarget.z'),
+			face: requireIdentifier(value.rayTarget.face, 'interaction.rayTarget.face'),
+			blockId: requireIdentifier(value.rayTarget.blockId, 'interaction.rayTarget.blockId'),
+		} : rayType === 'entity' ? { type: rayType, uuid: requireIdentifier(value.rayTarget.uuid, 'interaction.rayTarget.uuid'), entityType: requireIdentifier(value.rayTarget.entityType, 'interaction.rayTarget.entityType') } : { type: rayType },
+	};
+}
+
+function changedFactPaths(value) {
+	boundedArray(value, 'changedFacts', MAX_CHANGED_FACTS);
+	if (new Set(value).size !== value.length) throw new ProtocolV2Error('INVALID_PAYLOAD', 'changedFacts must not contain duplicates');
+	const paths = value.map((path, index) => {
+		const factual = typeof path === 'string' && isFactualChangedPath(path);
+		if (!factual && typeof path === 'string'
+				&& /^(?:threats\.[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|survival)\.[a-z_]{1,128}$/.test(path)) {
+			throw schemaDriftError('INVALID_PAYLOAD', `changedFacts[${index}] must be a factual observation path`, () => value.splice(index, 1));
+		}
+		if (!factual) {
+			throw new ProtocolV2Error('INVALID_PAYLOAD', `changedFacts[${index}] must be a factual observation path`);
+		}
+		return path;
+	});
+	return paths;
+}
+
+function isFactualChangedPath(path) {
+	if (FACTUAL_TOP_LEVEL_PATHS.has(path)) return true;
+	if (path === 'world.dimension' || path === 'projectile') return true;
+	if (path.startsWith('player.')) return FACTUAL_PLAYER_FIELDS.has(path.slice('player.'.length));
+	if (/^entities\.[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(path)) return true;
+	if (THREAT_FACT_PATH.test(path) || SURVIVAL_FACT_PATH.test(path)) return true;
+	return /^blocks\.-?\d+,-?\d+,-?\d+$/.test(path);
+}
+
+function normalizeActionObservation(value) {
+	const field = 'actionObservation';
+	exactKeys(value, ['worldTick', 'observedAtEpochMs', 'position', 'velocity', 'yaw', 'pitch', 'collision', 'lookedAt', 'reach', 'target', 'progress', 'onGround', 'teleportTick', 'revealedBlocks'], ['observedAtEpochMs'], field);
+	const normalized = {
+		observedAtEpochMs: nonnegativeInteger(value.observedAtEpochMs, `${field}.observedAtEpochMs`),
+	};
+	if (value.worldTick !== undefined) normalized.worldTick = nonnegativeInteger(value.worldTick, `${field}.worldTick`);
+	if (value.position !== undefined) normalized.position = vector(value.position, `${field}.position`);
+	if (value.velocity !== undefined) normalized.velocity = vector(value.velocity, `${field}.velocity`);
+	if (value.yaw !== undefined) normalized.yaw = finiteNumber(value.yaw, `${field}.yaw`);
+	if (value.pitch !== undefined) normalized.pitch = finiteNumber(value.pitch, `${field}.pitch`);
+	if (value.collision !== undefined) {
+		exactKeys(value.collision, ['horizontal', 'vertical', 'inWall'], ['horizontal', 'vertical', 'inWall'], `${field}.collision`);
+		normalized.collision = {
+			horizontal: boolean(value.collision.horizontal, `${field}.collision.horizontal`),
+			vertical: boolean(value.collision.vertical, `${field}.collision.vertical`),
+			inWall: boolean(value.collision.inWall, `${field}.collision.inWall`),
+		};
+	}
+	if (value.lookedAt !== undefined) normalized.lookedAt = normalizeActionLookTarget(value.lookedAt, `${field}.lookedAt`);
+	if (value.reach !== undefined) {
+		exactKeys(value.reach, ['distance', 'max', 'within'], ['distance', 'max', 'within'], `${field}.reach`);
+		normalized.reach = {
+			distance: nonnegativeFiniteNumber(value.reach.distance, `${field}.reach.distance`),
+			max: nonnegativeFiniteNumber(value.reach.max, `${field}.reach.max`),
+			within: boolean(value.reach.within, `${field}.reach.within`),
+		};
+	}
+	if (value.revealedBlocks !== undefined) {
+		if (!Array.isArray(value.revealedBlocks) || value.revealedBlocks.length > 6) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field}.revealedBlocks must contain at most six faces`);
+		normalized.revealedBlocks = value.revealedBlocks.map((block, index) => {
+			const name = `${field}.revealedBlocks.${index}`;
+			exactKeys(block, ['position', 'blockId', 'face'], ['position', 'blockId', 'face'], name);
+			const position = vector(block.position, `${name}.position`);
+			if (!Object.values(position).every(Number.isSafeInteger)) throw new ProtocolV2Error('INVALID_PAYLOAD', `${name}.position must be a block cell`);
+			const face = requireIdentifier(block.face, `${name}.face`);
+			if (!['up', 'down', 'north', 'south', 'east', 'west'].includes(face)) throw new ProtocolV2Error('INVALID_PAYLOAD', `${name}.face is invalid`);
+			return { position, blockId: requireIdentifier(block.blockId, `${name}.blockId`), face };
+		});
+	}
+	if (value.target !== undefined) normalized.target = normalizeActionTarget(value.target, `${field}.target`);
+	if (value.onGround !== undefined) normalized.onGround = boolean(value.onGround, `${field}.onGround`);
+	if (value.teleportTick !== undefined) normalized.teleportTick = nonnegativeInteger(value.teleportTick, `${field}.teleportTick`);
+	if (value.progress !== undefined) {
+		exactKeys(value.progress, ['value', 'basis', 'verified'], ['value', 'basis', 'verified'], `${field}.progress`);
+		const basis = requireIdentifier(value.progress.basis, `${field}.progress.basis`);
+		if (!['world_position', 'block_damage', 'world_mutation', 'none'].includes(basis)) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field}.progress.basis is invalid`);
+		const progress = finiteNumber(value.progress.value, `${field}.progress.value`);
+		if (progress < 0 || progress > 1) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field}.progress.value must be in [0, 1]`);
+		normalized.progress = { value: progress, basis, verified: boolean(value.progress.verified, `${field}.progress.verified`) };
+	}
+	return normalized;
+}
+
+function normalizeActionLookTarget(value, field) {
+	exactKeys(value, ['type', 'position', 'id', 'face', 'hitDistance'], ['type', 'hitDistance'], field);
+	const type = requireIdentifier(value.type, `${field}.type`);
+	if (!['miss', 'block', 'entity', 'item'].includes(type)) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field}.type is invalid`);
+	const normalized = { type, hitDistance: nonnegativeFiniteNumber(value.hitDistance, `${field}.hitDistance`) };
+	if (value.position !== undefined) normalized.position = vector(value.position, `${field}.position`);
+	if (value.id !== undefined) normalized.id = requireIdentifier(value.id, `${field}.id`);
+	if (value.face !== undefined) normalized.face = requireIdentifier(value.face, `${field}.face`);
+	return normalized;
+}
+
+function normalizeActionTarget(value, field) {
+	exactKeys(value, ['kind', 'position', 'expectedId', 'currentId', 'beforeId', 'afterId', 'worldChanged', 'distanceRemaining', 'tolerance', 'standable'], ['kind', 'position'], field);
+	const normalized = { kind: requireIdentifier(value.kind, `${field}.kind`), position: vector(value.position, `${field}.position`) };
+	for (const key of ['expectedId', 'currentId', 'beforeId', 'afterId']) {
+		if (value[key] !== undefined) normalized[key] = requireIdentifier(value[key], `${field}.${key}`);
+	}
+	if (value.worldChanged !== undefined) normalized.worldChanged = boolean(value.worldChanged, `${field}.worldChanged`);
+	if (value.distanceRemaining !== undefined) normalized.distanceRemaining = nonnegativeFiniteNumber(value.distanceRemaining, `${field}.distanceRemaining`);
+	if (value.tolerance !== undefined) normalized.tolerance = nonnegativeFiniteNumber(value.tolerance, `${field}.tolerance`);
+	if (value.standable !== undefined) normalized.standable = boolean(value.standable, `${field}.standable`);
+	return normalized;
+}
+
+function normalizeActionProgress(value) {
+	const allowed = ['traceId', 'goalRevision', 'actionId', 'commandId', 'actionType', 'state', 'message', 'progress', 'elapsedMs', 'observedAtEpochMs', 'serverTick', 'actionObservation'];
+	exactKeys(value, allowed, ['traceId', 'goalRevision', 'actionId'], 'action_progress');
+	const actionId = requireIdentifier(value.actionId, 'actionId');
+	if (value.commandId !== undefined && value.commandId !== actionId) throw new ProtocolV2Error('INVALID_PAYLOAD', 'commandId must match actionId');
+	const normalized = { traceId: requireTraceId(value.traceId), goalRevision: revision(value.goalRevision, 'goalRevision'), actionId };
+	if (value.commandId !== undefined) normalized.commandId = actionId;
+	if (value.actionType !== undefined) normalized.actionType = requireIdentifier(value.actionType, 'actionType');
+	if (value.state !== undefined) normalized.state = boundedText(value.state, 'state', MAX_REASON_CODE_LENGTH);
+	if (value.message !== undefined) normalized.message = boundedText(value.message, 'message', MAX_RESULT_MESSAGE_LENGTH, 0);
+	if (value.progress !== undefined) {
+		normalized.progress = finiteNumber(value.progress, 'progress');
+		if (normalized.progress < 0 || normalized.progress > 1) throw new ProtocolV2Error('INVALID_PAYLOAD', 'progress must be in [0, 1]');
+	}
+	if (value.elapsedMs !== undefined) normalized.elapsedMs = nonnegativeInteger(value.elapsedMs, 'elapsedMs');
+	if (value.observedAtEpochMs !== undefined) normalized.observedAtEpochMs = nonnegativeInteger(value.observedAtEpochMs, 'observedAtEpochMs');
+	if (value.serverTick !== undefined) normalized.serverTick = nonnegativeInteger(value.serverTick, 'serverTick');
+	if (value.actionObservation !== undefined) {
+		normalized.actionObservation = normalizeActionObservation(value.actionObservation);
+		if (normalized.actionObservation.revealedBlocks !== undefined) throw new ProtocolV2Error('INVALID_PAYLOAD', 'revealedBlocks requires a successful break result');
+		if (normalized.progress !== undefined && normalized.actionObservation.progress !== undefined
+				&& normalized.progress !== normalized.actionObservation.progress.value) {
+			throw new ProtocolV2Error('INVALID_PAYLOAD', 'progress must equal actionObservation.progress.value');
+		}
+	}
+	return normalized;
+}
+
+function normalizeActionResult(value) {
+	const allowed = ['traceId', 'goalRevision', 'actionId', 'commandId', 'actionType', 'state', 'reasonCode', 'message', 'elapsedMs', 'observedAtEpochMs', 'executionStarted', 'physicalAttempted', 'timing', 'actionObservation', 'breakOutcome', 'cause', 'replayProof'];
+	exactKeys(value, allowed, ['traceId', 'goalRevision', 'actionId', 'commandId', 'actionType', 'state', 'reasonCode', 'message', 'elapsedMs', 'observedAtEpochMs'], 'action_result');
+	const actionId = requireIdentifier(value.actionId, 'actionId');
+	if (value.commandId !== actionId) throw new ProtocolV2Error('INVALID_PAYLOAD', 'commandId must match actionId');
+	const state = boundedText(value.state, 'state', MAX_REASON_CODE_LENGTH);
+	if (!TERMINAL_ACTION_STATES.has(state)) throw new ProtocolV2Error('INVALID_PAYLOAD', `Unsupported terminal action state '${state}'`);
+	const normalized = {
+		traceId: requireTraceId(value.traceId),
+		goalRevision: revision(value.goalRevision, 'goalRevision'),
+		actionId,
+		commandId: actionId,
+		actionType: requireIdentifier(value.actionType, 'actionType'),
+		state,
+		reasonCode: boundedText(value.reasonCode, 'reasonCode', MAX_REASON_CODE_LENGTH),
+		message: boundedText(value.message, 'message', MAX_RESULT_MESSAGE_LENGTH, 0),
+		elapsedMs: nonnegativeInteger(value.elapsedMs, 'elapsedMs'),
+		observedAtEpochMs: nonnegativeInteger(value.observedAtEpochMs, 'observedAtEpochMs'),
+	};
+	if (value.executionStarted !== undefined) {
+		if (typeof value.executionStarted !== 'boolean') throw new ProtocolV2Error('INVALID_PAYLOAD', 'executionStarted must be a boolean');
+		normalized.executionStarted = value.executionStarted;
+	}
+	if (value.physicalAttempted !== undefined) {
+		if (typeof value.physicalAttempted !== 'boolean') throw new ProtocolV2Error('INVALID_PAYLOAD', 'physicalAttempted must be a boolean');
+		normalized.physicalAttempted = value.physicalAttempted;
+	}
+	if (value.timing !== undefined) normalized.timing = normalizeActionTiming(value.timing);
+	if (value.actionObservation !== undefined) {
+		normalized.actionObservation = normalizeActionObservation(value.actionObservation);
+		if (normalized.actionObservation.revealedBlocks !== undefined && (normalized.state !== 'SUCCEEDED' || normalized.actionType !== 'break_block')) {
+			throw new ProtocolV2Error('INVALID_PAYLOAD', 'revealedBlocks requires a successful break result');
+		}
+	}
+	if (value.cause !== undefined) {
+		if (normalized.actionType !== 'place_block' || normalized.state === 'SUCCEEDED') throw new ProtocolV2Error('INVALID_PAYLOAD', 'cause requires an unsuccessful place_block result');
+		normalized.cause = boundedText(value.cause, 'cause', MAX_REASON_CODE_LENGTH);
+	}
+	if (value.breakOutcome !== undefined) normalized.breakOutcome = normalizeBreakOutcome(value.breakOutcome);
+	if (value.replayProof !== undefined) normalized.replayProof = authenticationToken(value.replayProof, 'replayProof');
+	if (normalized.physicalAttempted === true && normalized.executionStarted !== true) throw new ProtocolV2Error('INVALID_PAYLOAD', 'physicalAttempted requires executionStarted');
+	return normalized;
+}
+
+/**
+ * Blocks one action broke, the hand of the latest break or attempt (absent for an empty hand), whether any lacked the correct
+ * tool or showed no drops, and whether the hand differed between breaks or changed before the result (a tool used up or swapped).
+ */
+function normalizeBreakOutcome(value) {
+	exactKeys(value, ['blocks', 'held', 'correctTool', 'noDropsSeen', 'handChanged'], ['blocks', 'correctTool', 'noDropsSeen'], 'action_result.breakOutcome');
+	const normalized = { blocks: nonnegativeInteger(value.blocks, 'breakOutcome.blocks') };
+	if (value.held !== undefined) normalized.held = requireIdentifier(value.held, 'breakOutcome.held');
+	normalized.correctTool = boolean(value.correctTool, 'breakOutcome.correctTool');
+	normalized.noDropsSeen = boolean(value.noDropsSeen, 'breakOutcome.noDropsSeen');
+	// Round-2 servers and journals omit handChanged: unknown, so it stays absent rather than assumed false.
+	if (value.handChanged !== undefined) normalized.handChanged = boolean(value.handChanged, 'breakOutcome.handChanged');
+	if (normalized.noDropsSeen && normalized.blocks === 0) throw new ProtocolV2Error('INVALID_PAYLOAD', 'breakOutcome.noDropsSeen requires a broken block');
+	return normalized;
+}
+
+/** Java-side clocks for latency traces. Informational only: a replayed result may lack them, so they stay out of the fingerprint. */
+function normalizeActionTiming(value) {
+	const keys = ['acceptedAtEpochMs', 'startedAtEpochMs', 'startedTick', 'endedTick'];
+	exactKeys(value, keys, [], 'action_result.timing');
+	return Object.fromEntries(keys.filter((key) => value[key] !== undefined).map((key) => [key, nonnegativeInteger(value[key], `timing.${key}`)]));
+}
+
+function terminalResultFingerprint(payload) {
+	const { replayProof: _replayProof, timing: _timing, ...result } = payload;
+	return createHash('sha256').update(JSON.stringify(result)).digest('hex');
+}
+
+function normalizeGoalCompletionRequest(value) {
+	const allowed = ['goalRevision', 'goalFingerprint', 'traceId', 'profile'];
+	exactKeys(value, allowed, allowed, 'goal_completed');
+	const goalRevision = revision(value.goalRevision, 'goalRevision');
+	const traceId = requireTraceId(value.traceId);
+	if (!isPlainObject(value.profile)) throw new ProtocolV2Error('INVALID_PAYLOAD', 'goal_completed.profile must be an object');
+	const profileFields = ['provider', 'model', 'reasoningEffort', 'serviceTier'];
+	exactKeys(value.profile, profileFields, profileFields, 'goal_completed.profile');
+	const profile = Object.fromEntries(profileFields.map((field) => [field, boundedText(value.profile[field], `profile.${field}`, MAX_IDENTIFIER_LENGTH)]));
+	return { goalRevision, goalFingerprint: goalFingerprint(value.goalFingerprint), traceId, profile };
+}
+
+function goalFingerprint(value) {
+	const fingerprint = boundedText(value, 'goalFingerprint', 64);
+	if (!/^[0-9a-f]{64}$/.test(fingerprint)) throw new ProtocolV2Error('INVALID_PAYLOAD', 'goalFingerprint must be 64 lowercase hexadecimal characters');
+	return fingerprint;
+}
+
+function normalizeActionCommand(value) {
+	const allowed = ['traceId', 'goalRevision', 'actionId', 'actionType', 'arguments', 'provenance'];
+	exactKeys(value, allowed, ['traceId', 'goalRevision', 'actionId', 'arguments', 'provenance'], 'action_command');
+	const actionId = requireIdentifier(value.actionId, 'actionId');
+	const traceId = requireTraceId(value.traceId);
+	const type = requireIdentifier(value.actionType, 'actionType');
+	if (!isPlainObject(value.arguments)) throw new ProtocolV2Error('INVALID_PAYLOAD', 'action_command arguments must be an object');
+	for (const key of Reflect.ownKeys(value.arguments)) {
+		if (typeof key !== 'string' || key === 'type' || allowed.includes(key)) {
+			throw new ProtocolV2Error('INVALID_PAYLOAD_FIELD', `Reserved action_command argument field '${String(key)}'`);
+		}
+	}
+	const action = protocolAction({ ...value.arguments, type });
+	const command = validateActionCommandPayload({
+		goalRevision: value.goalRevision,
+		actionId,
+		action,
+		provenance: value.provenance,
+	});
+	if (command.provenance.traceId !== undefined && command.provenance.traceId !== traceId) {
+		throw new ProtocolV2Error('INVALID_PAYLOAD', 'provenance.traceId must match traceId');
+	}
+	const { type: actionType, ...argumentsValue } = action;
+	const normalized = { traceId, goalRevision: command.goalRevision, actionId, actionType, arguments: argumentsValue, provenance: command.provenance };
+	return deepFreeze(normalized);
+}
+
+function protocolAction(value) {
+	try { return validateAction(value); } catch (error) { throw new ProtocolV2Error('INVALID_ACTION', error.message, { cause: error }); }
+}
+
+function deepFreeze(value) {
+	if (value === null || typeof value !== 'object' || Object.isFrozen(value)) return value;
+	for (const child of Object.values(value)) deepFreeze(child);
+	return Object.freeze(value);
+}
+
+function playerObservation(value) {
+	if (!isPlainObject(value)) throw new ProtocolV2Error('INVALID_PAYLOAD', 'player must be an object');
+	const allowed = [
+		'health', 'maxHealth', 'armor', 'foodLevel', 'saturation', 'gameMode',
+		'onGround', 'inWater', 'onFire', 'air', 'maxAir', 'suffocating',
+		'fallDistance', 'lastAttacker', 'effects',
+	];
+	const required = allowed.filter((field) => field !== 'lastAttacker');
+	exactKeys(value, [...allowed, ...PLAYER_DETAIL_FIELDS], required, 'player');
+	const normalized = {
+		...optionalObservedDetails(value, PLAYER_DETAIL_FIELDS),
+		health: finiteNumber(value.health, 'player.health'),
+		maxHealth: finiteNumber(value.maxHealth, 'player.maxHealth'),
+		armor: nonnegativeInteger(value.armor, 'player.armor'),
+		foodLevel: nonnegativeInteger(value.foodLevel, 'player.foodLevel'),
+		saturation: finiteNumber(value.saturation, 'player.saturation'),
+		gameMode: requireIdentifier(value.gameMode, 'player.gameMode'),
+		onGround: boolean(value.onGround, 'player.onGround'),
+		inWater: boolean(value.inWater, 'player.inWater'),
+		onFire: boolean(value.onFire, 'player.onFire'),
+		air: nonnegativeInteger(value.air, 'player.air'),
+		maxAir: nonnegativeInteger(value.maxAir, 'player.maxAir'),
+		suffocating: boolean(value.suffocating, 'player.suffocating'),
+		fallDistance: finiteNumber(value.fallDistance, 'player.fallDistance'),
+		effects: boundedArray(value.effects, 'player.effects', MAX_EFFECTS).map((effect, index) => {
+			exactKeys(effect, ['effectId', 'amplifier', 'duration'], ['effectId', 'amplifier', 'duration'], `effects[${index}]`);
+			return {
+				effectId: requireIdentifier(effect.effectId, `effects[${index}].effectId`),
+				amplifier: nonnegativeInteger(effect.amplifier, `effects[${index}].amplifier`),
+				duration: effectDuration(effect.duration, `effects[${index}].duration`),
+			};
+		}),
+	};
+	if (value.lastAttacker !== undefined) {
+		exactKeys(
+			value.lastAttacker,
+			['uuid', 'type', 'distance'],
+			['uuid', 'type', 'distance'],
+			'player.lastAttacker',
+		);
+		normalized.lastAttacker = {
+			uuid: requireIdentifier(value.lastAttacker.uuid, 'player.lastAttacker.uuid'),
+			type: requireIdentifier(value.lastAttacker.type, 'player.lastAttacker.type'),
+			distance: finiteNumber(value.lastAttacker.distance, 'player.lastAttacker.distance'),
+		};
+	}
+	return normalized;
+}
+
+function hotbarSlot(value, field) {
+	const slot = nonnegativeInteger(value, field);
+	if (slot > 8) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field} must be in [0, 8]`);
+	return slot;
+}
+
+function inventoryObservation(value) {
+	if (!isPlainObject(value)) throw new ProtocolV2Error('INVALID_PAYLOAD', 'inventory must be an object');
+	exactKeys(value, ['items', 'selectedItem', 'selectedSlot', 'tagCounts', 'food'], ['items', 'selectedItem'], 'inventory');
+	const normalizedInventory = {
+		items: boundedArray(value.items, 'inventory.items', MAX_INVENTORY_SUMMARIES).map((item, index) => {
+			exactKeys(
+				item,
+				['itemId', 'count', 'damage', 'maxDamage', 'slot', 'hotbar', 'tags', ...STACK_DETAIL_FIELDS],
+				['itemId', 'count', 'damage', 'maxDamage', 'slot'],
+				`inventory.items[${index}]`,
+			);
+			const slot = Number.isSafeInteger(item.slot)
+				? nonnegativeInteger(item.slot, `inventory.items[${index}].slot`)
+				: requireIdentifier(item.slot, `inventory.items[${index}].slot`);
+			const normalized = {
+				...optionalObservedDetails(item, STACK_DETAIL_FIELDS),
+				itemId: requireIdentifier(item.itemId, `inventory.items[${index}].itemId`),
+				count: nonnegativeInteger(item.count, `inventory.items[${index}].count`),
+				damage: nonnegativeInteger(item.damage, `inventory.items[${index}].damage`),
+				maxDamage: nonnegativeInteger(item.maxDamage, `inventory.items[${index}].maxDamage`),
+				slot,
+			};
+			if (item.hotbar !== undefined) normalized.hotbar = boolean(item.hotbar, `inventory.items[${index}].hotbar`);
+			if (item.tags !== undefined) normalized.tags = observationTags(item.tags, `inventory.items[${index}].tags`);
+			return normalized;
+		}),
+		selectedItem: requireIdentifier(value.selectedItem, 'inventory.selectedItem'),
+		...(value.selectedSlot === undefined ? {} : { selectedSlot: hotbarSlot(value.selectedSlot, 'inventory.selectedSlot') }),
+	};
+	if (value.tagCounts !== undefined) normalizedInventory.tagCounts = observationTagCounts(value.tagCounts, 'inventory.tagCounts');
+	if (value.food !== undefined) normalizedInventory.food = inventoryFoodObservation(value.food);
+	return normalizedInventory;
+}
+
+function inventoryFoodObservation(value) {
+	if (!isPlainObject(value)) throw new ProtocolV2Error('INVALID_PAYLOAD', 'inventory.food must be an object');
+	exactKeys(value, ['items', 'nutrition', 'risky'], ['items', 'nutrition'], 'inventory.food');
+	return {
+		items: nonnegativeInteger(value.items, 'inventory.food.items'),
+		nutrition: nonnegativeInteger(value.nutrition, 'inventory.food.nutrition'),
+		...(value.risky === undefined ? {} : { risky: boundedArray(value.risky, 'inventory.food.risky', MAX_INVENTORY_SUMMARIES).map((row, index) => {
+			exactKeys(row, ['itemId', 'count', 'nutrition'], ['itemId', 'count', 'nutrition'], `inventory.food.risky[${index}]`);
+			return { itemId: requireIdentifier(row.itemId, `inventory.food.risky[${index}].itemId`), count: nonnegativeInteger(row.count, `inventory.food.risky[${index}].count`),
+				nutrition: nonnegativeInteger(row.nutrition, `inventory.food.risky[${index}].nutrition`) };
+		}) }),
+	};
+}
+
+function entityObservation(value, index) {
+	if (!isPlainObject(value)) throw new ProtocolV2Error('INVALID_PAYLOAD', `entities[${index}] must be an object`);
+	const field = `entities[${index}]`;
+	exactKeys(
+		value,
+		['uuid', 'type', 'name', 'distance', 'position', 'isPlayer', 'itemId', 'count', 'tags', ...ENTITY_DETAIL_FIELDS],
+		['uuid', 'type', 'name', 'distance', 'position'],
+		field,
+	);
+	const type = requireIdentifier(value.type, `${field}.type`);
+	const normalized = {
+		...optionalObservedDetails(value, ENTITY_DETAIL_FIELDS),
+		uuid: requireIdentifier(value.uuid, `${field}.uuid`),
+		type,
+		// Java preserves empty custom display names; they are text, not entity identifiers.
+		name: boundedCodePointText(value.name, `${field}.name`, MAX_CHAT_LENGTH, true),
+		distance: finiteNumber(value.distance, `${field}.distance`),
+		position: vector(value.position, `${field}.position`),
+	};
+	if (value.tags !== undefined) normalized.tags = observationTags(value.tags, `${field}.tags`);
+	if (value.isPlayer !== undefined) normalized.isPlayer = boolean(value.isPlayer, `${field}.isPlayer`);
+	if (type === 'minecraft:item') {
+		if (value.itemId === undefined || value.count === undefined) {
+			throw new ProtocolV2Error('MISSING_FIELD', `${field} item entities require itemId and count`);
+		}
+		normalized.itemId = requireIdentifier(value.itemId, `${field}.itemId`);
+		normalized.count = nonnegativeInteger(value.count, `${field}.count`);
+		if (normalized.count < 1) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field}.count must be positive`);
+	} else if (value.itemId !== undefined || value.count !== undefined) {
+		throw new ProtocolV2Error('INVALID_PAYLOAD', `${field} itemId and count are only valid for item entities`);
+	}
+	return normalized;
+}
+
+function blockObservation(value, index, blockTags = null) {
+	if (!isPlainObject(value)) throw new ProtocolV2Error('INVALID_PAYLOAD', `blocks[${index}] must be an object`);
+	const field = `blocks[${index}]`;
+	exactKeys(value, ['x', 'y', 'z', 'blockId', 'placeableFaces', 'tags', ...BLOCK_DETAIL_FIELDS], ['x', 'y', 'z', 'blockId', 'placeableFaces'], field);
+	const placeableFaces = boundedArray(value.placeableFaces, `${field}.placeableFaces`, BLOCK_FACES.length)
+		.map((face, faceIndex) => {
+			const normalized = requireIdentifier(face, `${field}.placeableFaces[${faceIndex}]`);
+			if (!BLOCK_FACES.includes(normalized)) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field}.placeableFaces contains unsupported face '${normalized}'`);
+			return normalized;
+		});
+	if (new Set(placeableFaces).size !== placeableFaces.length) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field}.placeableFaces must be unique`);
+	const normalized = {
+		...optionalObservedDetails(value, BLOCK_DETAIL_FIELDS),
+		x: integer(value.x, `${field}.x`),
+		y: integer(value.y, `${field}.y`),
+		z: integer(value.z, `${field}.z`),
+		blockId: requireIdentifier(value.blockId, `${field}.blockId`),
+		placeableFaces,
+	};
+	const tags = rowTags(value, field, blockTags);
+	if (tags !== undefined) normalized.tags = tags;
+	return normalized;
+}
+
+function landmarkObservation(value, index, blockTags = null) {
+	const field = `landmarks[${index}]`;
+	if (!isPlainObject(value)) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field} must be an object`);
+	exactKeys(value, ['x', 'y', 'z', 'blockId', 'distance', 'bearing', 'elevation', 'tags'], ['x', 'y', 'z', 'blockId', 'distance', 'bearing', 'elevation'], field);
+	const normalized = {
+		x: integer(value.x, `${field}.x`),
+		y: integer(value.y, `${field}.y`),
+		z: integer(value.z, `${field}.z`),
+		blockId: requireIdentifier(value.blockId, `${field}.blockId`),
+		distance: nonnegativeFiniteNumber(value.distance, `${field}.distance`),
+		bearing: finiteNumber(value.bearing, `${field}.bearing`),
+		elevation: finiteNumber(value.elevation, `${field}.elevation`),
+	};
+	if (normalized.bearing < -180 || normalized.bearing > 180) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field}.bearing must be in [-180, 180]`);
+	if (normalized.elevation < -90 || normalized.elevation > 90) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field}.elevation must be in [-90, 90]`);
+	const tags = rowTags(value, field, blockTags);
+	if (tags !== undefined) normalized.tags = tags;
+	return normalized;
+}
+
+function observationTags(value, field) {
+	const tags = boundedArray(value, field, MAX_OBSERVATION_TAGS).map((tag, index) => {
+		if (typeof tag !== 'string' || !tag.startsWith('#') || tag.length < 2 || tag.length > MAX_IDENTIFIER_LENGTH) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field}[${index}] must be a tag identifier`);
+		return tag;
+	});
+	if (new Set(tags).size !== tags.length) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field} must be unique`);
+	return tags;
+}
+
+function observationTagCounts(value, field) {
+	if (!isPlainObject(value)) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field} must be an object`);
+	const keys = Object.keys(value);
+	if (keys.length > MAX_TAG_COUNT_ENTRIES) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field} exceeds bound of ${MAX_TAG_COUNT_ENTRIES}`);
+	const result = {};
+	for (const key of keys) {
+		if (!key.startsWith('#')) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field} keys must be tag identifiers`);
+		result[key] = nonnegativeInteger(value[key], `${field}.${key}`);
+	}
+	return result;
+}
+
+function furnaceObservation(value) {
+	const required = ['dimension', 'x', 'y', 'z', 'state', 'input', 'fuel', 'output', 'observedAtEpochMs'];
+	exactKeys(value, [...required, 'estimatedReadyAtEpochMs', 'estimatedReadyCount', 'estimate', 'readySequence', 'stalledSequence', 'message'], required, 'furnace');
+	if (!['loaded', 'estimate', 'missing'].includes(value.state)) throw new ProtocolV2Error('INVALID_PAYLOAD', 'Invalid furnace state');
+	const row = { dimension: requireIdentifier(value.dimension, 'furnace.dimension'), x: integer(value.x, 'furnace.x'), y: integer(value.y, 'furnace.y'), z: integer(value.z, 'furnace.z'), state: value.state,
+		observedAtEpochMs: nonnegativeInteger(value.observedAtEpochMs, 'furnace.observedAtEpochMs') };
+	for (const key of ['input', 'fuel', 'output']) {
+		exactKeys(value[key], ['itemId', 'count'], ['itemId', 'count'], `furnace.${key}`);
+		row[key] = { itemId: requireIdentifier(value[key].itemId, `furnace.${key}.itemId`), count: nonnegativeInteger(value[key].count, `furnace.${key}.count`) };
+	}
+	for (const key of ['estimatedReadyAtEpochMs', 'estimatedReadyCount', 'readySequence', 'stalledSequence']) if (value[key] !== undefined) row[key] = nonnegativeInteger(value[key], `furnace.${key}`);
+	for (const key of ['estimate', 'message']) if (value[key] !== undefined) row[key] = boundedText(value[key], `furnace.${key}`, 256);
+	return row;
+}
+
+function nearbyContainerObservation(value, index) {
+	const field = `nearbyContainers[${index}]`;
+	if (!isPlainObject(value)) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field} must be an object`);
+	exactKeys(
+		value,
+		['x', 'y', 'z', 'blockId', 'distance', 'withinInteractionRange', 'capabilities'],
+		['x', 'y', 'z', 'blockId', 'distance', 'withinInteractionRange', 'capabilities'],
+		field,
+	);
+	return {
+		x: integer(value.x, `${field}.x`),
+		y: integer(value.y, `${field}.y`),
+		z: integer(value.z, `${field}.z`),
+		blockId: requireIdentifier(value.blockId, `${field}.blockId`),
+		distance: finiteNumber(value.distance, `${field}.distance`),
+		withinInteractionRange: boolean(value.withinInteractionRange, `${field}.withinInteractionRange`),
+		capabilities: boundedArray(value.capabilities, `${field}.capabilities`, MAX_MODEL_CAPABILITIES)
+			.map((capability, capabilityIndex) => requireIdentifier(capability, `${field}.capabilities[${capabilityIndex}]`)),
+	};
+}
+
+const WORLD_DIFFICULTIES = new Set(['peaceful', 'easy', 'normal', 'hard']);
+
+function worldObservation(value) {
+	if (!isPlainObject(value)) throw new ProtocolV2Error('INVALID_PAYLOAD', 'world must be an object');
+	exactKeys(value, ['dimension', 'biome', 'worldId', 'gameTime', 'dayTime', 'raining', 'thundering', 'difficulty', 'naturalRegeneration', 'reducedDebugInfo', 'sleep', 'simulationDistance'], ['dimension', 'gameTime', 'dayTime', 'raining', 'thundering'], 'world');
+	if (value.difficulty !== undefined && !WORLD_DIFFICULTIES.has(value.difficulty)) throw new ProtocolV2Error('INVALID_PAYLOAD', 'world.difficulty is invalid');
+	return { ...optionalObservedDetails(value, ['worldId', 'reducedDebugInfo']), dimension: requireIdentifier(value.dimension, 'world.dimension'),
+		...(value.biome === undefined ? {} : { biome: requireIdentifier(value.biome, 'world.biome') }), gameTime: nonnegativeInteger(value.gameTime, 'world.gameTime'), dayTime: nonnegativeInteger(value.dayTime, 'world.dayTime'), raining: boolean(value.raining, 'world.raining'), thundering: boolean(value.thundering, 'world.thundering'),
+		...(value.sleep === undefined ? {} : { sleep: sleepRules(value.sleep) }),
+		...(value.difficulty === undefined ? {} : { difficulty: value.difficulty }),
+		...(value.naturalRegeneration === undefined ? {} : { naturalRegeneration: boolean(value.naturalRegeneration, 'world.naturalRegeneration') }),
+		...(value.simulationDistance === undefined ? {} : { simulationDistance: positiveInteger(value.simulationDistance, 'world.simulationDistance') }) };
+}
+
+function sleepRules(value) {
+	if (!isPlainObject(value)) throw new ProtocolV2Error('INVALID_PAYLOAD', 'world.sleep must be an object');
+	exactKeys(value, ['bedExplodes', 'timeAllowsSleep'], ['bedExplodes', 'timeAllowsSleep'], 'world.sleep');
+	return { bedExplodes: boolean(value.bedExplodes, 'world.sleep.bedExplodes'), timeAllowsSleep: boolean(value.timeAllowsSleep, 'world.sleep.timeAllowsSleep') };
+}
+
+function currentActionObservation(value) {
+	if (!isPlainObject(value)) throw new ProtocolV2Error('INVALID_PAYLOAD', 'currentAction must be an object');
+	exactKeys(value, ['active', 'actionId', 'actionType'], ['active'], 'currentAction');
+	const active = boolean(value.active, 'currentAction.active');
+	if (!active && Object.keys(value).length !== 1) throw new ProtocolV2Error('INVALID_PAYLOAD', 'Inactive currentAction cannot contain action fields');
+	return active ? { active, actionId: requireIdentifier(value.actionId, 'currentAction.actionId'), actionType: requireIdentifier(value.actionType, 'currentAction.actionType') } : { active };
+}
+
+function lastResultObservation(value) {
+	if (!isPlainObject(value)) throw new ProtocolV2Error('INVALID_PAYLOAD', 'lastResult must be an object');
+	exactKeys(value, ['present', 'actionId', 'actionType', 'state', 'reasonCode', 'message'], ['present'], 'lastResult');
+	const present = boolean(value.present, 'lastResult.present');
+	if (!present && Object.keys(value).length !== 1) throw new ProtocolV2Error('INVALID_PAYLOAD', 'Empty lastResult cannot contain result fields');
+	return present ? { present, actionId: requireIdentifier(value.actionId, 'lastResult.actionId'), actionType: requireIdentifier(value.actionType, 'lastResult.actionType'), state: boundedText(value.state, 'lastResult.state', MAX_REASON_CODE_LENGTH), reasonCode: boundedText(value.reasonCode, 'lastResult.reasonCode', MAX_REASON_CODE_LENGTH), message: boundedText(value.message, 'lastResult.message', MAX_RESULT_MESSAGE_LENGTH, 0) } : { present };
+}
+
+function vector(value, field) {
+	return numericObject(value, field, ['x', 'y', 'z']);
+}
+
+function numericObject(value, field, keys) {
+	if (!isPlainObject(value)) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field} must be an object`);
+	exactKeys(value, keys, keys, field);
+	return Object.fromEntries(keys.map((key) => [key, finiteNumber(value[key], `${field}.${key}`)]));
+}
+
+function schemaDriftError(code, message, discard) {
+	const error = new ProtocolV2Error(code, message);
+	SCHEMA_DRIFT_REPAIRS.set(error, discard);
+	return error;
+}
+
+function exactKeys(value, allowed, required, field) {
+	if (!isPlainObject(value)) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field} must be an object`);
+	for (const key of Object.keys(value)) if (!allowed.includes(key)) {
+		observedDetails({ [key]: value[key] }, field);
+		throw schemaDriftError('INVALID_PAYLOAD_FIELD', `Unknown ${field} field '${key}'`, () => { delete value[key]; });
+	}
+	for (const key of required) if (!Object.hasOwn(value, key)) throw new ProtocolV2Error('MISSING_FIELD', `${field} field '${key}' is required`);
+}
+
+function boundedArray(value, field, maximum) {
+	if (!isExactArray(value) || value.length > maximum) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field} must be a dense plain array with at most ${maximum} entries`);
+	return value;
+}
+
+function isExactArray(value) {
+	if (!Array.isArray(value) || Object.getPrototypeOf(value) !== Array.prototype) return false;
+	const expected = ['length', ...Array.from({ length: value.length }, (_, index) => String(index))].sort();
+	const keys = Reflect.ownKeys(value);
+	if (keys.some((key) => typeof key !== 'string') || keys.map(String).sort().join('\u0000') !== expected.join('\u0000')) return false;
+	for (let index = 0; index < value.length; index += 1) {
+		const descriptor = Object.getOwnPropertyDescriptor(value, String(index));
+		if (!descriptor || !Object.hasOwn(descriptor, 'value') || !descriptor.enumerable || !descriptor.writable || !descriptor.configurable) return false;
+	}
+	return true;
+}
+
+function boundedText(value, field, maximum, minimum = 1) {
+	if (typeof value !== 'string' || value.length < minimum || value.length > maximum || (minimum > 0 && value.trim().length === 0)) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field} must contain ${minimum} to ${maximum} characters`);
+	return value;
+}
+
+function boundedCodePointText(value, field, maximum, allowBlank = false) {
+	if (typeof value !== 'string') throw new ProtocolV2Error('INVALID_PAYLOAD', `${field} must be a string`);
+	// A code point is at most two UTF-16 units, so a longer string cannot fit and is not spread into an array.
+	if (value.length > maximum * 2) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field} must contain at most ${maximum} code points`);
+	if (!allowBlank && value.trim().length === 0) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field} must not be blank`);
+	if ([...value].length > maximum) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field} must contain at most ${maximum} code points`);
+	return value;
+}
+
+
+function boolean(value, field) {
+	if (typeof value !== 'boolean') throw new ProtocolV2Error('INVALID_PAYLOAD', `${field} must be a boolean`);
+	return value;
+}
+
+function nullableIdentifier(value, field) {
+	return value === null ? null : requireIdentifier(value, field);
+}
+
+function nullableBoundedText(value, field, maximum) {
+	return value === null ? null : boundedText(value, field, maximum);
+}
+
+function nullableNonnegativeInteger(value, field) {
+	return value === null ? null : nonnegativeInteger(value, field);
+}
+
+function nullableBoolean(value, field) {
+	return value === null ? null : boolean(value, field);
+}
+
+function finiteNumber(value, field) {
+	if (typeof value !== 'number' || !Number.isFinite(value)) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field} must be a finite number`);
+	return value;
+}
+
+function nullableFiniteNumber(value, field) {
+	return value === null ? null : finiteNumber(value, field);
+}
+
+function integer(value, field) {
+	if (!Number.isSafeInteger(value)) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field} must be a safe integer`);
+	return value;
+}
+
+function nonnegativeInteger(value, field) {
+	if (!Number.isSafeInteger(value) || value < 0) throw new ProtocolV2Error('INVALID_PAYLOAD', `${field} must be a nonnegative safe integer`);
+	return value;
+}
+
+function effectDuration(value, field) {
+	// Vanilla MobEffectInstance uses -1 for infinite effects; finite durations remain ticks.
+	return value === -1 ? -1 : nonnegativeInteger(value, field);
+}
+
+function nonnegativeFiniteNumber(value, field) {
+	if (!Number.isFinite(value) || value < 0) throw new ProtocolV2Error('INVALID_FIELD', `${field} must be a non-negative finite number`);
+	return value;
+}
+
+function withInboundEnvelopeContext(error, value) {
+	const original = error instanceof Error
+		? error
+		: new ProtocolV2Error('PROTOCOL_ERROR', String(error));
+	const type = typeof value?.type === 'string' ? boundedDiagnostic(value.type) : typeof value?.type;
+	const revisionValue = isPlainObject(value?.payload) ? value.payload.goalRevision : undefined;
+	const revision = revisionValue === undefined
+		? 'absent'
+		: `${typeof revisionValue}:${boundedDiagnostic(JSON.stringify(revisionValue))}`;
+	const contextual = new ProtocolV2Error(
+		original.code ?? 'PROTOCOL_ERROR',
+		`${original.message} [inbound type=${type}, goalRevision=${revision}]`
+	);
+	contextual.cause = original;
+	return contextual;
+}
+
+function boundedDiagnostic(value) {
+	return String(value).replace(/[\u0000-\u001f\u007f]/g, '?').slice(0, 96);
+}
+
+function revision(value, field) {
+	return nonnegativeInteger(value, field);
+}
+
+function requireSecret(value) {
+	if (typeof value !== 'string' || value.length < 32 || value.length > MAX_BRIDGE_SECRET_LENGTH) throw new TypeError(`bridge secret must contain 32 to ${MAX_BRIDGE_SECRET_LENGTH} characters`);
+	return value;
+}
+
+function requirePort(value) {
+	if (!Number.isInteger(value) || value < 1_024 || value > 65_535) throw new TypeError('bridge port must be an integer between 1024 and 65535');
+	return value;
+}
+
+function requireIdentifier(value, field) {
+	return requireText(value, field, MAX_IDENTIFIER_LENGTH);
+}
+
+function launchIdentity(value) {
+	const launchId = boundedText(value, 'launchId', 36);
+	if (!UUID_PATTERN.test(launchId)) throw new ProtocolV2Error('INVALID_PAYLOAD', 'launchId must be a UUID');
+	return launchId.toLowerCase();
+}
+
+function authenticationToken(value, field) {
+	if (typeof value !== 'string' || !AUTHENTICATION_TOKEN_PATTERN.test(value)) {
+		throw new ProtocolV2Error('INVALID_AUTHENTICATION_TOKEN', `${field} must be a 32-byte base64url value`);
+	}
+	return value;
+}
+
+function requireText(value, field, maximum) {
+	if (typeof value !== 'string' || value.trim().length === 0 || value.length > maximum) throw new ProtocolV2Error('INVALID_FIELD', `${field} must be nonblank and at most ${maximum} characters`);
+	return value;
+}
+
+function requireTraceId(value) {
+	if (typeof value !== 'string' || value.trim().length === 0) throw new ProtocolV2Error('INVALID_FIELD', 'traceId must be nonblank');
+	if (Buffer.byteLength(value, 'utf8') > 128) throw new ProtocolV2Error('INVALID_FIELD', 'traceId must be at most 128 UTF-8 bytes');
+	if ([...value].some((character) => /[\u0000-\u001f\u007f]/u.test(character))) throw new ProtocolV2Error('INVALID_FIELD', 'traceId contains control characters');
+	return value;
+}
+
+function positiveInteger(value, field) {
+	if (!Number.isSafeInteger(value) || value <= 0) throw new TypeError(`${field} must be a positive safe integer`);
+	return value;
+}
+
+function isPlainObject(value) {
+	if (value === null || typeof value !== 'object' || Array.isArray(value)) return false;
+	const prototype = Object.getPrototypeOf(value);
+	return prototype === Object.prototype || prototype === null;
+}
+
+function rememberBounded(set, value, maximum) {
+	set.add(value);
+	if (set.size <= maximum) return undefined;
+	const evicted = set.values().next().value;
+	set.delete(evicted);
+	return evicted;
+}

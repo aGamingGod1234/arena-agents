@@ -1,0 +1,111 @@
+{
+  "version": 1,
+  "scenarios": [
+    {
+      "id": "latency-live-load-1",
+      "provider": "codex",
+      "model": "gpt-5.6-luna",
+      "reasoningEffort": "xhigh",
+      "serviceTier": "fast",
+      "task": "Gather wood and craft a wooden pickaxe",
+      "timeoutMs": 240000,
+      "rosterSize": 1,
+      "repetitions": 1,
+      "requireFactualSuccess": true,
+      "assert": [
+        { "type": "lifecycle", "state": "COMPLETED" },
+        { "type": "rcon", "command": "data get entity {agent} Inventory", "match": "minecraft:wooden_pickaxe" }
+      ],
+      "setupBlocks": [
+        { "x": -7, "y": 201, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": -6, "y": 201, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": 0, "y": 201, "z": 4, "blockId": "minecraft:crafting_table" }
+      ]
+    },
+    {
+      "id": "latency-live-load-8",
+      "provider": "codex",
+      "model": "gpt-5.6-luna",
+      "reasoningEffort": "xhigh",
+      "serviceTier": "fast",
+      "task": "Gather wood and craft a wooden pickaxe",
+      "timeoutMs": 240000,
+      "rosterSize": 8,
+      "repetitions": 1,
+      "requireFactualSuccess": true,
+      "assert": [
+        { "type": "lifecycle", "state": "COMPLETED" },
+        { "type": "rcon", "command": "data get entity {agent} Inventory", "match": "minecraft:wooden_pickaxe" }
+      ],
+      "setupBlocks": [
+        { "x": -7, "y": 201, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": -6, "y": 201, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": -5, "y": 201, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": -4, "y": 201, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": -3, "y": 201, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": -2, "y": 201, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": -1, "y": 201, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": 0, "y": 201, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": 1, "y": 201, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": 2, "y": 201, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": 3, "y": 201, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": 4, "y": 201, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": 5, "y": 201, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": 6, "y": 201, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": 7, "y": 201, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": -7, "y": 202, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": 0, "y": 201, "z": 4, "blockId": "minecraft:crafting_table" }
+      ]
+    },
+    {
+      "id": "latency-live-load-16",
+      "provider": "codex",
+      "model": "gpt-5.6-luna",
+      "reasoningEffort": "xhigh",
+      "serviceTier": "fast",
+      "task": "Gather wood and craft a wooden pickaxe",
+      "timeoutMs": 240000,
+      "rosterSize": 16,
+      "repetitions": 1,
+      "requireFactualSuccess": true,
+      "assert": [
+        { "type": "lifecycle", "state": "COMPLETED" },
+        { "type": "rcon", "command": "data get entity {agent} Inventory", "match": "minecraft:wooden_pickaxe" }
+      ],
+      "setupBlocks": [
+        { "x": -7, "y": 201, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": -6, "y": 201, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": -5, "y": 201, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": -4, "y": 201, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": -3, "y": 201, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": -2, "y": 201, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": -1, "y": 201, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": 0, "y": 201, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": 1, "y": 201, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": 2, "y": 201, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": 3, "y": 201, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": 4, "y": 201, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": 5, "y": 201, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": 6, "y": 201, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": 7, "y": 201, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": -7, "y": 202, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": -6, "y": 202, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": -5, "y": 202, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": -4, "y": 202, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": -3, "y": 202, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": -2, "y": 202, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": -1, "y": 202, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": 0, "y": 202, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": 1, "y": 202, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": 2, "y": 202, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": 3, "y": 202, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": 4, "y": 202, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": 5, "y": 202, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": 6, "y": 202, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": 7, "y": 202, "z": 6, "blockId": "minecraft:oak_log" },
+        { "x": 7, "y": 201, "z": 5, "blockId": "minecraft:oak_log" },
+        { "x": 0, "y": 201, "z": 4, "blockId": "minecraft:crafting_table" }
+      ]
+    }
+  ]
+}

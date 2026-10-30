@@ -1,0 +1,66 @@
+{
+	"checkpointDir": "/home/agaminggod/Desktop/Projects/arena-beat-game/long/checkpoints",
+	"budgetMinutes": 12,
+	"arrivalBlocks": 16,
+	"courses": [
+		{
+			"id": "entry9-fortress",
+			"checkpoint": "9-nether-entry-sol-bed-gold10.json",
+			"target": {
+				"type": "structure",
+				"id": "minecraft:fortress"
+			}
+		},
+		{
+			"id": "y55-fortress",
+			"checkpoint": "2b-nether-sol-y55.json",
+			"target": {
+				"type": "structure",
+				"id": "minecraft:fortress"
+			}
+		},
+		{
+			"id": "high110-fortress",
+			"checkpoint": "7-nether-real.json",
+			"target": {
+				"type": "structure",
+				"id": "minecraft:fortress"
+			}
+		},
+		{
+			"id": "entry9-east300",
+			"checkpoint": "9-nether-entry-sol-bed-gold10.json",
+			"target": {
+				"type": "heading",
+				"yaw": -90,
+				"distance": 300
+			}
+		},
+		{
+			"id": "gold2-north300",
+			"checkpoint": "2-nether-gold10.json",
+			"target": {
+				"type": "heading",
+				"yaw": 180,
+				"distance": 300
+			}
+		},
+		{
+			"id": "fortress3-bastion",
+			"checkpoint": "3-fortress.json",
+			"target": {
+				"type": "structure",
+				"id": "minecraft:bastion_remnant"
+			}
+		},
+		{
+			"id": "gold2-seen",
+			"checkpoint": "2-nether-gold10.json",
+			"target": {
+				"type": "structure",
+				"id": "minecraft:fortress"
+			},
+			"stopWhenSeen": "minecraft:nether_bricks"
+		}
+	]
+}

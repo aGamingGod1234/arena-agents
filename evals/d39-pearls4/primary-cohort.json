@@ -1,0 +1,31 @@
+{
+  "frozenAt": "2026-10-25T13:48:45.788983+00:00",
+  "reason": "Match each arm within seed/repeat to the same host after Desktop collection became prohibited. Selection is fixed before any Mini replacement outcome.",
+  "controllerSha256": "541b2928c9c391bf7e2f24d9a2a0e0de0150e18a3112e244d82f3f1aca7c5780",
+  "jarSha256": "adfaa5e3a89d2ed24faf5dd431801ec20dbeb7b739231a17de1a4cec390d8b43",
+  "miniPairs": [
+    [
+      "8675309",
+      3
+    ],
+    [
+      "987654321",
+      2
+    ],
+    [
+      "987654321",
+      3
+    ],
+    [
+      "20261024",
+      2
+    ],
+    [
+      "20261024",
+      3
+    ]
+  ],
+  "desktopPairs": "The remaining seven of twelve seed/repeat pairs.",
+  "supplementary": "Retained valid candidate 987654321 repeat 2 and candidate 20261024 repeat 2 on Desktop, not selected for the primary matched matrix.",
+  "miniOutcomesAvailableAtFreeze": []
+}

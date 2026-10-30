@@ -1,0 +1,809 @@
+{
+  "goalRevision": 1,
+  "observedAtEpochMs": 1791861812548,
+  "ready": true,
+  "status": "STARTING",
+  "eventSequence": 23,
+  "attention": true,
+  "changedFacts": [],
+  "position": {
+    "x": 0.5,
+    "y": -60,
+    "z": 0.5
+  },
+  "velocity": {
+    "x": 0,
+    "y": -0.0784000015258789,
+    "z": 0
+  },
+  "view": {
+    "yaw": -90,
+    "pitch": -3.623844861984253
+  },
+  "player": {
+    "pose": "standing",
+    "underWater": false,
+    "swimming": false,
+    "gliding": false,
+    "sprinting": false,
+    "crouching": false,
+    "onClimbable": false,
+    "inLava": false,
+    "horizontalCollision": false,
+    "verticalCollision": true,
+    "passenger": false,
+    "skyOpen": true,
+    "teleportTick": 155,
+    "health": 20,
+    "maxHealth": 20,
+    "armor": 0,
+    "foodLevel": 20,
+    "saturation": 5,
+    "gameMode": "survival",
+    "onGround": true,
+    "inWater": false,
+    "onFire": false,
+    "air": 300,
+    "maxAir": 300,
+    "suffocating": false,
+    "fallDistance": 0,
+    "effects": [
+      {
+        "effectId": "minecraft:resistance",
+        "amplifier": 4,
+        "duration": 17918
+      },
+      {
+        "effectId": "minecraft:fire_resistance",
+        "amplifier": 0,
+        "duration": 17919
+      },
+      {
+        "effectId": "minecraft:regeneration",
+        "amplifier": 4,
+        "duration": 17920
+      }
+    ]
+  },
+  "inventory": {
+    "items": [],
+    "selectedItem": "minecraft:air",
+    "selectedSlot": 0,
+    "tagCounts": {},
+    "food": {
+      "items": 0,
+      "nutrition": 0
+    }
+  },
+  "entities": [
+    {
+      "velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "yaw": 0,
+      "pitch": 0,
+      "pose": "standing",
+      "bounds": {
+        "minX": 6.199999988079071,
+        "minY": -60,
+        "minZ": 0.19999998807907104,
+        "maxX": 6.800000011920929,
+        "maxY": -57.09999990463257,
+        "maxZ": 0.800000011920929
+      },
+      "equipment": [],
+      "usingItem": false,
+      "onFire": false,
+      "pickable": true,
+      "alive": true,
+      "hostile": false,
+      "health": 40,
+      "maxHealth": 40,
+      "targetingAgent": false,
+      "perceivedBy": "sight",
+      "potentialRisk": 9.4,
+      "expectedHitDamage": 0,
+      "appearance": {
+        "carriedBlock": "minecraft:grass_block",
+        "eyeContact": true
+      },
+      "uuid": "e0f22059-292a-49b7-955c-2b8d41021d00",
+      "type": "minecraft:enderman",
+      "name": "Enderman",
+      "distance": 6,
+      "position": {
+        "x": 6.5,
+        "y": -60,
+        "z": 0.5
+      }
+    }
+  ],
+  "blocks": [
+    {
+      "state": {
+        "snowy": "false"
+      },
+      "bounds": [
+        {
+          "minX": 0,
+          "minY": 0,
+          "minZ": 0,
+          "maxX": 1,
+          "maxY": 1,
+          "maxZ": 1
+        }
+      ],
+      "boundsTruncated": false,
+      "replaceable": false,
+      "x": 1,
+      "y": -61,
+      "z": 0,
+      "blockId": "minecraft:grass_block",
+      "placeableFaces": [
+        "up"
+      ],
+      "tags": [
+        "#minecraft:animals_spawnable_on",
+        "#minecraft:armadillo_spawnable_on",
+        "#minecraft:azalea_grows_on",
+        "#minecraft:azalea_root_replaceable",
+        "#minecraft:beneath_bamboo_podzol_replaceable",
+        "#minecraft:beneath_tree_podzol_replaceable",
+        "#minecraft:enderman_holdable",
+        "#minecraft:forest_rock_can_place_on",
+        "#minecraft:foxes_spawnable_on",
+        "#minecraft:frogs_spawnable_on",
+        "#minecraft:goats_spawnable_on",
+        "#minecraft:grass_blocks",
+        "#minecraft:huge_brown_mushroom_can_place_on",
+        "#minecraft:huge_red_mushroom_can_place_on",
+        "#minecraft:ice_spike_replaceable",
+        "#minecraft:lush_ground_replaceable",
+        "#minecraft:mineable/shovel",
+        "#minecraft:moss_replaceable",
+        "#minecraft:nether_carver_replaceables",
+        "#minecraft:overworld_carver_replaceables",
+        "#minecraft:parrots_spawnable_on",
+        "#minecraft:rabbits_spawnable_on",
+        "#minecraft:sculk_replaceable",
+        "#minecraft:sculk_replaceable_world_gen",
+        "#minecraft:sniffer_diggable_block",
+        "#minecraft:substrate_overworld",
+        "#minecraft:supports_azalea",
+        "#minecraft:supports_bamboo",
+        "#minecraft:supports_big_dripleaf",
+        "#minecraft:supports_crimson_fungus",
+        "#minecraft:supports_crimson_roots",
+        "#minecraft:supports_dry_vegetation"
+      ]
+    },
+    {
+      "state": {
+        "snowy": "false"
+      },
+      "bounds": [
+        {
+          "minX": 0,
+          "minY": 0,
+          "minZ": 0,
+          "maxX": 1,
+          "maxY": 1,
+          "maxZ": 1
+        }
+      ],
+      "boundsTruncated": false,
+      "replaceable": false,
+      "x": 1,
+      "y": -61,
+      "z": -1,
+      "blockId": "minecraft:grass_block",
+      "placeableFaces": [
+        "up"
+      ],
+      "tags": [
+        "#minecraft:animals_spawnable_on",
+        "#minecraft:armadillo_spawnable_on",
+        "#minecraft:azalea_grows_on",
+        "#minecraft:azalea_root_replaceable",
+        "#minecraft:beneath_bamboo_podzol_replaceable",
+        "#minecraft:beneath_tree_podzol_replaceable",
+        "#minecraft:enderman_holdable",
+        "#minecraft:forest_rock_can_place_on",
+        "#minecraft:foxes_spawnable_on",
+        "#minecraft:frogs_spawnable_on",
+        "#minecraft:goats_spawnable_on",
+        "#minecraft:grass_blocks",
+        "#minecraft:huge_brown_mushroom_can_place_on",
+        "#minecraft:huge_red_mushroom_can_place_on",
+        "#minecraft:ice_spike_replaceable",
+        "#minecraft:lush_ground_replaceable",
+        "#minecraft:mineable/shovel",
+        "#minecraft:moss_replaceable",
+        "#minecraft:nether_carver_replaceables",
+        "#minecraft:overworld_carver_replaceables",
+        "#minecraft:parrots_spawnable_on",
+        "#minecraft:rabbits_spawnable_on",
+        "#minecraft:sculk_replaceable",
+        "#minecraft:sculk_replaceable_world_gen",
+        "#minecraft:sniffer_diggable_block",
+        "#minecraft:substrate_overworld",
+        "#minecraft:supports_azalea",
+        "#minecraft:supports_bamboo",
+        "#minecraft:supports_big_dripleaf",
+        "#minecraft:supports_crimson_fungus",
+        "#minecraft:supports_crimson_roots",
+        "#minecraft:supports_dry_vegetation"
+      ]
+    },
+    {
+      "state": {
+        "snowy": "false"
+      },
+      "bounds": [
+        {
+          "minX": 0,
+          "minY": 0,
+          "minZ": 0,
+          "maxX": 1,
+          "maxY": 1,
+          "maxZ": 1
+        }
+      ],
+      "boundsTruncated": false,
+      "replaceable": false,
+      "x": 1,
+      "y": -61,
+      "z": 1,
+      "blockId": "minecraft:grass_block",
+      "placeableFaces": [
+        "up"
+      ],
+      "tags": [
+        "#minecraft:animals_spawnable_on",
+        "#minecraft:armadillo_spawnable_on",
+        "#minecraft:azalea_grows_on",
+        "#minecraft:azalea_root_replaceable",
+        "#minecraft:beneath_bamboo_podzol_replaceable",
+        "#minecraft:beneath_tree_podzol_replaceable",
+        "#minecraft:enderman_holdable",
+        "#minecraft:forest_rock_can_place_on",
+        "#minecraft:foxes_spawnable_on",
+        "#minecraft:frogs_spawnable_on",
+        "#minecraft:goats_spawnable_on",
+        "#minecraft:grass_blocks",
+        "#minecraft:huge_brown_mushroom_can_place_on",
+        "#minecraft:huge_red_mushroom_can_place_on",
+        "#minecraft:ice_spike_replaceable",
+        "#minecraft:lush_ground_replaceable",
+        "#minecraft:mineable/shovel",
+        "#minecraft:moss_replaceable",
+        "#minecraft:nether_carver_replaceables",
+        "#minecraft:overworld_carver_replaceables",
+        "#minecraft:parrots_spawnable_on",
+        "#minecraft:rabbits_spawnable_on",
+        "#minecraft:sculk_replaceable",
+        "#minecraft:sculk_replaceable_world_gen",
+        "#minecraft:sniffer_diggable_block",
+        "#minecraft:substrate_overworld",
+        "#minecraft:supports_azalea",
+        "#minecraft:supports_bamboo",
+        "#minecraft:supports_big_dripleaf",
+        "#minecraft:supports_crimson_fungus",
+        "#minecraft:supports_crimson_roots",
+        "#minecraft:supports_dry_vegetation"
+      ]
+    },
+    {
+      "state": {
+        "snowy": "false"
+      },
+      "bounds": [
+        {
+          "minX": 0,
+          "minY": 0,
+          "minZ": 0,
+          "maxX": 1,
+          "maxY": 1,
+          "maxZ": 1
+        }
+      ],
+      "boundsTruncated": false,
+      "replaceable": false,
+      "x": 2,
+      "y": -61,
+      "z": 0,
+      "blockId": "minecraft:grass_block",
+      "placeableFaces": [
+        "up"
+      ],
+      "tags": [
+        "#minecraft:animals_spawnable_on",
+        "#minecraft:armadillo_spawnable_on",
+        "#minecraft:azalea_grows_on",
+        "#minecraft:azalea_root_replaceable",
+        "#minecraft:beneath_bamboo_podzol_replaceable",
+        "#minecraft:beneath_tree_podzol_replaceable",
+        "#minecraft:enderman_holdable",
+        "#minecraft:forest_rock_can_place_on",
+        "#minecraft:foxes_spawnable_on",
+        "#minecraft:frogs_spawnable_on",
+        "#minecraft:goats_spawnable_on",
+        "#minecraft:grass_blocks",
+        "#minecraft:huge_brown_mushroom_can_place_on",
+        "#minecraft:huge_red_mushroom_can_place_on",
+        "#minecraft:ice_spike_replaceable",
+        "#minecraft:lush_ground_replaceable",
+        "#minecraft:mineable/shovel",
+        "#minecraft:moss_replaceable",
+        "#minecraft:nether_carver_replaceables",
+        "#minecraft:overworld_carver_replaceables",
+        "#minecraft:parrots_spawnable_on",
+        "#minecraft:rabbits_spawnable_on",
+        "#minecraft:sculk_replaceable",
+        "#minecraft:sculk_replaceable_world_gen",
+        "#minecraft:sniffer_diggable_block",
+        "#minecraft:substrate_overworld",
+        "#minecraft:supports_azalea",
+        "#minecraft:supports_bamboo",
+        "#minecraft:supports_big_dripleaf",
+        "#minecraft:supports_crimson_fungus",
+        "#minecraft:supports_crimson_roots",
+        "#minecraft:supports_dry_vegetation"
+      ]
+    },
+    {
+      "state": {
+        "snowy": "false"
+      },
+      "bounds": [
+        {
+          "minX": 0,
+          "minY": 0,
+          "minZ": 0,
+          "maxX": 1,
+          "maxY": 1,
+          "maxZ": 1
+        }
+      ],
+      "boundsTruncated": false,
+      "replaceable": false,
+      "x": 1,
+      "y": -61,
+      "z": -2,
+      "blockId": "minecraft:grass_block",
+      "placeableFaces": [
+        "up"
+      ],
+      "tags": [
+        "#minecraft:animals_spawnable_on",
+        "#minecraft:armadillo_spawnable_on",
+        "#minecraft:azalea_grows_on",
+        "#minecraft:azalea_root_replaceable",
+        "#minecraft:beneath_bamboo_podzol_replaceable",
+        "#minecraft:beneath_tree_podzol_replaceable",
+        "#minecraft:enderman_holdable",
+        "#minecraft:forest_rock_can_place_on",
+        "#minecraft:foxes_spawnable_on",
+        "#minecraft:frogs_spawnable_on",
+        "#minecraft:goats_spawnable_on",
+        "#minecraft:grass_blocks",
+        "#minecraft:huge_brown_mushroom_can_place_on",
+        "#minecraft:huge_red_mushroom_can_place_on",
+        "#minecraft:ice_spike_replaceable",
+        "#minecraft:lush_ground_replaceable",
+        "#minecraft:mineable/shovel",
+        "#minecraft:moss_replaceable",
+        "#minecraft:nether_carver_replaceables",
+        "#minecraft:overworld_carver_replaceables",
+        "#minecraft:parrots_spawnable_on",
+        "#minecraft:rabbits_spawnable_on",
+        "#minecraft:sculk_replaceable",
+        "#minecraft:sculk_replaceable_world_gen",
+        "#minecraft:sniffer_diggable_block",
+        "#minecraft:substrate_overworld",
+        "#minecraft:supports_azalea",
+        "#minecraft:supports_bamboo",
+        "#minecraft:supports_big_dripleaf",
+        "#minecraft:supports_crimson_fungus",
+        "#minecraft:supports_crimson_roots",
+        "#minecraft:supports_dry_vegetation"
+      ]
+    },
+    {
+      "state": {
+        "snowy": "false"
+      },
+      "bounds": [
+        {
+          "minX": 0,
+          "minY": 0,
+          "minZ": 0,
+          "maxX": 1,
+          "maxY": 1,
+          "maxZ": 1
+        }
+      ],
+      "boundsTruncated": false,
+      "replaceable": false,
+      "x": 1,
+      "y": -61,
+      "z": 2,
+      "blockId": "minecraft:grass_block",
+      "placeableFaces": [
+        "up"
+      ],
+      "tags": [
+        "#minecraft:animals_spawnable_on",
+        "#minecraft:armadillo_spawnable_on",
+        "#minecraft:azalea_grows_on",
+        "#minecraft:azalea_root_replaceable",
+        "#minecraft:beneath_bamboo_podzol_replaceable",
+        "#minecraft:beneath_tree_podzol_replaceable",
+        "#minecraft:enderman_holdable",
+        "#minecraft:forest_rock_can_place_on",
+        "#minecraft:foxes_spawnable_on",
+        "#minecraft:frogs_spawnable_on",
+        "#minecraft:goats_spawnable_on",
+        "#minecraft:grass_blocks",
+        "#minecraft:huge_brown_mushroom_can_place_on",
+        "#minecraft:huge_red_mushroom_can_place_on",
+        "#minecraft:ice_spike_replaceable",
+        "#minecraft:lush_ground_replaceable",
+        "#minecraft:mineable/shovel",
+        "#minecraft:moss_replaceable",
+        "#minecraft:nether_carver_replaceables",
+        "#minecraft:overworld_carver_replaceables",
+        "#minecraft:parrots_spawnable_on",
+        "#minecraft:rabbits_spawnable_on",
+        "#minecraft:sculk_replaceable",
+        "#minecraft:sculk_replaceable_world_gen",
+        "#minecraft:sniffer_diggable_block",
+        "#minecraft:substrate_overworld",
+        "#minecraft:supports_azalea",
+        "#minecraft:supports_bamboo",
+        "#minecraft:supports_big_dripleaf",
+        "#minecraft:supports_crimson_fungus",
+        "#minecraft:supports_crimson_roots",
+        "#minecraft:supports_dry_vegetation"
+      ]
+    },
+    {
+      "state": {
+        "snowy": "false"
+      },
+      "bounds": [
+        {
+          "minX": 0,
+          "minY": 0,
+          "minZ": 0,
+          "maxX": 1,
+          "maxY": 1,
+          "maxZ": 1
+        }
+      ],
+      "boundsTruncated": false,
+      "replaceable": false,
+      "x": 2,
+      "y": -61,
+      "z": -1,
+      "blockId": "minecraft:grass_block",
+      "placeableFaces": [
+        "up"
+      ],
+      "tags": [
+        "#minecraft:animals_spawnable_on",
+        "#minecraft:armadillo_spawnable_on",
+        "#minecraft:azalea_grows_on",
+        "#minecraft:azalea_root_replaceable",
+        "#minecraft:beneath_bamboo_podzol_replaceable",
+        "#minecraft:beneath_tree_podzol_replaceable",
+        "#minecraft:enderman_holdable",
+        "#minecraft:forest_rock_can_place_on",
+        "#minecraft:foxes_spawnable_on",
+        "#minecraft:frogs_spawnable_on",
+        "#minecraft:goats_spawnable_on",
+        "#minecraft:grass_blocks",
+        "#minecraft:huge_brown_mushroom_can_place_on",
+        "#minecraft:huge_red_mushroom_can_place_on",
+        "#minecraft:ice_spike_replaceable",
+        "#minecraft:lush_ground_replaceable",
+        "#minecraft:mineable/shovel",
+        "#minecraft:moss_replaceable",
+        "#minecraft:nether_carver_replaceables",
+        "#minecraft:overworld_carver_replaceables",
+        "#minecraft:parrots_spawnable_on",
+        "#minecraft:rabbits_spawnable_on",
+        "#minecraft:sculk_replaceable",
+        "#minecraft:sculk_replaceable_world_gen",
+        "#minecraft:sniffer_diggable_block",
+        "#minecraft:substrate_overworld",
+        "#minecraft:supports_azalea",
+        "#minecraft:supports_bamboo",
+        "#minecraft:supports_big_dripleaf",
+        "#minecraft:supports_crimson_fungus",
+        "#minecraft:supports_crimson_roots",
+        "#minecraft:supports_dry_vegetation"
+      ]
+    },
+    {
+      "state": {
+        "snowy": "false"
+      },
+      "bounds": [
+        {
+          "minX": 0,
+          "minY": 0,
+          "minZ": 0,
+          "maxX": 1,
+          "maxY": 1,
+          "maxZ": 1
+        }
+      ],
+      "boundsTruncated": false,
+      "replaceable": false,
+      "x": 2,
+      "y": -61,
+      "z": 1,
+      "blockId": "minecraft:grass_block",
+      "placeableFaces": [
+        "up"
+      ],
+      "tags": [
+        "#minecraft:animals_spawnable_on",
+        "#minecraft:armadillo_spawnable_on",
+        "#minecraft:azalea_grows_on",
+        "#minecraft:azalea_root_replaceable",
+        "#minecraft:beneath_bamboo_podzol_replaceable",
+        "#minecraft:beneath_tree_podzol_replaceable",
+        "#minecraft:enderman_holdable",
+        "#minecraft:forest_rock_can_place_on",
+        "#minecraft:foxes_spawnable_on",
+        "#minecraft:frogs_spawnable_on",
+        "#minecraft:goats_spawnable_on",
+        "#minecraft:grass_blocks",
+        "#minecraft:huge_brown_mushroom_can_place_on",
+        "#minecraft:huge_red_mushroom_can_place_on",
+        "#minecraft:ice_spike_replaceable",
+        "#minecraft:lush_ground_replaceable",
+        "#minecraft:mineable/shovel",
+        "#minecraft:moss_replaceable",
+        "#minecraft:nether_carver_replaceables",
+        "#minecraft:overworld_carver_replaceables",
+        "#minecraft:parrots_spawnable_on",
+        "#minecraft:rabbits_spawnable_on",
+        "#minecraft:sculk_replaceable",
+        "#minecraft:sculk_replaceable_world_gen",
+        "#minecraft:sniffer_diggable_block",
+        "#minecraft:substrate_overworld",
+        "#minecraft:supports_azalea",
+        "#minecraft:supports_bamboo",
+        "#minecraft:supports_big_dripleaf",
+        "#minecraft:supports_crimson_fungus",
+        "#minecraft:supports_crimson_roots",
+        "#minecraft:supports_dry_vegetation"
+      ]
+    }
+  ],
+  "landmarks": [],
+  "nearbyContainers": [],
+  "world": {
+    "worldId": "1fa10121-6c16-434a-bfd3-6bc88962fcaa",
+    "dimension": "minecraft:overworld",
+    "biome": "minecraft:plains",
+    "gameTime": 187,
+    "dayTime": 6000,
+    "raining": false,
+    "thundering": false,
+    "difficulty": "easy",
+    "naturalRegeneration": true
+  },
+  "currentAction": {
+    "active": false
+  },
+  "lastResult": {
+    "present": true,
+    "actionId": "mechanics-fixture-7",
+    "actionType": "look_at",
+    "state": "SUCCEEDED",
+    "reasonCode": "ACTION_COMPLETED",
+    "message": "Action completed"
+  },
+  "interaction": {
+    "mainHandItemId": "minecraft:air",
+    "offHandItemId": "minecraft:air",
+    "usingItem": false,
+    "activeHand": "none",
+    "useRemainingTicks": 0,
+    "attackCooldown": 1,
+    "input": {
+      "active": false,
+      "forward": 0,
+      "strafe": 0,
+      "jump": false,
+      "sneak": false,
+      "sprint": false,
+      "attack": false,
+      "use": false,
+      "yaw": -90,
+      "pitch": -3.623844861984253,
+      "selectedSlot": 0,
+      "hand": "main_hand"
+    },
+    "menu": {
+      "containerId": 0,
+      "stateId": 1,
+      "slotCount": 46,
+      "offset": 0,
+      "hasMore": true,
+      "type": "minecraft:inventory",
+      "cursor": {
+        "displayName": "Air",
+        "fingerprint": "",
+        "maxStackSize": 1,
+        "damage": 0,
+        "maxDamage": 0,
+        "itemId": "minecraft:air",
+        "count": 0
+      },
+      "slots": [
+        {
+          "slot": 0,
+          "itemId": "minecraft:air",
+          "count": 0
+        },
+        {
+          "slot": 1,
+          "itemId": "minecraft:air",
+          "count": 0
+        },
+        {
+          "slot": 2,
+          "itemId": "minecraft:air",
+          "count": 0
+        },
+        {
+          "slot": 3,
+          "itemId": "minecraft:air",
+          "count": 0
+        },
+        {
+          "slot": 4,
+          "itemId": "minecraft:air",
+          "count": 0
+        },
+        {
+          "slot": 5,
+          "itemId": "minecraft:air",
+          "count": 0
+        },
+        {
+          "slot": 6,
+          "itemId": "minecraft:air",
+          "count": 0
+        },
+        {
+          "slot": 7,
+          "itemId": "minecraft:air",
+          "count": 0
+        },
+        {
+          "slot": 8,
+          "itemId": "minecraft:air",
+          "count": 0
+        },
+        {
+          "slot": 9,
+          "itemId": "minecraft:air",
+          "count": 0
+        },
+        {
+          "slot": 10,
+          "itemId": "minecraft:air",
+          "count": 0
+        },
+        {
+          "slot": 11,
+          "itemId": "minecraft:air",
+          "count": 0
+        },
+        {
+          "slot": 12,
+          "itemId": "minecraft:air",
+          "count": 0
+        },
+        {
+          "slot": 13,
+          "itemId": "minecraft:air",
+          "count": 0
+        },
+        {
+          "slot": 14,
+          "itemId": "minecraft:air",
+          "count": 0
+        },
+        {
+          "slot": 15,
+          "itemId": "minecraft:air",
+          "count": 0
+        }
+      ],
+      "capabilities": [
+        "menu_click",
+        "menu_close"
+      ]
+    },
+    "rayTarget": {
+      "type": "miss"
+    }
+  },
+  "coverage": {
+    "mode": "sampled_visible",
+    "complete": false,
+    "blocksRadius": 6,
+    "landmarkDistanceLimit": 256,
+    "entitiesDistanceLimit": 128,
+    "sections": {
+      "entities": {
+        "returned": 1,
+        "complete": false
+      },
+      "blocks": {
+        "returned": 8,
+        "complete": false
+      },
+      "landmarks": {
+        "returned": 0,
+        "complete": false
+      },
+      "nearbyContainers": {
+        "returned": 0,
+        "complete": false
+      }
+    }
+  },
+  "perception": {
+    "latestSequence": 2,
+    "earliestSequence": 1,
+    "events": [
+      {
+        "type": "sound",
+        "sequence": 1,
+        "gameTime": 126,
+        "dimension": "minecraft:overworld",
+        "observedAtEpochMs": 1791861809804,
+        "soundId": "minecraft:entity.blaze.ambient",
+        "direction": "front",
+        "range": "medium",
+        "elevation": "level"
+      },
+      {
+        "type": "sound",
+        "sequence": 2,
+        "gameTime": 177,
+        "dimension": "minecraft:overworld",
+        "observedAtEpochMs": 1791861812059,
+        "soundId": "minecraft:entity.blaze.death",
+        "direction": "front",
+        "range": "medium",
+        "elevation": "level"
+      }
+    ],
+    "bossBars": []
+  },
+  "heard": [
+    {
+      "sound": "entity.blaze.death",
+      "direction": "front",
+      "elevation": "above",
+      "distance": 8
+    },
+    {
+      "sound": "entity.blaze.ambient",
+      "direction": "front",
+      "elevation": "level",
+      "distance": 8
+    }
+  ]
+}

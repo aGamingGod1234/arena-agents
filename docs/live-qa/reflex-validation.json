@@ -1,0 +1,1556 @@
+{
+  "baseline": "ab0fac813f4e",
+  "candidateRuntime": "5ef8e92720f1f3ec2afed320d6362d24c862dc7e",
+  "provider": "codex",
+  "model": "gpt-6.1-sol",
+  "effort": "low",
+  "serviceTier": "priority",
+  "arms": {
+    "before-arena": {
+      "runs": [
+        {
+          "repetition": 1,
+          "pass": true,
+          "deaths": 0,
+          "evaluation": {
+            "pass": true,
+            "passAt": 1792243235820,
+            "timeToPassMs": 100988,
+            "source": "samples",
+            "passTicks": 2018,
+            "evidence": {
+              "at": 1792243235820,
+              "gameTime": 2086,
+              "position": {
+                "x": -30.69999998807907,
+                "y": 201.02442408821366,
+                "z": -28.82511494007117
+              },
+              "dimension": "minecraft:overworld",
+              "health": 20,
+              "deathCounter": 0
+            },
+            "status": "EVALUATED",
+            "check": "survive_duration: 2000 ticks; any death fails attempt",
+            "spec": {
+              "type": "survive",
+              "ticks": 2000
+            },
+            "samples": 119,
+            "clock": "game-ticks"
+          },
+          "sourceChangedDuringRun": false,
+          "coordinatorSha256": "c97f5362b5fcc2b63564726a2f68318081c8dd804abee5523c1873f99b6d81d1",
+          "jarSha256": "128ca048309261fb5ca0db4e10176103ef750257dddfe42c7292233777df7287",
+          "artifacts": "/home/agaminggod/.t3/worktrees/agents arena/t3-04798a50/runtime/headless-runs/run-1792243092034-3fb467e5/q-cf9g3l-2553-REFLEX-r1-4613ea9e",
+          "analysis": "/home/agaminggod/Desktop/Projects/arena-beat-game/reflex/before-arena-analysis-r1",
+          "observerErrors": [
+            "Final sample: Quality player disappeared during sampling"
+          ],
+          "measurementStatus": "INCOMPLETE",
+          "runnerTermination": "TIMEOUT",
+          "authorship": {
+            "sourceCalls": 9,
+            "savedCalls": 0,
+            "templateCalls": 0
+          },
+          "counts": {
+            "alive": 340,
+            "guarded": 320,
+            "threatSamples": 276,
+            "guardedThreatSamples": 275,
+            "trueThreatSamples": 130,
+            "errorThreatSamples": 0
+          },
+          "installs": 3,
+          "guardDispatches": [
+            {
+              "at": 1792243156132,
+              "id": "threat-defense",
+              "elapsedMs": 50,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:58",
+              "commandRef": "coordinator-private.jsonl:68"
+            },
+            {
+              "at": 1792243157298,
+              "id": "threat-defense",
+              "elapsedMs": 12,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:76",
+              "commandRef": "coordinator-private.jsonl:80"
+            },
+            {
+              "at": 1792243158535,
+              "id": "threat-defense",
+              "elapsedMs": 7,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:86",
+              "commandRef": "coordinator-private.jsonl:90"
+            },
+            {
+              "at": 1792243160635,
+              "id": "threat-defense",
+              "elapsedMs": 6,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:98",
+              "commandRef": "coordinator-private.jsonl:102"
+            },
+            {
+              "at": 1792243163280,
+              "id": "threat-defense",
+              "elapsedMs": 23,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:126",
+              "commandRef": "coordinator-private.jsonl:131"
+            },
+            {
+              "at": 1792243168084,
+              "id": "threat-defense",
+              "elapsedMs": 6,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:151",
+              "commandRef": "coordinator-private.jsonl:155"
+            },
+            {
+              "at": 1792243175575,
+              "id": "threat-defense",
+              "elapsedMs": null,
+              "actionType": null,
+              "ref": "coordinator-private.jsonl:185",
+              "commandRef": null
+            },
+            {
+              "at": 1792243176635,
+              "id": "threat-defense",
+              "elapsedMs": 107,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:206",
+              "commandRef": "coordinator-private.jsonl:217"
+            },
+            {
+              "at": 1792243185081,
+              "id": "threat-defense",
+              "elapsedMs": 17,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:245",
+              "commandRef": "coordinator-private.jsonl:251"
+            },
+            {
+              "at": 1792243200782,
+              "id": "threat-defense",
+              "elapsedMs": 21,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:336",
+              "commandRef": "coordinator-private.jsonl:342"
+            },
+            {
+              "at": 1792243203932,
+              "id": "threat-defense",
+              "elapsedMs": 5,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:359",
+              "commandRef": "coordinator-private.jsonl:364"
+            },
+            {
+              "at": 1792243206215,
+              "id": "threat-defense",
+              "elapsedMs": null,
+              "actionType": null,
+              "ref": "coordinator-private.jsonl:383",
+              "commandRef": null
+            },
+            {
+              "at": 1792243206982,
+              "id": "threat-defense",
+              "elapsedMs": 4,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:399",
+              "commandRef": "coordinator-private.jsonl:403"
+            },
+            {
+              "at": 1792243209933,
+              "id": "threat-defense",
+              "elapsedMs": 6,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:420",
+              "commandRef": "coordinator-private.jsonl:425"
+            },
+            {
+              "at": 1792243211986,
+              "id": "threat-defense",
+              "elapsedMs": 6,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:435",
+              "commandRef": "coordinator-private.jsonl:440"
+            },
+            {
+              "at": 1792243218849,
+              "id": "threat-defense",
+              "elapsedMs": 15,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:481",
+              "commandRef": "coordinator-private.jsonl:486"
+            },
+            {
+              "at": 1792243221182,
+              "id": "threat-defense",
+              "elapsedMs": 5,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:506",
+              "commandRef": "coordinator-private.jsonl:512"
+            },
+            {
+              "at": 1792243223082,
+              "id": "threat-defense",
+              "elapsedMs": 5,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:522",
+              "commandRef": "coordinator-private.jsonl:527"
+            },
+            {
+              "at": 1792243225634,
+              "id": "threat-defense",
+              "elapsedMs": 21,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:550",
+              "commandRef": "coordinator-private.jsonl:556"
+            },
+            {
+              "at": 1792243227532,
+              "id": "threat-defense",
+              "elapsedMs": 5,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:569",
+              "commandRef": "coordinator-private.jsonl:574"
+            },
+            {
+              "at": 1792243238285,
+              "id": "threat-defense",
+              "elapsedMs": 72,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:696",
+              "commandRef": "coordinator-private.jsonl:706"
+            },
+            {
+              "at": 1792243242155,
+              "id": "threat-defense",
+              "elapsedMs": 23,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:722",
+              "commandRef": "coordinator-private.jsonl:731"
+            },
+            {
+              "at": 1792243244283,
+              "id": "threat-defense",
+              "elapsedMs": 4,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:739",
+              "commandRef": "coordinator-private.jsonl:745"
+            },
+            {
+              "at": 1792243248182,
+              "id": "threat-defense",
+              "elapsedMs": 20,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:764",
+              "commandRef": "coordinator-private.jsonl:770"
+            },
+            {
+              "at": 1792243253083,
+              "id": "threat-defense",
+              "elapsedMs": 18,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:787",
+              "commandRef": "coordinator-private.jsonl:793"
+            }
+          ]
+        },
+        {
+          "repetition": 2,
+          "pass": false,
+          "deaths": 1,
+          "evaluation": {
+            "pass": false,
+            "passAt": null,
+            "timeToPassMs": null,
+            "source": null,
+            "died": false,
+            "lastSampleAt": 1792243375487,
+            "status": "EVALUATED",
+            "check": "survive_duration: 2000 ticks; any death fails attempt",
+            "spec": {
+              "type": "survive",
+              "ticks": 2000
+            },
+            "samples": 78,
+            "clock": "game-ticks"
+          },
+          "sourceChangedDuringRun": false,
+          "coordinatorSha256": "c97f5362b5fcc2b63564726a2f68318081c8dd804abee5523c1873f99b6d81d1",
+          "jarSha256": "128ca048309261fb5ca0db4e10176103ef750257dddfe42c7292233777df7287",
+          "artifacts": "/home/agaminggod/.t3/worktrees/agents arena/t3-04798a50/runtime/headless-runs/run-1792243092034-3fb467e5/q-cf9g3l-2553-REFLEX-r2-682767fa",
+          "analysis": "/home/agaminggod/Desktop/Projects/arena-beat-game/reflex/before-arena-analysis-r2",
+          "observerErrors": [],
+          "measurementStatus": "INCOMPLETE",
+          "runnerTermination": "DEAD",
+          "authorship": {
+            "sourceCalls": 7,
+            "savedCalls": 0,
+            "templateCalls": 0
+          },
+          "counts": {
+            "alive": 199,
+            "guarded": 161,
+            "threatSamples": 148,
+            "guardedThreatSamples": 148,
+            "trueThreatSamples": 121,
+            "errorThreatSamples": 0
+          },
+          "installs": 2,
+          "guardDispatches": [
+            {
+              "at": 1792243318224,
+              "id": "survival-defense",
+              "elapsedMs": 27,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:41",
+              "commandRef": "coordinator-private.jsonl:49"
+            },
+            {
+              "at": 1792243319322,
+              "id": "survival-defense",
+              "elapsedMs": 8,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:59",
+              "commandRef": "coordinator-private.jsonl:63"
+            },
+            {
+              "at": 1792243320569,
+              "id": "survival-defense",
+              "elapsedMs": 6,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:69",
+              "commandRef": "coordinator-private.jsonl:73"
+            },
+            {
+              "at": 1792243322219,
+              "id": "survival-defense",
+              "elapsedMs": 7,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:94",
+              "commandRef": "coordinator-private.jsonl:98"
+            },
+            {
+              "at": 1792243325269,
+              "id": "survival-defense",
+              "elapsedMs": 6,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:113",
+              "commandRef": "coordinator-private.jsonl:117"
+            },
+            {
+              "at": 1792243332339,
+              "id": "survival-defense",
+              "elapsedMs": null,
+              "actionType": null,
+              "ref": "coordinator-private.jsonl:148",
+              "commandRef": null
+            },
+            {
+              "at": 1792243332818,
+              "id": "survival-defense",
+              "elapsedMs": 7,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:161",
+              "commandRef": "coordinator-private.jsonl:167"
+            },
+            {
+              "at": 1792243340468,
+              "id": "survival-defense",
+              "elapsedMs": 90,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:212",
+              "commandRef": "coordinator-private.jsonl:223"
+            },
+            {
+              "at": 1792243348668,
+              "id": "survival-defense",
+              "elapsedMs": 17,
+              "actionType": "fight_target",
+              "ref": "coordinator-private.jsonl:249",
+              "commandRef": "coordinator-private.jsonl:255"
+            },
+            {
+              "at": 1792243358522,
+              "id": "survival-defense",
+              "elapsedMs": 21,
+              "actionType": "fight_target",
+              "ref": "coordinator-private.jsonl:303",
+              "commandRef": "coordinator-private.jsonl:309"
+            },
+            {
+              "at": 1792243368129,
+              "id": "survival-defense",
+              "elapsedMs": 48,
+              "actionType": "fight_target",
+              "ref": "coordinator-private.jsonl:362",
+              "commandRef": "coordinator-private.jsonl:372"
+            },
+            {
+              "at": 1792243372972,
+              "id": "survival-defense",
+              "elapsedMs": 5,
+              "actionType": "fight_target",
+              "ref": "coordinator-private.jsonl:384",
+              "commandRef": "coordinator-private.jsonl:388"
+            },
+            {
+              "at": 1792243374033,
+              "id": "survival-defense",
+              "elapsedMs": 17,
+              "actionType": "fight_target",
+              "ref": "coordinator-private.jsonl:401",
+              "commandRef": "coordinator-private.jsonl:405"
+            },
+            {
+              "at": 1792243375571,
+              "id": "survival-defense",
+              "elapsedMs": 6,
+              "actionType": "fight_target",
+              "ref": "coordinator-private.jsonl:417",
+              "commandRef": "coordinator-private.jsonl:421"
+            }
+          ]
+        },
+        {
+          "repetition": 3,
+          "pass": true,
+          "deaths": 0,
+          "evaluation": {
+            "pass": true,
+            "passAt": 1792243510023,
+            "timeToPassMs": 100515,
+            "source": "samples",
+            "passTicks": 2009,
+            "evidence": {
+              "at": 1792243510023,
+              "gameTime": 2112,
+              "position": {
+                "x": -30.69999998807907,
+                "y": 200,
+                "z": 28.439283823906873
+              },
+              "dimension": "minecraft:overworld",
+              "health": 19.770395,
+              "deathCounter": 0
+            },
+            "status": "EVALUATED",
+            "check": "survive_duration: 2000 ticks; any death fails attempt",
+            "spec": {
+              "type": "survive",
+              "ticks": 2000
+            },
+            "samples": 120,
+            "clock": "game-ticks"
+          },
+          "sourceChangedDuringRun": false,
+          "coordinatorSha256": "c97f5362b5fcc2b63564726a2f68318081c8dd804abee5523c1873f99b6d81d1",
+          "jarSha256": "128ca048309261fb5ca0db4e10176103ef750257dddfe42c7292233777df7287",
+          "artifacts": "/home/agaminggod/.t3/worktrees/agents arena/t3-04798a50/runtime/headless-runs/run-1792243092034-3fb467e5/q-cf9g3l-2553-REFLEX-r3-4efb48ca",
+          "analysis": "/home/agaminggod/Desktop/Projects/arena-beat-game/reflex/before-arena-analysis-r3",
+          "observerErrors": [],
+          "measurementStatus": "INCOMPLETE",
+          "runnerTermination": "TIMEOUT",
+          "authorship": {
+            "sourceCalls": 8,
+            "savedCalls": 0,
+            "templateCalls": 0
+          },
+          "counts": {
+            "alive": 293,
+            "guarded": 275,
+            "threatSamples": 75,
+            "guardedThreatSamples": 75,
+            "trueThreatSamples": 75,
+            "errorThreatSamples": 0
+          },
+          "installs": 2,
+          "guardDispatches": [
+            {
+              "at": 1792243429671,
+              "id": "melee-defense",
+              "elapsedMs": 59,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:76",
+              "commandRef": "coordinator-private.jsonl:86"
+            },
+            {
+              "at": 1792243430963,
+              "id": "melee-defense",
+              "elapsedMs": 7,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:99",
+              "commandRef": "coordinator-private.jsonl:103"
+            },
+            {
+              "at": 1792243432564,
+              "id": "melee-defense",
+              "elapsedMs": 7,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:110",
+              "commandRef": "coordinator-private.jsonl:114"
+            },
+            {
+              "at": 1792243434313,
+              "id": "melee-defense",
+              "elapsedMs": 6,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:129",
+              "commandRef": "coordinator-private.jsonl:133"
+            },
+            {
+              "at": 1792243444174,
+              "id": "melee-defense",
+              "elapsedMs": 19,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:165",
+              "commandRef": "coordinator-private.jsonl:170"
+            },
+            {
+              "at": 1792243454622,
+              "id": "melee-defense",
+              "elapsedMs": 50,
+              "actionType": "fight_target",
+              "ref": "coordinator-private.jsonl:225",
+              "commandRef": "coordinator-private.jsonl:235"
+            },
+            {
+              "at": 1792243480310,
+              "id": "melee-defense",
+              "elapsedMs": 53,
+              "actionType": "fight_target",
+              "ref": "coordinator-private.jsonl:352",
+              "commandRef": "coordinator-private.jsonl:362"
+            }
+          ]
+        }
+      ],
+      "passes": 2,
+      "deaths": 1,
+      "counts": {
+        "alive": 832,
+        "guarded": 756,
+        "threatSamples": 499,
+        "guardedThreatSamples": 498,
+        "trueThreatSamples": 326,
+        "errorThreatSamples": 0
+      },
+      "guardFirings": 46,
+      "guardCommands": 43,
+      "guardDispatchMs": {
+        "median": 12,
+        "max": 107
+      },
+      "authorship": {
+        "sourceCalls": 24,
+        "savedCalls": 0,
+        "templateCalls": 0
+      }
+    },
+    "after-arena": {
+      "runs": [
+        {
+          "repetition": 1,
+          "pass": true,
+          "deaths": 0,
+          "evaluation": {
+            "pass": true,
+            "passAt": 1792243669718,
+            "timeToPassMs": 100240,
+            "source": "samples",
+            "passTicks": 2003,
+            "evidence": {
+              "at": 1792243669718,
+              "gameTime": 2087,
+              "position": {
+                "x": -30.69999998807907,
+                "y": 200.7531999805212,
+                "z": -3.2197847134784148
+              },
+              "dimension": "minecraft:overworld",
+              "health": 12.266665,
+              "deathCounter": 0
+            },
+            "status": "EVALUATED",
+            "check": "survive_duration: 2000 ticks; any death fails attempt",
+            "spec": {
+              "type": "survive",
+              "ticks": 2000
+            },
+            "samples": 120,
+            "clock": "game-ticks"
+          },
+          "sourceChangedDuringRun": false,
+          "coordinatorSha256": "8becac9eb9edf68f3edcd5b94fe45a479913a8452d62df05b5d26a208a9f20c4",
+          "jarSha256": "128ca048309261fb5ca0db4e10176103ef750257dddfe42c7292233777df7287",
+          "artifacts": "/home/agaminggod/.t3/worktrees/agents arena/t3-04798a50/runtime/headless-runs/run-1792243540499-b244ab8b/q-cfj2b5-0ada-REFLEX-r1-f3e6fc54",
+          "analysis": "/home/agaminggod/Desktop/Projects/arena-beat-game/reflex/after-arena-analysis-r1",
+          "observerErrors": [],
+          "measurementStatus": "INCOMPLETE",
+          "runnerTermination": "TIMEOUT",
+          "authorship": {
+            "sourceCalls": 10,
+            "savedCalls": 0,
+            "templateCalls": 0
+          },
+          "counts": {
+            "alive": 331,
+            "guarded": 295,
+            "threatSamples": 238,
+            "guardedThreatSamples": 237,
+            "trueThreatSamples": 172,
+            "errorThreatSamples": 0
+          },
+          "installs": 3,
+          "guardDispatches": [
+            {
+              "at": 1792243589701,
+              "id": "survival",
+              "elapsedMs": 23,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:43",
+              "commandRef": "coordinator-private.jsonl:51"
+            },
+            {
+              "at": 1792243594508,
+              "id": "survival",
+              "elapsedMs": 23,
+              "actionType": "fight_target",
+              "ref": "coordinator-private.jsonl:86",
+              "commandRef": "coordinator-private.jsonl:91"
+            },
+            {
+              "at": 1792243615332,
+              "id": "survival",
+              "elapsedMs": 60,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:201",
+              "commandRef": "coordinator-private.jsonl:211"
+            },
+            {
+              "at": 1792243619738,
+              "id": "survival",
+              "elapsedMs": 10,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:241",
+              "commandRef": "coordinator-private.jsonl:245"
+            },
+            {
+              "at": 1792243620995,
+              "id": "survival",
+              "elapsedMs": 13,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:269",
+              "commandRef": "coordinator-private.jsonl:273"
+            },
+            {
+              "at": 1792243623238,
+              "id": "survival",
+              "elapsedMs": 10,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:296",
+              "commandRef": "coordinator-private.jsonl:300"
+            },
+            {
+              "at": 1792243626163,
+              "id": "survival",
+              "elapsedMs": 48,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:339",
+              "commandRef": "coordinator-private.jsonl:357"
+            },
+            {
+              "at": 1792243630030,
+              "id": "survival",
+              "elapsedMs": 5,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:372",
+              "commandRef": "coordinator-private.jsonl:377"
+            },
+            {
+              "at": 1792243636831,
+              "id": "survival",
+              "elapsedMs": 5,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:402",
+              "commandRef": "coordinator-private.jsonl:408"
+            },
+            {
+              "at": 1792243638737,
+              "id": "survival",
+              "elapsedMs": 83,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:423",
+              "commandRef": "coordinator-private.jsonl:433"
+            },
+            {
+              "at": 1792243644832,
+              "id": "survival",
+              "elapsedMs": 4,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:455",
+              "commandRef": "coordinator-private.jsonl:459"
+            },
+            {
+              "at": 1792243651582,
+              "id": "survival",
+              "elapsedMs": 5,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:495",
+              "commandRef": "coordinator-private.jsonl:501"
+            },
+            {
+              "at": 1792243657339,
+              "id": "survival",
+              "elapsedMs": 111,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:540",
+              "commandRef": "coordinator-private.jsonl:551"
+            },
+            {
+              "at": 1792243664639,
+              "id": "survival",
+              "elapsedMs": 19,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:605",
+              "commandRef": "coordinator-private.jsonl:611"
+            },
+            {
+              "at": 1792243670736,
+              "id": "survival",
+              "elapsedMs": 7,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:640",
+              "commandRef": "coordinator-private.jsonl:646"
+            },
+            {
+              "at": 1792243673693,
+              "id": "survival",
+              "elapsedMs": 12,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:657",
+              "commandRef": "coordinator-private.jsonl:661"
+            },
+            {
+              "at": 1792243680737,
+              "id": "survival",
+              "elapsedMs": 15,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:707",
+              "commandRef": "coordinator-private.jsonl:711"
+            },
+            {
+              "at": 1792243685241,
+              "id": "survival",
+              "elapsedMs": 8,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:737",
+              "commandRef": "coordinator-private.jsonl:743"
+            },
+            {
+              "at": 1792243687640,
+              "id": "survival",
+              "elapsedMs": 52,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:778",
+              "commandRef": "coordinator-private.jsonl:782"
+            }
+          ]
+        },
+        {
+          "repetition": 2,
+          "pass": true,
+          "deaths": 0,
+          "evaluation": {
+            "pass": true,
+            "passAt": 1792243823825,
+            "timeToPassMs": 100623,
+            "source": "samples",
+            "passTicks": 2011,
+            "evidence": {
+              "at": 1792243823825,
+              "gameTime": 2107,
+              "position": {
+                "x": -13.30150082632224,
+                "y": 200,
+                "z": 31.69999998807907
+              },
+              "dimension": "minecraft:overworld",
+              "health": 20,
+              "deathCounter": 0
+            },
+            "status": "EVALUATED",
+            "check": "survive_duration: 2000 ticks; any death fails attempt",
+            "spec": {
+              "type": "survive",
+              "ticks": 2000
+            },
+            "samples": 120,
+            "clock": "game-ticks"
+          },
+          "sourceChangedDuringRun": false,
+          "coordinatorSha256": "8becac9eb9edf68f3edcd5b94fe45a479913a8452d62df05b5d26a208a9f20c4",
+          "jarSha256": "128ca048309261fb5ca0db4e10176103ef750257dddfe42c7292233777df7287",
+          "artifacts": "/home/agaminggod/.t3/worktrees/agents arena/t3-04798a50/runtime/headless-runs/run-1792243540499-b244ab8b/q-cfj2b5-0ada-REFLEX-r2-ff2ac2fa",
+          "analysis": "/home/agaminggod/Desktop/Projects/arena-beat-game/reflex/after-arena-analysis-r2",
+          "observerErrors": [],
+          "measurementStatus": "INCOMPLETE",
+          "runnerTermination": "TIMEOUT",
+          "authorship": {
+            "sourceCalls": 10,
+            "savedCalls": 0,
+            "templateCalls": 0
+          },
+          "counts": {
+            "alive": 296,
+            "guarded": 266,
+            "threatSamples": 90,
+            "guardedThreatSamples": 90,
+            "trueThreatSamples": 90,
+            "errorThreatSamples": 0
+          },
+          "installs": 3,
+          "guardDispatches": [
+            {
+              "at": 1792243743358,
+              "id": "survival",
+              "elapsedMs": 82,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:68",
+              "commandRef": "coordinator-private.jsonl:78"
+            },
+            {
+              "at": 1792243746308,
+              "id": "survival",
+              "elapsedMs": 9,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:105",
+              "commandRef": "coordinator-private.jsonl:109"
+            },
+            {
+              "at": 1792243748025,
+              "id": "survival",
+              "elapsedMs": 21,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:130",
+              "commandRef": "coordinator-private.jsonl:135"
+            },
+            {
+              "at": 1792243749708,
+              "id": "survival",
+              "elapsedMs": 6,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:163",
+              "commandRef": "coordinator-private.jsonl:167"
+            },
+            {
+              "at": 1792243769405,
+              "id": "survival",
+              "elapsedMs": 49,
+              "actionType": "fight_target",
+              "ref": "coordinator-private.jsonl:288",
+              "commandRef": "coordinator-private.jsonl:298"
+            },
+            {
+              "at": 1792243793417,
+              "id": "survival",
+              "elapsedMs": 41,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:420",
+              "commandRef": "coordinator-private.jsonl:430"
+            },
+            {
+              "at": 1792243797306,
+              "id": "survival",
+              "elapsedMs": 6,
+              "actionType": "fight_target",
+              "ref": "coordinator-private.jsonl:445",
+              "commandRef": "coordinator-private.jsonl:449"
+            },
+            {
+              "at": 1792243799189,
+              "id": "survival",
+              "elapsedMs": null,
+              "actionType": null,
+              "ref": "coordinator-private.jsonl:467",
+              "commandRef": null
+            },
+            {
+              "at": 1792243800257,
+              "id": "survival",
+              "elapsedMs": 72,
+              "actionType": "fight_target",
+              "ref": "coordinator-private.jsonl:484",
+              "commandRef": "coordinator-private.jsonl:494"
+            }
+          ]
+        },
+        {
+          "repetition": 3,
+          "pass": true,
+          "deaths": 0,
+          "evaluation": {
+            "pass": true,
+            "passAt": 1792243978656,
+            "timeToPassMs": 100753,
+            "source": "samples",
+            "passTicks": 2014,
+            "evidence": {
+              "at": 1792243978656,
+              "gameTime": 2104,
+              "position": {
+                "x": 2.6214944730673215,
+                "y": 200,
+                "z": -30.69999998807907
+              },
+              "dimension": "minecraft:overworld",
+              "health": 20,
+              "deathCounter": 0
+            },
+            "status": "EVALUATED",
+            "check": "survive_duration: 2000 ticks; any death fails attempt",
+            "spec": {
+              "type": "survive",
+              "ticks": 2000
+            },
+            "samples": 119,
+            "clock": "game-ticks"
+          },
+          "sourceChangedDuringRun": false,
+          "coordinatorSha256": "8becac9eb9edf68f3edcd5b94fe45a479913a8452d62df05b5d26a208a9f20c4",
+          "jarSha256": "128ca048309261fb5ca0db4e10176103ef750257dddfe42c7292233777df7287",
+          "artifacts": "/home/agaminggod/.t3/worktrees/agents arena/t3-04798a50/runtime/headless-runs/run-1792243540499-b244ab8b/q-cfj2b5-0ada-REFLEX-r3-cc6c2e10",
+          "analysis": "/home/agaminggod/Desktop/Projects/arena-beat-game/reflex/after-arena-analysis-r3",
+          "observerErrors": [],
+          "measurementStatus": "INCOMPLETE",
+          "runnerTermination": "TIMEOUT",
+          "authorship": {
+            "sourceCalls": 9,
+            "savedCalls": 0,
+            "templateCalls": 0
+          },
+          "counts": {
+            "alive": 298,
+            "guarded": 266,
+            "threatSamples": 114,
+            "guardedThreatSamples": 114,
+            "trueThreatSamples": 104,
+            "errorThreatSamples": 0
+          },
+          "installs": 2,
+          "guardDispatches": [
+            {
+              "at": 1792243898174,
+              "id": "survive",
+              "elapsedMs": 68,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:49",
+              "commandRef": "coordinator-private.jsonl:59"
+            },
+            {
+              "at": 1792243902162,
+              "id": "survive",
+              "elapsedMs": 14,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:101",
+              "commandRef": "coordinator-private.jsonl:105"
+            },
+            {
+              "at": 1792243903360,
+              "id": "survive",
+              "elapsedMs": 11,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:127",
+              "commandRef": "coordinator-private.jsonl:131"
+            },
+            {
+              "at": 1792243905060,
+              "id": "survive",
+              "elapsedMs": 9,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:154",
+              "commandRef": "coordinator-private.jsonl:158"
+            },
+            {
+              "at": 1792243924063,
+              "id": "survive",
+              "elapsedMs": 66,
+              "actionType": "fight_target",
+              "ref": "coordinator-private.jsonl:233",
+              "commandRef": "coordinator-private.jsonl:243"
+            },
+            {
+              "at": 1792243948552,
+              "id": "survive",
+              "elapsedMs": 64,
+              "actionType": "fight_target",
+              "ref": "coordinator-private.jsonl:330",
+              "commandRef": "coordinator-private.jsonl:340"
+            },
+            {
+              "at": 1792243953256,
+              "id": "survive",
+              "elapsedMs": 7,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:371",
+              "commandRef": "coordinator-private.jsonl:375"
+            },
+            {
+              "at": 1792243961506,
+              "id": "survive",
+              "elapsedMs": 19,
+              "actionType": "flee_from",
+              "ref": "coordinator-private.jsonl:398",
+              "commandRef": "coordinator-private.jsonl:403"
+            }
+          ]
+        }
+      ],
+      "passes": 3,
+      "deaths": 0,
+      "counts": {
+        "alive": 925,
+        "guarded": 827,
+        "threatSamples": 442,
+        "guardedThreatSamples": 441,
+        "trueThreatSamples": 366,
+        "errorThreatSamples": 0
+      },
+      "guardFirings": 36,
+      "guardCommands": 35,
+      "guardDispatchMs": {
+        "median": 15,
+        "max": 111
+      },
+      "authorship": {
+        "sourceCalls": 29,
+        "savedCalls": 0,
+        "templateCalls": 0
+      }
+    },
+    "before-ladder": {
+      "runs": [
+        {
+          "repetition": 1,
+          "pass": true,
+          "deaths": 0,
+          "evaluation": {
+            "pass": true,
+            "passAt": 1792243058240,
+            "timeToPassMs": 550712,
+            "source": "samples",
+            "passTicks": 11012,
+            "evidence": {
+              "at": 1792243058240,
+              "gameTime": 11098,
+              "position": {
+                "x": 390.5,
+                "y": 64,
+                "z": 392.5
+              },
+              "dimension": "minecraft:overworld",
+              "health": 20,
+              "deathCounter": 0
+            },
+            "status": "EVALUATED",
+            "check": "survive_duration: 11000 ticks; any death fails attempt",
+            "spec": {
+              "type": "survive",
+              "ticks": 11000
+            },
+            "samples": 547,
+            "clock": "game-ticks"
+          },
+          "sourceChangedDuringRun": false,
+          "coordinatorSha256": "c97f5362b5fcc2b63564726a2f68318081c8dd804abee5523c1873f99b6d81d1",
+          "jarSha256": "128ca048309261fb5ca0db4e10176103ef750257dddfe42c7292233777df7287",
+          "artifacts": "/home/agaminggod/.t3/worktrees/agents arena/t3-04798a50/runtime/headless-runs/run-1792242476393-36132d9a/q-cew98n-8809-L-A6-r1-34991d97",
+          "analysis": "/home/agaminggod/Desktop/Projects/arena-beat-game/reflex/before-ladder-analysis-r1",
+          "observerErrors": [],
+          "measurementStatus": "INCOMPLETE",
+          "runnerTermination": "EVALUATOR_PASS",
+          "authorship": {
+            "sourceCalls": 7,
+            "savedCalls": 0,
+            "templateCalls": 0
+          },
+          "counts": {
+            "alive": 1196,
+            "guarded": 1159,
+            "threatSamples": 0,
+            "guardedThreatSamples": 0,
+            "trueThreatSamples": 0,
+            "errorThreatSamples": 0
+          },
+          "installs": 1,
+          "guardDispatches": []
+        },
+        {
+          "repetition": 2,
+          "pass": true,
+          "deaths": 0,
+          "evaluation": {
+            "pass": true,
+            "passAt": 1792243659856,
+            "timeToPassMs": 550264,
+            "source": "samples",
+            "passTicks": 11004,
+            "evidence": {
+              "at": 1792243659856,
+              "gameTime": 11100,
+              "position": {
+                "x": 390.5,
+                "y": 66,
+                "z": 392.5
+              },
+              "dimension": "minecraft:overworld",
+              "health": 20,
+              "deathCounter": 0
+            },
+            "status": "EVALUATED",
+            "check": "survive_duration: 11000 ticks; any death fails attempt",
+            "spec": {
+              "type": "survive",
+              "ticks": 11000
+            },
+            "samples": 547,
+            "clock": "game-ticks"
+          },
+          "sourceChangedDuringRun": false,
+          "coordinatorSha256": "c97f5362b5fcc2b63564726a2f68318081c8dd804abee5523c1873f99b6d81d1",
+          "jarSha256": "128ca048309261fb5ca0db4e10176103ef750257dddfe42c7292233777df7287",
+          "artifacts": "/home/agaminggod/.t3/worktrees/agents arena/t3-04798a50/runtime/headless-runs/run-1792243071661-c4ca88f6/q-cf8zlx-5dab-L-A6-r2-0cce8bec",
+          "analysis": "/home/agaminggod/Desktop/Projects/arena-beat-game/reflex/before-ladder-analysis-r2",
+          "observerErrors": [],
+          "measurementStatus": "INCOMPLETE",
+          "runnerTermination": "EVALUATOR_PASS",
+          "authorship": {
+            "sourceCalls": 6,
+            "savedCalls": 0,
+            "templateCalls": 0
+          },
+          "counts": {
+            "alive": 1271,
+            "guarded": 1234,
+            "threatSamples": 0,
+            "guardedThreatSamples": 0,
+            "trueThreatSamples": 0,
+            "errorThreatSamples": 0
+          },
+          "installs": 1,
+          "guardDispatches": []
+        },
+        {
+          "repetition": 3,
+          "pass": true,
+          "deaths": 0,
+          "evaluation": {
+            "pass": true,
+            "passAt": 1792244250855,
+            "timeToPassMs": 550881,
+            "source": "samples",
+            "passTicks": 11015,
+            "evidence": {
+              "at": 1792244250855,
+              "gameTime": 11091,
+              "position": {
+                "x": 390.5,
+                "y": 65,
+                "z": 392.5
+              },
+              "dimension": "minecraft:overworld",
+              "health": 20,
+              "deathCounter": 0
+            },
+            "status": "EVALUATED",
+            "check": "survive_duration: 11000 ticks; any death fails attempt",
+            "spec": {
+              "type": "survive",
+              "ticks": 11000
+            },
+            "samples": 547,
+            "clock": "game-ticks"
+          },
+          "sourceChangedDuringRun": false,
+          "coordinatorSha256": "c97f5362b5fcc2b63564726a2f68318081c8dd804abee5523c1873f99b6d81d1",
+          "jarSha256": "128ca048309261fb5ca0db4e10176103ef750257dddfe42c7292233777df7287",
+          "artifacts": "/home/agaminggod/.t3/worktrees/agents arena/t3-04798a50/runtime/headless-runs/run-1792243664420-a9aa17d7/q-cflpwr-7410-L-A6-r3-80c4f0e5",
+          "analysis": "/home/agaminggod/Desktop/Projects/arena-beat-game/reflex/before-ladder-analysis-r3",
+          "observerErrors": [],
+          "measurementStatus": "INCOMPLETE",
+          "runnerTermination": "EVALUATOR_PASS",
+          "authorship": {
+            "sourceCalls": 5,
+            "savedCalls": 0,
+            "templateCalls": 0
+          },
+          "counts": {
+            "alive": 1171,
+            "guarded": 1140,
+            "threatSamples": 0,
+            "guardedThreatSamples": 0,
+            "trueThreatSamples": 0,
+            "errorThreatSamples": 0
+          },
+          "installs": 1,
+          "guardDispatches": []
+        }
+      ],
+      "passes": 3,
+      "deaths": 0,
+      "counts": {
+        "alive": 3638,
+        "guarded": 3533,
+        "threatSamples": 0,
+        "guardedThreatSamples": 0,
+        "trueThreatSamples": 0,
+        "errorThreatSamples": 0
+      },
+      "guardFirings": 0,
+      "guardCommands": 0,
+      "guardDispatchMs": {
+        "median": null,
+        "max": null
+      },
+      "authorship": {
+        "sourceCalls": 18,
+        "savedCalls": 0,
+        "templateCalls": 0
+      }
+    },
+    "after-ladder": {
+      "runs": [
+        {
+          "repetition": 1,
+          "pass": true,
+          "deaths": 0,
+          "evaluation": {
+            "pass": true,
+            "passAt": 1792243593780,
+            "timeToPassMs": 550155,
+            "source": "samples",
+            "passTicks": 11003,
+            "evidence": {
+              "at": 1792243593780,
+              "gameTime": 11144,
+              "position": {
+                "x": 390.5,
+                "y": 67,
+                "z": 392.5
+              },
+              "dimension": "minecraft:overworld",
+              "health": 20,
+              "deathCounter": 0
+            },
+            "status": "EVALUATED",
+            "check": "survive_duration: 11000 ticks; any death fails attempt",
+            "spec": {
+              "type": "survive",
+              "ticks": 11000
+            },
+            "samples": 546,
+            "clock": "game-ticks"
+          },
+          "sourceChangedDuringRun": false,
+          "coordinatorSha256": "8becac9eb9edf68f3edcd5b94fe45a479913a8452d62df05b5d26a208a9f20c4",
+          "jarSha256": "128ca048309261fb5ca0db4e10176103ef750257dddfe42c7292233777df7287",
+          "artifacts": "/home/agaminggod/.t3/worktrees/agents arena/t3-04798a50/runtime/headless-runs/run-1792242997549-317fa365/q-cf7fd0-a883-L-A6-r1-4f3a2396",
+          "analysis": "/home/agaminggod/Desktop/Projects/arena-beat-game/reflex/after-ladder-analysis-r1",
+          "observerErrors": [],
+          "measurementStatus": "INCOMPLETE",
+          "runnerTermination": "EVALUATOR_PASS",
+          "authorship": {
+            "sourceCalls": 6,
+            "savedCalls": 0,
+            "templateCalls": 0
+          },
+          "counts": {
+            "alive": 1179,
+            "guarded": 1140,
+            "threatSamples": 0,
+            "guardedThreatSamples": 0,
+            "trueThreatSamples": 0,
+            "errorThreatSamples": 0
+          },
+          "installs": 1,
+          "guardDispatches": []
+        },
+        {
+          "repetition": 2,
+          "pass": true,
+          "deaths": 0,
+          "evaluation": {
+            "pass": true,
+            "passAt": 1792244180924,
+            "timeToPassMs": 550401,
+            "source": "samples",
+            "passTicks": 11007,
+            "evidence": {
+              "at": 1792244180924,
+              "gameTime": 11082,
+              "position": {
+                "x": 390.5,
+                "y": 66,
+                "z": 392.5
+              },
+              "dimension": "minecraft:overworld",
+              "health": 20,
+              "deathCounter": 0
+            },
+            "status": "EVALUATED",
+            "check": "survive_duration: 11000 ticks; any death fails attempt",
+            "spec": {
+              "type": "survive",
+              "ticks": 11000
+            },
+            "samples": 545,
+            "clock": "game-ticks"
+          },
+          "sourceChangedDuringRun": false,
+          "coordinatorSha256": "8becac9eb9edf68f3edcd5b94fe45a479913a8452d62df05b5d26a208a9f20c4",
+          "jarSha256": "128ca048309261fb5ca0db4e10176103ef750257dddfe42c7292233777df7287",
+          "artifacts": "/home/agaminggod/.t3/worktrees/agents arena/t3-04798a50/runtime/headless-runs/run-1792243598363-4851337e/q-cfkaxv-1ed1-L-A6-r2-05c8c8b1",
+          "analysis": "/home/agaminggod/Desktop/Projects/arena-beat-game/reflex/after-ladder-analysis-r2",
+          "observerErrors": [],
+          "measurementStatus": "INCOMPLETE",
+          "runnerTermination": "EVALUATOR_PASS",
+          "authorship": {
+            "sourceCalls": 4,
+            "savedCalls": 0,
+            "templateCalls": 0
+          },
+          "counts": {
+            "alive": 1617,
+            "guarded": 1545,
+            "threatSamples": 0,
+            "guardedThreatSamples": 0,
+            "trueThreatSamples": 0,
+            "errorThreatSamples": 0
+          },
+          "installs": 1,
+          "guardDispatches": []
+        },
+        {
+          "repetition": 3,
+          "pass": true,
+          "deaths": 0,
+          "evaluation": {
+            "pass": true,
+            "passAt": 1792244779469,
+            "timeToPassMs": 550409,
+            "source": "samples",
+            "passTicks": 11006,
+            "evidence": {
+              "at": 1792244779469,
+              "gameTime": 11096,
+              "position": {
+                "x": 390.5,
+                "y": 66,
+                "z": 392.5
+              },
+              "dimension": "minecraft:overworld",
+              "health": 20,
+              "deathCounter": 0
+            },
+            "status": "EVALUATED",
+            "check": "survive_duration: 11000 ticks; any death fails attempt",
+            "spec": {
+              "type": "survive",
+              "ticks": 11000
+            },
+            "samples": 545,
+            "clock": "game-ticks"
+          },
+          "sourceChangedDuringRun": false,
+          "coordinatorSha256": "8becac9eb9edf68f3edcd5b94fe45a479913a8452d62df05b5d26a208a9f20c4",
+          "jarSha256": "128ca048309261fb5ca0db4e10176103ef750257dddfe42c7292233777df7287",
+          "artifacts": "/home/agaminggod/.t3/worktrees/agents arena/t3-04798a50/runtime/headless-runs/run-1792244188723-f3511a76/q-cfwy93-316c-L-A6-r3-09a327f1",
+          "analysis": "/home/agaminggod/Desktop/Projects/arena-beat-game/reflex/after-ladder-analysis-r3",
+          "observerErrors": [],
+          "measurementStatus": "INCOMPLETE",
+          "runnerTermination": "EVALUATOR_PASS",
+          "authorship": {
+            "sourceCalls": 5,
+            "savedCalls": 0,
+            "templateCalls": 0
+          },
+          "counts": {
+            "alive": 1615,
+            "guarded": 1581,
+            "threatSamples": 0,
+            "guardedThreatSamples": 0,
+            "trueThreatSamples": 0,
+            "errorThreatSamples": 0
+          },
+          "installs": 1,
+          "guardDispatches": []
+        }
+      ],
+      "passes": 3,
+      "deaths": 0,
+      "counts": {
+        "alive": 4411,
+        "guarded": 4266,
+        "threatSamples": 0,
+        "guardedThreatSamples": 0,
+        "trueThreatSamples": 0,
+        "errorThreatSamples": 0
+      },
+      "guardFirings": 0,
+      "guardCommands": 0,
+      "guardDispatchMs": {
+        "median": null,
+        "max": null
+      },
+      "authorship": {
+        "sourceCalls": 15,
+        "savedCalls": 0,
+        "templateCalls": 0
+      }
+    }
+  },
+  "complete": true,
+  "tests": {
+    "npmTest": {
+      "passed": 6638,
+      "skipped": 75,
+      "expectedWindowsFailures": 11,
+      "log": "/home/agaminggod/Desktop/Projects/arena-beat-game/reflex/npm-test.log"
+    },
+    "focused": {
+      "passed": 78,
+      "log": "/home/agaminggod/Desktop/Projects/arena-beat-game/reflex/focused.log"
+    },
+    "contracts": {
+      "passed": 593,
+      "log": "/home/agaminggod/Desktop/Projects/arena-beat-game/reflex/contracts.log"
+    },
+    "javaBuild": "PASS, Java 25, 34 tasks executed"
+  },
+  "quickRegression": {
+    "path": "/home/agaminggod/Desktop/Projects/arena-beat-game/evals/reflex-quick",
+    "verdict": "PASS",
+    "baseline": "ab0fac813f4e4976d82cc7de05a153e7acf7777b",
+    "candidate": "5ef8e92720f1f3ec2afed320d6362d24c862dc7e",
+    "samplesPerCase": 6,
+    "cases": 76,
+    "overall": {
+      "name": "(overall)",
+      "cases": 76,
+      "sources": 76,
+      "pairedCases": 76,
+      "candidate": {
+        "good": 275,
+        "n": 456,
+        "meanCaseRate": 0.6030701754385965,
+        "pooled": {
+          "rate": 0.6030701754385965,
+          "low": 0.5574825990307082,
+          "high": 0.6469356807848432,
+          "n": 456
+        }
+      },
+      "baseline": {
+        "good": 270,
+        "n": 456,
+        "meanCaseRate": 0.5921052631578947
+      },
+      "meanDelta": 0.010964912280701752,
+      "pWorse": 0.797039236015392,
+      "pBetter": 0.2898227488731663,
+      "belowThreshold": 27,
+      "coverage": {
+        "complete": true,
+        "arms": {
+          "candidate": {
+            "planned": 456,
+            "usable": 456,
+            "share": 1
+          },
+          "baseline": {
+            "planned": 456,
+            "usable": 456,
+            "share": 1
+          }
+        },
+        "shortCases": []
+      },
+      "complete": true,
+      "pWorseHolm": 0.797039236015392,
+      "pBetterHolm": 0.2898227488731663
+    },
+    "coverage": {
+      "incompleteFraction": 0,
+      "errors": 0,
+      "ungraded": 0,
+      "planned": 912,
+      "incompleteFamilies": []
+    },
+    "families": [
+      {
+        "name": "melee-threat-low-health",
+        "cases": 3,
+        "sources": 3,
+        "decided": true,
+        "candidate": 0.6666666666666666,
+        "baseline": 0.6666666666666666,
+        "deltaPts": 0,
+        "pWorse": 1,
+        "pWorseHolm": 1
+      },
+      {
+        "name": "creeper-post-escape",
+        "cases": 3,
+        "sources": 3,
+        "decided": true,
+        "candidate": 1,
+        "baseline": 1,
+        "deltaPts": 0,
+        "pWorse": 1,
+        "pWorseHolm": 1
+      },
+      {
+        "name": "creeper-near",
+        "cases": 3,
+        "sources": 3,
+        "decided": true,
+        "candidate": 0.9444444444444445,
+        "baseline": 0.6666666666666666,
+        "deltaPts": 27.8,
+        "pWorse": 1,
+        "pWorseHolm": 1
+      }
+    ]
+  },
+  "historicalRun5": {
+    "snapshot": "/home/agaminggod/Desktop/Projects/arena-beat-game/reflex/run5-snapshot",
+    "analysis": "/home/agaminggod/Desktop/Projects/arena-beat-game/reflex/run5-final",
+    "observationPrefixRotatedOut": true,
+    "counts": {
+      "alive": 6064,
+      "guarded": 5858,
+      "threatSamples": 644,
+      "guardedThreatSamples": 629,
+      "trueThreatSamples": 43,
+      "errorThreatSamples": 0
+    }
+  },
+  "limitations": [
+    "Three repetitions per arm are not a reliable estimate of long-game survival.",
+    "No threat observations occurred in the six L-A6 runs; the fixture exercises mob reactions.",
+    "Live token reconciliation was incomplete; token costs and idle metrics were not used.",
+    "Underlying live runner reports timeout/evaluator-stop separately from factual survival.",
+    "Thin-platform pilots before-fixture/after-fixture excluded; final arena comparison uses thick floor and boundary walls."
+  ]
+}

@@ -1,0 +1,312 @@
+{
+  "runtimeHead": "6345839ef4a61df87e8da7115c6ce0e61f433be5",
+  "protocol": "Six substantive original travel courses, fresh base 4682f12e and candidate arms, same Mini PC worker, CPU quota 400%, JVM ActiveProcessorCount=4. Odd pairs base first, even pairs candidate first. No outcome resampling.",
+  "pairs": [
+    {
+      "pair": 1,
+      "run": 1,
+      "courseId": "entry9-fortress",
+      "state": "COMPLETE",
+      "attempts": [
+        {
+          "index": 1,
+          "state": "COMPLETE",
+          "base": {
+            "out": "/home/agaminggod/Desktop/Projects/arena-beat-game/evals/d39-travel3/courses/pair-1-base",
+            "exitCode": 0,
+            "host": "minipc",
+            "cpuCount": 4,
+            "cpuQuota": "400%",
+            "jvmActiveProcessorCount": 4,
+            "hostCpu": {
+              "mean": 16.661308314365684,
+              "max": 64.89795918367346,
+              "samples": 223,
+              "basis": "host /proc/stat at 2-second cadence, only the measured course interval",
+              "nominalSampleCoverageFraction": 0.9991039426523298
+            },
+            "bootRequestedAt": 1792940779.921424,
+            "endedAt": 1792941432.8051574,
+            "jarSha256": "3d76f0c7295c6ca247c09d79d39ee4971d735f0ef6e5220d9e18eac19e75173b"
+          },
+          "candidate": {
+            "out": "/home/agaminggod/Desktop/Projects/arena-beat-game/evals/d39-travel3/courses/pair-1-candidate",
+            "exitCode": 0,
+            "host": "minipc",
+            "cpuCount": 4,
+            "cpuQuota": "400%",
+            "jvmActiveProcessorCount": 4,
+            "hostCpu": {
+              "mean": 36.726352114057434,
+              "max": 90.9572809479264,
+              "samples": 235,
+              "basis": "host /proc/stat at 2-second cadence, only the measured course interval",
+              "nominalSampleCoverageFraction": 0.9987250318742031
+            },
+            "bootRequestedAt": 1792941432.8117437,
+            "endedAt": 1792941986.830994,
+            "jarSha256": "53545d9bf635763da270c9077888de9e675d4587f86e833149c20eb52670f88f"
+          }
+        }
+      ],
+      "acceptedAttempt": 1,
+      "loadFlags": [
+        "host mean CPU differs by over 15 percentage points"
+      ]
+    },
+    {
+      "pair": 2,
+      "run": 1,
+      "courseId": "y55-fortress",
+      "state": "COMPLETE",
+      "attempts": [
+        {
+          "index": 1,
+          "state": "COMPLETE",
+          "candidate": {
+            "out": "/home/agaminggod/Desktop/Projects/arena-beat-game/evals/d39-travel3/courses/pair-2-candidate",
+            "exitCode": 0,
+            "host": "minipc",
+            "cpuCount": 4,
+            "cpuQuota": "400%",
+            "jvmActiveProcessorCount": 4,
+            "hostCpu": {
+              "mean": 17.58681771301917,
+              "max": 65.88902900378311,
+              "samples": 83,
+              "basis": "host /proc/stat at 2-second cadence, only the measured course interval",
+              "nominalSampleCoverageFraction": 1
+            },
+            "bootRequestedAt": 1792941986.864867,
+            "endedAt": 1792942200.139962,
+            "jarSha256": "53545d9bf635763da270c9077888de9e675d4587f86e833149c20eb52670f88f"
+          },
+          "base": {
+            "out": "/home/agaminggod/Desktop/Projects/arena-beat-game/evals/d39-travel3/courses/pair-2-base",
+            "exitCode": 0,
+            "host": "minipc",
+            "cpuCount": 4,
+            "cpuQuota": "400%",
+            "jvmActiveProcessorCount": 4,
+            "hostCpu": {
+              "mean": 25.304322625667616,
+              "max": 82.25705329153605,
+              "samples": 360,
+              "basis": "host /proc/stat at 2-second cadence, only the measured course interval",
+              "nominalSampleCoverageFraction": 0.9997222993612884
+            },
+            "bootRequestedAt": 1792942200.149575,
+            "endedAt": 1792942963.4057703,
+            "jarSha256": "3d76f0c7295c6ca247c09d79d39ee4971d735f0ef6e5220d9e18eac19e75173b"
+          }
+        }
+      ],
+      "acceptedAttempt": 1,
+      "loadFlags": []
+    },
+    {
+      "pair": 3,
+      "run": 1,
+      "courseId": "high110-fortress",
+      "state": "COMPLETE",
+      "attempts": [
+        {
+          "index": 1,
+          "state": "COMPLETE",
+          "base": {
+            "out": "/home/agaminggod/Desktop/Projects/arena-beat-game/evals/d39-travel3/courses/pair-3-base",
+            "exitCode": 0,
+            "host": "minipc",
+            "cpuCount": 4,
+            "cpuQuota": "400%",
+            "jvmActiveProcessorCount": 4,
+            "hostCpu": {
+              "mean": 19.48960978601676,
+              "max": 71.2035286704474,
+              "samples": 182,
+              "basis": "host /proc/stat at 2-second cadence, only the measured course interval",
+              "nominalSampleCoverageFraction": 0.5054151624548736,
+              "samplingNote": "Pair 3 base host-CPU sampler covers about 50.5% of its measured interval because the Python coordinator and sampler thread were SIGSTOPped to yield the next live slot to the fire diagnostic. The Minecraft child continued; full wall time and game ticks are retained."
+            },
+            "bootRequestedAt": 1792942963.4310107,
+            "endedAt": 1792943843.701795,
+            "jarSha256": "3d76f0c7295c6ca247c09d79d39ee4971d735f0ef6e5220d9e18eac19e75173b"
+          },
+          "candidate": {
+            "out": "/home/agaminggod/Desktop/Projects/arena-beat-game/evals/d39-travel3/courses/pair-3-candidate",
+            "exitCode": 0,
+            "host": "minipc",
+            "cpuCount": 4,
+            "cpuQuota": "400%",
+            "jvmActiveProcessorCount": 4,
+            "hostCpu": {
+              "mean": 18.394490451213876,
+              "max": 65.59748427672956,
+              "samples": 265,
+              "basis": "host /proc/stat at 2-second cadence, only the measured course interval",
+              "nominalSampleCoverageFraction": 1
+            },
+            "bootRequestedAt": 1792943843.7061996,
+            "endedAt": 1792944772.1249573,
+            "jarSha256": "53545d9bf635763da270c9077888de9e675d4587f86e833149c20eb52670f88f"
+          }
+        }
+      ],
+      "acceptedAttempt": 1,
+      "loadFlags": []
+    },
+    {
+      "pair": 4,
+      "run": 1,
+      "courseId": "entry9-east300",
+      "state": "COMPLETE",
+      "attempts": [
+        {
+          "index": 1,
+          "state": "COMPLETE",
+          "candidate": {
+            "out": "/home/agaminggod/Desktop/Projects/arena-beat-game/evals/d39-travel3/courses/pair-4-candidate",
+            "exitCode": 0,
+            "host": "minipc",
+            "cpuCount": 4,
+            "cpuQuota": "400%",
+            "jvmActiveProcessorCount": 4,
+            "hostCpu": {
+              "mean": 31.500983925474767,
+              "max": 71.7219589257504,
+              "samples": 77,
+              "basis": "host /proc/stat at 2-second cadence, only the measured course interval",
+              "nominalSampleCoverageFraction": 1
+            },
+            "bootRequestedAt": 1792944772.129561,
+            "endedAt": 1792945007.894127,
+            "jarSha256": "53545d9bf635763da270c9077888de9e675d4587f86e833149c20eb52670f88f"
+          },
+          "base": {
+            "out": "/home/agaminggod/Desktop/Projects/arena-beat-game/evals/d39-travel3/courses/pair-4-base",
+            "exitCode": 0,
+            "host": "minipc",
+            "cpuCount": 4,
+            "cpuQuota": "400%",
+            "jvmActiveProcessorCount": 4,
+            "hostCpu": {
+              "mean": 21.50182110825682,
+              "max": 82.6868495742668,
+              "samples": 209,
+              "basis": "host /proc/stat at 2-second cadence, only the measured course interval",
+              "nominalSampleCoverageFraction": 0.9980897803247373
+            },
+            "bootRequestedAt": 1792945007.8982096,
+            "endedAt": 1792945512.3785572,
+            "jarSha256": "3d76f0c7295c6ca247c09d79d39ee4971d735f0ef6e5220d9e18eac19e75173b"
+          }
+        }
+      ],
+      "acceptedAttempt": 1,
+      "loadFlags": []
+    },
+    {
+      "pair": 5,
+      "run": 1,
+      "courseId": "gold2-north300",
+      "state": "COMPLETE",
+      "attempts": [
+        {
+          "index": 1,
+          "state": "COMPLETE",
+          "base": {
+            "out": "/home/agaminggod/Desktop/Projects/arena-beat-game/evals/d39-travel3/courses/pair-5-base",
+            "exitCode": 0,
+            "host": "minipc",
+            "cpuCount": 4,
+            "cpuQuota": "400%",
+            "jvmActiveProcessorCount": 4,
+            "hostCpu": {
+              "mean": 7.56525623429075,
+              "max": 33.617963314358,
+              "samples": 166,
+              "basis": "host /proc/stat at 2-second cadence, only the measured course interval",
+              "nominalSampleCoverageFraction": 1
+            },
+            "bootRequestedAt": 1792945512.3833447,
+            "endedAt": 1792945928.4085484,
+            "jarSha256": "3d76f0c7295c6ca247c09d79d39ee4971d735f0ef6e5220d9e18eac19e75173b"
+          },
+          "candidate": {
+            "out": "/home/agaminggod/Desktop/Projects/arena-beat-game/evals/d39-travel3/courses/pair-5-candidate",
+            "exitCode": 0,
+            "host": "minipc",
+            "cpuCount": 4,
+            "cpuQuota": "400%",
+            "jvmActiveProcessorCount": 4,
+            "hostCpu": {
+              "mean": 10.676387284897443,
+              "max": 67.92571608435631,
+              "samples": 43,
+              "basis": "host /proc/stat at 2-second cadence, only the measured course interval",
+              "nominalSampleCoverageFraction": 0.9839816933638443
+            },
+            "bootRequestedAt": 1792945928.412563,
+            "endedAt": 1792946099.3015213,
+            "jarSha256": "53545d9bf635763da270c9077888de9e675d4587f86e833149c20eb52670f88f"
+          }
+        }
+      ],
+      "acceptedAttempt": 1,
+      "loadFlags": []
+    },
+    {
+      "pair": 6,
+      "run": 1,
+      "courseId": "fortress3-bastion",
+      "state": "COMPLETE",
+      "attempts": [
+        {
+          "index": 1,
+          "state": "COMPLETE",
+          "candidate": {
+            "out": "/home/agaminggod/Desktop/Projects/arena-beat-game/evals/d39-travel3/courses/pair-6-candidate",
+            "exitCode": 0,
+            "host": "minipc",
+            "cpuCount": 4,
+            "cpuQuota": "400%",
+            "jvmActiveProcessorCount": 4,
+            "hostCpu": {
+              "mean": 7.6558250308125455,
+              "max": 16.650928548945544,
+              "samples": 74,
+              "basis": "host /proc/stat at 2-second cadence, only the measured course interval",
+              "nominalSampleCoverageFraction": 0.9979770734996628
+            },
+            "bootRequestedAt": 1792946099.3081129,
+            "endedAt": 1792946328.9580224,
+            "jarSha256": "53545d9bf635763da270c9077888de9e675d4587f86e833149c20eb52670f88f"
+          },
+          "base": {
+            "out": "/home/agaminggod/Desktop/Projects/arena-beat-game/evals/d39-travel3/courses/pair-6-base",
+            "exitCode": 0,
+            "host": "minipc",
+            "cpuCount": 4,
+            "cpuQuota": "400%",
+            "jvmActiveProcessorCount": 4,
+            "hostCpu": {
+              "mean": 15.593035917175326,
+              "max": 75.62519784742007,
+              "samples": 287,
+              "basis": "host /proc/stat at 2-second cadence, only the measured course interval",
+              "nominalSampleCoverageFraction": 1
+            },
+            "bootRequestedAt": 1792946328.9618552,
+            "endedAt": 1792947708.8028085,
+            "jarSha256": "3d76f0c7295c6ca247c09d79d39ee4971d735f0ef6e5220d9e18eac19e75173b"
+          }
+        }
+      ],
+      "acceptedAttempt": 1,
+      "loadFlags": []
+    }
+  ],
+  "samplingNotes": [
+    "Pair 3 base host-CPU sampler covers about 50.5% of its measured interval because the Python coordinator and sampler thread were SIGSTOPped to yield the next live slot to the fire diagnostic. The Minecraft child continued; full wall time and game ticks are retained."
+  ]
+}

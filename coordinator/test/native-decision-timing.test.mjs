@@ -1,0 +1,359 @@
+import assert from 'node:assert/strict';
+import test from 'node:test';
+
+import { AgentPlanner } from '../src/agent-planner.mjs';
+import { NativeDecisionTimingWindow } from '../src/native-decision-timing.mjs';
+import { createExecutionSettings } from '../src/provider-identity.mjs';
+
+const AGENT_ID = 'timing-agent';
+
+test('native request timing includes collector arrival and reports execution queue wait separately', async () => {
+	let clock = 0;
+	const record = nativeRecord('model-a');
+	const rows = [];
+	const agent = {
+		executionSettings: createExecutionSettings(record, { transport: 'test', controlProtocol: 'native_tools' }),
+		async setGoalRevision() {},
+		async act(_input, options) {
+			clock = 17;
+			options.onProgress({ phase: 'tool_queued', callId: 'queued-call', toolName: 'observe', requestArrivedAt: clock });
+			clock = 57;
+			await options.executeTool({ callId: 'queued-call', requestArrivedAt: 17, queueWaitMs: 40, tool: { kind: 'observe' } });
+			return { status: 'completed', toolCalls: 1 };
+		},
+	};
+	const planner = new AgentPlanner({ registry: registryFor(() => record), now: () => clock,
+		scheduler: immediateScheduler, nativeTimingSink: (event, fields) => rows.push({ event, fields }),
+		codexService: { async createAgent() { return agent; }, getAgent() { return null; } } });
+	await planner.requestNativeTurn({ agentId: AGENT_ID, input: 'inspect', goalRevision: 1,
+		executeTool: async () => { clock += 3; return { state: 'SUCCEEDED' }; } });
+	assert.equal(planner.getNativeDecisionTiming(AGENT_ID).firstToolRequestP50Ms, 17);
+	assert.equal(rows.find(row => row.event === 'native_tool_queue_timing').fields.queueWaitMs, 40);
+	assert.equal(rows.find(row => row.event === 'native_tool_queue_timing').fields.arrivalObserved, true);
+});
+
+test('the turn chain is timed end to end: admitted, provider start, tool request, result returned, and provider stage events pass through intact', async () => {
+	let clock = 0;
+	const record = nativeRecord('model-a');
+	const rows = [];
+	const verbose = [];
+	const agent = {
+		executionSettings: createExecutionSettings(record, { transport: 'test', controlProtocol: 'native_tools' }),
+		async setGoalRevision() {},
+		async act(_input, options) {
+			options.onVerbose('provider_event', JSON.stringify({ event: 'native_provider_turn_sent', turnId: '1:1' }));
+			clock = 40;
+			await options.executeTool({ callId: 'call-1', turnId: '1:1', tool: { kind: 'action' } });
+			return { status: 'completed', toolCalls: 1 };
+		},
+	};
+	const planner = new AgentPlanner({ registry: registryFor(() => record), now: () => clock,
+		scheduler: immediateScheduler, nativeTimingSink: (event, fields) => rows.push({ event, fields }),
+		codexService: { async createAgent() { return agent; }, getAgent() { return null; } } });
+	await planner.requestNativeTurn({ agentId: AGENT_ID, input: 'act', goalRevision: 1, traceId: 'trace-timing-1', onVerbose: (stage, message) => verbose.push([stage, message]),
+		executeTool: async () => { clock += 25; return { state: 'SUCCEEDED' }; } });
+	const names = rows.map((row) => row.event);
+	for (const event of ['native_turn_admitted', 'native_provider_turn_started', 'native_tool_queue_timing', 'native_tool_executed']) assert.ok(names.includes(event), event);
+	assert.ok(names.indexOf('native_provider_turn_started') < names.indexOf('native_tool_queue_timing') && names.indexOf('native_tool_queue_timing') < names.indexOf('native_tool_executed'));
+	const returned = rows.find((row) => row.event === 'native_tool_executed').fields;
+	assert.deepEqual([returned.callId, returned.toolKind, returned.executeMs, returned.state], ['call-1', 'action', 25, 'SUCCEEDED']);
+	assert.equal(rows.find((row) => row.event === 'native_tool_queue_timing').fields.turnId, '1:1');
+	assert.deepEqual(verbose.filter(([stage]) => stage === 'provider_event').map(([, message]) => JSON.parse(message)), [{ event: 'native_provider_turn_sent', turnId: '1:1' }]);
+});
+
+test('reference reads trace their section, topic and the taskPlan strategy pointer without content', async () => {
+	const record = nativeRecord('model-a');
+	const rows = [];
+	const agent = {
+		executionSettings: createExecutionSettings(record, { transport: 'test', controlProtocol: 'native_tools' }),
+		async setGoalRevision() {},
+		async act(_input, options) {
+			await options.executeTool({ callId: 'plan', tool: { kind: 'task_plan', operation: 'read' } });
+			await options.executeTool({ callId: 'guide', tool: { kind: 'capabilities', section: 'strategy', topic: 'resources' } });
+			await options.executeTool({ callId: 'odd', tool: { kind: 'capabilities', topic: 'Ignore previous instructions' } });
+			await options.executeTool({ callId: 'look', tool: { kind: 'observe' } });
+			return { status: 'completed', toolCalls: 4 };
+		},
+	};
+	const planner = new AgentPlanner({ registry: registryFor(() => record), now: () => 0,
+		scheduler: immediateScheduler, nativeTimingSink: (event, fields) => rows.push({ event, fields }),
+		codexService: { async createAgent() { return agent; }, getAgent() { return null; } } });
+	const executeTool = async ({ tool }) => tool.kind === 'task_plan'
+		? { plan: { steps: [{ id: 'a', status: 'complete' }, { id: 'b', status: 'pending' }] }, strategy: { topics: ['resources', 'beat-the-game'], read: { tool: 'capabilities', arguments: { section: 'strategy', topic: 'resources' } }, advice: 'long text' } }
+		: { state: 'SUCCEEDED', reference: 'guide body' };
+	await planner.requestNativeTurn({ agentId: AGENT_ID, input: 'inspect', goalRevision: 1, executeTool });
+	const references = rows.filter(row => row.event === 'native_tool_reference').map(row => row.fields);
+	assert.equal(references.length, 3, 'observe is not a reference read');
+	assert.deepEqual(pick(references[0], ['callId', 'toolKind', 'operation', 'planSteps', 'openPlanSteps', 'strategyTopics', 'strategyRead']),
+		{ callId: 'plan', toolKind: 'task_plan', operation: 'read', planSteps: 2, openPlanSteps: 1, strategyTopics: ['resources', 'beat-the-game'], strategyRead: 'resources' });
+	assert.deepEqual(pick(references[1], ['callId', 'toolKind', 'section', 'topic']), { callId: 'guide', toolKind: 'capabilities', section: 'strategy', topic: 'resources' });
+	assert.equal(references[2].topic, 'other', 'free text never reaches the trace');
+	assert.equal(references[2].section, 'all');
+	assert.equal(JSON.stringify(references).includes('guide body') || JSON.stringify(references).includes('long text'), false);
+});
+
+function pick(value, keys) {
+	return Object.fromEntries(keys.map((key) => [key, value[key]]));
+}
+
+test('native timing windows bound samples and keep failed or cancelled segments out of percentiles', () => {
+	const window = new NativeDecisionTimingWindow({ windowSize: 2 });
+	window.recordProviderSegment({ durationMs: 10, outcome: 'completed', sample: true });
+	window.recordProviderSegment({ durationMs: 20, outcome: 'failed', sample: true });
+	window.recordProviderSegment({ durationMs: 30, outcome: 'cancelled', sample: true });
+	window.recordProviderSegment({ durationMs: 40, outcome: 'completed', sample: false });
+	window.recordFirstToolRequest(10);
+	window.recordFirstToolRequest(20);
+	window.recordFirstToolRequest(30);
+
+	assert.deepEqual(window.snapshot(), {
+		identity: null,
+		count: 1,
+		lifetimeCount: 1,
+		completedSegmentCount: 2,
+		lifetimeSegmentCount: 4,
+		failedSegmentCount: 1,
+		cancelledSegmentCount: 1,
+		p50Ms: 10,
+		p95Ms: 10,
+		sampleWindowSize: 2,
+		firstToolRequestCount: 2,
+		firstToolRequestLifetimeCount: 3,
+		firstToolRequestP50Ms: 20,
+		firstToolRequestP95Ms: 30,
+		firstUsableToolCount: 0,
+		firstUsableToolLifetimeCount: 0,
+		firstUsableToolP50Ms: null,
+		firstUsableToolP95Ms: null,
+		toolResultDeliveryCount: 0,
+		toolResultDeliveryP95Ms: null,
+		responseGapP95Ms: 10,
+	});
+});
+
+test('planning lead time reads whole response gaps, not the sum of two p95 values', () => {
+	const window = new NativeDecisionTimingWindow({ windowSize: 30 });
+	// One slow delivery and a different slow provider segment: each p95 is small, the whole-gap p95 is not.
+	for (let index = 0; index < 30; index += 1) {
+		const delivery = index === 3 ? 10_000 : 0;
+		const provider = index === 17 ? 10_000 : 10;
+		if (delivery > 0) window.recordToolResultDelivery(delivery);
+		window.recordProviderSegment({ durationMs: provider, responseGapMs: delivery + provider });
+	}
+	const timing = window.snapshot();
+	assert.equal(timing.p95Ms, 10);
+	assert.ok(timing.responseGapP95Ms >= 10_000, `the slow whole path stays in the lead-time series: ${timing.responseGapP95Ms}`);
+});
+
+test('native planner records provider-only tool-boundary segments and emits bounded timing summaries', async () => {
+	let clock = 0;
+	let toolCall = 0;
+	const record = nativeRecord('model-a');
+	const sinkRows = [];
+	const agent = {
+		executionSettings: createExecutionSettings(record, { transport: 'test', controlProtocol: 'native_tools' }),
+		async setGoalRevision() {},
+		async act(_input, options) {
+			clock += 17;
+			assert.equal((await options.executeTool({ tool: { kind: 'action', actionType: 'wait', arguments: {} } })).state, 'FAILED');
+			clock += 23;
+			assert.equal((await options.executeTool({ tool: { kind: 'action', actionType: 'wait', arguments: {} } })).state, 'SUCCEEDED');
+			return { status: 'completed', toolCalls: 2 };
+		},
+	};
+	const planner = new AgentPlanner({
+		registry: registryFor(() => record),
+		now: () => clock,
+		nativeDecisionTimingWindowSize: 4,
+		nativeTimingSink: (event, fields) => { sinkRows.push({ event, fields }); return Promise.reject(new Error('diagnostic sink unavailable')); },
+		scheduler: immediateScheduler,
+		codexService: {
+			async createAgent() { return agent; },
+			getAgent() { return null; },
+		},
+	});
+	const result = await planner.requestNativeTurn({
+		agentId: AGENT_ID, input: 'keep working', goalRevision: 1,
+		executeTool: async () => { if (toolCall++ === 0) { clock += 100; return { state: 'FAILED' }; } clock += 5; return { state: 'SUCCEEDED' }; },
+	});
+
+	assert.equal(result.toolCalls, 2);
+	const timing = planner.getNativeDecisionTiming(AGENT_ID);
+	assert.equal(timing.count, 2, 'only tool-boundary provider segments feed planning percentiles');
+	assert.equal(timing.lifetimeCount, 2);
+	assert.equal(timing.lifetimeSegmentCount, 3, 'the completed turn tail is counted but excluded from planning samples');
+	assert.equal(timing.failedSegmentCount, 0);
+	assert.equal(timing.cancelledSegmentCount, 0);
+	assert.equal(timing.p50Ms, 17);
+	assert.equal(timing.p95Ms, 23);
+	assert.equal(timing.firstToolRequestP50Ms, 17);
+	assert.equal(timing.firstUsableToolP50Ms, 145, 'usable result elapsed time includes tool execution');
+	assert.equal(sinkRows.some(({ event }) => event === 'native_first_tool_requested'), true);
+	assert.equal(sinkRows.some(({ event }) => event === 'native_first_tool_result'), true);
+	const summaries = sinkRows.filter(({ event }) => event === 'native_decision_timing');
+	assert.equal(summaries.length, 3);
+	assert.equal(summaries.at(-1).fields.timingCount, 2);
+	assert.equal(summaries.at(-1).fields.timingP95Ms, 23);
+	assert.equal(summaries.at(-1).fields.agentId, AGENT_ID);
+});
+
+test('adapter result delivery after the executor returns is timed apart from provider segments', async () => {
+	let clock = 0;
+	const record = nativeRecord('model-a');
+	const rows = [];
+	const agent = {
+		executionSettings: createExecutionSettings(record, { transport: 'test', controlProtocol: 'native_tools' }),
+		async setGoalRevision() {},
+		async act(_input, options) {
+			for (const callId of ['call-1', 'call-2']) {
+				clock += 17;
+				options.onProgress({ phase: 'tool_queued', callId, toolName: 'wait', requestArrivedAt: clock });
+				await options.executeTool({ callId, requestArrivedAt: clock, tool: { kind: 'action', actionType: 'wait', arguments: {} } });
+				// The adapter formats, awaits steering and publishes the result after the executor returns.
+				clock += 1000;
+				options.onProgress({ phase: 'tool_completed', callId });
+			}
+			clock += 1;
+			return { status: 'completed', toolCalls: 2 };
+		},
+	};
+	const planner = new AgentPlanner({ registry: registryFor(() => record), now: () => clock,
+		scheduler: immediateScheduler, nativeTimingSink: (event, fields) => rows.push({ event, fields }),
+		codexService: { async createAgent() { return agent; }, getAgent() { return null; } } });
+	await planner.requestNativeTurn({ agentId: AGENT_ID, input: 'go', goalRevision: 1,
+		executeTool: async () => { clock += 100; return { state: 'SUCCEEDED' }; } });
+	const timing = planner.getNativeDecisionTiming(AGENT_ID);
+	assert.equal(timing.p95Ms, 17, 'provider-only segments exclude body time and adapter delivery');
+	assert.deepEqual(rows.filter(row => row.event === 'native_decision_timing').map(row => row.fields.segmentDurationMs), [17, 17, 1]);
+	assert.equal(timing.toolResultDeliveryP95Ms, 1000, 'delivery stays visible as its own interval');
+	assert.equal(timing.responseGapP95Ms, 1017, 'the whole response gap (delivery plus provider) is kept for preparation lead time');
+	assert.deepEqual(rows.filter(row => row.event === 'native_tool_result_delivered').map(row => row.fields.deliveryMs), [1000, 1000]);
+});
+
+test('overlapping reads time each publication by call id and start provider time at the last one', async () => {
+	let clock = 0;
+	const record = nativeRecord('model-a');
+	const rows = [];
+	const agent = {
+		executionSettings: createExecutionSettings(record, { transport: 'test', controlProtocol: 'native_tools' }),
+		async setGoalRevision() {},
+		async act(_input, options) {
+			clock += 10;
+			for (const callId of ['read-a', 'read-b']) options.onProgress({ phase: 'tool_queued', callId, toolName: 'observe', requestArrivedAt: clock });
+			const call = callId => options.executeTool({ callId, requestArrivedAt: clock, tool: { kind: 'observe', arguments: {} } });
+			// A returns first, B last; B is published first and A's slow publication ends the batch.
+			await Promise.all([call('read-a'), call('read-b')]);
+			clock += 1; options.onProgress({ phase: 'tool_completed', callId: 'read-b' });
+			clock += 1000; options.onProgress({ phase: 'tool_completed', callId: 'read-a' });
+			clock += 5;
+			options.onProgress({ phase: 'tool_queued', callId: 'next', toolName: 'wait', requestArrivedAt: clock });
+			return { status: 'completed', toolCalls: 3 };
+		},
+	};
+	const planner = new AgentPlanner({ registry: registryFor(() => record), now: () => clock,
+		scheduler: immediateScheduler, nativeTimingSink: (event, fields) => rows.push({ event, fields }),
+		codexService: { async createAgent() { return agent; }, getAgent() { return null; } } });
+	await planner.requestNativeTurn({ agentId: AGENT_ID, input: 'go', goalRevision: 1,
+		executeTool: async () => ({ state: 'SUCCEEDED' }) });
+	const delivered = Object.fromEntries(rows.filter(row => row.event === 'native_tool_result_delivered').map(row => [row.fields.callId, row.fields.deliveryMs]));
+	assert.deepEqual(delivered, { 'read-b': 1, 'read-a': 1001 }, 'each publication is timed against its own executor return');
+	const segments = rows.filter(row => row.event === 'native_decision_timing').map(row => row.fields.segmentDurationMs);
+	assert.equal(segments.at(-1), 5, 'provider time after the batch starts at its last publication');
+});
+
+test('cancelled native provider segments are visible without becoming planning samples', async () => {
+	let clock = 0;
+	const record = nativeRecord('model-a');
+	const planner = new AgentPlanner({
+		registry: registryFor(() => record),
+		now: () => clock,
+		scheduler: immediateScheduler,
+		codexService: {
+			async createAgent() {
+				return {
+					async setGoalRevision() {},
+					async act() { clock += 9; throw Object.assign(new Error('stale'), { code: 'STALE_PLAN' }); },
+				};
+			},
+			getAgent() { return null; },
+		},
+	});
+	await assert.rejects(planner.requestNativeTurn({ agentId: AGENT_ID, input: 'stop', goalRevision: 1, executeTool: async () => ({ state: 'SUCCEEDED' }) }), { code: 'STALE_PLAN' });
+	const timing = planner.getNativeDecisionTiming(AGENT_ID);
+	assert.equal(timing.count, 0);
+	assert.equal(timing.lifetimeCount, 0);
+	assert.equal(timing.lifetimeSegmentCount, 1);
+	assert.equal(timing.cancelledSegmentCount, 1);
+	assert.equal(timing.p95Ms, null);
+});
+
+test('native timing samples stay segregated when the selected model changes', async () => {
+	let clock = 0;
+	let current = nativeRecord('model-a');
+	const planner = new AgentPlanner({
+		registry: registryFor(() => current),
+		now: () => clock,
+		scheduler: immediateScheduler,
+		codexService: {
+			async createAgent() {
+				const record = current;
+				return {
+					executionSettings: createExecutionSettings(record, { transport: 'test', controlProtocol: 'native_tools' }),
+					async setGoalRevision() {},
+					async act(_input, options) { clock += record.model === 'model-a' ? 10 : 90; await options.executeTool({ tool: { kind: 'action', actionType: 'wait', arguments: {} } }); return { status: 'completed', toolCalls: 1 }; },
+				};
+			},
+			getAgent() { return null; },
+		},
+	});
+	const executeTool = async () => ({ state: 'SUCCEEDED' });
+	await planner.requestNativeTurn({ agentId: AGENT_ID, input: 'one', goalRevision: 1, executeTool });
+	assert.equal(planner.getNativeDecisionTiming(AGENT_ID).p95Ms, 10);
+	current = nativeRecord('model-b');
+	await planner.requestNativeTurn({ agentId: AGENT_ID, input: 'two', goalRevision: 1, executeTool });
+	const timing = planner.getNativeDecisionTiming(AGENT_ID);
+	assert.equal(timing.identity.model, 'model-b');
+	assert.equal(timing.count, 1);
+	assert.equal(timing.p95Ms, 90);
+});
+
+const immediateScheduler = {
+	schedule(_agentId, operation) { return operation({ signal: new AbortController().signal }); },
+	cancel() { return false; },
+};
+
+function nativeRecord(model) {
+	return { agentId: AGENT_ID, provider: 'codex', model, reasoningEffort: 'xhigh', serviceTier: 'priority', goalRevision: 1 };
+}
+
+function registryFor(getRecord) {
+	return {
+		assertCurrentRevision() { return getRecord(); },
+		get() { return getRecord(); },
+		setState() {},
+	};
+}
+
+test('a failed tool-result publication is not counted as delivery', async () => {
+	let clock = 0;
+	const record = nativeRecord('model-a');
+	const rows = [];
+	const agent = {
+		executionSettings: createExecutionSettings(record, { transport: 'test', controlProtocol: 'native_tools' }),
+		async setGoalRevision() {},
+		async act(_input, options) {
+			clock += 10;
+			options.onProgress({ phase: 'tool_queued', callId: 'call-1', toolName: 'wait', requestArrivedAt: clock });
+			await options.executeTool({ callId: 'call-1', requestArrivedAt: clock, tool: { kind: 'action', actionType: 'wait', arguments: {} } });
+			clock += 50;
+			options.onProgress({ phase: 'tool_completed', callId: 'call-1', published: false });
+			return { status: 'completed', toolCalls: 1 };
+		},
+	};
+	const planner = new AgentPlanner({ registry: registryFor(() => record), now: () => clock,
+		scheduler: immediateScheduler, nativeTimingSink: (event, fields) => rows.push({ event, fields }),
+		codexService: { async createAgent() { return agent; }, getAgent() { return null; } } });
+	await planner.requestNativeTurn({ agentId: AGENT_ID, input: 'go', goalRevision: 1, executeTool: async () => ({ state: 'SUCCEEDED' }) });
+	assert.equal(rows.filter(row => row.event === 'native_tool_result_delivered').length, 0);
+	assert.equal(planner.getNativeDecisionTiming(AGENT_ID).toolResultDeliveryCount, 0);
+});

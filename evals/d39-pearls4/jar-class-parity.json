@@ -1,0 +1,41 @@
+{
+  "miniBase": {
+    "jarSha256": "3d76f0c7295c6ca247c09d79d39ee4971d735f0ef6e5220d9e18eac19e75173b",
+    "classFiles": 1565,
+    "classMapSha256": "dff6f81761ee9fc47a99f03d1f14a352c7f6769f8e1477f127723d2297ed1cf4"
+  },
+  "desktopBase": {
+    "jarSha256": "adfaa5e3a89d2ed24faf5dd431801ec20dbeb7b739231a17de1a4cec390d8b43",
+    "classFiles": 1565,
+    "classMapSha256": "28c8b0b8829c2fc5ebed6c94c99809cf932901fc24882009bd01cf987b4d7921"
+  },
+  "candidateBuild": {
+    "jarSha256": "b7418416bbf66d787a5cde3dd9b298f04ae41b5a4459d0c8bfdfe6cac7ff83e0",
+    "classFiles": 1565,
+    "classMapSha256": "28c8b0b8829c2fc5ebed6c94c99809cf932901fc24882009bd01cf987b4d7921"
+  },
+  "differencesFromDesktop": {
+    "miniBase": 1,
+    "desktopBase": 0,
+    "candidateBuild": 0
+  },
+  "miniDifference": {
+    "class": "ServerActionExecutor$3",
+    "bytecodeDisassemblyEqual": true,
+    "difference": "Only local-variable debug names arg0/arg1 versus minY/height; javap -p -c is identical.",
+    "disassemblySha256": "c7114462b683c4d74ca69cb30dcc014844ba2063c52c9c9b4196719b9bbd5211"
+  },
+  "releaseBuild": {
+    "commit": "53920309",
+    "jarSha256": "af3a2ca206d57143fd3a497ad843c2612cb274788771a4c87ff8abdcdc2d61fd",
+    "classFiles": 1565,
+    "differentClassFilesFromDesktop": [],
+    "comparison": "Per-class SHA-256 equality, including class name sets; generated after final release gates."
+  },
+  "postHarnessBuild": {
+    "commit": "d3dbc5c1",
+    "jarSha256": "af3a2ca206d57143fd3a497ad843c2612cb274788771a4c87ff8abdcdc2d61fd",
+    "classFiles": 1565,
+    "differentClassFilesFromDesktop": []
+  }
+}

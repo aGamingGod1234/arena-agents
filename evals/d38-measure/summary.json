@@ -1,0 +1,18 @@
+{
+  "retainedOutputDirectories": 44,
+  "withSampledGameplay": 23,
+  "withNoSampledGameplay": 21,
+  "firstLifeDeaths": 15,
+  "firstLifeDeathTraces": 15,
+  "tracesWithProtocol": 15,
+  "tracesWithLiveReflexStatus": 15,
+  "tracesWithProvenHandsAimOwner": 0,
+  "sampledEndingKinds": {
+    "budget_end": 21,
+    "failure": 1,
+    "unknown": 1
+  },
+  "currentTrainCases": 275,
+  "withoutContinuation": 261,
+  "note": "Directories without samples include refused starts, operator stops, and incomplete retained evidence; they are not played failures. Cohorts have different builds, supplies and time budgets."
+}

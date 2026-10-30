@@ -1,0 +1,6308 @@
+{
+  "schemaVersion": 1,
+  "scorer": "d38-measure",
+  "scoredAt": "2026-10-24T19:30:41.512Z",
+  "run": "w-desk-d38-baseline-d-r4-codex",
+  "raw": "..\\..\\..\\aa-run-81f5d9d8\\runtime\\headless-runs\\run-1792862175345-190881d9\\q-mnuh9w-31cd-LONG-r1-7bee5d35",
+  "evaluationReferences": [
+    "evals/d38-baseline"
+  ],
+  "identity": {
+    "agentId": "9f6b9671-7b16-4db7-a10d-cd47a098b07a",
+    "agentName": "ha_q_mnuh9_nv72q",
+    "seed": "123456789",
+    "profile": {
+      "provider": "codex",
+      "model": "gpt-6.1-sol",
+      "reasoningEffort": "low",
+      "serviceTier": "default"
+    },
+    "build": {
+      "commit": null,
+      "jar": {
+        "path": "C:\\Users\\player\\arena-runner\\jars\\d25-bc23e272.jar",
+        "sha256": "066a07667003c16784f6b9b34370de5a342436c798ea7a29d0de5b929fd19fb4"
+      },
+      "coordinatorSha256": "880b979bdfb7600f8913b6c915a87b1cb3e723628a33e7c7328573ff57229ed1"
+    },
+    "checkpoint": "checkpoint-lava-pool"
+  },
+  "window": {
+    "startedAt": 1792862225585,
+    "observedThrough": 1792865825575,
+    "plannedEndAt": 1792865825585,
+    "windowMs": 3600000
+  },
+  "ending": {
+    "kind": "budget_end",
+    "reason": "WALL_CLOCK_BUDGET",
+    "at": 1792865825557,
+    "censored": true
+  },
+  "postRunFailure": null,
+  "censoring": {
+    "censored": true,
+    "unobservedRemainder": true,
+    "observedFirstLifeFailure": true,
+    "reason": "Continuation after the last observation is unobserved, including after a fixed budget. Observed first-life deaths remain failures."
+  },
+  "firstLife": {
+    "name": "first_life",
+    "samples": 332,
+    "startedAt": 1792862225585,
+    "endedAt": 1792862586251,
+    "deaths": 1,
+    "damageTakenCounterDelta": 247,
+    "healthDropLowerBound": 19.953331900000002,
+    "resources": {
+      "rods": {
+        "unit": "rod equivalents (rod=1, powder=0.5, eye=0.5)",
+        "supplied": 0,
+        "earned": null,
+        "held": 0,
+        "spent": null,
+        "lost": 0,
+        "observedGains": 0,
+        "recoveredOrEarned": 0,
+        "unexplainedDecrease": 0,
+        "peakHeld": 0,
+        "heldBeforeDeath": 0,
+        "earnedBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedGains": 0,
+          "exact": false
+        },
+        "spentBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedDecreases": 0,
+          "exact": false
+        },
+        "lostBasis": "Last sampled holdings dropped at an observed death; inferred loss of possession, not verified destruction or exact loss between samples."
+      },
+      "pearlsEyes": {
+        "unit": "pearl/eye equivalents",
+        "supplied": 0,
+        "earned": null,
+        "held": 0,
+        "spent": null,
+        "lost": 0,
+        "observedGains": 0,
+        "recoveredOrEarned": 0,
+        "unexplainedDecrease": 0,
+        "peakHeld": 0,
+        "heldBeforeDeath": 0,
+        "earnedBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedGains": 0,
+          "exact": false
+        },
+        "spentBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedDecreases": 0,
+          "exact": false
+        },
+        "lostBasis": "Last sampled holdings dropped at an observed death; inferred loss of possession, not verified destruction or exact loss between samples."
+      },
+      "gold": {
+        "unit": "barterable ingot equivalents (block=9, nugget=1/9)",
+        "supplied": 0,
+        "earned": null,
+        "held": 0,
+        "spent": null,
+        "lost": 0,
+        "observedGains": 0,
+        "recoveredOrEarned": 0,
+        "unexplainedDecrease": 0,
+        "peakHeld": 0,
+        "heldBeforeDeath": 0,
+        "earnedBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedGains": 0,
+          "exact": false
+        },
+        "spentBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedDecreases": 0,
+          "exact": false
+        },
+        "lostBasis": "Last sampled holdings dropped at an observed death; inferred loss of possession, not verified destruction or exact loss between samples."
+      }
+    },
+    "milestones": {
+      "wood": {
+        "firstObservedAt": 1792862225634,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "planks": {
+        "firstObservedAt": 1792862225634,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "crafting_table": {
+        "firstObservedAt": 1792862225634,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "wooden_pickaxe": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "stone": {
+        "firstObservedAt": 1792862225634,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "stone_pickaxe": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "furnace": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "cooked_food": {
+        "firstObservedAt": 1792862225634,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "iron_ingot": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "iron_pickaxe": {
+        "firstObservedAt": 1792862225634,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "iron_armour": {
+        "firstObservedAt": 1792862225634,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "bucket": {
+        "firstObservedAt": 1792862225634,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "diamond": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "obsidian": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "flint_and_steel": {
+        "firstObservedAt": 1792862225634,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "nether": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "fortress": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": null,
+        "reached": false
+      },
+      "blaze_rod": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "ender_pearl": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "blaze_powder": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "ender_eye": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "stronghold": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": null,
+        "reached": false
+      },
+      "end": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "dragon": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": null,
+        "reached": false
+      }
+    },
+    "status": "observed_death",
+    "durationMs": 360666,
+    "retentionRequirements": {
+      "rodsHeldAtStageEnd": false,
+      "pearlsOrEyesHeldAtStageEnd": false,
+      "required": {
+        "rods": 6,
+        "pearlsEyes": 12
+      }
+    },
+    "resourceBasis": "Inventory deltas. Earned/spent remain unknown without a causal receipt; positive deltas can be recovery, gifts or container transfers. Lost is the observed death-associated decrease, not item destruction. Counter units are vanilla tenths of HP."
+  },
+  "afterDeath": {
+    "name": "after_death",
+    "samples": 2953,
+    "startedAt": 1792862586251,
+    "endedAt": 1792865825575,
+    "deaths": 0,
+    "damageTakenCounterDelta": 44,
+    "healthDropLowerBound": 4.3600010000000005,
+    "resources": {
+      "rods": {
+        "unit": "rod equivalents (rod=1, powder=0.5, eye=0.5)",
+        "supplied": 0,
+        "earned": null,
+        "held": 0,
+        "spent": null,
+        "lost": 0,
+        "observedGains": 0,
+        "recoveredOrEarned": 0,
+        "unexplainedDecrease": 0,
+        "peakHeld": 0,
+        "earnedBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedGains": 0,
+          "exact": false
+        },
+        "spentBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedDecreases": 0,
+          "exact": false
+        },
+        "lostBasis": "Last sampled holdings dropped at an observed death; inferred loss of possession, not verified destruction or exact loss between samples."
+      },
+      "pearlsEyes": {
+        "unit": "pearl/eye equivalents",
+        "supplied": 0,
+        "earned": null,
+        "held": 0,
+        "spent": null,
+        "lost": 0,
+        "observedGains": 0,
+        "recoveredOrEarned": 0,
+        "unexplainedDecrease": 0,
+        "peakHeld": 0,
+        "earnedBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedGains": 0,
+          "exact": false
+        },
+        "spentBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedDecreases": 0,
+          "exact": false
+        },
+        "lostBasis": "Last sampled holdings dropped at an observed death; inferred loss of possession, not verified destruction or exact loss between samples."
+      },
+      "gold": {
+        "unit": "barterable ingot equivalents (block=9, nugget=1/9)",
+        "supplied": 0,
+        "earned": null,
+        "held": 0,
+        "spent": null,
+        "lost": 0,
+        "observedGains": 0,
+        "recoveredOrEarned": 0,
+        "unexplainedDecrease": 0,
+        "peakHeld": 0,
+        "earnedBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedGains": 0,
+          "exact": false
+        },
+        "spentBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedDecreases": 0,
+          "exact": false
+        },
+        "lostBasis": "Last sampled holdings dropped at an observed death; inferred loss of possession, not verified destruction or exact loss between samples."
+      }
+    },
+    "milestones": {
+      "wood": {
+        "firstObservedAt": 1792862604735,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "planks": {
+        "firstObservedAt": 1792862872770,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "crafting_table": {
+        "firstObservedAt": 1792862873867,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "wooden_pickaxe": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "stone": {
+        "firstObservedAt": 1792862603687,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "stone_pickaxe": {
+        "firstObservedAt": 1792862601962,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "furnace": {
+        "firstObservedAt": 1792862879348,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "cooked_food": {
+        "firstObservedAt": 1792862603687,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "iron_ingot": {
+        "firstObservedAt": 1792864199040,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "iron_pickaxe": {
+        "firstObservedAt": 1792862922924,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "iron_armour": {
+        "firstObservedAt": 1792864560805,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "bucket": {
+        "firstObservedAt": 1792862981738,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "diamond": {
+        "firstObservedAt": 1792865299651,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "obsidian": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "flint_and_steel": {
+        "firstObservedAt": 1792864396746,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "nether": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "fortress": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": null,
+        "reached": false
+      },
+      "blaze_rod": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "ender_pearl": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "blaze_powder": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "ender_eye": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "stronghold": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": null,
+        "reached": false
+      },
+      "end": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "dragon": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": null,
+        "reached": false
+      }
+    },
+    "status": "censored",
+    "durationMs": 3239324,
+    "retentionRequirements": {
+      "rodsHeldAtStageEnd": false,
+      "pearlsOrEyesHeldAtStageEnd": false,
+      "required": {
+        "rods": 6,
+        "pearlsEyes": 12
+      }
+    },
+    "resourceBasis": "Inventory deltas. Earned/spent remain unknown without a causal receipt; positive deltas can be recovery, gifts or container transfers. Lost is the observed death-associated decrease, not item destruction. Counter units are vanilla tenths of HP."
+  },
+  "suppliedKit": {
+    "inventory": {
+      "rods": 0,
+      "pearlsEyes": 0,
+      "gold": 0
+    },
+    "reserveContainers": {
+      "rods": 0,
+      "pearlsEyes": 0,
+      "gold": 0
+    }
+  },
+  "observedDeaths": 1,
+  "firstLifeDeathTrace": {
+    "death": {
+      "at": 1792862586251,
+      "cause": "ha_q_mnuh9_nv72q tried to swim in lava",
+      "source": "protocol"
+    },
+    "encounterStartAt": 1792862561602,
+    "hazards": [
+      {
+        "kind": "lava",
+        "source": {
+          "type": "minecraft:lava",
+          "entityId": null,
+          "block": [
+            -25,
+            -55,
+            68
+          ],
+          "pos": null
+        },
+        "firstSensedAt": 1792862561602,
+        "watcherOpenedAt": 1792862561602,
+        "watcherDamageTakenHp": 48,
+        "advertisedRules": [
+          "lava:in_lava",
+          "flow:lava_flowing"
+        ],
+        "firings": [
+          {
+            "rule": "lava",
+            "atMs": 1792862572112,
+            "result": "done: out of lava at -25,-54,67"
+          },
+          {
+            "rule": "lava",
+            "atMs": 1792862580808,
+            "result": "failed: no short safe path to -25,-54,67 (16 steps over seen footing)"
+          },
+          {
+            "rule": "lava",
+            "atMs": 1792862581354,
+            "result": "failed: no short safe path to -25,-54,67 (16 steps over seen footing)"
+          }
+        ]
+      }
+    ],
+    "liveReflexCoverage": [
+      {
+        "at": 1792862561752,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3271,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3271,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3271,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3288,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3453,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862562252,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3270,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3270,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3270,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3287,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3452,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862562751,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3270,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3270,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3270,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3287,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3452,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862563155,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3269,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3269,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3269,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3286,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3451,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862563305,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3269,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3269,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3269,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3286,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3451,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862563407,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3269,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3269,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3269,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3286,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3451,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862563902,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3269,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3269,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3269,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3286,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3451,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862564404,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3268,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3268,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3268,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3285,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3450,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862564901,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3268,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3268,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3268,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3285,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3450,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862565402,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3267,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3267,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3267,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3284,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3449,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862565901,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3267,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3267,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3267,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3284,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3449,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862566402,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3266,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3266,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3266,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3283,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3448,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862566902,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3266,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3266,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3266,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3283,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3448,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862567401,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3265,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3265,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3265,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3282,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3447,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862567901,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3265,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3265,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3265,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3282,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3447,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862568402,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3264,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3264,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3264,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3281,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3446,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862568913,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3264,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3264,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3264,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3281,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3446,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862569403,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3263,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3263,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3263,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3280,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3445,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862569901,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3263,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3263,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3263,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3280,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3445,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862570402,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3262,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3262,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3262,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3279,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3444,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862570903,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3262,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3262,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3262,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3279,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3444,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862571402,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3261,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3261,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3261,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3278,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3443,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862571901,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3261,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3261,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3261,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3278,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3443,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862572054,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3260,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3260,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3260,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3277,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3443,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862572105,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 1,
+            "expiresInS": 3260,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3260,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3260,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3277,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3442,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862572153,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 1,
+            "expiresInS": 3260,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3260,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3260,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3277,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3442,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862572552,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "cooldown",
+            "fired": 1,
+            "expiresInS": 3260,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3260,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3260,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3277,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3442,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862573058,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3259,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3259,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3259,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3276,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3442,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862573552,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3259,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3259,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3259,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3276,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3441,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862574052,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3258,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3258,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3258,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3275,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3441,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862574551,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3258,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3258,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3258,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3275,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3440,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862575053,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3257,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3257,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3257,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3274,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3440,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862575552,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3257,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3257,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3257,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3274,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3439,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862576051,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3256,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3256,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3256,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3273,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3439,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862576552,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3256,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3256,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3256,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3273,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3438,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862577051,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3255,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3255,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3255,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3272,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3438,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862577553,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3255,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3255,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3255,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3272,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3437,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862578052,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3254,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3254,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3254,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3271,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3437,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862578551,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3254,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3254,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3254,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3271,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3436,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862579052,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3253,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3253,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3253,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3270,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3436,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862579551,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3253,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3253,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3253,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3270,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3435,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862580052,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3252,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3252,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3252,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3269,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3435,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862580355,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 120,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3252,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3252,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3269,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3434,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862580753,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 120,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3252,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3252,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3269,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3434,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862580805,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 1,
+            "expiresInS": 120,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3252,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3252,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3269,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3434,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862580856,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "cooldown",
+            "fired": 1,
+            "expiresInS": 120,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3252,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3252,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3269,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3434,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862581253,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "cooldown",
+            "fired": 1,
+            "expiresInS": 120,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3251,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3251,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3268,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3433,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862581304,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "cooldown",
+            "fired": 1,
+            "expiresInS": 120,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3251,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3251,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3268,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3433,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862581352,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 2,
+            "expiresInS": 119,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3251,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3251,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3268,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3433,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862581753,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "cooldown",
+            "fired": 2,
+            "expiresInS": 119,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3251,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3251,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3268,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3433,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862581804,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "cooldown",
+            "fired": 2,
+            "expiresInS": 119,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3251,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3251,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3268,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3433,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862582253,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 119,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3250,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3250,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3267,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3432,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862582305,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 119,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3250,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3250,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3267,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3432,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862582753,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 118,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3250,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3250,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3267,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3432,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862582802,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 118,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3250,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3250,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3267,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3432,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862583252,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 118,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3249,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3249,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3266,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3431,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862583303,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 118,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3249,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3249,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3266,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3431,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862583753,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 117,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3249,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3249,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3266,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3431,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862583803,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 117,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3249,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3249,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3266,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3431,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862584252,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 117,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3248,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3248,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3265,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3430,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862584304,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 117,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3248,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3248,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3265,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3430,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862584601,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 116,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3248,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3248,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3265,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3430,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862584752,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 116,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3248,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3248,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3265,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3430,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862584802,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 116,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3248,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3248,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3265,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3430,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862585252,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 116,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3247,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3247,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3264,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3429,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862585304,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 116,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3247,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3247,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3264,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3429,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862585753,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 115,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3247,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3247,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3264,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3429,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792862585803,
+        "rules": [
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 115,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3247,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3247,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "flow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3264,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "air",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3429,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "flow"
+        ],
+        "basis": "server observation status; live at observation time"
+      }
+    ],
+    "dispatchedCommands": [
+      {
+        "at": 1792862563190,
+        "source": "protocol",
+        "traceId": "native-a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b-93-9f6b9671-7b16-4db7-a10d-cd47a098-1",
+        "goalRevision": 1,
+        "actionId": "native:a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b:93:9f6b9671-7b16-4db7-a10d-cd47a098:1",
+        "actionType": "look_at",
+        "arguments": {
+          "x": -22.5,
+          "y": -53.8,
+          "z": 61.5
+        },
+        "provenance": {
+          "provider": "codex",
+          "model": "gpt-6.1-sol",
+          "reasoningEffort": "low",
+          "serviceTier": "default",
+          "programId": "native-01a16eee-6c6d-7343-a05f-14933fb1ec62",
+          "programVersion": 1,
+          "sourceStepId": "exec-1021bab5-621e-46e6-b7d1-0854c4adb0bc",
+          "eventSequence": 844,
+          "traceId": "native-a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b-93-9f6b9671-7b16-4db7-a10d-cd47a098-1"
+        }
+      },
+      {
+        "at": 1792862563416,
+        "source": "protocol",
+        "traceId": "native-a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b-94-9f6b9671-7b16-4db7-a10d-cd47a098-1",
+        "goalRevision": 1,
+        "actionId": "native:a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b:94:9f6b9671-7b16-4db7-a10d-cd47a098:1",
+        "actionType": "interact_block",
+        "arguments": {
+          "x": -23,
+          "y": -54,
+          "z": 61,
+          "face": "up",
+          "hand": "main",
+          "expectedItemId": "minecraft:lava_bucket"
+        },
+        "provenance": {
+          "provider": "codex",
+          "model": "gpt-6.1-sol",
+          "reasoningEffort": "low",
+          "serviceTier": "default",
+          "programId": "native-01a16eee-6c6d-7343-a05f-14933fb1ec62",
+          "programVersion": 1,
+          "sourceStepId": "exec-b0a21e89-ba7f-448d-9bd6-bb9b50e0815e",
+          "eventSequence": 846,
+          "traceId": "native-a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b-94-9f6b9671-7b16-4db7-a10d-cd47a098-1"
+        }
+      },
+      {
+        "at": 1792862580365,
+        "source": "protocol",
+        "traceId": "native-a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b-95-9f6b9671-7b16-4db7-a10d-cd47a098-1",
+        "goalRevision": 1,
+        "actionId": "native:a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b:95:9f6b9671-7b16-4db7-a10d-cd47a098:1",
+        "actionType": "control",
+        "arguments": {
+          "forward": 1,
+          "strafe": 0,
+          "jump": true,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 0,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main",
+          "ticks": 30
+        },
+        "provenance": {
+          "provider": "codex",
+          "model": "gpt-6.1-sol",
+          "reasoningEffort": "low",
+          "serviceTier": "default",
+          "programId": "native-01a16eef-ce90-7bd0-884f-36309d6760c7",
+          "programVersion": 1,
+          "sourceStepId": "exec-99ffdb3b-87c4-4c99-a7ae-a2961ad3bdcf",
+          "eventSequence": 883,
+          "traceId": "native-a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b-95-9f6b9671-7b16-4db7-a10d-cd47a098-1"
+        }
+      },
+      {
+        "at": 1792862563114,
+        "actionId": "native:a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b:93:9f6b9671-7b16-4db7-a10d-cd47a098:1",
+        "actionType": "look_at",
+        "source": "coordinator"
+      },
+      {
+        "at": 1792862563346,
+        "actionId": "native:a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b:94:9f6b9671-7b16-4db7-a10d-cd47a098:1",
+        "actionType": "interact_block",
+        "source": "coordinator"
+      },
+      {
+        "at": 1792862580322,
+        "actionId": "native:a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b:95:9f6b9671-7b16-4db7-a10d-cd47a098:1",
+        "actionType": "control",
+        "source": "coordinator"
+      }
+    ],
+    "ownership": [],
+    "damage": {
+      "taken": [
+        {
+          "at": 1792862572256,
+          "health": 18.08,
+          "damageTakenCounter": 19,
+          "deathCounter": 0,
+          "position": {
+            "x": -24.867665049178843,
+            "y": -53.799999952316284,
+            "z": 68.24389487005479
+          },
+          "dimension": "minecraft:overworld",
+          "counts": {
+            "rods": 0,
+            "pearlsEyes": 0,
+            "gold": 0
+          },
+          "counterDelta": 19,
+          "hpLowerBound": 1.9200000000000017
+        },
+        {
+          "at": 1792862581026,
+          "health": 18.08,
+          "damageTakenCounter": 38,
+          "deathCounter": 0,
+          "position": {
+            "x": -25.31543604708619,
+            "y": -54.89877318220298,
+            "z": 68.8599301835112
+          },
+          "dimension": "minecraft:overworld",
+          "counts": {
+            "rods": 0,
+            "pearlsEyes": 0,
+            "gold": 0
+          },
+          "counterDelta": 19,
+          "hpLowerBound": 1.9200000000000017
+        },
+        {
+          "at": 1792862582125,
+          "health": 14.906668,
+          "damageTakenCounter": 76,
+          "deathCounter": 0,
+          "position": {
+            "x": -25.31549261855889,
+            "y": -55.79279298063239,
+            "z": 68.8633854687574
+          },
+          "dimension": "minecraft:overworld",
+          "counts": {
+            "rods": 0,
+            "pearlsEyes": 0,
+            "gold": 0
+          },
+          "counterDelta": 38,
+          "hpLowerBound": 3.1733319999999985
+        },
+        {
+          "at": 1792862583227,
+          "health": 11.5666685,
+          "damageTakenCounter": 114,
+          "deathCounter": 0,
+          "position": {
+            "x": -25.31549261855889,
+            "y": -56.67279298397498,
+            "z": 68.8633854687574
+          },
+          "dimension": "minecraft:overworld",
+          "counts": {
+            "rods": 0,
+            "pearlsEyes": 0,
+            "gold": 0
+          },
+          "counterDelta": 38,
+          "hpLowerBound": 3.3399994999999993
+        },
+        {
+          "at": 1792862584324,
+          "health": 5.8066683,
+          "damageTakenCounter": 171,
+          "deathCounter": 0,
+          "position": {
+            "x": -25.31549261855889,
+            "y": -57,
+            "z": 68.8633854687574
+          },
+          "dimension": "minecraft:overworld",
+          "counts": {
+            "rods": 0,
+            "pearlsEyes": 0,
+            "gold": 0
+          },
+          "counterDelta": 57,
+          "hpLowerBound": 5.7600002
+        },
+        {
+          "at": 1792862585416,
+          "health": 1.9666681,
+          "damageTakenCounter": 209,
+          "deathCounter": 0,
+          "position": {
+            "x": -25.31549261855889,
+            "y": -57,
+            "z": 68.8633854687574
+          },
+          "dimension": "minecraft:overworld",
+          "counts": {
+            "rods": 0,
+            "pearlsEyes": 0,
+            "gold": 0
+          },
+          "counterDelta": 38,
+          "hpLowerBound": 3.8400002000000004
+        }
+      ],
+      "dealt": [],
+      "dealtTotal": null,
+      "basis": "Taken: vanilla counter deltas (tenths of HP), health-drop lower bounds, and per-hazard Watcher damage (can overlap, do not sum). Dealt: unknown without attributed damage receipts; attack dispatch is not a hit."
+    },
+    "gaps": [
+      "Hands and aim ownership were not recorded; dispatched action types cannot prove controller ownership.",
+      "Damage dealt is unknown unless an attributed damage receipt is present."
+    ],
+    "traceWindow": {
+      "from": 1792862561602,
+      "through": 1792862586251,
+      "basis": "Watcher first sensed/opened time"
+    },
+    "controllerSnapshots": [
+      {
+        "at": 1792862561752,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -95.40106964111328,
+          "pitch": 33.76087951660156,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862562252,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -95.40106964111328,
+          "pitch": 33.76087951660156,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862562751,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -95.40106964111328,
+          "pitch": 33.76087951660156,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862563155,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": true,
+          "actionId": "native:a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b:93:9f6b9671-7b16-4db7-a10d-cd47a098:1",
+          "actionType": "look_at"
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -140.40106201171875,
+          "pitch": 19.491106033325195,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862563305,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -166.45559692382812,
+          "pitch": 13.278125762939453,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862563407,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -166.45559692382812,
+          "pitch": 13.278125762939453,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862563902,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -166.45559692382812,
+          "pitch": 13.278125762939453,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862564404,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -166.45559692382812,
+          "pitch": 13.278125762939453,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862564901,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -166.45559692382812,
+          "pitch": 13.278125762939453,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862565402,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -166.45559692382812,
+          "pitch": 13.278125762939453,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862565901,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -166.45559692382812,
+          "pitch": 13.278125762939453,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862566402,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -166.45559692382812,
+          "pitch": 13.278125762939453,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862566902,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -166.45559692382812,
+          "pitch": 13.278125762939453,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862567401,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -166.45559692382812,
+          "pitch": 13.278125762939453,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862567901,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -166.45559692382812,
+          "pitch": 13.278125762939453,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862568402,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -166.45559692382812,
+          "pitch": 13.278125762939453,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862568913,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -166.45559692382812,
+          "pitch": 13.278125762939453,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862569403,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -166.45559692382812,
+          "pitch": 13.278125762939453,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862569901,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -166.45559692382812,
+          "pitch": 13.278125762939453,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862570402,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -166.45559692382812,
+          "pitch": 13.278125762939453,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862570903,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -166.45559692382812,
+          "pitch": 13.278125762939453,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862571402,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -166.45559692382812,
+          "pitch": 13.278125762939453,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862571901,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -166.45559692382812,
+          "pitch": 13.278125762939453,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862572054,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -166.45559692382812,
+          "pitch": 13.278125762939453,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862572105,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "lava",
+          "ms": 0,
+          "detail": "swimming out of lava toward -25,-54,67"
+        },
+        "input": {
+          "active": true,
+          "forward": 0.9971942901611328,
+          "strafe": 0,
+          "jump": true,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -156.43856811523438,
+          "pitch": 3.9834375381469727,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862572153,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "lava",
+          "ms": 50,
+          "detail": "swimming out of lava toward -25,-54,67"
+        },
+        "input": {
+          "active": true,
+          "forward": 1,
+          "strafe": 0,
+          "jump": true,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -152.20838928222656,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862572552,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -155.4335479736328,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862573058,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -155.4335479736328,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862573552,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -155.4335479736328,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862574052,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -155.4335479736328,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862574551,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -155.4335479736328,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862575053,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -155.4335479736328,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862575552,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -155.4335479736328,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862576051,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -155.4335479736328,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862576552,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -155.4335479736328,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862577051,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -155.4335479736328,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862577553,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -155.4335479736328,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862578052,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -155.4335479736328,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862578551,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -155.4335479736328,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862579052,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -155.4335479736328,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862579551,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -155.4335479736328,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862580052,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -155.4335479736328,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862580355,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": true,
+          "actionId": "native:a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b:95:9f6b9671-7b16-4db7-a10d-cd47a098:1",
+          "actionType": "control"
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -110.43354797363281,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862580753,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": true,
+          "actionId": "native:a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b:95:9f6b9671-7b16-4db7-a10d-cd47a098:1",
+          "actionType": "control"
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": true,
+          "forward": 1,
+          "strafe": 0,
+          "jump": true,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 0,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862580805,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": true,
+          "actionId": "native:a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b:95:9f6b9671-7b16-4db7-a10d-cd47a098:1",
+          "actionType": "control"
+        },
+        "reflexFiring": {
+          "id": "lava",
+          "ms": 0,
+          "detail": "no short safe path to -25,-54,67 (16 steps over seen footing)"
+        },
+        "input": {
+          "active": true,
+          "forward": 1,
+          "strafe": 0,
+          "jump": true,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 0,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862580856,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 0,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862581253,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 0,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862581304,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 0,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862581352,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "lava",
+          "ms": 0,
+          "detail": "no short safe path to -25,-54,67 (16 steps over seen footing)"
+        },
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 0,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862581753,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 0,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862581804,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 0,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862582253,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 0,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862582305,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 0,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862582753,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 0,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862582802,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 0,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862583252,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 0,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862583303,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 0,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862583753,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 0,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862583803,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 0,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862584252,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 0,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862584304,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 0,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862584601,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 0,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862584752,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 0,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862584802,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 0,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862585252,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 0,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862585304,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 0,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862585753,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 0,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792862585803,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 0,
+          "pitch": 0,
+          "selectedSlot": 2,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:lava_bucket",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      }
+    ],
+    "actionReceipts": [
+      {
+        "at": 1792862563152,
+        "traceId": "native-a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b-93-9f6b9671-7b16-4db7-a10d-cd47a098-1",
+        "goalRevision": 1,
+        "actionId": "native:a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b:93:9f6b9671-7b16-4db7-a10d-cd47a098:1",
+        "commandId": "native:a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b:93:9f6b9671-7b16-4db7-a10d-cd47a098:1",
+        "actionType": "look_at",
+        "state": "RUNNING",
+        "progress": 0.125,
+        "elapsedMs": 3,
+        "observedAtEpochMs": 1792862563152,
+        "serverTick": 7221
+      },
+      {
+        "at": 1792862563199,
+        "traceId": "native-a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b-93-9f6b9671-7b16-4db7-a10d-cd47a098-1",
+        "goalRevision": 1,
+        "actionId": "native:a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b:93:9f6b9671-7b16-4db7-a10d-cd47a098:1",
+        "commandId": "native:a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b:93:9f6b9671-7b16-4db7-a10d-cd47a098:1",
+        "actionType": "look_at",
+        "state": "RUNNING",
+        "progress": 0.25,
+        "elapsedMs": 50,
+        "observedAtEpochMs": 1792862563199,
+        "serverTick": 7222
+      },
+      {
+        "at": 1792862563249,
+        "traceId": "native-a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b-93-9f6b9671-7b16-4db7-a10d-cd47a098-1",
+        "goalRevision": 1,
+        "actionId": "native:a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b:93:9f6b9671-7b16-4db7-a10d-cd47a098:1",
+        "commandId": "native:a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b:93:9f6b9671-7b16-4db7-a10d-cd47a098:1",
+        "actionType": "look_at",
+        "state": "RUNNING",
+        "progress": 0.375,
+        "elapsedMs": 100,
+        "observedAtEpochMs": 1792862563249,
+        "serverTick": 7223
+      },
+      {
+        "at": 1792862563299,
+        "traceId": "native-a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b-93-9f6b9671-7b16-4db7-a10d-cd47a098-1",
+        "goalRevision": 1,
+        "actionId": "native:a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b:93:9f6b9671-7b16-4db7-a10d-cd47a098:1",
+        "commandId": "native:a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b:93:9f6b9671-7b16-4db7-a10d-cd47a098:1",
+        "actionType": "look_at",
+        "state": "SUCCEEDED",
+        "reasonCode": "ACTION_COMPLETED",
+        "message": "Action completed",
+        "elapsedMs": 150,
+        "observedAtEpochMs": 1792862563299,
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "timing": {
+          "acceptedAtEpochMs": 1792862563149,
+          "startedAtEpochMs": 1792862563152,
+          "startedTick": 7221,
+          "endedTick": 7224
+        }
+      },
+      {
+        "at": 1792862563402,
+        "traceId": "native-a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b-94-9f6b9671-7b16-4db7-a10d-cd47a098-1",
+        "goalRevision": 1,
+        "actionId": "native:a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b:94:9f6b9671-7b16-4db7-a10d-cd47a098:1",
+        "commandId": "native:a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b:94:9f6b9671-7b16-4db7-a10d-cd47a098:1",
+        "actionType": "interact_block",
+        "state": "FAILED",
+        "reasonCode": "TARGET_OBSTRUCTED",
+        "message": "No part of the requested block face is reachable from this eye",
+        "elapsedMs": 3,
+        "observedAtEpochMs": 1792862563402,
+        "executionStarted": true,
+        "physicalAttempted": false,
+        "timing": {
+          "acceptedAtEpochMs": 1792862563399,
+          "startedAtEpochMs": 1792862563402,
+          "startedTick": 7226,
+          "endedTick": 7226
+        }
+      },
+      {
+        "at": 1792862580352,
+        "traceId": "native-a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b-95-9f6b9671-7b16-4db7-a10d-cd47a098-1",
+        "goalRevision": 1,
+        "actionId": "native:a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b:95:9f6b9671-7b16-4db7-a10d-cd47a098:1",
+        "commandId": "native:a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b:95:9f6b9671-7b16-4db7-a10d-cd47a098:1",
+        "actionType": "control",
+        "state": "RUNNING",
+        "progress": 0,
+        "elapsedMs": 2,
+        "observedAtEpochMs": 1792862580352,
+        "serverTick": 7565
+      },
+      {
+        "at": 1792862580699,
+        "traceId": "native-a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b-95-9f6b9671-7b16-4db7-a10d-cd47a098-1",
+        "goalRevision": 1,
+        "actionId": "native:a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b:95:9f6b9671-7b16-4db7-a10d-cd47a098:1",
+        "commandId": "native:a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b:95:9f6b9671-7b16-4db7-a10d-cd47a098:1",
+        "actionType": "control",
+        "state": "RUNNING",
+        "progress": 0.06666666666666667,
+        "elapsedMs": 349,
+        "observedAtEpochMs": 1792862580699,
+        "serverTick": 7572
+      },
+      {
+        "at": 1792862580850,
+        "traceId": "native-a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b-95-9f6b9671-7b16-4db7-a10d-cd47a098-1",
+        "goalRevision": 1,
+        "actionId": "native:a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b:95:9f6b9671-7b16-4db7-a10d-cd47a098:1",
+        "commandId": "native:a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b:95:9f6b9671-7b16-4db7-a10d-cd47a098:1",
+        "actionType": "control",
+        "state": "FAILED",
+        "reasonCode": "IN_LAVA",
+        "message": "The body entered lava (raw 8 HP/s); this action stopped. Burning 15s after exit, raw 1 HP/s. Exits: back_left 1.5m up1 1lava remembered 1s (-25,-54,67); back 2.4m up1 unseen remembered 1s (-25,-54,66)",
+        "elapsedMs": 448,
+        "observedAtEpochMs": 1792862580850,
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "timing": {
+          "acceptedAtEpochMs": 1792862580350,
+          "startedAtEpochMs": 1792862580352,
+          "startedTick": 7565,
+          "endedTick": 7575
+        }
+      }
+    ],
+    "lastObservationAt": 1792862585803,
+    "lastObservationAgeAtDeathMs": 448,
+    "coordinatorEvents": [
+      {
+        "event": "native_tool_action_completed",
+        "agentId": "9f6b9671-7b16-4db7-a10d-cd47a098b07a",
+        "goalRevision": 1,
+        "actionId": "native:a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b:93:9f6b9671-7b16-4db7-a10d-cd47a098:1",
+        "state": "SUCCEEDED",
+        "reasonCode": "ACTION_COMPLETED",
+        "durationMs": 191,
+        "message": "Action completed",
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "javaElapsedMs": 150,
+        "javaEndedAtEpochMs": 1792862563299,
+        "javaAcceptedAtEpochMs": 1792862563149,
+        "javaStartedAtEpochMs": 1792862563152,
+        "javaStartedTick": 7221,
+        "javaEndedTick": 7224,
+        "at": 1792862563305,
+        "mono": 366336.4
+      },
+      {
+        "event": "native_tool_action_completed",
+        "agentId": "9f6b9671-7b16-4db7-a10d-cd47a098b07a",
+        "goalRevision": 1,
+        "actionId": "native:a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b:94:9f6b9671-7b16-4db7-a10d-cd47a098:1",
+        "state": "FAILED",
+        "reasonCode": "TARGET_OBSTRUCTED",
+        "durationMs": 61,
+        "failure": {
+          "blockedBy": "No part of the requested block face is reachable from this eye",
+          "validWhen": "a reachable aim ray first hits the target or face"
+        },
+        "message": "No part of the requested block face is reachable from this eye",
+        "executionStarted": true,
+        "physicalAttempted": false,
+        "failureClass": "target",
+        "javaElapsedMs": 3,
+        "javaEndedAtEpochMs": 1792862563402,
+        "javaAcceptedAtEpochMs": 1792862563399,
+        "javaStartedAtEpochMs": 1792862563402,
+        "javaStartedTick": 7226,
+        "javaEndedTick": 7226,
+        "at": 1792862563408,
+        "mono": 366439.2
+      },
+      {
+        "event": "reflexes_fired",
+        "agentId": "9f6b9671-7b16-4db7-a10d-cd47a098b07a",
+        "goalRevision": 1,
+        "events": [
+          "lava:done"
+        ],
+        "at": 1792862572578,
+        "mono": 375609.2
+      },
+      {
+        "event": "reflexes_set",
+        "agentId": "9f6b9671-7b16-4db7-a10d-cd47a098b07a",
+        "goalRevision": 1,
+        "changed": true,
+        "entries": [
+          "lava:trigger:move_to_cell"
+        ],
+        "at": 1792862580322,
+        "mono": 383353.6
+      },
+      {
+        "event": "native_tool_action_completed",
+        "agentId": "9f6b9671-7b16-4db7-a10d-cd47a098b07a",
+        "goalRevision": 1,
+        "actionId": "native:a5fb0006-6a3f-4be7-9cdf-5b5ccf76fe0b:95:9f6b9671-7b16-4db7-a10d-cd47a098:1",
+        "state": "FAILED",
+        "reasonCode": "IN_LAVA",
+        "durationMs": 534,
+        "failure": {
+          "changed": "input applied",
+          "blockedBy": "The body entered lava (raw 8 HP/s); this action stopped. Burning 15s after exit, raw 1 HP/s. Exits: back_left 1.5m up1 1lava remembered 1s (-25,-54,67); back 2.4m up1 unseen remembered 1s (-25,-54,66)",
+          "validWhen": "the action does not newly enter damaging lava"
+        },
+        "message": "The body entered lava (raw 8 HP/s); this action stopped. Burning 15s after exit, raw 1 HP/s. Exits: back_left 1.5m up1 1lava remembered 1s (-25,-54,67); back 2.4m up1 unseen remembered 1s (-25,-54,66)",
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "failureClass": "action",
+        "javaElapsedMs": 448,
+        "javaEndedAtEpochMs": 1792862580850,
+        "javaAcceptedAtEpochMs": 1792862580350,
+        "javaStartedAtEpochMs": 1792862580352,
+        "javaStartedTick": 7565,
+        "javaEndedTick": 7575,
+        "at": 1792862580856,
+        "mono": 383887.8
+      },
+      {
+        "event": "reflexes_fired",
+        "agentId": "9f6b9671-7b16-4db7-a10d-cd47a098b07a",
+        "goalRevision": 1,
+        "events": [
+          "lava:failed"
+        ],
+        "at": 1792862580862,
+        "mono": 383893.2
+      },
+      {
+        "event": "reflexes_fired",
+        "agentId": "9f6b9671-7b16-4db7-a10d-cd47a098b07a",
+        "goalRevision": 1,
+        "events": [
+          "lava:failed"
+        ],
+        "at": 1792862581770,
+        "mono": 384801.2
+      }
+    ]
+  },
+  "timing": {
+    "decisionSegments": 437,
+    "decisionP50Ms": 3160.314100000076,
+    "usageRecords": 314,
+    "usageRecordP50Ms": 3,
+    "basis": "completed provider decision segments; usage notification timing shown separately, never substituted"
+  },
+  "coverage": {
+    "protocolRecords": 20789,
+    "samples": 3285,
+    "watcherFiles": 1,
+    "diagnostics": []
+  }
+}

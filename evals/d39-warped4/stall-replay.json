@@ -1,0 +1,15 @@
+{
+  "source": "recorded d39 Nether queue game, operator-only lifecycle",
+  "events": 11918,
+  "firstStallAt": "2026-10-25T14:58:24.702Z",
+  "final": {
+    "waitingSince": null,
+    "pendingModelTools": 0,
+    "confirmedTimeouts": 0,
+    "currentWaitMs": 0,
+    "longestCompletedWaitMs": 1120074,
+    "violatedAt": 1792940301633
+  },
+  "wouldVoid": true,
+  "scope": "Recorded trace replay of stall detection; process signalling is not exercised."
+}

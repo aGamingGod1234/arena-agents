@@ -1,0 +1,178 @@
+{
+  "mode": "travel",
+  "jar": "/home/agaminggod/Desktop/Projects/arena-beat-game/jars/d25-6345839e.jar",
+  "results": [
+    {
+      "id": "y55-fortress",
+      "mode": "travel",
+      "checkpoint": "2b-nether-sol-y55.json",
+      "target": {
+        "x": -127.5,
+        "z": 624.5,
+        "located": "The nearest minecraft:fortress is at [-128, ~, 624] (634 blocks away)"
+      },
+      "start": [
+        26.7,
+        31.88,
+        8.5
+      ],
+      "startDistance": 635,
+      "legChoices": {
+        "landmark": 0,
+        "bearing": 0
+      },
+      "bearingTries": 0,
+      "detours": 4,
+      "stopWhenSeen": null,
+      "results": {
+        "FAILED HOSTILE_NEAR": 5,
+        "FAILED BUILD_FAILED": 1,
+        "FAILED HOSTILE_NEAR (detour)": 1,
+        "FAILED TRAVEL_DAMAGED": 2,
+        "FAILED ON_FIRE": 1,
+        "FAILED NO_ROUTE": 4,
+        "FAILED NO_ROUTE (detour)": 3
+      },
+      "actions": 17,
+      "failures": 13,
+      "damage": 7.5,
+      "actionDamage": 5,
+      "actionDamageEvents": 2,
+      "minHealth": 16,
+      "fireSamples": 15,
+      "lavaSamples": 0,
+      "deaths": 0,
+      "path": 200.62798950996503,
+      "stops": [
+        {
+          "at": 42.5,
+          "state": "FAILED",
+          "reasonCode": "HOSTILE_NEAR",
+          "message": "minecraft:piglin fd82f1de-2129-4a85-a624-589511f886c4 11.5 blocks away at 1.5,37.0,80.8, targeting you; at 2.5,35.0,69.5; 570 blocks left to the target (yaw 13); covered 65 blocks toward it in 42 s (92 blocks/min, 92 walked); 15 legs, bridged 5, pillared 0, tunnelled 8; 500 plain blocks carried"
+        },
+        {
+          "at": 63.8,
+          "state": "FAILED",
+          "reasonCode": "BUILD_FAILED",
+          "message": "No seen way on toward the target, and building cannot continue: Could not reach a view of the side of -6,34,74 to bridge -7,34,74; last leg: LAVA_FLOW toward -2,33,75: Route enters -7,33,75, where seen lava at -8,33,75 flows next; not entered. Keep out of the flow's way, or block the lava first; at -6.0,35.0,74.6; 563 blocks left to the target (yaw 12); covered 7 blocks toward it in 21 s (19 blocks/min, 13 walked); 4 legs, bridged 7, pillared 0, tunnelled 6; 495 plain blocks carried"
+        },
+        {
+          "at": 68.1,
+          "state": "FAILED",
+          "reasonCode": "HOSTILE_NEAR",
+          "detour": true,
+          "message": "minecraft:hoglin f41ee45a-b92a-4562-9846-199c49e76c55 15.4 blocks away at -1.7,33.0,86.1; at -11.7,35.0,74.5; 25 blocks left to the target (yaw 68); covered 5 blocks toward it in 4 s (76 blocks/min, 7 walked); 0 legs, bridged 6, pillared 0, tunnelled 0; 489 plain blocks carried"
+        },
+        {
+          "at": 70.1,
+          "state": "FAILED",
+          "reasonCode": "HOSTILE_NEAR",
+          "message": "minecraft:hoglin e36c255a-a506-4bea-879a-044de279df92 14.3 blocks away at -16.3,36.0,91.5, targeting you; at -16.5,32.0,77.7; 558 blocks left to the target (yaw 11); covered 4 blocks toward it in 2 s (127 blocks/min, 7 walked); 1 legs, bridged 0, pillared 0, tunnelled 0; 489 plain blocks carried"
+        },
+        {
+          "at": 71.4,
+          "state": "FAILED",
+          "reasonCode": "HOSTILE_NEAR",
+          "message": "minecraft:hoglin 6fb4f349-0a49-4cc9-8cba-d22dd5fb10d0 15.5 blocks away at -36.6,39.0,81.4; at -22.9,32.0,79.5; 555 blocks left to the target (yaw 11); covered 3 blocks toward it in 1 s (144 blocks/min, 7 walked); 1 legs, bridged 0, pillared 0, tunnelled 0; 489 plain blocks carried; lava flowing at the stop: lava from -30,33,75 reaches -24,32,79 in about 5.5 s"
+        },
+        {
+          "at": 71.8,
+          "state": "FAILED",
+          "reasonCode": "HOSTILE_NEAR",
+          "message": "minecraft:piglin_brute f614fc56-4a1b-4610-8f46-9c00f40260dc 10.3 blocks away at -14.7,33.0,75.7, targeting you; at -24.0,33.0,80.2; 554 blocks left to the target (yaw 11); covered 1 blocks toward it in 0 s (115 blocks/min, 1 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 489 plain blocks carried"
+        },
+        {
+          "at": 75.4,
+          "state": "FAILED",
+          "reasonCode": "HOSTILE_NEAR",
+          "message": "minecraft:hoglin f41ee45a-b92a-4562-9846-199c49e76c55 3.5 blocks away at -23.2,33.0,83.0, targeting you; at -25.5,33.0,85.7; 548 blocks left to the target (yaw 11); covered 6 blocks toward it in 3 s (96 blocks/min, 8 walked); 1 legs, bridged 3, pillared 0, tunnelled 0; 486 plain blocks carried; lava beside the stop: east one step down -25,31,85, south one step down -26,31,86, west one step down -27,31,85"
+        },
+        {
+          "at": 91.4,
+          "state": "FAILED",
+          "reasonCode": "TRAVEL_DAMAGED",
+          "message": "Took 4.0 damage (arrow from minecraft:piglin); health 16.0; at -25.5,33.0,91.5; 543 blocks left to the target (yaw 11); covered 6 blocks toward it in 16 s (21 blocks/min, 7 walked); 0 legs, bridged 6, pillared 0, tunnelled 7; 482 plain blocks carried"
+        },
+        {
+          "at": 91.8,
+          "state": "FAILED",
+          "reasonCode": "ON_FIRE",
+          "message": "The body entered fire; this action stopped. Exits: right 0.8m (-27,32,92); front 1.1m (-26,32,93); left 1.2m (-25,32,92); front_right 1.4m (-27,32,93)"
+        },
+        {
+          "at": 94,
+          "state": "FAILED",
+          "reasonCode": "TRAVEL_DAMAGED",
+          "message": "Took 1.0 damage (onFire); health 17.0; at -25.5,33.0,95.7; 539 blocks left to the target (yaw 11); covered 3 blocks toward it in 2 s (99 blocks/min, 3 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 486 plain blocks carried"
+        },
+        {
+          "at": 160.1,
+          "state": "FAILED",
+          "reasonCode": "NO_ROUTE",
+          "message": "No seen way on toward the target, and building cannot continue: a hazard fills -26,33,157; at -25.5,33.0,156.3; 479 blocks left to the target (yaw 12); covered 59 blocks toward it in 59 s (61 blocks/min, 61 walked); 0 legs, bridged 36, pillared 0, tunnelled 31; 500 plain blocks carried"
+        },
+        {
+          "at": 160.7,
+          "state": "FAILED",
+          "reasonCode": "NO_ROUTE",
+          "detour": true,
+          "message": "No seen way on toward the target, and building cannot continue: lava or another hazard fills the head cell -25,34,156; at -25.5,33.0,156.3; 30 blocks left to the target (yaw -48); covered 0 blocks toward it in 1 s (1 blocks/min, 0 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 500 plain blocks carried"
+        },
+        {
+          "at": 161.4,
+          "state": "FAILED",
+          "reasonCode": "NO_ROUTE",
+          "message": "No seen way on toward the target, and building cannot continue: a hazard fills -26,33,157; at -25.5,33.0,156.3; 479 blocks left to the target (yaw 12); covered 0 blocks toward it in 1 s (0 blocks/min, 0 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 500 plain blocks carried"
+        },
+        {
+          "at": 162,
+          "state": "FAILED",
+          "reasonCode": "NO_ROUTE",
+          "detour": true,
+          "message": "No seen way on toward the target, and building cannot continue: a hazard fills -27,33,156; at -25.5,33.0,156.3; 30 blocks left to the target (yaw 72); covered 0 blocks toward it in 1 s (0 blocks/min, 0 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 500 plain blocks carried"
+        },
+        {
+          "at": 163.1,
+          "state": "FAILED",
+          "reasonCode": "NO_ROUTE",
+          "message": "No seen way on toward the target, and building cannot continue: a hazard fills -26,33,157; at -25.5,33.0,156.3; 479 blocks left to the target (yaw 12); covered 0 blocks toward it in 1 s (0 blocks/min, 0 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 500 plain blocks carried"
+        },
+        {
+          "at": 163.7,
+          "state": "FAILED",
+          "reasonCode": "NO_ROUTE",
+          "detour": true,
+          "message": "No seen way on toward the target, and building cannot continue: lava or another hazard fills the head cell -25,34,156; at -25.5,33.0,156.3; 30 blocks left to the target (yaw -48); covered 0 blocks toward it in 1 s (0 blocks/min, 0 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 500 plain blocks carried"
+        },
+        {
+          "at": 164.4,
+          "state": "FAILED",
+          "reasonCode": "NO_ROUTE",
+          "message": "No seen way on toward the target, and building cannot continue: a hazard fills -26,33,157; at -25.5,33.0,156.3; 479 blocks left to the target (yaw 12); covered 0 blocks toward it in 1 s (0 blocks/min, 0 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 500 plain blocks carried"
+        }
+      ],
+      "hostilesRemoved": 5,
+      "gaveUp": "no progress over 3 actions",
+      "damageLowerBound": 7.5,
+      "end": [
+        -25.51,
+        33,
+        156.28
+      ],
+      "endDistance": 479.2,
+      "arrived": false,
+      "wallSeconds": 164.8,
+      "progressBlocks": 155.8,
+      "blocksPerMinute": 56.7,
+      "startedAtEpochMs": 1792942020333,
+      "endedAtEpochMs": 1792942185093,
+      "gameTicks": 3305,
+      "gameSeconds": 165.25,
+      "observedTicksPerSecond": 20.06,
+      "blocksPerGameMinute": 56.6,
+      "gameClockSource": "ready observation world.gameTime",
+      "pathBlocks": 200.6,
+      "blocksPerMinuteWithModel5s": 37.4
+    }
+  ]
+}

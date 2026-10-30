@@ -1,0 +1,54 @@
+{
+  "vanillaVersion": "26.1.2",
+  "weightTotal": 469,
+  "pearlEntry": {
+    "type": "minecraft:item",
+    "functions": [
+      {
+        "add": false,
+        "count": {
+          "type": "minecraft:uniform",
+          "max": 4.0,
+          "min": 2.0
+        },
+        "function": "minecraft:set_count"
+      }
+    ],
+    "name": "minecraft:ender_pearl",
+    "weight": 10
+  },
+  "ingotsFor12ExpectedYield": 187.6,
+  "expectedIngotsUntilHoldingAtLeast12": 204.97037037037035,
+  "quantilesAtLeast12": {
+    "0.5": 189,
+    "0.8": 282,
+    "0.9": 340,
+    "0.95": 394
+  },
+  "examples": [
+    {
+      "ingots": 64,
+      "expectedPearls": 4.093816631130064,
+      "chanceAtLeast12": 0.03789748201792129,
+      "chanceNone": 0.25173867419761
+    },
+    {
+      "ingots": 128,
+      "expectedPearls": 8.187633262260128,
+      "chanceAtLeast12": 0.23966154602367393,
+      "chanceNone": 0.06337236008677043
+    },
+    {
+      "ingots": 188,
+      "expectedPearls": 12.025586353944561,
+      "chanceAtLeast12": 0.498087393662075,
+      "chanceNone": 0.017389634363406715
+    },
+    {
+      "ingots": 225,
+      "expectedPearls": 14.392324093816633,
+      "chanceAtLeast12": 0.6393587125765045,
+      "chanceNone": 0.007833658499476594
+    }
+  ]
+}

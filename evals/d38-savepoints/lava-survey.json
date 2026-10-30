@@ -1,0 +1,67 @@
+{
+  "8675309": {
+    "poolEdge": [
+      151,
+      -55,
+      37
+    ],
+    "bed": [
+      157,
+      -54,
+      37
+    ],
+    "shaftTop": 63,
+    "nearbyNaturalSources": 11,
+    "world": "/tmp/d38-savepoints-caves-v3/8675309/server/world",
+    "method": "Offline existing lava-survey.py NBT reader; exposed source lava and ground/fluid surface below tree vegetation."
+  },
+  "20261024": {
+    "poolEdge": [
+      4,
+      -55,
+      0
+    ],
+    "bed": [
+      10,
+      -54,
+      0
+    ],
+    "shaftTop": 63,
+    "nearbyNaturalSources": 10,
+    "world": "/tmp/d38-savepoints-caves-v3/20261024/server/world",
+    "method": "Offline existing lava-survey.py NBT reader; exposed source lava and ground/fluid surface below tree vegetation.",
+    "exitObstructed": true
+  },
+  "123456789": {
+    "poolEdge": [
+      -21,
+      -55,
+      62
+    ],
+    "bed": [
+      -15,
+      -54,
+      62
+    ],
+    "shaftTop": 64,
+    "nearbyNaturalSources": 18,
+    "world": "/tmp/d38-savepoints-caves-v3/123456789/server/world",
+    "method": "Offline existing lava-survey.py NBT reader; exposed source lava and ground/fluid surface below tree vegetation."
+  },
+  "987654321": {
+    "poolEdge": [
+      10,
+      -55,
+      0
+    ],
+    "bed": [
+      16,
+      -54,
+      0
+    ],
+    "shaftTop": 65,
+    "nearbyNaturalSources": 10,
+    "world": "/tmp/d38-savepoints-caves-v3/987654321/server/world",
+    "method": "Offline existing lava-survey.py NBT reader; exposed source lava and ground/fluid surface below tree vegetation."
+  }
+}

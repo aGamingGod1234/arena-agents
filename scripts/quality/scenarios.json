@@ -1,0 +1,434 @@
+{
+  "version": 1,
+  "scenarios": [
+    {
+      "id": "S1",
+      "name": "nether-wastes-diamond-natural-start",
+      "seed": "20261009",
+      "goal": "beat the game",
+      "durationBudgetMs": 240000,
+      "setup": {
+        "dimension": "minecraft:the_nether",
+        "position": [
+          68.5,
+          42,
+          64.5
+        ],
+        "surface": false,
+        "time": 1000,
+        "effects": [],
+        "commands": [],
+        "inventory": [
+          {
+            "item": "minecraft:diamond_sword",
+            "count": 1
+          },
+          {
+            "item": "minecraft:diamond_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 16
+          }
+        ],
+        "armour": {
+          "head": "minecraft:diamond_helmet",
+          "chest": "minecraft:diamond_chestplate",
+          "legs": "minecraft:diamond_leggings",
+          "feet": "minecraft:diamond_boots"
+        },
+        "mobs": [
+          {
+            "id": "minecraft:piglin",
+            "offset": [
+              6,
+              0,
+              0
+            ],
+            "naturalGround": true,
+            "tag": "quality_piglin_1",
+            "nbt": "{PersistenceRequired:1b,Tags:[\"quality_piglin_1\"]}"
+          },
+          {
+            "id": "minecraft:piglin",
+            "offset": [
+              -6,
+              0,
+              0
+            ],
+            "naturalGround": true,
+            "tag": "quality_piglin_2",
+            "nbt": "{PersistenceRequired:1b,Tags:[\"quality_piglin_2\"]}"
+          }
+        ],
+        "expectedBiome": "minecraft:nether_wastes",
+        "naturalGround": true,
+        "freezeUntilGoalStart": true,
+        "locationEvidence": {
+          "seed": "20261009",
+          "locatedBiome": [
+            64,
+            90,
+            64
+          ],
+          "verifiedGround": [
+            68.5,
+            42,
+            64.5
+          ],
+          "support": "3x3 natural solid non-lava/non-magma support with two blocks of headroom",
+          "headroomBlocks": 6
+        }
+      }
+    },
+    {
+      "id": "S1-deltas",
+      "name": "basalt-deltas-natural-ground-hazard",
+      "seed": "20261009",
+      "goal": "beat the game",
+      "durationBudgetMs": 240000,
+      "setup": {
+        "dimension": "minecraft:the_nether",
+        "position": [
+          0.5,
+          81,
+          0.5
+        ],
+        "surface": false,
+        "time": 1000,
+        "effects": [],
+        "commands": [],
+        "inventory": [
+          {
+            "item": "minecraft:diamond_sword",
+            "count": 1
+          },
+          {
+            "item": "minecraft:diamond_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 16
+          }
+        ],
+        "armour": {
+          "head": "minecraft:diamond_helmet",
+          "chest": "minecraft:diamond_chestplate",
+          "legs": "minecraft:diamond_leggings",
+          "feet": "minecraft:diamond_boots"
+        },
+        "mobs": [],
+        "expectedBiome": "minecraft:basalt_deltas",
+        "naturalGround": true,
+        "freezeUntilGoalStart": true,
+        "locationEvidence": {
+          "seed": "20261009",
+          "verifiedGround": [
+            0.5,
+            81,
+            0.5
+          ],
+          "support": "natural solid non-magma ground at the original X/Z; no carved ledge or artificial lava",
+          "headroomBlocks": 6
+        }
+      }
+    },
+    {
+      "id": "S2",
+      "name": "cave-dark-start",
+      "seed": "20261009",
+      "goal": "beat the game",
+      "durationBudgetMs": 240000,
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          0.5,
+          -40,
+          0.5
+        ],
+        "surface": false,
+        "time": 1000,
+        "effects": [],
+        "commands": [
+          "execute at {agent} run fill ~-6 ~-1 ~-6 ~6 ~-1 ~6 minecraft:deepslate",
+          "execute at {agent} run fill ~-6 ~ ~-6 ~6 ~3 ~6 minecraft:air"
+        ],
+        "inventory": [],
+        "armour": {},
+        "mobs": []
+      }
+    },
+    {
+      "id": "S3",
+      "name": "night-mobs",
+      "seed": "20261009",
+      "goal": "survive the night and get iron gear",
+      "durationBudgetMs": 240000,
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          0.5,
+          70,
+          0.5
+        ],
+        "surface": true,
+        "time": 13000,
+        "effects": [],
+        "commands": [
+          "execute at {agent} run fill ~-8 ~-1 ~-8 ~8 ~-1 ~8 minecraft:grass_block",
+          "execute at {agent} run fill ~-8 ~ ~-8 ~8 ~5 ~8 minecraft:air"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:wooden_sword",
+            "count": 1
+          },
+          {
+            "item": "minecraft:wooden_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:wooden_axe",
+            "count": 1
+          }
+        ],
+        "armour": {},
+        "mobs": [
+          {
+            "id": "minecraft:zombie",
+            "offset": [
+              5,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "minecraft:zombie",
+            "offset": [
+              -5,
+              0,
+              0
+            ]
+          },
+          {
+            "id": "minecraft:skeleton",
+            "offset": [
+              0,
+              0,
+              7
+            ]
+          },
+          {
+            "id": "minecraft:creeper",
+            "offset": [
+              0,
+              0,
+              -6
+            ]
+          }
+        ],
+        "freezeUntilGoalStart": true
+      }
+    },
+    {
+      "id": "S4",
+      "name": "midgame-portal",
+      "seed": "20261009",
+      "goal": "beat the game",
+      "durationBudgetMs": 240000,
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          0.5,
+          70,
+          0.5
+        ],
+        "surface": true,
+        "time": 1000,
+        "effects": [],
+        "commands": [
+          "execute at {agent} run fill ~-8 ~-1 ~-8 ~8 ~-1 ~8 minecraft:grass_block",
+          "execute at {agent} run fill ~-8 ~ ~-8 ~8 ~5 ~8 minecraft:air",
+          "execute at {agent} run fill ~3 ~ ~-1 ~3 ~4 ~2 minecraft:obsidian",
+          "execute at {agent} run fill ~3 ~1 ~ ~3 ~3 ~1 minecraft:nether_portal[axis=z]"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:iron_sword",
+            "count": 1
+          },
+          {
+            "item": "minecraft:iron_pickaxe",
+            "count": 1
+          },
+          {
+            "item": "minecraft:ender_pearl",
+            "count": 10
+          },
+          {
+            "item": "minecraft:bread",
+            "count": 16
+          }
+        ],
+        "armour": {
+          "head": "minecraft:iron_helmet",
+          "chest": "minecraft:iron_chestplate",
+          "legs": "minecraft:iron_leggings",
+          "feet": "minecraft:iron_boots"
+        },
+        "mobs": []
+      }
+    },
+    {
+      "id": "S5",
+      "name": "unreachable-mob",
+      "seed": "20261009",
+      "goal": "gather 10 logs",
+      "durationBudgetMs": 240000,
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          0.5,
+          70,
+          0.5
+        ],
+        "surface": true,
+        "time": 1000,
+        "effects": [],
+        "commands": [
+          "execute at {agent} run fill ~-8 ~-1 ~-8 ~8 ~-1 ~8 minecraft:grass_block",
+          "execute at {agent} run fill ~-8 ~ ~-8 ~8 ~5 ~8 minecraft:air",
+          "execute at {agent} run fill ~3 ~17 ~ ~5 ~17 ~2 minecraft:stone",
+          "execute at {agent} run fill ~-5 ~ ~ ~-5 ~4 ~ minecraft:oak_log",
+          "execute at {agent} run fill ~-5 ~ ~3 ~-5 ~4 ~3 minecraft:oak_log"
+        ],
+        "inventory": [],
+        "armour": {},
+        "mobs": [
+          {
+            "id": "minecraft:husk",
+            "offset": [
+              4,
+              18,
+              1
+            ],
+            "nbt": "{NoAI:1b,PersistenceRequired:1b,Tags:[\"quality_target\"]}"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S5b",
+      "name": "unreachable-mob-visible-v1",
+      "variantOf": "S5",
+      "seed": "20261009",
+      "goal": "gather 10 logs",
+      "durationBudgetMs": 240000,
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [0.5, 70, 0.5],
+        "surface": true,
+        "freezeUntilGoalStart": true,
+        "time": 1000,
+        "effects": [],
+        "commands": [
+          "execute at {agent} run fill ~-8 ~-1 ~-8 ~8 ~-1 ~8 minecraft:grass_block",
+          "execute at {agent} run fill ~-8 ~ ~-8 ~8 ~11 ~8 minecraft:air",
+          "execute at {agent} run setblock ~4 ~7 ~1 minecraft:stone",
+          "execute at {agent} run fill ~-5 ~ ~ ~-5 ~4 ~ minecraft:oak_log",
+          "execute at {agent} run fill ~-5 ~ ~3 ~-5 ~4 ~3 minecraft:oak_log",
+          "execute at {agent} run tp {agent} ~ ~ ~ -75 -63"
+        ],
+        "inventory": [],
+        "armour": {},
+        "mobs": [
+          {
+            "id": "minecraft:husk",
+            "offset": [3.65, 8, 1],
+            "tag": "quality_target_s5b",
+            "nbt": "{NoAI:1b,PersistenceRequired:1b,Tags:[\"quality_target\",\"quality_target_s5b\"]}"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S6",
+      "name": "cliff-knockback",
+      "seed": "20261009",
+      "goal": "survive and reach safe ground",
+      "durationBudgetMs": 240000,
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          0.5,
+          100,
+          0.5
+        ],
+        "surface": false,
+        "time": 13000,
+        "effects": [],
+        "commands": [
+          "execute at {agent} run fill ~-5 70 ~-5 ~5 110 ~8 minecraft:air",
+          "execute at {agent} run fill ~ 99 ~-3 ~ 99 ~6 minecraft:stone",
+          "execute at {agent} run fill ~-3 99 ~6 ~3 99 ~9 minecraft:stone",
+          "execute at {agent} run fill ~-5 69 ~-5 ~5 69 ~8 minecraft:stone"
+        ],
+        "inventory": [
+          {
+            "item": "minecraft:stone_sword",
+            "count": 1
+          },
+          {
+            "item": "minecraft:cooked_beef",
+            "count": 8
+          }
+        ],
+        "armour": {},
+        "mobs": [
+          {
+            "id": "minecraft:zombie",
+            "offset": [
+              0,
+              0,
+              5
+            ],
+            "nbt": "{PersistenceRequired:1b}"
+          }
+        ],
+        "freezeUntilGoalStart": true
+      }
+    },
+    {
+      "id": "S7",
+      "version": 2,
+      "name": "fresh-survival-dragon-v2",
+      "seed": "-6693307816407771325",
+      "goal": "Beat the game by defeating the Ender Dragon",
+      "durationBudgetMs": 1800000,
+      "runPolicy": {
+        "clock": "goal-start",
+        "continueAfterDeath": true,
+        "overridableStart": true
+      },
+      "setup": {
+        "dimension": "minecraft:overworld",
+        "position": [
+          134.5,
+          68,
+          488.5
+        ],
+        "surface": true,
+        "respawnAtStart": true,
+        "time": 1000,
+        "commands": [],
+        "inventory": [],
+        "armour": {},
+        "effects": [],
+        "mobs": [],
+        "freezeUntilGoalStart": true
+      }
+    }
+  ]
+}

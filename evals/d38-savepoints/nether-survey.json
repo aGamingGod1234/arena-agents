@@ -1,0 +1,150 @@
+{
+  "8675309": {
+    "portal": [
+      16,
+      77,
+      0
+    ],
+    "exit": [
+      12,
+      77,
+      -2
+    ],
+    "receipt": "The game time is 94 tick(s)",
+    "surfaceReceipt": "Marker has the following entity data: [132.5d, 63.0d, 1.5d]",
+    "campBed": [
+      128,
+      63,
+      0
+    ],
+    "structures": {
+      "fortress": {
+        "position": [
+          272,
+          192
+        ],
+        "distanceBlocks": 320,
+        "receipt": "The nearest minecraft:fortress is at [272, ~, 192] (320 blocks away)"
+      },
+      "bastion_remnant": {
+        "position": [
+          -112,
+          -224
+        ],
+        "distanceBlocks": 257.9922479455536,
+        "receipt": "The nearest minecraft:bastion_remnant is at [-112, ~, -224] (257 blocks away)"
+      }
+    }
+  },
+  "20261024": {
+    "portal": [
+      0,
+      82,
+      0
+    ],
+    "exit": [
+      -4,
+      82,
+      -2
+    ],
+    "receipt": "The game time is 63 tick(s)",
+    "surfaceReceipt": "Marker has the following entity data: [4.5d, 63.0d, 1.5d]",
+    "campBed": [
+      0,
+      63,
+      0
+    ],
+    "structures": {
+      "fortress": {
+        "position": [
+          16,
+          320
+        ],
+        "distanceBlocks": 320.3997503120126,
+        "receipt": "The nearest minecraft:fortress is at [16, ~, 320] (320 blocks away)"
+      },
+      "bastion_remnant": {
+        "position": [
+          -224,
+          688
+        ],
+        "distanceBlocks": 723.5468194940809,
+        "receipt": "The nearest minecraft:bastion_remnant is at [-224, ~, 688] (723 blocks away)"
+      }
+    }
+  },
+  "123456789": {
+    "portal": [
+      0,
+      65,
+      8
+    ],
+    "exit": [
+      -4,
+      65,
+      6
+    ],
+    "receipt": "The game time is 75 tick(s)",
+    "surfaceReceipt": "Marker has the following entity data: [4.5d, 64.0d, 65.5d]",
+    "campBed": [
+      0,
+      64,
+      64
+    ],
+    "structures": {
+      "fortress": {
+        "position": [
+          -160,
+          -304
+        ],
+        "distanceBlocks": 350.633712012978,
+        "receipt": "The nearest minecraft:fortress is at [-160, ~, -304] (350 blocks away)"
+      },
+      "bastion_remnant": {
+        "position": [
+          320,
+          16
+        ],
+        "distanceBlocks": 320.09998437988094,
+        "receipt": "The nearest minecraft:bastion_remnant is at [320, ~, 16] (320 blocks away)"
+      }
+    }
+  },
+  "987654321": {
+    "portal": [
+      0,
+      61,
+      0
+    ],
+    "exit": [
+      -4,
+      61,
+      -2
+    ],
+    "receipt": "The game time is 53 tick(s)",
+    "surfaceReceipt": "Marker has the following entity data: [4.5d, 67.0d, 1.5d]",
+    "campBed": [
+      0,
+      67,
+      0
+    ],
+    "structures": {
+      "fortress": {
+        "position": [
+          176,
+          352
+        ],
+        "distanceBlocks": 393.547964039963,
+        "receipt": "The nearest minecraft:fortress is at [176, ~, 352] (393 blocks away)"
+      },
+      "bastion_remnant": {
+        "position": [
+          -80,
+          16
+        ],
+        "distanceBlocks": 81.58431221748457,
+        "receipt": "The nearest minecraft:bastion_remnant is at [-80, ~, 16] (81 blocks away)"
+      }
+    }
+  }
+}

@@ -1,0 +1,182 @@
+{
+  "source": "S5-r3 recorded observations at gameTime 466 and 476; unrelated fields and rows omitted",
+  "samples": [
+    {
+      "ready": true,
+      "observedAtEpochMs": 1791589107771,
+      "world": {
+        "worldId": "eff672bc-b5f0-4b16-9460-75343522569c",
+        "dimension": "minecraft:overworld",
+        "biome": "minecraft:forest",
+        "gameTime": 466,
+        "dayTime": 1361,
+        "raining": false,
+        "thundering": false,
+        "difficulty": "normal",
+        "naturalRegeneration": true
+      },
+      "position": {
+        "x": -3.5379399787803627,
+        "y": 90,
+        "z": 3.528246263494231
+      },
+      "view": {
+        "yaw": 80.20062255859375,
+        "pitch": 7.1068854331970215
+      },
+      "player": {
+        "pose": "standing",
+        "inWater": false,
+        "inLava": false,
+        "crouching": false,
+        "swimming": false
+      },
+      "coverage": {
+        "mode": "sampled_visible",
+        "complete": false,
+        "blocksRadius": 6,
+        "landmarkDistanceLimit": 256,
+        "entitiesDistanceLimit": 128,
+        "sections": {
+          "entities": {
+            "returned": 1,
+            "complete": false
+          },
+          "blocks": {
+            "returned": 6,
+            "complete": false
+          },
+          "landmarks": {
+            "returned": 8,
+            "complete": false
+          },
+          "nearbyContainers": {
+            "returned": 0,
+            "complete": false
+          }
+        }
+      },
+      "entities": [
+        {
+          "uuid": "3072bf9d-bed5-47d6-b1c9-1f71033c64c1",
+          "type": "minecraft:item",
+          "itemId": "minecraft:oak_log",
+          "count": 1,
+          "position": {
+            "x": -4.283651806069192,
+            "y": 91.68747045359376,
+            "z": 3.375064598991853
+          },
+          "perceivedBy": "sight"
+        }
+      ],
+      "blocks": [
+        {
+          "x": -5,
+          "y": 90,
+          "z": 3,
+          "blockId": "minecraft:oak_log",
+          "bounds": [
+            {
+              "minX": 0,
+              "minY": 0,
+              "minZ": 0,
+              "maxX": 1,
+              "maxY": 1,
+              "maxZ": 1
+            }
+          ],
+          "boundsTruncated": false
+        }
+      ],
+      "inventory": {
+        "items": []
+      }
+    },
+    {
+      "ready": true,
+      "observedAtEpochMs": 1791589108272,
+      "world": {
+        "worldId": "eff672bc-b5f0-4b16-9460-75343522569c",
+        "dimension": "minecraft:overworld",
+        "biome": "minecraft:forest",
+        "gameTime": 476,
+        "dayTime": 1371,
+        "raining": false,
+        "thundering": false,
+        "difficulty": "normal",
+        "naturalRegeneration": true
+      },
+      "position": {
+        "x": -3.5379399787803627,
+        "y": 90,
+        "z": 3.528246263494231
+      },
+      "view": {
+        "yaw": 80.20062255859375,
+        "pitch": 7.1068854331970215
+      },
+      "player": {
+        "pose": "standing",
+        "inWater": false,
+        "inLava": false,
+        "crouching": false,
+        "swimming": false
+      },
+      "coverage": {
+        "mode": "sampled_visible",
+        "complete": false,
+        "blocksRadius": 6,
+        "landmarkDistanceLimit": 256,
+        "entitiesDistanceLimit": 128,
+        "sections": {
+          "entities": {
+            "returned": 0,
+            "complete": false
+          },
+          "blocks": {
+            "returned": 6,
+            "complete": false
+          },
+          "landmarks": {
+            "returned": 8,
+            "complete": false
+          },
+          "nearbyContainers": {
+            "returned": 0,
+            "complete": false
+          }
+        }
+      },
+      "entities": [],
+      "blocks": [
+        {
+          "x": -5,
+          "y": 90,
+          "z": 3,
+          "blockId": "minecraft:oak_log",
+          "bounds": [
+            {
+              "minX": 0,
+              "minY": 0,
+              "minZ": 0,
+              "maxX": 1,
+              "maxY": 1,
+              "maxZ": 1
+            }
+          ],
+          "boundsTruncated": false
+        }
+      ],
+      "inventory": {
+        "items": [
+          {
+            "itemId": "minecraft:oak_log",
+            "count": 1,
+            "slot": "mainhand"
+          }
+        ]
+      }
+    }
+  ]
+}

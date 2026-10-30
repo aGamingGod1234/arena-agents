@@ -1,0 +1,226 @@
+{
+  "milestone": "warped-forest-123456789-v2",
+  "sampleIndex": null,
+  "minute": null,
+  "seed": "123456789",
+  "source": "Prepared natural warped-forest start; travel from the original portal is not measured.",
+  "priorAdvancements": [
+    "story/iron_tools",
+    "story/enter_the_nether"
+  ],
+  "deathsBefore": 0,
+  "setup": {
+    "dimension": "minecraft:the_nether",
+    "position": [
+      -287.5,
+      32,
+      -378.5
+    ],
+    "generality": true,
+    "freezeUntilGoalStart": true,
+    "time": 1000,
+    "weather": "clear",
+    "commands": [
+      "execute in minecraft:overworld run fill -3 63 61 5 67 67 minecraft:cobblestone",
+      "execute in minecraft:overworld run fill -2 64 62 4 66 66 minecraft:air",
+      "execute in minecraft:overworld run setblock -3 64 64 minecraft:oak_door[facing=west,half=lower]",
+      "execute in minecraft:overworld run setblock -3 65 64 minecraft:oak_door[facing=west,half=upper]",
+      "execute in minecraft:overworld run setblock 0 64 64 minecraft:red_bed[facing=east,part=foot]",
+      "execute in minecraft:overworld run setblock 1 64 64 minecraft:red_bed[facing=east,part=head]",
+      "execute in minecraft:overworld run setblock -1 64 65 minecraft:chest[facing=north]",
+      "execute in minecraft:overworld run setblock 2 64 63 minecraft:crafting_table",
+      "execute in minecraft:overworld run setblock -1 64 63 minecraft:torch",
+      "execute in minecraft:overworld run setblock 3 64 63 minecraft:torch",
+      "execute in minecraft:overworld run item replace block -1 64 65 container.0 with minecraft:stone_pickaxe 1",
+      "execute in minecraft:overworld run item replace block -1 64 65 container.1 with minecraft:stone_axe 1",
+      "execute in minecraft:overworld run item replace block -1 64 65 container.2 with minecraft:cooked_beef 16",
+      "execute in minecraft:overworld run item replace block -1 64 65 container.3 with minecraft:cobblestone 64",
+      "execute in minecraft:overworld run item replace block -1 64 65 container.4 with minecraft:oak_log 8",
+      "execute in minecraft:overworld run item replace block -1 64 65 container.5 with minecraft:shield 1",
+      "execute in minecraft:overworld run item replace block -1 64 65 container.6 with minecraft:golden_helmet 1",
+      "execute in minecraft:overworld run item replace block -1 64 65 container.7 with minecraft:flint_and_steel 1",
+      "execute in minecraft:overworld run fill -2 63 62 1 67 62 minecraft:obsidian",
+      "execute in minecraft:overworld run fill -1 64 62 0 66 62 minecraft:nether_portal[axis=x]",
+      "execute in minecraft:the_nether run fill -3 64 4 4 68 10 minecraft:cobblestone",
+      "execute in minecraft:the_nether run fill -2 65 5 3 67 9 minecraft:air",
+      "execute in minecraft:the_nether run setblock -3 65 6 minecraft:oak_door[facing=west,half=lower]",
+      "execute in minecraft:the_nether run setblock -3 66 6 minecraft:oak_door[facing=west,half=upper]",
+      "execute in minecraft:the_nether run setblock -1 65 6 minecraft:torch",
+      "execute in minecraft:the_nether run fill -1 64 8 2 68 8 minecraft:obsidian",
+      "execute in minecraft:the_nether run fill 0 65 8 1 67 8 minecraft:nether_portal[axis=x]"
+    ],
+    "inventory": [
+      {
+        "item": "minecraft:iron_pickaxe",
+        "count": 1
+      },
+      {
+        "item": "minecraft:iron_sword",
+        "count": 1
+      },
+      {
+        "item": "minecraft:shield",
+        "count": 1
+      },
+      {
+        "item": "minecraft:water_bucket",
+        "count": 1
+      },
+      {
+        "item": "minecraft:flint_and_steel",
+        "count": 1
+      },
+      {
+        "item": "minecraft:cooked_beef",
+        "count": 32
+      },
+      {
+        "item": "minecraft:cobblestone",
+        "count": 64
+      },
+      {
+        "item": "minecraft:cobblestone",
+        "count": 64
+      },
+      {
+        "item": "minecraft:oak_planks",
+        "count": 32
+      },
+      {
+        "item": "minecraft:oak_log",
+        "count": 8
+      },
+      {
+        "item": "minecraft:crafting_table",
+        "count": 1
+      },
+      {
+        "item": "minecraft:stone_axe",
+        "count": 1
+      },
+      {
+        "item": "minecraft:torch",
+        "count": 32
+      },
+      {
+        "item": "minecraft:gold_ingot",
+        "count": 2
+      }
+    ],
+    "armour": {
+      "head": "minecraft:iron_helmet",
+      "chest": "minecraft:iron_chestplate",
+      "legs": "minecraft:iron_leggings",
+      "feet": "minecraft:iron_boots"
+    },
+    "effects": [],
+    "mobs": [],
+    "loadChunks": [
+      {
+        "dimension": "minecraft:overworld",
+        "position": [
+          0,
+          64,
+          64
+        ]
+      },
+      {
+        "dimension": "minecraft:the_nether",
+        "position": [
+          -8,
+          65,
+          -3
+        ]
+      },
+      {
+        "dimension": "minecraft:the_nether",
+        "position": [
+          -8,
+          65,
+          13
+        ]
+      },
+      {
+        "dimension": "minecraft:the_nether",
+        "position": [
+          8,
+          65,
+          -3
+        ]
+      },
+      {
+        "dimension": "minecraft:the_nether",
+        "position": [
+          8,
+          65,
+          13
+        ]
+      }
+    ],
+    "usedBedSpawn": {
+      "dimension": "minecraft:overworld",
+      "position": [
+        0,
+        64,
+        64
+      ]
+    },
+    "expectedBiome": "minecraft:warped_forest"
+  },
+  "notes": [
+    "Version 2: natural warped-forest floor, realistic unenchanted iron kit, shield, food and carried building blocks.",
+    "No shelter, mob, gold or pearl is placed at the forest start. Original portal and used Overworld bed camp remain.",
+    "Forest travel, route safety and repeated return trips remain unmeasured. No route or biome location is given to the model.",
+    "Gold is secondary supply: mine seen ore along travel and barter held currency when safe."
+  ],
+  "bedSpawn": {
+    "dimension": "minecraft:overworld",
+    "position": [
+      0,
+      64,
+      64
+    ]
+  },
+  "variantOf": "9-nether-entry-123456789-v2.json",
+  "fixtureVersion": 2,
+  "recoveryRoute": null,
+  "spareKit": [
+    [
+      "stone_pickaxe",
+      1
+    ],
+    [
+      "stone_axe",
+      1
+    ],
+    [
+      "cooked_beef",
+      16
+    ],
+    [
+      "cobblestone",
+      64
+    ],
+    [
+      "oak_log",
+      8
+    ],
+    [
+      "shield",
+      1
+    ],
+    [
+      "golden_helmet",
+      1
+    ],
+    [
+      "flint_and_steel",
+      1
+    ]
+  ],
+  "netherExit": [
+    -4,
+    65,
+    6
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "baseline": "9d44450c54d646d3416b6366f48223ea00be8a36",
+  "methodology": "Pinned baseline production-encoder bytes for Sol advancing twelve-throw tape: one wake per throw, 35 seconds apart, no quiet padding. Derived rendering fixture, not a live game.",
+  "variants": {
+    "current-sequence": {
+      "bytes": [
+        3425,
+        1445,
+        1447,
+        1447,
+        1517,
+        1907,
+        1447,
+        1447,
+        1446,
+        1519,
+        1924,
+        1450
+      ],
+      "total": 20421
+    },
+    "new-decisions": {
+      "bytes": [
+        3425,
+        1445,
+        1447,
+        1447,
+        1517,
+        1907,
+        1447,
+        1448,
+        1447,
+        1520,
+        1925,
+        1451
+      ],
+      "total": 20426
+    },
+    "no-program": {
+      "bytes": [
+        3117,
+        1137,
+        1139,
+        1139,
+        1209,
+        1599,
+        1139,
+        1139,
+        1138,
+        1211,
+        1616,
+        1142
+      ],
+      "total": 16725
+    }
+  }
+}

@@ -1,0 +1,872 @@
+{
+  "source": "ladder-late4-sol/artifacts/L-D1/protocol.jsonl",
+  "sha256": "476741628692c75bdb6d063492b2709163d71dac13d2fda67b4edf50881a140a",
+  "limits": "Sampled blocks and body frames only. Unsampled cells are unknown. The planned route and per-tick collision geometry were not retained. A jump to the observed basalt top at (27,58,28) is a local reproduction, not a claim that this was the historical waypoint.",
+  "frames": [
+    {
+      "at": 1792089054362,
+      "position": {
+        "x": 27.219550730465027,
+        "y": 58,
+        "z": 23.420025446980212
+      },
+      "velocity": {
+        "x": 0,
+        "y": -0.0784000015258789,
+        "z": 0
+      },
+      "onGround": true,
+      "health": 20,
+      "horizontalCollision": false,
+      "input": {
+        "active": false,
+        "forward": 0,
+        "strafe": 0,
+        "jump": false,
+        "sneak": false,
+        "sprint": false,
+        "attack": false,
+        "use": false,
+        "yaw": -69.31744384765625,
+        "pitch": -46.03495407104492,
+        "selectedSlot": 1,
+        "hand": "main_hand"
+      }
+    },
+    {
+      "at": 1792089054412,
+      "position": {
+        "x": 27.128752438838575,
+        "y": 58,
+        "z": 23.407218450245853
+      },
+      "velocity": {
+        "x": -0.049575872986410134,
+        "y": -0.0784000015258789,
+        "z": -0.006992621029170624
+      },
+      "onGround": true,
+      "health": 20,
+      "horizontalCollision": false,
+      "input": {
+        "active": true,
+        "forward": -0.8908109068870544,
+        "strafe": -0.20000000298023224,
+        "jump": false,
+        "sneak": false,
+        "sprint": false,
+        "attack": false,
+        "use": false,
+        "yaw": -69.31744384765625,
+        "pitch": -6.81048583984375,
+        "selectedSlot": 1,
+        "hand": "main_hand"
+      }
+    },
+    {
+      "at": 1792089054911,
+      "position": {
+        "x": 26.404455025488158,
+        "y": 57.231523797587016,
+        "z": 25.027311308814067
+      },
+      "velocity": {
+        "x": -0.007343001092800319,
+        "y": -0.37663049823865513,
+        "z": 0.06295432177929688
+      },
+      "onGround": false,
+      "health": 20,
+      "horizontalCollision": false,
+      "input": {
+        "active": true,
+        "forward": -0.9854698777198792,
+        "strafe": 0.16985034942626953,
+        "jump": false,
+        "sneak": false,
+        "sprint": false,
+        "attack": false,
+        "use": false,
+        "yaw": 1.0308583974838257,
+        "pitch": 20.127010345458984,
+        "selectedSlot": 1,
+        "hand": "main_hand"
+      }
+    },
+    {
+      "at": 1792089055413,
+      "position": {
+        "x": 26.48606926468527,
+        "y": 57,
+        "z": 27.217383318631605
+      },
+      "velocity": {
+        "x": 0.0039013963917168422,
+        "y": -0.0784000015258789,
+        "z": 0.08307315536987622
+      },
+      "onGround": true,
+      "health": 20,
+      "horizontalCollision": false,
+      "input": {
+        "active": true,
+        "forward": 0,
+        "strafe": 0,
+        "jump": false,
+        "sneak": false,
+        "sprint": true,
+        "attack": false,
+        "use": false,
+        "yaw": -2.686699151992798,
+        "pitch": 10,
+        "selectedSlot": 1,
+        "hand": "main_hand"
+      }
+    },
+    {
+      "at": 1792089055915,
+      "position": {
+        "x": 28.261376219070367,
+        "y": 58.25220334025373,
+        "z": 27.88842871911527
+      },
+      "velocity": {
+        "x": 0.08947719128737378,
+        "y": -0.07544406518948656,
+        "z": 0.06444366461560946
+      },
+      "onGround": false,
+      "health": 20,
+      "horizontalCollision": false,
+      "input": {
+        "active": true,
+        "forward": 0.9976085424423218,
+        "strafe": -0.06911739706993103,
+        "jump": false,
+        "sneak": false,
+        "sprint": true,
+        "attack": false,
+        "use": false,
+        "yaw": 40.21321105957031,
+        "pitch": 14.748222351074219,
+        "selectedSlot": 1,
+        "hand": "main_hand"
+      }
+    },
+    {
+      "at": 1792089056411,
+      "position": {
+        "x": 28.30000001192093,
+        "y": 56.7531999805212,
+        "z": 28.661468325884613
+      },
+      "velocity": {
+        "x": 0,
+        "y": 0.24813599859094576,
+        "z": 0.0263414340179995
+      },
+      "onGround": false,
+      "health": 20,
+      "horizontalCollision": true,
+      "input": {
+        "active": true,
+        "forward": 1,
+        "strafe": 0,
+        "jump": true,
+        "sneak": false,
+        "sprint": true,
+        "attack": false,
+        "use": false,
+        "yaw": 99.40575408935547,
+        "pitch": -17.774280548095703,
+        "selectedSlot": 1,
+        "hand": "main_hand"
+      }
+    },
+    {
+      "at": 1792089056917,
+      "position": {
+        "x": 28.30000001192093,
+        "y": 56,
+        "z": 28.599327473823017
+      },
+      "velocity": {
+        "x": 0,
+        "y": -0.0784000015258789,
+        "z": -0.019027610386024033
+      },
+      "onGround": true,
+      "health": 20,
+      "horizontalCollision": true,
+      "input": {
+        "active": true,
+        "forward": 1,
+        "strafe": 0,
+        "jump": true,
+        "sneak": false,
+        "sprint": true,
+        "attack": false,
+        "use": false,
+        "yaw": 98.54736328125,
+        "pitch": -22.05621337890625,
+        "selectedSlot": 1,
+        "hand": "main_hand"
+      }
+    },
+    {
+      "at": 1792089057412,
+      "position": {
+        "x": 28.30000001192093,
+        "y": 56.495200877005914,
+        "z": 28.443533475942832
+      },
+      "velocity": {
+        "x": 0,
+        "y": -0.3739040364667221,
+        "z": -0.006360634731363246
+      },
+      "onGround": false,
+      "health": 20,
+      "horizontalCollision": true,
+      "input": {
+        "active": true,
+        "forward": 1,
+        "strafe": 0,
+        "jump": true,
+        "sneak": false,
+        "sprint": true,
+        "attack": false,
+        "use": false,
+        "yaw": 86.46099090576172,
+        "pitch": -11.855134963989258,
+        "selectedSlot": 1,
+        "hand": "main_hand"
+      }
+    },
+    {
+      "at": 1792089057912,
+      "position": {
+        "x": 28.30000001192093,
+        "y": 57.024424088213685,
+        "z": 28.491167377594753
+      },
+      "velocity": {
+        "x": 0,
+        "y": -0.22768848754498797,
+        "z": 0.006337084507174386
+      },
+      "onGround": false,
+      "health": 20,
+      "horizontalCollision": true,
+      "input": {
+        "active": true,
+        "forward": 1,
+        "strafe": 0,
+        "jump": true,
+        "sneak": false,
+        "sprint": true,
+        "attack": false,
+        "use": false,
+        "yaw": 88.86881256103516,
+        "pitch": -5.345008850097656,
+        "selectedSlot": 1,
+        "hand": "main_hand"
+      }
+    },
+    {
+      "at": 1792089058408,
+      "position": {
+        "x": 28.30000001192093,
+        "y": 57.25220334025373,
+        "z": 28.514475064388904
+      },
+      "velocity": {
+        "x": 0,
+        "y": -0.07544406518948656,
+        "z": -0.00033001215836082844
+      },
+      "onGround": false,
+      "health": 20,
+      "horizontalCollision": true,
+      "input": {
+        "active": true,
+        "forward": 1,
+        "strafe": 0,
+        "jump": true,
+        "sneak": false,
+        "sprint": true,
+        "attack": false,
+        "use": false,
+        "yaw": 91.06255340576172,
+        "pitch": -4.050854682922363,
+        "selectedSlot": 1,
+        "hand": "main_hand"
+      }
+    },
+    {
+      "at": 1792089058912,
+      "position": {
+        "x": 28.30000001192093,
+        "y": 57.166109260938214,
+        "z": 28.51017580352492
+      },
+      "velocity": {
+        "x": 0,
+        "y": 0.08307781780646721,
+        "z": -0.00023084425394926178
+      },
+      "onGround": false,
+      "health": 20,
+      "horizontalCollision": true,
+      "input": {
+        "active": true,
+        "forward": 1,
+        "strafe": 0,
+        "jump": true,
+        "sneak": false,
+        "sprint": true,
+        "attack": false,
+        "use": false,
+        "yaw": 90.74691772460938,
+        "pitch": -8.411981582641602,
+        "selectedSlot": 1,
+        "hand": "main_hand"
+      }
+    },
+    {
+      "at": 1792089059412,
+      "position": {
+        "x": 28.30000001192093,
+        "y": 56.7531999805212,
+        "z": 28.507156109546397
+      },
+      "velocity": {
+        "x": 0,
+        "y": 0.24813599859094576,
+        "z": -0.00016244824019730878
+      },
+      "onGround": false,
+      "health": 20,
+      "horizontalCollision": true,
+      "input": {
+        "active": true,
+        "forward": 1,
+        "strafe": 0,
+        "jump": true,
+        "sneak": false,
+        "sprint": true,
+        "attack": false,
+        "use": false,
+        "yaw": 90.5252914428711,
+        "pitch": -17.774280548095703,
+        "selectedSlot": 1,
+        "hand": "main_hand"
+      }
+    },
+    {
+      "at": 1792089059909,
+      "position": {
+        "x": 28.30000001192093,
+        "y": 56,
+        "z": 28.506021130192106
+      },
+      "velocity": {
+        "x": 0,
+        "y": -0.0784000015258789,
+        "z": 0
+      },
+      "onGround": true,
+      "health": 20,
+      "horizontalCollision": false,
+      "input": {
+        "active": true,
+        "forward": 0,
+        "strafe": 0,
+        "jump": false,
+        "sneak": false,
+        "sprint": false,
+        "attack": false,
+        "use": false,
+        "yaw": -134.55801391601562,
+        "pitch": 10,
+        "selectedSlot": 1,
+        "hand": "main_hand"
+      }
+    },
+    {
+      "at": 1792089060418,
+      "position": {
+        "x": 28.38963840274914,
+        "y": 55.53584062504456,
+        "z": 27.30000001192093
+      },
+      "velocity": {
+        "x": -0.029918585033061915,
+        "y": -0.30431682745754424,
+        "z": 0
+      },
+      "onGround": false,
+      "health": 20,
+      "horizontalCollision": true,
+      "input": {
+        "active": true,
+        "forward": -0.5457774996757507,
+        "strafe": -0.20000000298023224,
+        "jump": false,
+        "sneak": false,
+        "sprint": false,
+        "attack": false,
+        "use": false,
+        "yaw": -145.6848602294922,
+        "pitch": 52.67985534667969,
+        "selectedSlot": 1,
+        "hand": "main_hand"
+      }
+    },
+    {
+      "at": 1792089060913,
+      "position": {
+        "x": 29.00336603966566,
+        "y": 53,
+        "z": 27.563943139240294
+      },
+      "velocity": {
+        "x": 0.1321933084644665,
+        "y": -0.0784000015258789,
+        "z": -0.008326120698926746
+      },
+      "onGround": true,
+      "health": 20,
+      "horizontalCollision": false,
+      "input": {
+        "active": true,
+        "forward": 0.974297285079956,
+        "strafe": -0.22526618838310242,
+        "jump": false,
+        "sneak": false,
+        "sprint": true,
+        "attack": false,
+        "use": false,
+        "yaw": -109.1371841430664,
+        "pitch": 28.434947967529297,
+        "selectedSlot": 1,
+        "hand": "main_hand"
+      }
+    },
+    {
+      "at": 1792089061073,
+      "position": {
+        "x": 29.802431157388547,
+        "y": 52.92159999847412,
+        "z": 27.44358298655306
+      },
+      "velocity": {
+        "x": 0.14623870879798498,
+        "y": -0.1552320045166016,
+        "z": -0.03315141272664165
+      },
+      "onGround": false,
+      "health": 20,
+      "horizontalCollision": false,
+      "input": {
+        "active": true,
+        "forward": 1,
+        "strafe": 0,
+        "jump": false,
+        "sneak": false,
+        "sprint": true,
+        "attack": false,
+        "use": false,
+        "yaw": -109.1371841430664,
+        "pitch": 28.434947967529297,
+        "selectedSlot": 1,
+        "hand": "main_hand"
+      }
+    },
+    {
+      "at": 1792089061168,
+      "position": {
+        "x": 30.044529814692208,
+        "y": 52.53584062504456,
+        "z": 27.3872034583095
+      },
+      "velocity": {
+        "x": 0.10496434917071654,
+        "y": -0.30431682745754424,
+        "z": -0.024443921145811332
+      },
+      "onGround": false,
+      "health": 20,
+      "horizontalCollision": false,
+      "input": {
+        "active": false,
+        "forward": 0,
+        "strafe": 0,
+        "jump": false,
+        "sneak": false,
+        "sprint": false,
+        "attack": false,
+        "use": false,
+        "yaw": -109.1371841430664,
+        "pitch": 27.07695770263672,
+        "selectedSlot": 1,
+        "hand": "main_hand"
+      }
+    },
+    {
+      "at": 1792089061324,
+      "position": {
+        "x": 30.31429649137773,
+        "y": 52,
+        "z": 27.31172230132903
+      },
+      "velocity": {
+        "x": 0.037829487185086386,
+        "y": -0.0784000015258789,
+        "z": -0.01572112558124221
+      },
+      "onGround": true,
+      "health": 20,
+      "horizontalCollision": false,
+      "input": {
+        "active": true,
+        "forward": 0,
+        "strafe": 0.20000000298023224,
+        "jump": false,
+        "sneak": false,
+        "sprint": true,
+        "attack": false,
+        "use": false,
+        "yaw": -154.13717651367188,
+        "pitch": 8.123086929321289,
+        "selectedSlot": 1,
+        "hand": "main_hand"
+      }
+    },
+    {
+      "at": 1792089061666,
+      "position": {
+        "x": 30.30000001192093,
+        "y": 50,
+        "z": 27.160593896828807
+      },
+      "velocity": {
+        "x": 0,
+        "y": -0.0784000015258789,
+        "z": -0.012312833430007717
+      },
+      "onGround": true,
+      "health": 19.579999923706055,
+      "horizontalCollision": false,
+      "input": {
+        "active": true,
+        "forward": 0,
+        "strafe": 0,
+        "jump": false,
+        "sneak": false,
+        "sprint": false,
+        "attack": false,
+        "use": false,
+        "yaw": 90.03950500488281,
+        "pitch": 0,
+        "selectedSlot": 1,
+        "hand": "main_hand"
+      }
+    },
+    {
+      "at": 1792089061727,
+      "position": {
+        "x": 30.30000001192093,
+        "y": 50,
+        "z": 27.148281063398798
+      },
+      "velocity": {
+        "x": 0,
+        "y": -0.0784000015258789,
+        "z": -0.006722807833656009
+      },
+      "onGround": true,
+      "health": 19.579999923706055,
+      "horizontalCollision": false,
+      "input": {
+        "active": false,
+        "forward": 0,
+        "strafe": 0,
+        "jump": false,
+        "sneak": false,
+        "sprint": false,
+        "attack": false,
+        "use": false,
+        "yaw": 90.03950500488281,
+        "pitch": 0,
+        "selectedSlot": 1,
+        "hand": "main_hand"
+      }
+    }
+  ],
+  "sampledBlocks": [
+    {
+      "x": 27,
+      "y": 59,
+      "z": 29,
+      "blockId": "minecraft:basalt"
+    },
+    {
+      "x": 27,
+      "y": 57,
+      "z": 28,
+      "blockId": "minecraft:basalt"
+    },
+    {
+      "x": 26,
+      "y": 56,
+      "z": 25,
+      "blockId": "minecraft:basalt"
+    },
+    {
+      "x": 26,
+      "y": 56,
+      "z": 26,
+      "blockId": "minecraft:basalt"
+    },
+    {
+      "x": 27,
+      "y": 56,
+      "z": 25,
+      "blockId": "minecraft:basalt"
+    },
+    {
+      "x": 27,
+      "y": 56,
+      "z": 26,
+      "blockId": "minecraft:basalt"
+    },
+    {
+      "x": 28,
+      "y": 56,
+      "z": 25,
+      "blockId": "minecraft:basalt"
+    },
+    {
+      "x": 26,
+      "y": 56,
+      "z": 27,
+      "blockId": "minecraft:basalt"
+    },
+    {
+      "x": 26,
+      "y": 56,
+      "z": 28,
+      "blockId": "minecraft:basalt"
+    },
+    {
+      "x": 27,
+      "y": 56,
+      "z": 27,
+      "blockId": "minecraft:basalt"
+    },
+    {
+      "x": 27,
+      "y": 58,
+      "z": 29,
+      "blockId": "minecraft:basalt"
+    },
+    {
+      "x": 28,
+      "y": 57,
+      "z": 29,
+      "blockId": "minecraft:basalt"
+    },
+    {
+      "x": 28,
+      "y": 55,
+      "z": 28,
+      "blockId": "minecraft:basalt"
+    },
+    {
+      "x": 28,
+      "y": 55,
+      "z": 26,
+      "blockId": "minecraft:basalt"
+    },
+    {
+      "x": 29,
+      "y": 54,
+      "z": 26,
+      "blockId": "minecraft:basalt"
+    },
+    {
+      "x": 28,
+      "y": 52,
+      "z": 27,
+      "blockId": "minecraft:basalt"
+    },
+    {
+      "x": 28,
+      "y": 54,
+      "z": 26,
+      "blockId": "minecraft:basalt"
+    },
+    {
+      "x": 28,
+      "y": 54,
+      "z": 28,
+      "blockId": "minecraft:basalt"
+    },
+    {
+      "x": 27,
+      "y": 53,
+      "z": 27,
+      "blockId": "minecraft:basalt"
+    },
+    {
+      "x": 29,
+      "y": 51,
+      "z": 27,
+      "blockId": "minecraft:basalt"
+    },
+    {
+      "x": 27,
+      "y": 54,
+      "z": 27,
+      "blockId": "minecraft:basalt"
+    },
+    {
+      "x": 29,
+      "y": 51,
+      "z": 28,
+      "blockId": "minecraft:basalt"
+    },
+    {
+      "x": 28,
+      "y": 53,
+      "z": 28,
+      "blockId": "minecraft:basalt"
+    },
+    {
+      "x": 30,
+      "y": 50,
+      "z": 29,
+      "blockId": "minecraft:basalt"
+    },
+    {
+      "x": 30,
+      "y": 49,
+      "z": 27,
+      "blockId": "minecraft:magma_block"
+    },
+    {
+      "x": 30,
+      "y": 49,
+      "z": 26,
+      "blockId": "minecraft:magma_block"
+    },
+    {
+      "x": 30,
+      "y": 49,
+      "z": 28,
+      "blockId": "minecraft:magma_block"
+    },
+    {
+      "x": 31,
+      "y": 49,
+      "z": 27,
+      "blockId": "minecraft:magma_block"
+    },
+    {
+      "x": 31,
+      "y": 49,
+      "z": 26,
+      "blockId": "minecraft:lava"
+    },
+    {
+      "x": 31,
+      "y": 49,
+      "z": 28,
+      "blockId": "minecraft:magma_block"
+    },
+    {
+      "x": 31,
+      "y": 49,
+      "z": 25,
+      "blockId": "minecraft:magma_block"
+    },
+    {
+      "x": 31,
+      "y": 49,
+      "z": 29,
+      "blockId": "minecraft:magma_block"
+    },
+    {
+      "x": 29,
+      "y": 53,
+      "z": 26,
+      "blockId": "minecraft:basalt"
+    },
+    {
+      "x": 30,
+      "y": 49,
+      "z": 25,
+      "blockId": "minecraft:magma_block"
+    },
+    {
+      "x": 29,
+      "y": 51,
+      "z": 26,
+      "blockId": "minecraft:basalt"
+    }
+  ],
+  "cancellation": {
+    "observedAtEpochMs": 1792089061152,
+    "reasonCode": "ACTION_CANCELLED",
+    "message": "Cancelled by explicit model decision",
+    "actionObservation": {
+      "observedAtEpochMs": 1792089061102,
+      "worldTick": 1817,
+      "position": {
+        "x": 29.802431157388547,
+        "y": 52.92159999847412,
+        "z": 27.44358298655306
+      },
+      "velocity": {
+        "x": 0.14623870879798498,
+        "y": -0.1552320045166016,
+        "z": -0.03315141272664165
+      },
+      "yaw": -109.1371841430664,
+      "pitch": 27.07695770263672,
+      "collision": {
+        "horizontal": false,
+        "vertical": false,
+        "inWall": false
+      },
+      "lookedAt": {
+        "type": "block",
+        "hitDistance": 4.49999990010398,
+        "position": {
+          "x": 33,
+          "y": 52,
+          "z": 26
+        },
+        "id": "minecraft:air",
+        "face": "west"
+      },
+      "target": {
+        "kind": "position",
+        "position": {
+          "x": 40,
+          "y": 58,
+          "z": 27
+        },
+        "tolerance": 2,
+        "standable": false
+      },
+      "onGround": false,
+      "progress": {
+        "value": 0.14101624892223075,
+        "basis": "world_position",
+        "verified": true
+      }
+    }
+  }
+}

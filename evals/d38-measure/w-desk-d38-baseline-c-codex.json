@@ -1,0 +1,4554 @@
+{
+  "schemaVersion": 1,
+  "scorer": "d38-measure",
+  "scoredAt": "2026-10-24T19:30:33.308Z",
+  "run": "w-desk-d38-baseline-c-codex",
+  "raw": "..\\..\\..\\aa-run-81f5d9d8\\runtime\\headless-runs\\run-1792856220499-4a9b92a2\\q-mkavib-1f61-LONG-r1-796ee8a5",
+  "evaluationReferences": [
+    "evals/d38-baseline"
+  ],
+  "identity": {
+    "agentId": "ccfb7b08-a725-4600-84b1-a245218928fe",
+    "agentName": "ha_q_mkavi_kbdza",
+    "seed": "8675309",
+    "profile": {
+      "provider": "codex",
+      "model": "gpt-6.1-sol",
+      "reasoningEffort": "low",
+      "serviceTier": "default"
+    },
+    "build": {
+      "commit": null,
+      "jar": {
+        "path": "C:\\Users\\player\\arena-runner\\jars\\d25-bc23e272.jar",
+        "sha256": "066a07667003c16784f6b9b34370de5a342436c798ea7a29d0de5b929fd19fb4"
+      },
+      "coordinatorSha256": "880b979bdfb7600f8913b6c915a87b1cb3e723628a33e7c7328573ff57229ed1"
+    },
+    "checkpoint": "checkpoint-lava-pool"
+  },
+  "window": {
+    "startedAt": 1792856264702,
+    "observedThrough": 1792859864262,
+    "plannedEndAt": 1792859864702,
+    "windowMs": 3600000
+  },
+  "ending": {
+    "kind": "budget_end",
+    "reason": "WALL_CLOCK_BUDGET",
+    "at": 1792859864971,
+    "censored": true
+  },
+  "postRunFailure": null,
+  "censoring": {
+    "censored": true,
+    "unobservedRemainder": true,
+    "observedFirstLifeFailure": true,
+    "reason": "Continuation after the last observation is unobserved, including after a fixed budget. Observed first-life deaths remain failures."
+  },
+  "firstLife": {
+    "name": "first_life",
+    "samples": 1669,
+    "startedAt": 1792856264702,
+    "endedAt": 1792858092517,
+    "deaths": 1,
+    "damageTakenCounterDelta": 509,
+    "healthDropLowerBound": 40.77333647,
+    "resources": {
+      "rods": {
+        "unit": "rod equivalents (rod=1, powder=0.5, eye=0.5)",
+        "supplied": 0,
+        "earned": null,
+        "held": 0,
+        "spent": null,
+        "lost": 0,
+        "observedGains": 0,
+        "recoveredOrEarned": 0,
+        "unexplainedDecrease": 0,
+        "peakHeld": 0,
+        "heldBeforeDeath": 0,
+        "earnedBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedGains": 0,
+          "exact": false
+        },
+        "spentBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedDecreases": 0,
+          "exact": false
+        },
+        "lostBasis": "Last sampled holdings dropped at an observed death; inferred loss of possession, not verified destruction or exact loss between samples."
+      },
+      "pearlsEyes": {
+        "unit": "pearl/eye equivalents",
+        "supplied": 0,
+        "earned": null,
+        "held": 0,
+        "spent": null,
+        "lost": 0,
+        "observedGains": 0,
+        "recoveredOrEarned": 0,
+        "unexplainedDecrease": 0,
+        "peakHeld": 0,
+        "heldBeforeDeath": 0,
+        "earnedBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedGains": 0,
+          "exact": false
+        },
+        "spentBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedDecreases": 0,
+          "exact": false
+        },
+        "lostBasis": "Last sampled holdings dropped at an observed death; inferred loss of possession, not verified destruction or exact loss between samples."
+      },
+      "gold": {
+        "unit": "barterable ingot equivalents (block=9, nugget=1/9)",
+        "supplied": 0,
+        "earned": null,
+        "held": 0,
+        "spent": null,
+        "lost": 0.7777777777777778,
+        "observedGains": 0.7777777777777778,
+        "recoveredOrEarned": 0,
+        "unexplainedDecrease": 0,
+        "peakHeld": 0.7777777777777778,
+        "heldBeforeDeath": 0.7777777777777778,
+        "earnedBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedGains": 0.7777777777777778,
+          "exact": false
+        },
+        "spentBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedDecreases": 0,
+          "exact": false
+        },
+        "lostBasis": "Last sampled holdings dropped at an observed death; inferred loss of possession, not verified destruction or exact loss between samples."
+      }
+    },
+    "milestones": {
+      "wood": {
+        "firstObservedAt": 1792856264711,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "planks": {
+        "firstObservedAt": 1792856264711,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "crafting_table": {
+        "firstObservedAt": 1792856264711,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "wooden_pickaxe": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "stone": {
+        "firstObservedAt": 1792856264711,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "stone_pickaxe": {
+        "firstObservedAt": 1792858042647,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "furnace": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "cooked_food": {
+        "firstObservedAt": 1792856264711,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "iron_ingot": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "iron_pickaxe": {
+        "firstObservedAt": 1792856264711,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "iron_armour": {
+        "firstObservedAt": 1792856264711,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "bucket": {
+        "firstObservedAt": 1792856264711,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "diamond": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "obsidian": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "flint_and_steel": {
+        "firstObservedAt": 1792856264711,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "nether": {
+        "firstObservedAt": 1792857346658,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "fortress": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": null,
+        "reached": false
+      },
+      "blaze_rod": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "ender_pearl": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "blaze_powder": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "ender_eye": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "stronghold": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": null,
+        "reached": false
+      },
+      "end": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "dragon": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": null,
+        "reached": false
+      }
+    },
+    "status": "observed_death",
+    "durationMs": 1827815,
+    "retentionRequirements": {
+      "rodsHeldAtStageEnd": false,
+      "pearlsOrEyesHeldAtStageEnd": false,
+      "required": {
+        "rods": 6,
+        "pearlsEyes": 12
+      }
+    },
+    "resourceBasis": "Inventory deltas. Earned/spent remain unknown without a causal receipt; positive deltas can be recovery, gifts or container transfers. Lost is the observed death-associated decrease, not item destruction. Counter units are vanilla tenths of HP."
+  },
+  "afterDeath": {
+    "name": "after_death",
+    "samples": 1583,
+    "startedAt": 1792858092517,
+    "endedAt": 1792859864262,
+    "deaths": 1,
+    "damageTakenCounterDelta": 420,
+    "healthDropLowerBound": 33.3333335,
+    "resources": {
+      "rods": {
+        "unit": "rod equivalents (rod=1, powder=0.5, eye=0.5)",
+        "supplied": 0,
+        "earned": null,
+        "held": 0,
+        "spent": null,
+        "lost": 0,
+        "observedGains": 0,
+        "recoveredOrEarned": 0,
+        "unexplainedDecrease": 0,
+        "peakHeld": 0,
+        "earnedBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedGains": 0,
+          "exact": false
+        },
+        "spentBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedDecreases": 0,
+          "exact": false
+        },
+        "lostBasis": "Last sampled holdings dropped at an observed death; inferred loss of possession, not verified destruction or exact loss between samples."
+      },
+      "pearlsEyes": {
+        "unit": "pearl/eye equivalents",
+        "supplied": 0,
+        "earned": null,
+        "held": 0,
+        "spent": null,
+        "lost": 0,
+        "observedGains": 0,
+        "recoveredOrEarned": 0,
+        "unexplainedDecrease": 0,
+        "peakHeld": 0,
+        "earnedBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedGains": 0,
+          "exact": false
+        },
+        "spentBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedDecreases": 0,
+          "exact": false
+        },
+        "lostBasis": "Last sampled holdings dropped at an observed death; inferred loss of possession, not verified destruction or exact loss between samples."
+      },
+      "gold": {
+        "unit": "barterable ingot equivalents (block=9, nugget=1/9)",
+        "supplied": 0,
+        "earned": null,
+        "held": 0,
+        "spent": null,
+        "lost": 0,
+        "observedGains": 0,
+        "recoveredOrEarned": 0,
+        "unexplainedDecrease": 0,
+        "peakHeld": 0,
+        "earnedBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedGains": 0,
+          "exact": false
+        },
+        "spentBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedDecreases": 0,
+          "exact": false
+        },
+        "lostBasis": "Last sampled holdings dropped at an observed death; inferred loss of possession, not verified destruction or exact loss between samples."
+      }
+    },
+    "milestones": {
+      "wood": {
+        "firstObservedAt": 1792858120185,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "planks": {
+        "firstObservedAt": 1792858325123,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "crafting_table": {
+        "firstObservedAt": 1792858319693,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "wooden_pickaxe": {
+        "firstObservedAt": 1792859371966,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "stone": {
+        "firstObservedAt": 1792858119088,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "stone_pickaxe": {
+        "firstObservedAt": 1792858119088,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "furnace": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "cooked_food": {
+        "firstObservedAt": 1792858119088,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "iron_ingot": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "iron_pickaxe": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "iron_armour": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "bucket": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "diamond": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "obsidian": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "flint_and_steel": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "nether": {
+        "firstObservedAt": 1792858134405,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "fortress": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": null,
+        "reached": false
+      },
+      "blaze_rod": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "ender_pearl": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "blaze_powder": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "ender_eye": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "stronghold": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": null,
+        "reached": false
+      },
+      "end": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "dragon": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": null,
+        "reached": false
+      }
+    },
+    "status": "censored",
+    "durationMs": 1771745,
+    "retentionRequirements": {
+      "rodsHeldAtStageEnd": false,
+      "pearlsOrEyesHeldAtStageEnd": false,
+      "required": {
+        "rods": 6,
+        "pearlsEyes": 12
+      }
+    },
+    "resourceBasis": "Inventory deltas. Earned/spent remain unknown without a causal receipt; positive deltas can be recovery, gifts or container transfers. Lost is the observed death-associated decrease, not item destruction. Counter units are vanilla tenths of HP."
+  },
+  "suppliedKit": {
+    "inventory": {
+      "rods": 0,
+      "pearlsEyes": 0,
+      "gold": 0
+    },
+    "reserveContainers": {
+      "rods": 0,
+      "pearlsEyes": 0,
+      "gold": 0
+    }
+  },
+  "observedDeaths": 2,
+  "firstLifeDeathTrace": {
+    "death": {
+      "at": 1792858092517,
+      "cause": "ha_q_mkavi_kbdza burned to death",
+      "source": "protocol"
+    },
+    "encounterStartAt": 1792858081570,
+    "hazards": [
+      {
+        "kind": "lava",
+        "source": {
+          "type": "minecraft:lava",
+          "entityId": null,
+          "block": [
+            -108,
+            48,
+            -85
+          ],
+          "pos": null
+        },
+        "firstSensedAt": 1792858081570,
+        "watcherOpenedAt": 1792858081320,
+        "watcherDamageTakenHp": 41,
+        "advertisedRules": [
+          "lava:in_lava",
+          "netherflow:lava_flowing"
+        ],
+        "firings": [
+          {
+            "rule": "lava",
+            "atMs": 1792858082173,
+            "result": "done: out of lava at -103,48,-85; lost 12.0 health"
+          },
+          {
+            "rule": "lava",
+            "atMs": 1792858086470,
+            "result": "done: out of lava at -100,48,-85"
+          }
+        ]
+      }
+    ],
+    "liveReflexCoverage": [
+      {
+        "at": 1792858081969,
+        "rules": [
+          {
+            "id": "suffocate",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 1789,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2872,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3062,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "netherflow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 29,
+            "expiresInS": 2859,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "creeper",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2859,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2872,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shots",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 286,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "netherflow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792858082121,
+        "rules": [
+          {
+            "id": "suffocate",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 1789,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2872,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3062,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "netherflow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 29,
+            "expiresInS": 2859,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "creeper",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2859,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2872,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shots",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 286,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "netherflow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792858082172,
+        "rules": [
+          {
+            "id": "suffocate",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 1789,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2872,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 1,
+            "expiresInS": 3062,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "netherflow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 29,
+            "expiresInS": 2859,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "creeper",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2859,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2872,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shots",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 286,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "netherflow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792858082619,
+        "rules": [
+          {
+            "id": "suffocate",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 1788,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2871,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 1,
+            "expiresInS": 3061,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "netherflow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 29,
+            "expiresInS": 2859,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "creeper",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2859,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2871,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shots",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 286,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "netherflow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792858082669,
+        "rules": [
+          {
+            "id": "suffocate",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 1788,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2871,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 1,
+            "expiresInS": 3061,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "netherflow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 29,
+            "expiresInS": 2859,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "creeper",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2859,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2871,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shots",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 286,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "netherflow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792858083120,
+        "rules": [
+          {
+            "id": "suffocate",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 1788,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2871,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 1,
+            "expiresInS": 3061,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "netherflow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 29,
+            "expiresInS": 2858,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "creeper",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2858,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2871,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shots",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 285,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "netherflow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792858083169,
+        "rules": [
+          {
+            "id": "suffocate",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 1788,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2871,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 1,
+            "expiresInS": 3061,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "netherflow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 29,
+            "expiresInS": 2858,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "creeper",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2858,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2871,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shots",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 285,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "netherflow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792858083620,
+        "rules": [
+          {
+            "id": "suffocate",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 1787,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2870,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 1,
+            "expiresInS": 3060,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "netherflow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 29,
+            "expiresInS": 2858,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "creeper",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2858,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2870,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shots",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 285,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "netherflow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792858083669,
+        "rules": [
+          {
+            "id": "suffocate",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 1787,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2870,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 1,
+            "expiresInS": 3060,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "netherflow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 29,
+            "expiresInS": 2858,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "creeper",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2858,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2870,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shots",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 285,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "netherflow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792858084117,
+        "rules": [
+          {
+            "id": "suffocate",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 1787,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2870,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 1,
+            "expiresInS": 3060,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "netherflow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 29,
+            "expiresInS": 2857,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "creeper",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2857,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2870,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shots",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 284,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "netherflow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792858084169,
+        "rules": [
+          {
+            "id": "suffocate",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 1787,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2870,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 1,
+            "expiresInS": 3060,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "netherflow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 29,
+            "expiresInS": 2857,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "creeper",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2857,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2870,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shots",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 284,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "netherflow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792858084621,
+        "rules": [
+          {
+            "id": "suffocate",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 1786,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2869,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 1,
+            "expiresInS": 3059,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "netherflow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 29,
+            "expiresInS": 2857,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "creeper",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2857,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2869,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shots",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 284,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "netherflow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792858084669,
+        "rules": [
+          {
+            "id": "suffocate",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 1786,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2869,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 1,
+            "expiresInS": 3059,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "netherflow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 29,
+            "expiresInS": 2857,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "creeper",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2857,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2869,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shots",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 284,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "netherflow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792858085121,
+        "rules": [
+          {
+            "id": "suffocate",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 1786,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2869,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 1,
+            "expiresInS": 3059,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "netherflow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 29,
+            "expiresInS": 2856,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "creeper",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2856,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2869,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shots",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 283,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "netherflow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792858085170,
+        "rules": [
+          {
+            "id": "suffocate",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 1786,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2869,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 1,
+            "expiresInS": 3059,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "netherflow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 29,
+            "expiresInS": 2856,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "creeper",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2856,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2869,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shots",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 283,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "netherflow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792858085621,
+        "rules": [
+          {
+            "id": "suffocate",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 1785,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2868,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 1,
+            "expiresInS": 3058,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "netherflow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 29,
+            "expiresInS": 2856,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "creeper",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2856,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2868,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shots",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 283,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "netherflow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792858085670,
+        "rules": [
+          {
+            "id": "suffocate",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 1785,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2868,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 1,
+            "expiresInS": 3058,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "netherflow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 29,
+            "expiresInS": 2856,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "creeper",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2856,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2868,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shots",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 283,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "netherflow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792858085968,
+        "rules": [
+          {
+            "id": "suffocate",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 1785,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2868,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "cooldown",
+            "fired": 1,
+            "expiresInS": 3058,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "netherflow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 29,
+            "expiresInS": 2855,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "creeper",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2855,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2868,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shots",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 282,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "netherflow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792858086120,
+        "rules": [
+          {
+            "id": "suffocate",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 1785,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2868,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "cooldown",
+            "fired": 1,
+            "expiresInS": 3058,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "netherflow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 29,
+            "expiresInS": 2855,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "creeper",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2855,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2868,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shots",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 282,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "netherflow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792858086170,
+        "rules": [
+          {
+            "id": "suffocate",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 1785,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2868,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "cooldown",
+            "fired": 1,
+            "expiresInS": 3058,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "netherflow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 29,
+            "expiresInS": 2855,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "creeper",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2855,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2868,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shots",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 282,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "netherflow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792858086570,
+        "rules": [
+          {
+            "id": "suffocate",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 1784,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2867,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 2,
+            "expiresInS": 3057,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "netherflow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 29,
+            "expiresInS": 2855,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "creeper",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2855,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2867,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shots",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 282,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "netherflow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792858087070,
+        "rules": [
+          {
+            "id": "suffocate",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 1784,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2867,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 2,
+            "expiresInS": 3057,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "netherflow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 29,
+            "expiresInS": 2854,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "creeper",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2854,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2867,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shots",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 281,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "netherflow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792858087521,
+        "rules": [
+          {
+            "id": "suffocate",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 1783,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2866,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "cooldown",
+            "fired": 2,
+            "expiresInS": 3056,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "netherflow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 29,
+            "expiresInS": 2854,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "creeper",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2854,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2866,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shots",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 281,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "netherflow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792858088020,
+        "rules": [
+          {
+            "id": "suffocate",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 1783,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2866,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3056,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "netherflow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 29,
+            "expiresInS": 2853,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "creeper",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2853,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2866,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shots",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 280,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "netherflow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792858088521,
+        "rules": [
+          {
+            "id": "suffocate",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 1782,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2865,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3055,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "netherflow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 29,
+            "expiresInS": 2853,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "creeper",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2853,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2865,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shots",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 280,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "netherflow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792858089020,
+        "rules": [
+          {
+            "id": "suffocate",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 1782,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2865,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3055,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "netherflow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 29,
+            "expiresInS": 2852,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "creeper",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2852,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2865,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shots",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 279,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "netherflow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792858089322,
+        "rules": [
+          {
+            "id": "suffocate",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 1782,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2865,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3054,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "netherflow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 29,
+            "expiresInS": 2852,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "creeper",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2852,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2865,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shots",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 279,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "netherflow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792858089521,
+        "rules": [
+          {
+            "id": "suffocate",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 1781,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2864,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3054,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "netherflow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 29,
+            "expiresInS": 2852,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "creeper",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2852,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2864,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shots",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 279,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "netherflow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792858089671,
+        "rules": [
+          {
+            "id": "suffocate",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 1781,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2864,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3054,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "netherflow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 29,
+            "expiresInS": 2852,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "creeper",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2852,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2864,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shots",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 279,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "netherflow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792858090170,
+        "rules": [
+          {
+            "id": "suffocate",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 1781,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2864,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3054,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "netherflow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 29,
+            "expiresInS": 2851,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "creeper",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2851,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2864,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shots",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 278,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "netherflow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792858090520,
+        "rules": [
+          {
+            "id": "suffocate",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 1780,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2863,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3053,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "netherflow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 29,
+            "expiresInS": 2851,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "creeper",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2851,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2863,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shots",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 278,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "netherflow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792858091020,
+        "rules": [
+          {
+            "id": "suffocate",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 1780,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2863,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3053,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "netherflow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 29,
+            "expiresInS": 2850,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "creeper",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2850,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2863,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shots",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 277,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "netherflow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792858091520,
+        "rules": [
+          {
+            "id": "suffocate",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 1779,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2862,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3052,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "netherflow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 29,
+            "expiresInS": 2850,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "creeper",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2850,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2862,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shots",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 277,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "netherflow"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792858092019,
+        "rules": [
+          {
+            "id": "suffocate",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 1779,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fire",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2862,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "lava",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3052,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "netherflow",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 29,
+            "expiresInS": 2849,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "creeper",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2849,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ghast",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 2862,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "shots",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 276,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "lava",
+          "netherflow"
+        ],
+        "basis": "server observation status; live at observation time"
+      }
+    ],
+    "dispatchedCommands": [
+      {
+        "at": 1792858089295,
+        "source": "protocol",
+        "traceId": "native-e8b5ec70-0354-4e99-89eb-577b76c4db65-337-ccfb7b08-a725-4600-84b1-a2452189-1",
+        "goalRevision": 1,
+        "actionId": "native:e8b5ec70-0354-4e99-89eb-577b76c4db65:337:ccfb7b08-a725-4600-84b1-a2452189:1",
+        "actionType": "move_to",
+        "arguments": {
+          "x": -98,
+          "y": 48,
+          "z": -84.5,
+          "tolerance": 0.5,
+          "sprint": true
+        },
+        "provenance": {
+          "provider": "codex",
+          "model": "gpt-6.1-sol",
+          "reasoningEffort": "low",
+          "serviceTier": "default",
+          "programId": "native-01a16eab-4b7f-78c0-8556-6e3290c7c710",
+          "programVersion": 1,
+          "sourceStepId": "exec-c0dd739b-60ac-41b3-bd5d-4e9f886a584c",
+          "eventSequence": 4556,
+          "traceId": "native-e8b5ec70-0354-4e99-89eb-577b76c4db65-337-ccfb7b08-a725-4600-84b1-a2452189-1"
+        }
+      },
+      {
+        "at": 1792858089286,
+        "actionId": "native:e8b5ec70-0354-4e99-89eb-577b76c4db65:337:ccfb7b08-a725-4600-84b1-a2452189:1",
+        "actionType": "move_to",
+        "source": "coordinator"
+      }
+    ],
+    "ownership": [],
+    "damage": {
+      "taken": [
+        {
+          "at": 1792858083163,
+          "health": 15.006666,
+          "damageTakenCounter": 335,
+          "deathCounter": 0,
+          "position": {
+            "x": -105.48080127476227,
+            "y": 48.200000047683716,
+            "z": -84.4993448856795
+          },
+          "dimension": "minecraft:the_nether",
+          "counts": {
+            "rods": 0,
+            "pearlsEyes": 0,
+            "gold": 0.7777777777777778
+          },
+          "counterDelta": 57,
+          "hpLowerBound": 4.993334000000001
+        },
+        {
+          "at": 1792858084259,
+          "health": 11.599999,
+          "damageTakenCounter": 373,
+          "deathCounter": 0,
+          "position": {
+            "x": -104.56168678115601,
+            "y": 48.200000047683716,
+            "z": -84.49978467349104
+          },
+          "dimension": "minecraft:the_nether",
+          "counts": {
+            "rods": 0,
+            "pearlsEyes": 0,
+            "gold": 0.7777777777777778
+          },
+          "counterDelta": 38,
+          "hpLowerBound": 3.406666999999999
+        },
+        {
+          "at": 1792858085351,
+          "health": 8.026666,
+          "damageTakenCounter": 411,
+          "deathCounter": 0,
+          "position": {
+            "x": -103.68872847164603,
+            "y": 48.200000047683716,
+            "z": -84.49991980911068
+          },
+          "dimension": "minecraft:the_nether",
+          "counts": {
+            "rods": 0,
+            "pearlsEyes": 0,
+            "gold": 0.7777777777777778
+          },
+          "counterDelta": 38,
+          "hpLowerBound": 3.573333
+        },
+        {
+          "at": 1792858086447,
+          "health": 4.1866655,
+          "damageTakenCounter": 449,
+          "deathCounter": 0,
+          "position": {
+            "x": -102.70799465415539,
+            "y": 48,
+            "z": -84.49995715435456
+          },
+          "dimension": "minecraft:the_nether",
+          "counts": {
+            "rods": 0,
+            "pearlsEyes": 0,
+            "gold": 0.7777777777777778
+          },
+          "counterDelta": 38,
+          "hpLowerBound": 3.8400005000000004
+        },
+        {
+          "at": 1792858087552,
+          "health": 3.1866655,
+          "damageTakenCounter": 459,
+          "deathCounter": 0,
+          "position": {
+            "x": -99.54502007288666,
+            "y": 48,
+            "z": -84.499957162892
+          },
+          "dimension": "minecraft:the_nether",
+          "counts": {
+            "rods": 0,
+            "pearlsEyes": 0,
+            "gold": 0.7777777777777778
+          },
+          "counterDelta": 10,
+          "hpLowerBound": 1
+        },
+        {
+          "at": 1792858088649,
+          "health": 2.1866655,
+          "damageTakenCounter": 469,
+          "deathCounter": 0,
+          "position": {
+            "x": -99.54502007288666,
+            "y": 48,
+            "z": -84.499957162892
+          },
+          "dimension": "minecraft:the_nether",
+          "counts": {
+            "rods": 0,
+            "pearlsEyes": 0,
+            "gold": 0.7777777777777778
+          },
+          "counterDelta": 10,
+          "hpLowerBound": 1
+        },
+        {
+          "at": 1792858089747,
+          "health": 2.1866655,
+          "damageTakenCounter": 479,
+          "deathCounter": 0,
+          "position": {
+            "x": -98.17047373131406,
+            "y": 48,
+            "z": -84.499957162892
+          },
+          "dimension": "minecraft:the_nether",
+          "counts": {
+            "rods": 0,
+            "pearlsEyes": 0,
+            "gold": 0.7777777777777778
+          },
+          "counterDelta": 10,
+          "hpLowerBound": 0
+        },
+        {
+          "at": 1792858090842,
+          "health": 1.1866655,
+          "damageTakenCounter": 489,
+          "deathCounter": 0,
+          "position": {
+            "x": -98.14658115957474,
+            "y": 48,
+            "z": -84.499957162892
+          },
+          "dimension": "minecraft:the_nether",
+          "counts": {
+            "rods": 0,
+            "pearlsEyes": 0,
+            "gold": 0.7777777777777778
+          },
+          "counterDelta": 10,
+          "hpLowerBound": 1.0000000000000002
+        },
+        {
+          "at": 1792858091939,
+          "health": 0.18666553,
+          "damageTakenCounter": 499,
+          "deathCounter": 0,
+          "position": {
+            "x": -98.14658115957474,
+            "y": 48,
+            "z": -84.499957162892
+          },
+          "dimension": "minecraft:the_nether",
+          "counts": {
+            "rods": 0,
+            "pearlsEyes": 0,
+            "gold": 0.7777777777777778
+          },
+          "counterDelta": 10,
+          "hpLowerBound": 0.99999997
+        }
+      ],
+      "dealt": [],
+      "dealtTotal": null,
+      "basis": "Taken: vanilla counter deltas (tenths of HP), health-drop lower bounds, and per-hazard Watcher damage (can overlap, do not sum). Dealt: unknown without attributed damage receipts; attack dispatch is not a hit."
+    },
+    "gaps": [
+      "Hands and aim ownership were not recorded; dispatched action types cannot prove controller ownership.",
+      "Damage dealt is unknown unless an attributed damage receipt is present."
+    ],
+    "traceWindow": {
+      "from": 1792858081570,
+      "through": 1792858092517,
+      "basis": "Watcher first sensed/opened time"
+    },
+    "controllerSnapshots": [
+      {
+        "at": 1792858081969,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -89.4411392211914,
+          "pitch": 0,
+          "selectedSlot": 0,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:stone_pickaxe",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792858082121,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -89.4411392211914,
+          "pitch": 0,
+          "selectedSlot": 0,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:stone_pickaxe",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792858082172,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "lava",
+          "ms": 0,
+          "detail": "swimming out of lava toward -103,48,-85"
+        },
+        "input": {
+          "active": true,
+          "forward": 1,
+          "strafe": 0,
+          "jump": true,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -90.1205825805664,
+          "pitch": 0,
+          "selectedSlot": 0,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:stone_pickaxe",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792858082619,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "lava",
+          "ms": 450,
+          "detail": "swimming out of lava toward -103,48,-85"
+        },
+        "input": {
+          "active": true,
+          "forward": 1,
+          "strafe": 0,
+          "jump": true,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -90.13957977294922,
+          "pitch": 0,
+          "selectedSlot": 0,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:stone_pickaxe",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792858082669,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "lava",
+          "ms": 500,
+          "detail": "swimming out of lava toward -103,48,-85; lost 1.5 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 1,
+          "strafe": 0,
+          "jump": true,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -90.1417007446289,
+          "pitch": 0,
+          "selectedSlot": 0,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:stone_pickaxe",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792858083120,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "lava",
+          "ms": 950,
+          "detail": "swimming out of lava toward -103,48,-85; lost 1.2 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 1,
+          "strafe": 0,
+          "jump": true,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -90.0379638671875,
+          "pitch": 0,
+          "selectedSlot": 0,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:stone_pickaxe",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792858083169,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "lava",
+          "ms": 1000,
+          "detail": "swimming out of lava toward -103,48,-85; lost 3.1 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 1,
+          "strafe": 0,
+          "jump": true,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -90.03826904296875,
+          "pitch": 0,
+          "selectedSlot": 0,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:stone_pickaxe",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792858083620,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "lava",
+          "ms": 1450,
+          "detail": "swimming out of lava toward -103,48,-85; lost 2.8 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 1,
+          "strafe": 0,
+          "jump": true,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -90.04046630859375,
+          "pitch": 0,
+          "selectedSlot": 0,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:stone_pickaxe",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792858083669,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "lava",
+          "ms": 1500,
+          "detail": "swimming out of lava toward -103,48,-85; lost 4.7 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 1,
+          "strafe": 0,
+          "jump": true,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -90.04080963134766,
+          "pitch": 0,
+          "selectedSlot": 0,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:stone_pickaxe",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792858084117,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "lava",
+          "ms": 1950,
+          "detail": "swimming out of lava toward -103,48,-85; lost 4.6 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 1,
+          "strafe": 0,
+          "jump": true,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -90.01155090332031,
+          "pitch": 0,
+          "selectedSlot": 0,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:stone_pickaxe",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792858084169,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "lava",
+          "ms": 2000,
+          "detail": "swimming out of lava toward -103,48,-85; lost 6.5 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 1,
+          "strafe": 0,
+          "jump": true,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -90.01156616210938,
+          "pitch": 0,
+          "selectedSlot": 0,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:stone_pickaxe",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792858084621,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "lava",
+          "ms": 2450,
+          "detail": "swimming out of lava toward -103,48,-85; lost 6.3 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 1,
+          "strafe": 0,
+          "jump": true,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -90.01188659667969,
+          "pitch": 0,
+          "selectedSlot": 0,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:stone_pickaxe",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792858084669,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "lava",
+          "ms": 2500,
+          "detail": "swimming out of lava toward -103,48,-85; lost 8.3 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 1,
+          "strafe": 0,
+          "jump": true,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -90.01194763183594,
+          "pitch": 0,
+          "selectedSlot": 0,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:stone_pickaxe",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792858085121,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "lava",
+          "ms": 2950,
+          "detail": "swimming out of lava toward -103,48,-85; lost 8.1 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 1,
+          "strafe": 0,
+          "jump": true,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -90.00361633300781,
+          "pitch": 0,
+          "selectedSlot": 0,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:stone_pickaxe",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792858085170,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "lava",
+          "ms": 3000,
+          "detail": "swimming out of lava toward -103,48,-85; lost 10.1 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 1,
+          "strafe": 0,
+          "jump": true,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -90.0035629272461,
+          "pitch": 0,
+          "selectedSlot": 0,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:stone_pickaxe",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792858085621,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "lava",
+          "ms": 3450,
+          "detail": "moving 1 cell(s) left; lost 10.1 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 1,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": true,
+          "attack": false,
+          "use": false,
+          "yaw": -90.00521087646484,
+          "pitch": 0,
+          "selectedSlot": 0,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:stone_pickaxe",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792858085670,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "lava",
+          "ms": 3500,
+          "detail": "swimming out of lava toward -103,48,-85; lost 12.0 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 1,
+          "strafe": 0,
+          "jump": true,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -90.00570678710938,
+          "pitch": 0,
+          "selectedSlot": 0,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:stone_pickaxe",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792858085968,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -90.0079574584961,
+          "pitch": 0,
+          "selectedSlot": 0,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:stone_pickaxe",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792858086120,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -90.0079574584961,
+          "pitch": 0,
+          "selectedSlot": 0,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:stone_pickaxe",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792858086170,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -90.0079574584961,
+          "pitch": 0,
+          "selectedSlot": 0,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:stone_pickaxe",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792858086570,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "lava",
+          "ms": 100,
+          "detail": "moving 3 cell(s) left"
+        },
+        "input": {
+          "active": true,
+          "forward": 1,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": true,
+          "attack": false,
+          "use": false,
+          "yaw": -90.00214385986328,
+          "pitch": 0,
+          "selectedSlot": 0,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:stone_pickaxe",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792858087070,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "lava",
+          "ms": 600,
+          "detail": "moving 1 cell(s) left"
+        },
+        "input": {
+          "active": true,
+          "forward": 1,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": true,
+          "attack": false,
+          "use": false,
+          "yaw": -90.00261688232422,
+          "pitch": 0,
+          "selectedSlot": 0,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:stone_pickaxe",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792858087521,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -90.00373077392578,
+          "pitch": 0,
+          "selectedSlot": 0,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:stone_pickaxe",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792858088020,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -90.00373077392578,
+          "pitch": 0,
+          "selectedSlot": 0,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:stone_pickaxe",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792858088521,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -90.00373077392578,
+          "pitch": 0,
+          "selectedSlot": 0,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:stone_pickaxe",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792858089020,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -90.00373077392578,
+          "pitch": 0,
+          "selectedSlot": 0,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:stone_pickaxe",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792858089322,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": true,
+          "actionId": "native:e8b5ec70-0354-4e99-89eb-577b76c4db65:337:ccfb7b08-a725-4600-84b1-a2452189:1",
+          "actionType": "move_to"
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": true,
+          "forward": 1,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": true,
+          "attack": false,
+          "use": false,
+          "yaw": -90.00214385986328,
+          "pitch": 7,
+          "selectedSlot": 0,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:stone_pickaxe",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792858089521,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": true,
+          "actionId": "native:e8b5ec70-0354-4e99-89eb-577b76c4db65:337:ccfb7b08-a725-4600-84b1-a2452189:1",
+          "actionType": "move_to"
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": true,
+          "forward": 1,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": true,
+          "attack": false,
+          "use": false,
+          "yaw": -90.00241088867188,
+          "pitch": 10,
+          "selectedSlot": 0,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:stone_pickaxe",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792858089671,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -90.00241088867188,
+          "pitch": 10,
+          "selectedSlot": 0,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:stone_pickaxe",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792858090170,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -90.00241088867188,
+          "pitch": 10,
+          "selectedSlot": 0,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:stone_pickaxe",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792858090520,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -90.00241088867188,
+          "pitch": 10,
+          "selectedSlot": 0,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:stone_pickaxe",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792858091020,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -90.00241088867188,
+          "pitch": 10,
+          "selectedSlot": 0,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:stone_pickaxe",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792858091520,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -90.00241088867188,
+          "pitch": 10,
+          "selectedSlot": 0,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:stone_pickaxe",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792858092019,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -90.00241088867188,
+          "pitch": 10,
+          "selectedSlot": 0,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:stone_pickaxe",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      }
+    ],
+    "actionReceipts": [
+      {
+        "at": 1792858089318,
+        "traceId": "native-e8b5ec70-0354-4e99-89eb-577b76c4db65-337-ccfb7b08-a725-4600-84b1-a2452189-1",
+        "goalRevision": 1,
+        "actionId": "native:e8b5ec70-0354-4e99-89eb-577b76c4db65:337:ccfb7b08-a725-4600-84b1-a2452189:1",
+        "commandId": "native:e8b5ec70-0354-4e99-89eb-577b76c4db65:337:ccfb7b08-a725-4600-84b1-a2452189:1",
+        "actionType": "move_to",
+        "state": "RUNNING",
+        "progress": 0,
+        "elapsedMs": 3,
+        "observedAtEpochMs": 1792858089318,
+        "serverTick": 37025,
+        "actionObservation": {
+          "observedAtEpochMs": 1792858089318,
+          "worldTick": 36640,
+          "position": {
+            "x": -99.54502007288666,
+            "y": 48,
+            "z": -84.499957162892
+          },
+          "velocity": {
+            "x": 0,
+            "y": -0.0784000015258789,
+            "z": 0
+          },
+          "yaw": -90.00214385986328,
+          "pitch": 7,
+          "collision": {
+            "horizontal": false,
+            "vertical": true,
+            "inWall": false
+          },
+          "lookedAt": {
+            "type": "block",
+            "hitDistance": 4.499999959448063,
+            "position": {
+              "x": -96,
+              "y": 49,
+              "z": -85
+            },
+            "id": "minecraft:air",
+            "face": "west"
+          },
+          "target": {
+            "kind": "position",
+            "position": {
+              "x": -98.40000000596046,
+              "y": 48,
+              "z": -84.5
+            },
+            "distanceRemaining": 1.145020067727497,
+            "tolerance": 0.5,
+            "standable": true
+          },
+          "onGround": true,
+          "progress": {
+            "value": 0,
+            "basis": "world_position",
+            "verified": true
+          }
+        }
+      },
+      {
+        "at": 1792858089365,
+        "traceId": "native-e8b5ec70-0354-4e99-89eb-577b76c4db65-337-ccfb7b08-a725-4600-84b1-a2452189-1",
+        "goalRevision": 1,
+        "actionId": "native:e8b5ec70-0354-4e99-89eb-577b76c4db65:337:ccfb7b08-a725-4600-84b1-a2452189:1",
+        "commandId": "native:e8b5ec70-0354-4e99-89eb-577b76c4db65:337:ccfb7b08-a725-4600-84b1-a2452189:1",
+        "actionType": "move_to",
+        "state": "RUNNING",
+        "progress": 0.1112644362314319,
+        "elapsedMs": 50,
+        "observedAtEpochMs": 1792858089365,
+        "serverTick": 37026,
+        "actionObservation": {
+          "observedAtEpochMs": 1792858089365,
+          "worldTick": 36641,
+          "position": {
+            "x": -99.41762006047696,
+            "y": 48,
+            "z": -84.499957162892
+          },
+          "velocity": {
+            "x": 0.0695604148553142,
+            "y": -0.0784000015258789,
+            "z": 0
+          },
+          "yaw": -90.00241088867188,
+          "pitch": 10,
+          "collision": {
+            "horizontal": false,
+            "vertical": true,
+            "inWall": false
+          },
+          "lookedAt": {
+            "type": "block",
+            "hitDistance": 4.500000130278458,
+            "position": {
+              "x": -95,
+              "y": 48,
+              "z": -85
+            },
+            "id": "minecraft:air",
+            "face": "west"
+          },
+          "target": {
+            "kind": "position",
+            "position": {
+              "x": -98.40000000596046,
+              "y": 48,
+              "z": -84.5
+            },
+            "distanceRemaining": 1.0176200554181212,
+            "tolerance": 0.5,
+            "standable": true
+          },
+          "onGround": true,
+          "progress": {
+            "value": 0.1112644362314319,
+            "basis": "world_position",
+            "verified": true
+          }
+        }
+      },
+      {
+        "at": 1792858089416,
+        "traceId": "native-e8b5ec70-0354-4e99-89eb-577b76c4db65-337-ccfb7b08-a725-4600-84b1-a2452189-1",
+        "goalRevision": 1,
+        "actionId": "native:e8b5ec70-0354-4e99-89eb-577b76c4db65:337:ccfb7b08-a725-4600-84b1-a2452189:1",
+        "commandId": "native:e8b5ec70-0354-4e99-89eb-577b76c4db65:337:ccfb7b08-a725-4600-84b1-a2452189:1",
+        "actionType": "move_to",
+        "state": "RUNNING",
+        "progress": 0.2832792616479941,
+        "elapsedMs": 101,
+        "observedAtEpochMs": 1792858089416,
+        "serverTick": 37027,
+        "actionObservation": {
+          "observedAtEpochMs": 1792858089416,
+          "worldTick": 36642,
+          "position": {
+            "x": -99.22065963321197,
+            "y": 48,
+            "z": -84.499957162892
+          },
+          "velocity": {
+            "x": 0.10754040577779149,
+            "y": -0.0784000015258789,
+            "z": 0
+          },
+          "yaw": -90.00241088867188,
+          "pitch": 10,
+          "collision": {
+            "horizontal": false,
+            "vertical": true,
+            "inWall": false
+          },
+          "lookedAt": {
+            "type": "block",
+            "hitDistance": 4.500000130278458,
+            "position": {
+              "x": -95,
+              "y": 48,
+              "z": -85
+            },
+            "id": "minecraft:air",
+            "face": "west"
+          },
+          "target": {
+            "kind": "position",
+            "position": {
+              "x": -98.40000000596046,
+              "y": 48,
+              "z": -84.5
+            },
+            "distanceRemaining": 0.8206596283695154,
+            "tolerance": 0.5,
+            "standable": true
+          },
+          "onGround": true,
+          "progress": {
+            "value": 0.2832792616479941,
+            "basis": "world_position",
+            "verified": true
+          }
+        }
+      },
+      {
+        "at": 1792858089465,
+        "traceId": "native-e8b5ec70-0354-4e99-89eb-577b76c4db65-337-ccfb7b08-a725-4600-84b1-a2452189-1",
+        "goalRevision": 1,
+        "actionId": "native:e8b5ec70-0354-4e99-89eb-577b76c4db65:337:ccfb7b08-a725-4600-84b1-a2452189:1",
+        "commandId": "native:e8b5ec70-0354-4e99-89eb-577b76c4db65:337:ccfb7b08-a725-4600-84b1-a2452189:1",
+        "actionType": "move_to",
+        "state": "RUNNING",
+        "progress": 0.48846380326507555,
+        "elapsedMs": 150,
+        "observedAtEpochMs": 1792858089465,
+        "serverTick": 37028,
+        "actionObservation": {
+          "observedAtEpochMs": 1792858089465,
+          "worldTick": 36643,
+          "position": {
+            "x": -98.98571921502449,
+            "y": 48,
+            "z": -84.499957162892
+          },
+          "velocity": {
+            "x": 0.12827748323013013,
+            "y": -0.0784000015258789,
+            "z": 0
+          },
+          "yaw": -90.00241088867188,
+          "pitch": 10,
+          "collision": {
+            "horizontal": false,
+            "vertical": true,
+            "inWall": false
+          },
+          "lookedAt": {
+            "type": "block",
+            "hitDistance": 4.500000130278458,
+            "position": {
+              "x": -95,
+              "y": 48,
+              "z": -85
+            },
+            "id": "minecraft:air",
+            "face": "west"
+          },
+          "target": {
+            "kind": "position",
+            "position": {
+              "x": -98.40000000596046,
+              "y": 48,
+              "z": -84.5
+            },
+            "distanceRemaining": 0.5857192106304895,
+            "tolerance": 0.5,
+            "standable": true
+          },
+          "onGround": true,
+          "progress": {
+            "value": 0.48846380326507555,
+            "basis": "world_position",
+            "verified": true
+          }
+        }
+      },
+      {
+        "at": 1792858089516,
+        "traceId": "native-e8b5ec70-0354-4e99-89eb-577b76c4db65-337-ccfb7b08-a725-4600-84b1-a2452189-1",
+        "goalRevision": 1,
+        "actionId": "native:e8b5ec70-0354-4e99-89eb-577b76c4db65:337:ccfb7b08-a725-4600-84b1-a2452189:1",
+        "commandId": "native:e8b5ec70-0354-4e99-89eb-577b76c4db65:337:ccfb7b08-a725-4600-84b1-a2452189:1",
+        "actionType": "move_to",
+        "state": "RUNNING",
+        "progress": 0.7117590114737331,
+        "elapsedMs": 201,
+        "observedAtEpochMs": 1792858089516,
+        "serverTick": 37029,
+        "actionObservation": {
+          "observedAtEpochMs": 1792858089516,
+          "worldTick": 36644,
+          "position": {
+            "x": -98.73004171938467,
+            "y": 48,
+            "z": -84.499957162892
+          },
+          "velocity": {
+            "x": 0.13959992883423883,
+            "y": -0.0784000015258789,
+            "z": 0
+          },
+          "yaw": -90.00241088867188,
+          "pitch": 10,
+          "collision": {
+            "horizontal": false,
+            "vertical": true,
+            "inWall": false
+          },
+          "lookedAt": {
+            "type": "block",
+            "hitDistance": 4.500000130278458,
+            "position": {
+              "x": -95,
+              "y": 48,
+              "z": -85
+            },
+            "id": "minecraft:air",
+            "face": "west"
+          },
+          "target": {
+            "kind": "position",
+            "position": {
+              "x": -98.40000000596046,
+              "y": 48,
+              "z": -84.5
+            },
+            "distanceRemaining": 0.3300417162041868,
+            "tolerance": 0.5,
+            "standable": true
+          },
+          "onGround": true,
+          "progress": {
+            "value": 0.7117590114737331,
+            "basis": "world_position",
+            "verified": true
+          }
+        }
+      },
+      {
+        "at": 1792858089566,
+        "traceId": "native-e8b5ec70-0354-4e99-89eb-577b76c4db65-337-ccfb7b08-a725-4600-84b1-a2452189-1",
+        "goalRevision": 1,
+        "actionId": "native:e8b5ec70-0354-4e99-89eb-577b76c4db65:337:ccfb7b08-a725-4600-84b1-a2452189:1",
+        "commandId": "native:e8b5ec70-0354-4e99-89eb-577b76c4db65:337:ccfb7b08-a725-4600-84b1-a2452189:1",
+        "actionType": "move_to",
+        "state": "RUNNING",
+        "progress": 0.9449426359318015,
+        "elapsedMs": 251,
+        "observedAtEpochMs": 1792858089566,
+        "serverTick": 37030,
+        "actionObservation": {
+          "observedAtEpochMs": 1792858089566,
+          "worldTick": 36645,
+          "position": {
+            "x": -98.46304177814075,
+            "y": 48,
+            "z": -84.499957162892
+          },
+          "velocity": {
+            "x": 0.14578198485214422,
+            "y": -0.0784000015258789,
+            "z": 0
+          },
+          "yaw": -90.00241088867188,
+          "pitch": 10,
+          "collision": {
+            "horizontal": false,
+            "vertical": true,
+            "inWall": false
+          },
+          "lookedAt": {
+            "type": "block",
+            "hitDistance": 4.500000130278458,
+            "position": {
+              "x": -95,
+              "y": 48,
+              "z": -85
+            },
+            "id": "minecraft:air",
+            "face": "west"
+          },
+          "target": {
+            "kind": "position",
+            "position": {
+              "x": -98.40000000596046,
+              "y": 48,
+              "z": -84.5
+            },
+            "distanceRemaining": 0.06304178673426608,
+            "tolerance": 0.5,
+            "standable": true
+          },
+          "onGround": true,
+          "progress": {
+            "value": 0.9449426359318015,
+            "basis": "world_position",
+            "verified": true
+          }
+        }
+      },
+      {
+        "at": 1792858089665,
+        "traceId": "native-e8b5ec70-0354-4e99-89eb-577b76c4db65-337-ccfb7b08-a725-4600-84b1-a2452189-1",
+        "goalRevision": 1,
+        "actionId": "native:e8b5ec70-0354-4e99-89eb-577b76c4db65:337:ccfb7b08-a725-4600-84b1-a2452189:1",
+        "commandId": "native:e8b5ec70-0354-4e99-89eb-577b76c4db65:337:ccfb7b08-a725-4600-84b1-a2452189:1",
+        "actionType": "move_to",
+        "state": "SUCCEEDED",
+        "reasonCode": "DESTINATION_REACHED",
+        "message": "Destination reached at a verified standing position; replans 0; walked 1.3, left 0.2; stopped at -98.24,48.00,-84.50; closest 0.2 at -99,48,-85",
+        "elapsedMs": 350,
+        "observedAtEpochMs": 1792858089665,
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "timing": {
+          "acceptedAtEpochMs": 1792858089315,
+          "startedAtEpochMs": 1792858089318,
+          "startedTick": 37025,
+          "endedTick": 37032
+        },
+        "actionObservation": {
+          "observedAtEpochMs": 1792858089665,
+          "worldTick": 36647,
+          "position": {
+            "x": -98.23766282031393,
+            "y": 48,
+            "z": -84.499957162892
+          },
+          "velocity": {
+            "x": 0.04345995229215655,
+            "y": -0.0784000015258789,
+            "z": 0
+          },
+          "yaw": -90.00241088867188,
+          "pitch": 10,
+          "collision": {
+            "horizontal": false,
+            "vertical": true,
+            "inWall": false
+          },
+          "lookedAt": {
+            "type": "block",
+            "hitDistance": 4.500000130278458,
+            "position": {
+              "x": -94,
+              "y": 48,
+              "z": -85
+            },
+            "id": "minecraft:air",
+            "face": "west"
+          },
+          "target": {
+            "kind": "position",
+            "position": {
+              "x": -98.40000000596046,
+              "y": 48,
+              "z": -84.5
+            },
+            "distanceRemaining": 0.16233719129840682,
+            "tolerance": 0.5,
+            "standable": true
+          },
+          "onGround": true,
+          "progress": {
+            "value": 0.8582232784613157,
+            "basis": "world_position",
+            "verified": true
+          }
+        }
+      }
+    ],
+    "lastObservationAt": 1792858092019,
+    "lastObservationAgeAtDeathMs": 498,
+    "coordinatorEvents": [
+      {
+        "event": "reflexes_fired",
+        "agentId": "ccfb7b08-a725-4600-84b1-a245218928fe",
+        "goalRevision": 1,
+        "events": [
+          "lava:done"
+        ],
+        "at": 1792858085973,
+        "mono": 1850111.1
+      },
+      {
+        "event": "reflexes_fired",
+        "agentId": "ccfb7b08-a725-4600-84b1-a245218928fe",
+        "goalRevision": 1,
+        "events": [
+          "lava:done"
+        ],
+        "at": 1792858087528,
+        "mono": 1851665.8
+      },
+      {
+        "event": "native_tool_action_completed",
+        "agentId": "ccfb7b08-a725-4600-84b1-a245218928fe",
+        "goalRevision": 1,
+        "actionId": "native:e8b5ec70-0354-4e99-89eb-577b76c4db65:337:ccfb7b08-a725-4600-84b1-a2452189:1",
+        "state": "SUCCEEDED",
+        "reasonCode": "DESTINATION_REACHED",
+        "durationMs": 386,
+        "message": "Destination reached at a verified standing position; replans 0; walked 1.3, left 0.2; stopped at -98.24,48.00,-84.50; closest 0.2 at -99,48,-85",
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "actionObservation": {
+          "observedAtEpochMs": 1792858089665,
+          "worldTick": 36647,
+          "position": {
+            "x": -98.23766282031393,
+            "y": 48,
+            "z": -84.499957162892
+          },
+          "velocity": {
+            "x": 0.04345995229215655,
+            "y": -0.0784000015258789,
+            "z": 0
+          },
+          "yaw": -90.00241088867188,
+          "pitch": 10,
+          "collision": {
+            "horizontal": false,
+            "vertical": true,
+            "inWall": false
+          },
+          "lookedAt": {
+            "type": "block",
+            "hitDistance": 4.500000130278458,
+            "position": {
+              "x": -94,
+              "y": 48,
+              "z": -85
+            },
+            "id": "minecraft:air",
+            "face": "west"
+          },
+          "target": {
+            "kind": "position",
+            "position": {
+              "x": -98.40000000596046,
+              "y": 48,
+              "z": -84.5
+            },
+            "distanceRemaining": 0.16233719129840682,
+            "tolerance": 0.5,
+            "standable": true
+          },
+          "progress": {
+            "value": 0.8582232784613157,
+            "basis": "world_position",
+            "verified": true
+          }
+        },
+        "javaElapsedMs": 350,
+        "javaEndedAtEpochMs": 1792858089665,
+        "javaAcceptedAtEpochMs": 1792858089315,
+        "javaStartedAtEpochMs": 1792858089318,
+        "javaStartedTick": 37025,
+        "javaEndedTick": 37032,
+        "at": 1792858089672,
+        "mono": 1853809.5
+      }
+    ]
+  },
+  "timing": {
+    "decisionSegments": 347,
+    "decisionP50Ms": 3854.8651999998838,
+    "usageRecords": 268,
+    "usageRecordP50Ms": 4,
+    "basis": "completed provider decision segments; usage notification timing shown separately, never substituted"
+  },
+  "coverage": {
+    "protocolRecords": 19289,
+    "samples": 3252,
+    "watcherFiles": 1,
+    "diagnostics": []
+  }
+}

@@ -1,0 +1,1320 @@
+{
+ "build": "6a393dc2 (dig-v6 jar)",
+ "date": "2026-10-24",
+ "surface": [
+  {
+   "name": "A2 lava-pool x/z steep",
+   "seed": "-8891462362762682724",
+   "legs": [
+    {
+     "heading": "east",
+     "throughCaves": false,
+     "state": "FAILED",
+     "reasonCode": "CAVE_OPENING",
+     "seconds": 92,
+     "blocks": 100,
+     "blocksPerMinute": 65,
+     "fromY": 78,
+     "toY": 28,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The step opened into a cave at 18,27,96 (2 open cells beside the cut); not stepping in; throughCaves:true digs on past caves. At 17,28,97, steep_down heading east; 100 blocks mined in 25 steps over 92 s (y78 to y28); mined stone 75, diorite 13, andesite 7, gravel 4, dirt 1; ores seen coal_ore 1 (first at coal_ore 9,47,96); tool iron_pickaxe 150 uses left"
+    },
+    {
+     "heading": "east",
+     "throughCaves": true,
+     "state": "FAILED",
+     "reasonCode": "CAVE_OPENING",
+     "seconds": 3,
+     "blocks": 2,
+     "blocksPerMinute": 42,
+     "fromY": 28,
+     "toY": 26,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The floor under the next step at 19,23,97 is open: a drop of at least 8 blocks (bottom not seen); not stepping in. At 18,26,97, steep_down heading east; 2 blocks mined in 1 steps over 2 s (y28 to y26); mined andesite 2; tool iron_pickaxe 148 uses left; dug past caves at 20,25,97 (y25)"
+    },
+    {
+     "heading": "south",
+     "throughCaves": true,
+     "state": "FAILED",
+     "reasonCode": "HOSTILE_NEAR",
+     "seconds": 0,
+     "blocks": 0,
+     "blocksPerMinute": 0,
+     "fromY": 26,
+     "toY": 26,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: minecraft:skeleton fa8d47de-bdca-4c3f-9016-a91a8efeb963 at 18,15,92, 12.0 blocks away. At 18,26,97, steep_down heading south; 0 blocks mined in 0 steps over 1 s (y26 to y26); tool iron_pickaxe 148 uses left"
+    }
+   ],
+   "start": [
+    -7.5,
+    78,
+    97.5
+   ],
+   "end": [
+    18.888478300422623,
+    26,
+    97.5
+   ],
+   "seconds": 96,
+   "deaths": 0,
+   "reached": false
+  },
+  {
+   "name": "A3 300,-200 steep",
+   "seed": "-8891462362762682724",
+   "legs": [
+    {
+     "heading": "east",
+     "throughCaves": false,
+     "state": "FAILED",
+     "reasonCode": "CAVE_OPENING",
+     "seconds": 170,
+     "blocks": 180,
+     "blocksPerMinute": 64,
+     "fromY": 120,
+     "toY": 32,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The floor under the next step at 345,29,-200 is open: a drop of at least 8 blocks (bottom not seen); not stepping in; throughCaves:true drops to seen ground within 3 blocks. At 344,32,-200, steep_down heading east; 180 blocks mined in 44 steps over 169 s (y120 to y32); mined stone 148, gravel 14, andesite 8, dirt 6, grass_block 2, short_grass 1; ores seen copper_ore 6 (first at copper_ore 314,92,-199); tool iron_pickaxe 71 uses left"
+    },
+    {
+     "heading": "east",
+     "throughCaves": true,
+     "state": "FAILED",
+     "reasonCode": "CAVE_OPENING",
+     "seconds": 0,
+     "blocks": 0,
+     "blocksPerMinute": 0,
+     "fromY": 32,
+     "toY": 32,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The floor under the next step at 345,29,-200 is open: a drop of at least 11 blocks (bottom not seen); not stepping in. At 344,32,-200, steep_down heading east; 0 blocks mined in 0 steps over 1 s (y32 to y32)"
+    },
+    {
+     "heading": "south",
+     "throughCaves": true,
+     "state": "FAILED",
+     "reasonCode": "CAVE_OPENING",
+     "seconds": 5,
+     "blocks": 4,
+     "blocksPerMinute": 46,
+     "fromY": 32,
+     "toY": 32,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The floor under the next step at 344,29,-199 is open: a drop of at least 8 blocks (bottom not seen); not stepping in. At 344,32,-200, steep_down heading south; 4 blocks mined in 0 steps over 5 s (y32 to y32); mined gravel 2, andesite 2; tool iron_pickaxe 67 uses left"
+    },
+    {
+     "heading": "west",
+     "throughCaves": true,
+     "state": "FAILED",
+     "reasonCode": "HOSTILE_NEAR",
+     "seconds": 1,
+     "blocks": 0,
+     "blocksPerMinute": 0,
+     "fromY": 32,
+     "toY": 32,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: minecraft:skeleton efb7d81d-92ee-49be-85f8-29a27846198f at 348,21,-202, 11.3 blocks away. At 344,32,-200, steep_down heading west; 0 blocks mined in 0 steps over 1 s (y32 to y32)"
+    }
+   ],
+   "start": [
+    300.5,
+    120,
+    -199.5
+   ],
+   "end": [
+    344.63076866934443,
+    32,
+    -199.1164342894382
+   ],
+   "seconds": 176,
+   "deaths": 0,
+   "reached": false
+  },
+  {
+   "name": "A1 iron-pickaxe checkpoint steep",
+   "seed": "-8891462362762682724",
+   "legs": [
+    {
+     "heading": "east",
+     "throughCaves": false,
+     "state": "FAILED",
+     "reasonCode": "CAVE_OPENING",
+     "seconds": 71,
+     "blocks": 81,
+     "blocksPerMinute": 69,
+     "fromY": 70,
+     "toY": 30,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The step opened into a cave at 34,29,108 (4 open cells beside the cut); not stepping in; throughCaves:true digs on past caves. At 33,30,107, steep_down heading east; 81 blocks mined in 20 steps over 70 s (y70 to y30); mined stone 69, andesite 9, grass_block 2, iron_ore 1; ores seen iron_ore 2 (first at iron_ore 14,68,107); tool iron_pickaxe 169 uses left"
+    },
+    {
+     "heading": "east",
+     "throughCaves": true,
+     "state": "FAILED",
+     "reasonCode": "CAVE_OPENING",
+     "seconds": 1,
+     "blocks": 0,
+     "blocksPerMinute": 0,
+     "fromY": 30,
+     "toY": 30,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The floor under the next step at 34,27,107 is open: a drop of at least 8 blocks (bottom not seen); not stepping in. At 33,30,107, steep_down heading east; 0 blocks mined in 0 steps over 1 s (y30 to y30)"
+    },
+    {
+     "heading": "south",
+     "throughCaves": true,
+     "state": "FAILED",
+     "reasonCode": "CAVE_OPENING",
+     "seconds": 3,
+     "blocks": 2,
+     "blocksPerMinute": 43,
+     "fromY": 30,
+     "toY": 30,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The floor under the next step at 33,27,108 is open: a drop of at least 8 blocks (bottom not seen); not stepping in. At 33,30,107, steep_down heading south; 2 blocks mined in 0 steps over 2 s (y30 to y30); mined stone 2; tool iron_pickaxe 167 uses left; dug past caves at 32,30,108 (y30)"
+    },
+    {
+     "heading": "west",
+     "throughCaves": true,
+     "state": "FAILED",
+     "reasonCode": "HOSTILE_NEAR",
+     "seconds": 1,
+     "blocks": 1,
+     "blocksPerMinute": 44,
+     "fromY": 30,
+     "toY": 30,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: minecraft:zombie 75c53f0e-4561-40ab-b226-9590708c938f at 25,22,110, 12.0 blocks away. At 33,30,107, steep_down heading west; 1 blocks mined in 0 steps over 1 s (y30 to y30); mined stone 1; tool iron_pickaxe 166 uses left"
+    }
+   ],
+   "start": [
+    13.55608852979721,
+    70,
+    107.30000001192093
+   ],
+   "end": [
+    33.62256359464609,
+    30,
+    107.88412075527289
+   ],
+   "seconds": 76,
+   "deaths": 0,
+   "reached": false
+  },
+  {
+   "name": "A1 iron-pickaxe checkpoint +40x stairs",
+   "seed": "-8891462362762682724",
+   "legs": [
+    {
+     "heading": "east",
+     "throughCaves": false,
+     "state": "FAILED",
+     "reasonCode": "CAVE_OPENING",
+     "seconds": 237,
+     "blocks": 237,
+     "blocksPerMinute": 60,
+     "fromY": 74,
+     "toY": -5,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The floor under the next step at 134,-7,107 is open: a drop of at least 6 blocks (bottom not seen); not stepping in; throughCaves:true drops to seen ground within 3 blocks. At 133,-5,107, stairs_down heading east; 237 blocks mined in 79 steps over 237 s (y74 to y-5); mined stone 141, deepslate 27, andesite 25, diorite 16, granite 13, dirt 7; ores seen iron_ore 7, copper_ore 3, deepslate_iron_ore 1 (first at copper_ore 62,66,107, iron_ore 81,48,107, deepslate_iron_ore 126,5,107); tool iron_pickaxe 13 uses left"
+    },
+    {
+     "heading": "east",
+     "throughCaves": true,
+     "state": "FAILED",
+     "reasonCode": "CAVE_OPENING",
+     "seconds": 0,
+     "blocks": 0,
+     "blocksPerMinute": 0,
+     "fromY": -5,
+     "toY": -5,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The floor under the next step at 134,-7,107 is open: a drop of at least 8 blocks (bottom not seen); not stepping in. At 133,-5,107, stairs_down heading east; 0 blocks mined in 0 steps over 1 s (y-5 to y-5)"
+    },
+    {
+     "heading": "south",
+     "throughCaves": true,
+     "state": "FAILED",
+     "reasonCode": "CAVE_OPENING",
+     "seconds": 4,
+     "blocks": 3,
+     "blocksPerMinute": 41,
+     "fromY": -5,
+     "toY": -5,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The floor under the next step at 133,-7,108 is open: a drop of at least 6 blocks (bottom not seen); not stepping in. At 133,-5,107, stairs_down heading south; 3 blocks mined in 0 steps over 4 s (y-5 to y-5); mined deepslate 3; tool iron_pickaxe 10 uses left; dug past caves at 133,-7,108 (y-7)"
+    },
+    {
+     "heading": "west",
+     "throughCaves": true,
+     "state": "FAILED",
+     "reasonCode": "CAVE_OPENING",
+     "seconds": 2,
+     "blocks": 1,
+     "blocksPerMinute": 27,
+     "fromY": -5,
+     "toY": -5,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The floor under the next step at 132,-7,107 is open: a drop of at least 6 blocks (bottom not seen); not stepping in. At 133,-5,107, stairs_down heading west; 1 blocks mined in 0 steps over 2 s (y-5 to y-5); mined deepslate 1; tool iron_pickaxe 9 uses left; dug past caves at 132,-7,107 (y-7)"
+    },
+    {
+     "heading": "north",
+     "throughCaves": true,
+     "state": "FAILED",
+     "reasonCode": "CAVE_OPENING",
+     "seconds": 4,
+     "blocks": 3,
+     "blocksPerMinute": 40,
+     "fromY": -5,
+     "toY": -5,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The floor under the next step at 133,-7,106 is open: a drop of at least 6 blocks (bottom not seen); not stepping in. At 133,-5,107, stairs_down heading north; 3 blocks mined in 0 steps over 4 s (y-5 to y-5); mined deepslate 3; tool iron_pickaxe 6 uses left"
+    },
+    {
+     "heading": "east",
+     "throughCaves": true,
+     "state": "FAILED",
+     "reasonCode": "CAVE_OPENING",
+     "seconds": 1,
+     "blocks": 0,
+     "blocksPerMinute": 0,
+     "fromY": -5,
+     "toY": -5,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The floor under the next step at 134,-7,107 is open: a drop of at least 6 blocks (bottom not seen); not stepping in. At 133,-5,107, stairs_down heading east; 0 blocks mined in 0 steps over 1 s (y-5 to y-5)"
+    }
+   ],
+   "start": [
+    54.5,
+    74,
+    107.30000001192093
+   ],
+   "end": [
+    133.79720695307518,
+    -5,
+    107.35333042993251
+   ],
+   "seconds": 249,
+   "deaths": 0,
+   "reached": false
+  },
+  {
+   "name": "A3 340,-200 stairs",
+   "seed": "-8891462362762682724",
+   "legs": [
+    {
+     "heading": "east",
+     "throughCaves": false,
+     "state": "FAILED",
+     "reasonCode": "TOOL_WORN",
+     "seconds": 243,
+     "blocks": 248,
+     "blocksPerMinute": 61,
+     "fromY": 117,
+     "toY": 32,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: Every hotbar tool for minecraft:diorite has 2 or fewer uses left. At 425,32,-200, stairs_down heading east; 248 blocks mined in 85 steps over 242 s (y117 to y32); mined stone 175, granite 31, dirt 22, diorite 9, grass_block 8, andesite 3; tool iron_pickaxe 2 uses left"
+    }
+   ],
+   "start": [
+    340.5,
+    117,
+    -199.5
+   ],
+   "end": [
+    425.69999998807907,
+    32,
+    -199.50000002312876
+   ],
+   "seconds": 243,
+   "deaths": 0,
+   "reached": false
+  },
+  {
+   "name": "B1 stronghold-search checkpoint steep",
+   "seed": "20261009",
+   "legs": [
+    {
+     "heading": "east",
+     "throughCaves": false,
+     "state": "FAILED",
+     "reasonCode": "CAVE_OPENING",
+     "seconds": 4,
+     "blocks": 4,
+     "blocksPerMinute": 54,
+     "fromY": 63,
+     "toY": 63,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The step opened into a cave at 1049,64,2535 (4 open cells beside the cut); not stepping in; throughCaves:true digs on past caves. At 1048,63,2536, steep_down heading east; 4 blocks mined in 0 steps over 4 s (y63 to y63); mined birch_log 2, dirt 2"
+    },
+    {
+     "heading": "east",
+     "throughCaves": true,
+     "state": "FAILED",
+     "reasonCode": "WATER_AHEAD",
+     "seconds": 51,
+     "blocks": 53,
+     "blocksPerMinute": 62,
+     "fromY": 63,
+     "toY": 35,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: Water at 1063,36,2535 beside the opened cell 1063,36,2536; not going further. At 1062,35,2536, steep_down heading east; 53 blocks mined in 14 steps over 51 s (y63 to y35); mined stone 29, granite 12, dirt 7, andesite 4, grass_block 1; tool iron_pickaxe 193 uses left"
+    },
+    {
+     "heading": "south",
+     "throughCaves": true,
+     "state": "FAILED",
+     "reasonCode": "WATER_AHEAD",
+     "seconds": 2,
+     "blocks": 1,
+     "blocksPerMinute": 28,
+     "fromY": 35,
+     "toY": 35,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: Water at 1062,36,2536 beside the opened cell 1062,36,2537; not going further. At 1062,35,2536, steep_down heading south; 1 blocks mined in 0 steps over 2 s (y35 to y35); mined stone 1; tool iron_pickaxe 192 uses left"
+    },
+    {
+     "heading": "west",
+     "throughCaves": true,
+     "state": "FAILED",
+     "reasonCode": "WATER_AHEAD",
+     "seconds": 0,
+     "blocks": 0,
+     "blocksPerMinute": 0,
+     "fromY": 35,
+     "toY": 35,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: Water seen at 1062,36,2536 beside 1061,36,2536; not breaking it. At 1062,35,2536, steep_down heading west; 0 blocks mined in 0 steps over 1 s (y35 to y35)"
+    },
+    {
+     "heading": "north",
+     "throughCaves": true,
+     "state": "FAILED",
+     "reasonCode": "WATER_AHEAD",
+     "seconds": 0,
+     "blocks": 0,
+     "blocksPerMinute": 0,
+     "fromY": 35,
+     "toY": 35,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: Water seen at 1062,36,2536 beside 1062,36,2535; not breaking it. At 1062,35,2536, steep_down heading north; 0 blocks mined in 0 steps over 1 s (y35 to y35)"
+    },
+    {
+     "heading": "east",
+     "throughCaves": true,
+     "state": "FAILED",
+     "reasonCode": "WATER_AHEAD",
+     "seconds": 0,
+     "blocks": 0,
+     "blocksPerMinute": 0,
+     "fromY": 35,
+     "toY": 35,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: Water at 1063,36,2536 fills the cut; not going further. At 1062,35,2536, steep_down heading east; 0 blocks mined in 0 steps over 1 s (y35 to y35)"
+    }
+   ],
+   "start": [
+    1048.5,
+    63,
+    2536.5
+   ],
+   "end": [
+    1062.300000011921,
+    35,
+    2536.5
+   ],
+   "seconds": 58,
+   "deaths": 0,
+   "reached": false
+  },
+  {
+   "name": "B2 -250,150 steep",
+   "seed": "20261009",
+   "legs": [],
+   "error": "Error: QUALITY_SETUP_SURFACE_GROUND_SEARCH: no sky-exposed standing ground near the start\n    at applyQualitySetup (file:///home/agaminggod/Desktop/Projects/aa-d31-dig/coordinator/src/benchmark/quality-scenarios.mjs:135:22)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///home/agaminggod/Desktop/Projects/aa-d31-dig/scripts/quality/test-dig-live.mjs:81:21"
+  },
+  {
+   "name": "B2 -210,150 stairs",
+   "seed": "20261009",
+   "legs": [],
+   "error": "Error: QUALITY_SETUP_SURFACE_GROUND_SEARCH: no sky-exposed standing ground near the start\n    at applyQualitySetup (file:///home/agaminggod/Desktop/Projects/aa-d31-dig/coordinator/src/benchmark/quality-scenarios.mjs:135:22)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///home/agaminggod/Desktop/Projects/aa-d31-dig/scripts/quality/test-dig-live.mjs:81:21"
+  },
+  {
+   "name": "C1 12345 100,100 steep",
+   "seed": "12345",
+   "legs": [
+    {
+     "heading": "east",
+     "throughCaves": false,
+     "state": "FAILED",
+     "reasonCode": "CAVE_OPENING",
+     "seconds": 30,
+     "blocks": 27,
+     "blocksPerMinute": 53,
+     "fromY": 102,
+     "toY": 90,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The step opened into a cave at 139,87,68 (4 open cells beside the cut); not stepping in; throughCaves:true digs on past caves. At 138,90,68, steep_down heading east; 27 blocks mined in 6 steps over 30 s (y102 to y90); mined stone 13, clay 9, dirt 4, grass_block 1; tool iron_pickaxe 223 uses left"
+    },
+    {
+     "heading": "east",
+     "throughCaves": true,
+     "state": "FAILED",
+     "reasonCode": "CAVE_OPENING",
+     "seconds": 0,
+     "blocks": 0,
+     "blocksPerMinute": 0,
+     "fromY": 90,
+     "toY": 90,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The floor under the next step at 139,87,68 is open: a drop of 5 blocks onto minecraft:stone; not stepping in. At 138,90,68, steep_down heading east; 0 blocks mined in 0 steps over 1 s (y90 to y90)"
+    },
+    {
+     "heading": "south",
+     "throughCaves": true,
+     "state": "FAILED",
+     "reasonCode": "CAVE_OPENING",
+     "seconds": 5,
+     "blocks": 4,
+     "blocksPerMinute": 50,
+     "fromY": 90,
+     "toY": 90,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The floor under the next step at 138,87,69 is open: a drop of 5 blocks onto minecraft:stone; not stepping in. At 138,90,68, steep_down heading south; 4 blocks mined in 0 steps over 4 s (y90 to y90); mined clay 2, stone 2; tool iron_pickaxe 219 uses left"
+    },
+    {
+     "heading": "west",
+     "throughCaves": true,
+     "state": "FAILED",
+     "reasonCode": "WATER_AHEAD",
+     "seconds": 17,
+     "blocks": 17,
+     "blocksPerMinute": 61,
+     "fromY": 90,
+     "toY": 82,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: Water at 133,83,69 beside the opened cell 133,83,68; not going further. At 134,82,68, steep_down heading west; 17 blocks mined in 4 steps over 16 s (y90 to y82); mined stone 15, clay 2; tool iron_pickaxe 202 uses left"
+    },
+    {
+     "heading": "north",
+     "throughCaves": true,
+     "state": "FAILED",
+     "reasonCode": "CAVE_OPENING",
+     "seconds": 17,
+     "blocks": 19,
+     "blocksPerMinute": 66,
+     "fromY": 82,
+     "toY": 74,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The floor under the next step at 134,71,63 is open: a drop of 6 blocks onto minecraft:moss_block; not stepping in. At 134,74,64, steep_down heading north; 19 blocks mined in 4 steps over 17 s (y82 to y74); mined stone 16, moss_block 2, copper_ore 1; ores seen copper_ore 3 (first at copper_ore 134,78,64); tool iron_pickaxe 183 uses left; dug past caves at 134,71,63 (y71)"
+    },
+    {
+     "heading": "east",
+     "throughCaves": true,
+     "state": "FAILED",
+     "reasonCode": "CAVE_OPENING",
+     "seconds": 3,
+     "blocks": 3,
+     "blocksPerMinute": 61,
+     "fromY": 74,
+     "toY": 74,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The floor under the next step at 135,71,64 is open: a drop of 6 blocks onto minecraft:moss_block; not stepping in. At 134,74,64, steep_down heading east; 3 blocks mined in 0 steps over 2 s (y74 to y74); mined moss_block 2, stone 1; tool iron_pickaxe 180 uses left; dug past caves at 135,71,64 (y71)"
+    }
+   ],
+   "start": [
+    132.5,
+    102,
+    68.5
+   ],
+   "end": [
+    134.85450731282813,
+    74,
+    64.36094914881681
+   ],
+   "seconds": 72,
+   "deaths": 0,
+   "reached": false
+  }
+ ],
+ "underground": [
+  {
+   "name": "D1 -889 14,107 y-2 steep",
+   "seed": "-8891462362762682724",
+   "legs": [
+    {
+     "heading": "east",
+     "throughCaves": false,
+     "state": "FAILED",
+     "reasonCode": "CAVE_OPENING",
+     "seconds": 2,
+     "blocks": 2,
+     "blocksPerMinute": 52,
+     "fromY": -2,
+     "toY": -2,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The step opened into a cave at 15,-1,106 (4 open cells beside the cut); not stepping in; throughCaves:true digs on past caves. At 14,-2,107, steep_down heading east; 2 blocks mined in 0 steps over 2 s (y-2 to y-2); mined gravel 2"
+    },
+    {
+     "heading": "east",
+     "throughCaves": true,
+     "state": "FAILED",
+     "reasonCode": "CAVE_OPENING",
+     "seconds": 61,
+     "blocks": 49,
+     "blocksPerMinute": 49,
+     "fromY": -2,
+     "toY": -24,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The floor under the next step at 26,-27,107 is open: a drop of at least 8 blocks (bottom not seen); not stepping in. At 25,-24,107, steep_down heading east; 49 blocks mined in 11 steps over 60 s (y-2 to y-24); mined deepslate 21, gravel 14, tuff 12, deepslate_redstone_ore 2; ores seen deepslate_redstone_ore 6, deepslate_lapis_ore 1 (first at deepslate_redstone_ore 20,-11,107, deepslate_lapis_ore 25,-19,107); tool iron_pickaxe 199 uses left; dug past caves at 26,-27,107 (y-27)"
+    },
+    {
+     "heading": "south",
+     "throughCaves": true,
+     "state": "FAILED",
+     "reasonCode": "CAVE_OPENING",
+     "seconds": 5,
+     "blocks": 4,
+     "blocksPerMinute": 53,
+     "fromY": -24,
+     "toY": -24,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The floor under the next step at 25,-27,108 is open: a drop of 6 blocks onto minecraft:deepslate; not stepping in. At 25,-24,107, steep_down heading south; 4 blocks mined in 0 steps over 4 s (y-24 to y-24); mined tuff 3, deepslate 1; tool iron_pickaxe 195 uses left"
+    },
+    {
+     "heading": "west",
+     "throughCaves": true,
+     "state": "FAILED",
+     "reasonCode": "CAVE_OPENING",
+     "seconds": 5,
+     "blocks": 4,
+     "blocksPerMinute": 49,
+     "fromY": -24,
+     "toY": -24,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The floor under the next step at 24,-27,107 is open: a drop of 6 blocks onto minecraft:deepslate; not stepping in. At 25,-24,107, steep_down heading west; 4 blocks mined in 0 steps over 4 s (y-24 to y-24); mined tuff 2, deepslate 2; ores seen deepslate_iron_ore 1 (first at deepslate_iron_ore 23,-25,107); tool iron_pickaxe 191 uses left; dug past caves at 24,-27,107 (y-27)"
+    },
+    {
+     "heading": "north",
+     "throughCaves": true,
+     "state": "FAILED",
+     "reasonCode": "CAVE_OPENING",
+     "seconds": 4,
+     "blocks": 3,
+     "blocksPerMinute": 46,
+     "fromY": -24,
+     "toY": -24,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The floor under the next step at 25,-27,106 is open: a drop of 7 blocks onto minecraft:deepslate; not stepping in. At 25,-24,107, steep_down heading north; 3 blocks mined in 0 steps over 3 s (y-24 to y-24); mined tuff 2, deepslate 1; tool iron_pickaxe 188 uses left; dug past caves at 25,-27,106 (y-27)"
+    },
+    {
+     "heading": "east",
+     "throughCaves": true,
+     "state": "FAILED",
+     "reasonCode": "CAVE_OPENING",
+     "seconds": 1,
+     "blocks": 0,
+     "blocksPerMinute": 0,
+     "fromY": -24,
+     "toY": -24,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The floor under the next step at 26,-27,107 is open: a drop of at least 8 blocks (bottom not seen); not stepping in. At 25,-24,107, steep_down heading east; 0 blocks mined in 0 steps over 1 s (y-24 to y-24)"
+    }
+   ],
+   "start": [
+    14.5,
+    -2,
+    107.5
+   ],
+   "end": [
+    25.854864475722195,
+    -24,
+    107.36733643764308
+   ],
+   "seconds": 77,
+   "deaths": 0,
+   "reached": false
+  },
+  {
+   "name": "D2 -889 300,-200 y-2 stairs",
+   "seed": "-8891462362762682724",
+   "legs": [
+    {
+     "heading": "east",
+     "throughCaves": false,
+     "state": "FAILED",
+     "reasonCode": "NO_FLOOR",
+     "seconds": 0,
+     "blocks": 0,
+     "blocksPerMinute": 0,
+     "fromY": -2,
+     "toY": -2,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: A one-block hole at 301,-4,-200 under the next step and no block to fill it. At 300,-2,-200, stairs_down heading east; 0 blocks mined in 0 steps over 1 s (y-2 to y-2)"
+    },
+    {
+     "heading": "south",
+     "throughCaves": false,
+     "state": "FAILED",
+     "reasonCode": "CAVE_OPENING",
+     "seconds": 1,
+     "blocks": 0,
+     "blocksPerMinute": 0,
+     "fromY": -2,
+     "toY": -2,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The floor under the next step at 300,-4,-199 is open: a drop of at least 6 blocks (bottom not seen); not stepping in; throughCaves:true drops to seen ground within 3 blocks. At 300,-2,-200, stairs_down heading south; 0 blocks mined in 0 steps over 1 s (y-2 to y-2)"
+    },
+    {
+     "heading": "south",
+     "throughCaves": true,
+     "state": "FAILED",
+     "reasonCode": "CAVE_OPENING",
+     "seconds": 0,
+     "blocks": 0,
+     "blocksPerMinute": 0,
+     "fromY": -2,
+     "toY": -2,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The floor under the next step at 300,-4,-199 is open: a drop of at least 8 blocks (bottom not seen); not stepping in. At 300,-2,-200, stairs_down heading south; 0 blocks mined in 0 steps over 1 s (y-2 to y-2)"
+    },
+    {
+     "heading": "west",
+     "throughCaves": true,
+     "state": "FAILED",
+     "reasonCode": "CAVE_OPENING",
+     "seconds": 1,
+     "blocks": 0,
+     "blocksPerMinute": 0,
+     "fromY": -2,
+     "toY": -2,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The floor under the next step at 299,-4,-200 is open: a drop of 4 blocks onto minecraft:deepslate; not stepping in. At 300,-2,-200, stairs_down heading west; 0 blocks mined in 0 steps over 1 s (y-2 to y-2)"
+    },
+    {
+     "heading": "north",
+     "throughCaves": true,
+     "state": "FAILED",
+     "reasonCode": "CAVE_OPENING",
+     "seconds": 1,
+     "blocks": 0,
+     "blocksPerMinute": 0,
+     "fromY": -2,
+     "toY": -2,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The floor under the next step at 300,-4,-201 is open: a drop of at least 6 blocks (bottom not seen); not stepping in. At 300,-2,-200, stairs_down heading north; 0 blocks mined in 0 steps over 1 s (y-2 to y-2)"
+    },
+    {
+     "heading": "east",
+     "throughCaves": true,
+     "state": "FAILED",
+     "reasonCode": "NO_FLOOR",
+     "seconds": 0,
+     "blocks": 0,
+     "blocksPerMinute": 0,
+     "fromY": -2,
+     "toY": -2,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: A one-block hole at 301,-4,-200 under the next step and no block to fill it. At 300,-2,-200, stairs_down heading east; 0 blocks mined in 0 steps over 1 s (y-2 to y-2)"
+    }
+   ],
+   "start": [
+    300.5,
+    -2,
+    -199.5
+   ],
+   "end": [
+    300.33217640627214,
+    -2,
+    -199.8219785935141
+   ],
+   "seconds": 3,
+   "deaths": 0,
+   "reached": false
+  },
+  {
+   "name": "D3 20261009 134,488 y-2 steep",
+   "seed": "20261009",
+   "legs": [
+    {
+     "heading": "east",
+     "throughCaves": false,
+     "state": "SUCCEEDED",
+     "reasonCode": "DIG_GOAL_REACHED",
+     "seconds": 135,
+     "blocks": 108,
+     "blocksPerMinute": 48,
+     "fromY": -2,
+     "toY": -56,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Reached y-56. At 161,-56,488, steep_down heading east; 108 blocks mined in 27 steps over 134 s (y-2 to y-56); mined deepslate 104, clay 4; tool iron_pickaxe 142 uses left"
+    }
+   ],
+   "start": [
+    134.5,
+    -2,
+    488.5
+   ],
+   "end": [
+    161.69999998807907,
+    -56,
+    488.5
+   ],
+   "seconds": 135,
+   "deaths": 0,
+   "reached": true
+  },
+  {
+   "name": "D4 12345 100,100 y-2 stairs",
+   "seed": "12345",
+   "legs": [
+    {
+     "heading": "east",
+     "throughCaves": false,
+     "state": "FAILED",
+     "reasonCode": "CAVE_OPENING",
+     "seconds": 1,
+     "blocks": 0,
+     "blocksPerMinute": 0,
+     "fromY": -2,
+     "toY": -2,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The floor under the next step at 101,-4,100 is open: a drop of 5 blocks onto minecraft:clay; not stepping in; throughCaves:true drops to seen ground within 3 blocks. At 100,-2,100, stairs_down heading east; 0 blocks mined in 0 steps over 1 s (y-2 to y-2)"
+    },
+    {
+     "heading": "east",
+     "throughCaves": true,
+     "state": "FAILED",
+     "reasonCode": "CAVE_OPENING",
+     "seconds": 0,
+     "blocks": 0,
+     "blocksPerMinute": 0,
+     "fromY": -2,
+     "toY": -2,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The floor under the next step at 101,-4,100 is open: a drop of 5 blocks onto minecraft:clay; not stepping in. At 100,-2,100, stairs_down heading east; 0 blocks mined in 0 steps over 1 s (y-2 to y-2)"
+    },
+    {
+     "heading": "south",
+     "throughCaves": true,
+     "state": "FAILED",
+     "reasonCode": "CAVE_OPENING",
+     "seconds": 1,
+     "blocks": 0,
+     "blocksPerMinute": 0,
+     "fromY": -2,
+     "toY": -2,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The floor under the next step at 100,-4,101 is open: a drop of at least 6 blocks (bottom not seen); not stepping in. At 100,-2,100, stairs_down heading south; 0 blocks mined in 0 steps over 1 s (y-2 to y-2)"
+    },
+    {
+     "heading": "west",
+     "throughCaves": true,
+     "state": "FAILED",
+     "reasonCode": "CAVE_OPENING",
+     "seconds": 1,
+     "blocks": 0,
+     "blocksPerMinute": 0,
+     "fromY": -2,
+     "toY": -2,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The floor under the next step at 99,-4,100 is open: a drop of at least 6 blocks (bottom not seen); not stepping in. At 100,-2,100, stairs_down heading west; 0 blocks mined in 0 steps over 1 s (y-2 to y-2)"
+    },
+    {
+     "heading": "north",
+     "throughCaves": true,
+     "state": "FAILED",
+     "reasonCode": "CAVE_OPENING",
+     "seconds": 1,
+     "blocks": 0,
+     "blocksPerMinute": 0,
+     "fromY": -2,
+     "toY": -2,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The floor under the next step at 100,-4,99 is open: a drop of at least 6 blocks (bottom not seen); not stepping in. At 100,-2,100, stairs_down heading north; 0 blocks mined in 0 steps over 1 s (y-2 to y-2)"
+    },
+    {
+     "heading": "east",
+     "throughCaves": true,
+     "state": "FAILED",
+     "reasonCode": "CAVE_OPENING",
+     "seconds": 0,
+     "blocks": 0,
+     "blocksPerMinute": 0,
+     "fromY": -2,
+     "toY": -2,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The floor under the next step at 101,-4,100 is open: a drop of 5 blocks onto minecraft:clay; not stepping in. At 100,-2,100, stairs_down heading east; 0 blocks mined in 0 steps over 1 s (y-2 to y-2)"
+    }
+   ],
+   "start": [
+    100.5,
+    -2,
+    100.5
+   ],
+   "end": [
+    100.29841743152107,
+    -2,
+    100.1881705536919
+   ],
+   "seconds": 4,
+   "deaths": 0,
+   "reached": false
+  },
+  {
+   "name": "D5 12345 -300,200 y-2 steep",
+   "seed": "12345",
+   "legs": [
+    {
+     "heading": "east",
+     "throughCaves": false,
+     "state": "FAILED",
+     "reasonCode": "CAVE_OPENING",
+     "seconds": 14,
+     "blocks": 12,
+     "blocksPerMinute": 53,
+     "fromY": -2,
+     "toY": -6,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The step opened into a cave at -297,-7,201 (5 open cells beside the cut); not stepping in; throughCaves:true digs on past caves. At -298,-6,200, steep_down heading east; 12 blocks mined in 2 steps over 13 s (y-2 to y-6); mined deepslate 10, gravel 2; tool iron_pickaxe 238 uses left"
+    },
+    {
+     "heading": "east",
+     "throughCaves": true,
+     "state": "FAILED",
+     "reasonCode": "CAVE_OPENING",
+     "seconds": 23,
+     "blocks": 18,
+     "blocksPerMinute": 46,
+     "fromY": -6,
+     "toY": -16,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: The floor under the next step at -292,-19,200 is open: a drop of 6 blocks onto minecraft:deepslate; not stepping in. At -293,-16,200, steep_down heading east; 18 blocks mined in 5 steps over 23 s (y-6 to y-16); mined deepslate 18; tool iron_pickaxe 220 uses left"
+    },
+    {
+     "heading": "south",
+     "throughCaves": true,
+     "state": "SUCCEEDED",
+     "reasonCode": "DIG_GOAL_REACHED",
+     "seconds": 107,
+     "blocks": 85,
+     "blocksPerMinute": 48,
+     "fromY": -16,
+     "toY": -56,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Reached y-56. At -293,-56,220, steep_down heading south; 85 blocks mined in 20 steps over 107 s (y-16 to y-56); mined deepslate 78, gravel 6, tuff 1; ores seen deepslate_redstone_ore 3, deepslate_iron_ore 2 (first at deepslate_iron_ore -292,-37,211, deepslate_redstone_ore -292,-48,216); tool iron_pickaxe 135 uses left; dug past caves at -292,-19,202 (y-19), -293,-19,204 (y-19)"
+    }
+   ],
+   "start": [
+    -299.5,
+    -1.999999999999993,
+    200.5
+   ],
+   "end": [
+    -292.5000080538738,
+    -56,
+    220.63829417701461
+   ],
+   "seconds": 145,
+   "deaths": 0,
+   "reached": true
+  }
+ ],
+ "lavaFixtures": [
+  {
+   "name": "L1 lava beside step 2 mid (stairs)",
+   "seed": "20261009",
+   "legs": [
+    {
+     "heading": "east",
+     "throughCaves": false,
+     "state": "FAILED",
+     "reasonCode": "LAVA_AHEAD",
+     "seconds": 6,
+     "blocks": 5,
+     "blocksPerMinute": 49,
+     "fromY": -2,
+     "toY": -3,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: Lava at 136,-3,489 beside the opened cell 136,-3,488; plugged it with cobblestone at 136,-3,488. At 135,-3,488, stairs_down heading east; 5 blocks mined in 1 steps over 5 s (y-2 to y-3); mined deepslate 5; tool iron_pickaxe"
+    }
+   ],
+   "fixture": [
+    "Changed the block at 136, -3, 489"
+   ],
+   "start": [
+    134.5,
+    -2,
+    488.5
+   ],
+   "end": [
+    135.47578132526775,
+    -3,
+    488.5
+   ],
+   "seconds": 6,
+   "deaths": 0,
+   "reached": false
+  },
+  {
+   "name": "L2 lava under step 3 floor (stairs)",
+   "seed": "20261009",
+   "legs": [
+    {
+     "heading": "east",
+     "throughCaves": false,
+     "state": "FAILED",
+     "reasonCode": "LAVA_AHEAD",
+     "seconds": 9,
+     "blocks": 8,
+     "blocksPerMinute": 51,
+     "fromY": -2,
+     "toY": -4,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: Lava at 137,-5,488 beside the opened cell 137,-4,488; plugged it with cobblestone at 137,-4,488. At 136,-4,488, stairs_down heading east; 8 blocks mined in 2 steps over 9 s (y-2 to y-4); mined deepslate 8; tool iron_pickaxe"
+    }
+   ],
+   "fixture": [
+    "Changed the block at 137, -5, 488"
+   ],
+   "start": [
+    134.5,
+    -2,
+    488.5
+   ],
+   "end": [
+    136.6494218233503,
+    -4,
+    488.5
+   ],
+   "seconds": 9,
+   "deaths": 0,
+   "reached": false
+  },
+  {
+   "name": "L3 lava above step 4 top (stairs)",
+   "seed": "20261009",
+   "legs": [
+    {
+     "heading": "east",
+     "throughCaves": false,
+     "state": "FAILED",
+     "reasonCode": "LAVA_AHEAD",
+     "seconds": 9,
+     "blocks": 7,
+     "blocksPerMinute": 48,
+     "fromY": -2,
+     "toY": -4,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: Lava at 138,-3,488 beside the opened cell 137,-3,488; plugged it with cobblestone at 137,-3,488. At 136,-4,488, stairs_down heading east; 7 blocks mined in 2 steps over 8 s (y-2 to y-4); mined deepslate 7; tool iron_pickaxe"
+    }
+   ],
+   "fixture": [
+    "Changed the block at 138, -3, 488"
+   ],
+   "start": [
+    134.5,
+    -2,
+    488.5
+   ],
+   "end": [
+    136.69999998807907,
+    -4,
+    488.5
+   ],
+   "seconds": 9,
+   "deaths": 0,
+   "reached": false
+  },
+  {
+   "name": "L4 lava ahead of steep step 3 (steep)",
+   "seed": "20261009",
+   "legs": [
+    {
+     "heading": "east",
+     "throughCaves": false,
+     "state": "FAILED",
+     "reasonCode": "LAVA_AHEAD",
+     "seconds": 13,
+     "blocks": 11,
+     "blocksPerMinute": 50,
+     "fromY": -2,
+     "toY": -6,
+     "healthLost": 0,
+     "deaths": 0,
+     "message": "Stopped: Lava at 138,-7,488 beside the opened cell 137,-7,488; plugged it with cobblestone at 137,-7,488. At 136,-6,488, steep_down heading east; 11 blocks mined in 2 steps over 13 s (y-2 to y-6); mined deepslate 11; tool iron_pickaxe"
+    }
+   ],
+   "fixture": [
+    "Changed the block at 138, -7, 488"
+   ],
+   "start": [
+    134.5,
+    -2,
+    488.5
+   ],
+   "end": [
+    136.69999998807907,
+    -6,
+    488.5
+   ],
+   "seconds": 13,
+   "deaths": 0,
+   "reached": false
+  }
+ ],
+ "spots": {
+  "surface": [
+   {
+    "name": "A2 lava-pool x/z steep",
+    "checkpoint": "arena-beat-game/long/checkpoints/8-lava-pool-bed.json",
+    "pattern": "steep_down",
+    "legs": 6
+   },
+   {
+    "name": "A3 300,-200 steep",
+    "seed": "-8891462362762682724",
+    "x": 300,
+    "z": -200,
+    "pattern": "steep_down",
+    "legs": 6
+   },
+   {
+    "name": "A1 iron-pickaxe checkpoint steep",
+    "checkpoint": "arena-beat-game/long/checkpoints/1-iron-pickaxe.json",
+    "pattern": "steep_down",
+    "legs": 6
+   },
+   {
+    "name": "A1 iron-pickaxe checkpoint +40x stairs",
+    "checkpoint": "arena-beat-game/long/checkpoints/1-iron-pickaxe.json",
+    "x": 54,
+    "pattern": "stairs_down",
+    "legs": 6
+   },
+   {
+    "name": "A3 340,-200 stairs",
+    "seed": "-8891462362762682724",
+    "x": 340,
+    "z": -200,
+    "pattern": "stairs_down",
+    "legs": 6
+   },
+   {
+    "name": "B1 stronghold-search checkpoint steep",
+    "checkpoint": "arena-beat-game/long/checkpoints/4-stronghold-search.json",
+    "pattern": "steep_down",
+    "legs": 6
+   },
+   {
+    "name": "B2 -250,150 steep",
+    "seed": "20261009",
+    "x": -250,
+    "z": 150,
+    "pattern": "steep_down",
+    "legs": 6
+   },
+   {
+    "name": "B2 -210,150 stairs",
+    "seed": "20261009",
+    "x": -210,
+    "z": 150,
+    "pattern": "stairs_down",
+    "legs": 6
+   },
+   {
+    "name": "C1 12345 100,100 steep",
+    "seed": "12345",
+    "x": 100,
+    "z": 100,
+    "pattern": "steep_down",
+    "legs": 6
+   }
+  ],
+  "underground": [
+   {
+    "name": "D1 -889 14,107 y-2 steep",
+    "seed": "-8891462362762682724",
+    "x": 14,
+    "z": 107,
+    "y": -2,
+    "pattern": "steep_down",
+    "legs": 6
+   },
+   {
+    "name": "D2 -889 300,-200 y-2 stairs",
+    "seed": "-8891462362762682724",
+    "x": 300,
+    "z": -200,
+    "y": -2,
+    "pattern": "stairs_down",
+    "legs": 6
+   },
+   {
+    "name": "D3 20261009 134,488 y-2 steep",
+    "seed": "20261009",
+    "x": 134,
+    "z": 488,
+    "y": -2,
+    "pattern": "steep_down",
+    "legs": 6
+   },
+   {
+    "name": "D4 12345 100,100 y-2 stairs",
+    "seed": "12345",
+    "x": 100,
+    "z": 100,
+    "y": -2,
+    "pattern": "stairs_down",
+    "legs": 6
+   },
+   {
+    "name": "D5 12345 -300,200 y-2 steep",
+    "seed": "12345",
+    "x": -300,
+    "z": 200,
+    "y": -2,
+    "pattern": "steep_down",
+    "legs": 6
+   }
+  ],
+  "lava": [
+   {
+    "name": "L1 lava beside step 2 mid (stairs)",
+    "seed": "20261009",
+    "x": 134,
+    "z": 488,
+    "y": -2,
+    "pattern": "stairs_down",
+    "heading": "east",
+    "legs": 1,
+    "targetY": -20,
+    "extraItems": [
+     {
+      "item": "minecraft:cobblestone",
+      "count": 16
+     }
+    ],
+    "fixture": [
+     "setblock {x+2} {y-1} {z+1} minecraft:lava"
+    ]
+   },
+   {
+    "name": "L2 lava under step 3 floor (stairs)",
+    "seed": "20261009",
+    "x": 134,
+    "z": 488,
+    "y": -2,
+    "pattern": "stairs_down",
+    "heading": "east",
+    "legs": 1,
+    "targetY": -20,
+    "extraItems": [
+     {
+      "item": "minecraft:cobblestone",
+      "count": 16
+     }
+    ],
+    "fixture": [
+     "setblock {x+3} {y-3} {z} minecraft:lava"
+    ]
+   },
+   {
+    "name": "L3 lava above step 4 top (stairs)",
+    "seed": "20261009",
+    "x": 134,
+    "z": 488,
+    "y": -2,
+    "pattern": "stairs_down",
+    "heading": "east",
+    "legs": 1,
+    "targetY": -20,
+    "extraItems": [
+     {
+      "item": "minecraft:cobblestone",
+      "count": 16
+     }
+    ],
+    "fixture": [
+     "setblock {x+4} {y-1} {z} minecraft:lava"
+    ]
+   },
+   {
+    "name": "L4 lava ahead of steep step 3 (steep)",
+    "seed": "20261009",
+    "x": 134,
+    "z": 488,
+    "y": -2,
+    "pattern": "steep_down",
+    "heading": "east",
+    "legs": 1,
+    "targetY": -20,
+    "extraItems": [
+     {
+      "item": "minecraft:cobblestone",
+      "count": 16
+     }
+    ],
+    "fixture": [
+     "setblock {x+4} {y-5} {z} minecraft:lava"
+    ]
+   }
+  ]
+ }
+}

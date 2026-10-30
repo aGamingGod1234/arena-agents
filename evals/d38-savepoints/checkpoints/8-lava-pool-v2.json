@@ -1,0 +1,202 @@
+{
+  "milestone": "lava-pool",
+  "sampleIndex": 4825,
+  "minute": 82.69,
+  "seed": "-8891462362762682724",
+  "source": "/home/agaminggod/Desktop/Projects/aa-run-aa891468/runtime/headless-runs/run-1792681759133-04ffe9f2/q-jofluz-4f24-LONG-r1-27919df9",
+  "priorAdvancements": [
+    "story/iron_tools",
+    "story/obtain_armor"
+  ],
+  "deathsBefore": 1,
+  "setup": {
+    "dimension": "minecraft:overworld",
+    "position": [
+      -6.5,
+      -53,
+      97.5
+    ],
+    "generality": true,
+    "freezeUntilGoalStart": true,
+    "time": 1000,
+    "weather": "clear",
+    "commands": [
+      "execute in minecraft:overworld run fill -8 -54 94 0 -50 100 minecraft:cobblestone",
+      "execute in minecraft:overworld run fill -7 -53 95 -1 -51 99 minecraft:air",
+      "execute in minecraft:overworld run setblock -8 -53 97 minecraft:oak_door[facing=west,half=lower]",
+      "execute in minecraft:overworld run setblock -8 -52 97 minecraft:oak_door[facing=west,half=upper]",
+      "execute in minecraft:overworld run setblock -5 -53 97 minecraft:red_bed[facing=east,part=foot]",
+      "execute in minecraft:overworld run setblock -4 -53 97 minecraft:red_bed[facing=east,part=head]",
+      "execute in minecraft:overworld run setblock -6 -53 98 minecraft:chest[facing=north]",
+      "execute in minecraft:overworld run setblock -3 -53 96 minecraft:crafting_table",
+      "execute in minecraft:overworld run setblock -6 -53 96 minecraft:torch",
+      "execute in minecraft:overworld run setblock -2 -53 96 minecraft:torch",
+      "execute in minecraft:overworld run item replace block -6 -53 98 container.0 with minecraft:stone_pickaxe 1",
+      "execute in minecraft:overworld run item replace block -6 -53 98 container.1 with minecraft:stone_axe 1",
+      "execute in minecraft:overworld run item replace block -6 -53 98 container.2 with minecraft:cooked_beef 16",
+      "execute in minecraft:overworld run item replace block -6 -53 98 container.3 with minecraft:cobblestone 64",
+      "execute in minecraft:overworld run item replace block -6 -53 98 container.4 with minecraft:oak_log 8",
+      "execute in minecraft:overworld run item replace block -6 -53 98 container.5 with minecraft:shield 1",
+      "execute in minecraft:overworld run fill -2 -53 97 0 74 99 minecraft:cobblestone",
+      "execute in minecraft:overworld run fill -1 -53 98 -1 75 98 minecraft:air",
+      "execute in minecraft:overworld run fill -1 -53 98 -1 74 98 minecraft:ladder[facing=west]",
+      "execute in minecraft:overworld run fill -3 -53 98 -2 -52 98 minecraft:air",
+      "execute in minecraft:overworld run fill -8 -54 95 -7 -54 99 minecraft:cobblestone",
+      "execute in minecraft:overworld run fill -8 -53 97 -7 -52 97 minecraft:air",
+      "execute in minecraft:overworld run setblock -8 -53 97 minecraft:oak_door[facing=west,half=lower]",
+      "execute in minecraft:overworld run setblock -8 -52 97 minecraft:oak_door[facing=west,half=upper]"
+    ],
+    "inventory": [
+      {
+        "item": "minecraft:iron_pickaxe",
+        "count": 1
+      },
+      {
+        "item": "minecraft:iron_sword",
+        "count": 1
+      },
+      {
+        "item": "minecraft:shield",
+        "count": 1
+      },
+      {
+        "item": "minecraft:water_bucket",
+        "count": 1
+      },
+      {
+        "item": "minecraft:flint_and_steel",
+        "count": 1
+      },
+      {
+        "item": "minecraft:cooked_beef",
+        "count": 32
+      },
+      {
+        "item": "minecraft:cobblestone",
+        "count": 64
+      },
+      {
+        "item": "minecraft:cobblestone",
+        "count": 64
+      },
+      {
+        "item": "minecraft:oak_planks",
+        "count": 32
+      },
+      {
+        "item": "minecraft:oak_log",
+        "count": 8
+      },
+      {
+        "item": "minecraft:crafting_table",
+        "count": 1
+      },
+      {
+        "item": "minecraft:stone_axe",
+        "count": 1
+      },
+      {
+        "item": "minecraft:torch",
+        "count": 32
+      },
+      {
+        "item": "minecraft:bucket",
+        "count": 2
+      }
+    ],
+    "armour": {
+      "head": "minecraft:iron_helmet",
+      "chest": "minecraft:iron_chestplate",
+      "legs": "minecraft:iron_leggings",
+      "feet": "minecraft:iron_boots"
+    },
+    "effects": [],
+    "mobs": [],
+    "loadChunks": [
+      {
+        "dimension": "minecraft:overworld",
+        "position": [
+          -5,
+          -53,
+          97
+        ]
+      },
+      {
+        "dimension": "minecraft:overworld",
+        "position": [
+          -1,
+          75,
+          98
+        ]
+      }
+    ],
+    "usedBedSpawn": {
+      "dimension": "minecraft:overworld",
+      "position": [
+        -5,
+        -53,
+        97
+      ]
+    }
+  },
+  "notes": [
+    "Version 2: reconstructed player preparation on the original seed; original file retained unchanged.",
+    "The bed is used through vanilla interaction. Breaking or moving it invalidates this respawn.",
+    "A lit recovery camp contains a spare kit and crafting table. A ladder visible from the bed reaches the surface.",
+    "Only visible world blocks supply route information; no hidden terrain memory or structure coordinates are injected."
+  ],
+  "variantOf": "8-lava-pool.json",
+  "fixtureVersion": 2,
+  "bedSpawn": {
+    "dimension": "minecraft:overworld",
+    "position": [
+      -5,
+      -53,
+      97
+    ]
+  },
+  "recoveryRoute": {
+    "dimension": "minecraft:overworld",
+    "kind": "ladder",
+    "bottom": [
+      -1,
+      -53,
+      98
+    ],
+    "top": [
+      -1,
+      75,
+      98
+    ],
+    "support": [
+      0,
+      98
+    ]
+  },
+  "spareKit": [
+    [
+      "stone_pickaxe",
+      1
+    ],
+    [
+      "stone_axe",
+      1
+    ],
+    [
+      "cooked_beef",
+      16
+    ],
+    [
+      "cobblestone",
+      64
+    ],
+    [
+      "oak_log",
+      8
+    ],
+    [
+      "shield",
+      1
+    ]
+  ]
+}

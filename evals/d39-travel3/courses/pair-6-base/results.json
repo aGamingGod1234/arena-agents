@@ -1,0 +1,126 @@
+{
+  "mode": "travel",
+  "jar": "/home/agaminggod/Desktop/Projects/arena-beat-game/jars/d25-4682f12e.jar",
+  "results": [
+    {
+      "id": "fortress3-bastion",
+      "mode": "travel",
+      "checkpoint": "3-fortress.json",
+      "target": {
+        "x": -367.5,
+        "z": 624.5,
+        "located": "The nearest minecraft:bastion_remnant is at [-368, ~, 624] (713 blocks away)"
+      },
+      "start": [
+        69.5,
+        64,
+        60.45
+      ],
+      "startDistance": 713.5,
+      "legChoices": {
+        "landmark": 0,
+        "bearing": 0
+      },
+      "bearingTries": 0,
+      "detours": 4,
+      "stopWhenSeen": null,
+      "results": {
+        "FAILED TRAVEL_DAMAGED": 1,
+        "FAILED NO_ROUTE": 4,
+        "TIMED_OUT TRAVEL_TIMEOUT (detour)": 2,
+        "FAILED NO_ROUTE (detour)": 2
+      },
+      "actions": 9,
+      "failures": 5,
+      "damage": 5,
+      "actionDamage": 5,
+      "actionDamageEvents": 1,
+      "minHealth": 15,
+      "fireSamples": 0,
+      "lavaSamples": 0,
+      "deaths": 0,
+      "path": 1061.9057975110704,
+      "stops": [
+        {
+          "at": 135.4,
+          "state": "FAILED",
+          "reasonCode": "TRAVEL_DAMAGED",
+          "message": "Took 5.0 damage (fall); health 15.0; at -13.8,52.0,268.7; 502 blocks left to the target (yaw 45); covered 212 blocks toward it in 136 s (94 blocks/min, 330 walked); 24 legs, bridged 11, pillared 0, tunnelled 21; 56 plain blocks on the hotbar; footing {\"drop\":5,\"yaw\":-164}; fell 7 blocks; fall HP sum 5.0"
+        },
+        {
+          "at": 449,
+          "state": "FAILED",
+          "reasonCode": "NO_ROUTE",
+          "message": "No seen way on toward the target, and building cannot continue: minecraft:netherrack at -143,55,399 takes 2.0 s per block with the hotbar's best tool; last leg: NO_SEEN_ROUTE toward -142,42,375: No seen continuation after 3 observation replans; Destination not reached; seen path ends at -132,54,372; beyond unseen. Observe beyond the edge or choose another route before retrying; at -141.5,54.0,399.3; 319 blocks left to the target (yaw 45); covered 183 blocks toward it in 313 s (35 blocks/min, 335 walked); 26 legs, bridged 29, pillared 4, tunnelled 95; 23 plain blocks on the hotbar"
+        },
+        {
+          "at": 509.1,
+          "state": "TIMED_OUT",
+          "reasonCode": "TRAVEL_TIMEOUT",
+          "detour": true,
+          "message": "The trip's timeoutMs ran out before arrival; at -141.5,54.0,398.4; 30 blocks left to the target (yaw 103); covered 0 blocks toward it in 60 s (0 blocks/min, 233 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 23 plain blocks on the hotbar"
+        },
+        {
+          "at": 510.3,
+          "state": "FAILED",
+          "reasonCode": "NO_ROUTE",
+          "message": "No seen way on toward the target, and building cannot continue: minecraft:netherrack at -143,55,399 takes 2.0 s per block with the hotbar's best tool; at -141.5,54.0,399.3; 319 blocks left to the target (yaw 45); covered 0 blocks toward it in 1 s (26 blocks/min, 1 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 23 plain blocks on the hotbar"
+        },
+        {
+          "at": 510.8,
+          "state": "FAILED",
+          "reasonCode": "NO_ROUTE",
+          "detour": true,
+          "message": "No seen way on toward the target, and building cannot continue: minecraft:netherrack at -142,55,400 takes 2.0 s per block with the hotbar's best tool; at -141.5,54.0,399.3; 30 blocks left to the target (yaw -15); covered 0 blocks toward it in 1 s (1 blocks/min, 0 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 23 plain blocks on the hotbar"
+        },
+        {
+          "at": 511.5,
+          "state": "FAILED",
+          "reasonCode": "NO_ROUTE",
+          "message": "No seen way on toward the target, and building cannot continue: minecraft:netherrack at -143,55,399 takes 2.0 s per block with the hotbar's best tool; at -141.5,54.0,399.3; 319 blocks left to the target (yaw 45); covered 0 blocks toward it in 1 s (0 blocks/min, 0 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 23 plain blocks on the hotbar"
+        },
+        {
+          "at": 571.7,
+          "state": "TIMED_OUT",
+          "reasonCode": "TRAVEL_TIMEOUT",
+          "detour": true,
+          "message": "The trip's timeoutMs ran out before arrival; at -141.5,54.0,398.8; 30 blocks left to the target (yaw 104); covered 0 blocks toward it in 60 s (0 blocks/min, 233 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 23 plain blocks on the hotbar"
+        },
+        {
+          "at": 572.3,
+          "state": "FAILED",
+          "reasonCode": "NO_ROUTE",
+          "message": "No seen way on toward the target, and building cannot continue: minecraft:netherrack at -143,55,399 takes 2.0 s per block with the hotbar's best tool; at -141.5,54.0,399.1; 319 blocks left to the target (yaw 45); covered 0 blocks toward it in 1 s (5 blocks/min, 0 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 23 plain blocks on the hotbar"
+        },
+        {
+          "at": 572.9,
+          "state": "FAILED",
+          "reasonCode": "NO_ROUTE",
+          "detour": true,
+          "message": "No seen way on toward the target, and building cannot continue: minecraft:netherrack at -142,55,400 takes 2.0 s per block with the hotbar's best tool; at -141.5,54.0,399.1; 30 blocks left to the target (yaw -15); covered 0 blocks toward it in 1 s (0 blocks/min, 0 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 23 plain blocks on the hotbar"
+        }
+      ],
+      "gaveUp": "no progress over 3 actions",
+      "damageLowerBound": 5,
+      "end": [
+        -141.5,
+        54,
+        399.09
+      ],
+      "endDistance": 319.2,
+      "arrived": false,
+      "wallSeconds": 573.2,
+      "progressBlocks": 394.3,
+      "blocksPerMinute": 41.3,
+      "startedAtEpochMs": 1792947120521,
+      "endedAtEpochMs": 1792947693770,
+      "gameTicks": 11473,
+      "gameSeconds": 573.65,
+      "observedTicksPerSecond": 20.01,
+      "blocksPerGameMinute": 41.2,
+      "gameClockSource": "ready observation world.gameTime",
+      "pathBlocks": 1061.9,
+      "blocksPerMinuteWithModel5s": 38.3
+    }
+  ]
+}

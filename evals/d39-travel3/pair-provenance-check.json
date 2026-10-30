@@ -1,0 +1,53 @@
+{
+  "pairs": [
+    {
+      "pair": 1,
+      "checkpoint": true,
+      "mode": true,
+      "sameTarget": true,
+      "sameStart": true,
+      "startDelta": 0.0
+    },
+    {
+      "pair": 2,
+      "checkpoint": true,
+      "mode": true,
+      "sameTarget": true,
+      "sameStart": true,
+      "startDelta": 0.0
+    },
+    {
+      "pair": 3,
+      "checkpoint": true,
+      "mode": true,
+      "sameTarget": true,
+      "sameStart": true,
+      "startDelta": 0.0
+    },
+    {
+      "pair": 4,
+      "checkpoint": true,
+      "mode": true,
+      "sameTarget": true,
+      "sameStart": true,
+      "startDelta": 0.0
+    },
+    {
+      "pair": 5,
+      "checkpoint": true,
+      "mode": true,
+      "sameTarget": true,
+      "sameStart": true,
+      "startDelta": 0.0
+    },
+    {
+      "pair": 6,
+      "checkpoint": true,
+      "mode": true,
+      "sameTarget": true,
+      "sameStart": true,
+      "startDelta": 0.0
+    }
+  ],
+  "passed": true
+}

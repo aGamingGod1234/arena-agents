@@ -1,0 +1,832 @@
+{
+  "schemaVersion": 1,
+  "scorer": "d38-measure",
+  "scoredAt": "2026-10-24T19:31:05.485Z",
+  "run": "w-desk-d38-dragon-r2-a-codex",
+  "raw": "..\\..\\..\\aa-run-eaee88ff\\runtime\\headless-runs\\run-1792864438530-e2594a66\\q-mp70n3-6926-LONG-r1-75175f59",
+  "evaluationReferences": [],
+  "identity": {
+    "agentId": "1baf1218-3fce-46da-9bea-ffcdf2f4dd11",
+    "agentName": "ha_q_mp70n_p7grm",
+    "seed": "20261009",
+    "profile": {
+      "provider": "codex",
+      "model": "gpt-6.1-sol",
+      "reasoningEffort": "low",
+      "serviceTier": "default"
+    },
+    "build": {
+      "commit": null,
+      "jar": {
+        "path": "C:\\Users\\player\\arena-runner\\jars\\d38-dragon-1263fe0e.jar",
+        "sha256": "12b3bab389192bad5769ffa4d832747548cb071fc9fd4d868aa8059417fafc5c"
+      },
+      "coordinatorSha256": "3d88362cd99f05be20a9e4e345c6d1316b30788806d3425b42b2676c4863cfe2"
+    },
+    "checkpoint": "checkpoint-end"
+  },
+  "window": {
+    "startedAt": 1792864481917,
+    "observedThrough": 1792868981589,
+    "plannedEndAt": 1792868981917,
+    "windowMs": 4500000
+  },
+  "ending": {
+    "kind": "budget_end",
+    "reason": "WALL_CLOCK_BUDGET",
+    "at": 1792868981898,
+    "censored": true
+  },
+  "postRunFailure": null,
+  "censoring": {
+    "censored": true,
+    "unobservedRemainder": true,
+    "observedFirstLifeFailure": true,
+    "reason": "Continuation after the last observation is unobserved, including after a fixed budget. Observed first-life deaths remain failures."
+  },
+  "firstLife": {
+    "name": "first_life",
+    "samples": 734,
+    "startedAt": 1792864481917,
+    "endedAt": 1792865281901,
+    "deaths": 1,
+    "damageTakenCounterDelta": 1110,
+    "healthDropLowerBound": 85.866667,
+    "resources": {
+      "rods": {
+        "unit": "rod equivalents (rod=1, powder=0.5, eye=0.5)",
+        "supplied": 0,
+        "earned": null,
+        "held": 0,
+        "spent": null,
+        "lost": 0,
+        "observedGains": 0,
+        "recoveredOrEarned": 0,
+        "unexplainedDecrease": 0,
+        "peakHeld": 0,
+        "heldBeforeDeath": 0,
+        "earnedBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedGains": 0,
+          "exact": false
+        },
+        "spentBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedDecreases": 0,
+          "exact": false
+        },
+        "lostBasis": "Last sampled holdings dropped at an observed death; inferred loss of possession, not verified destruction or exact loss between samples."
+      },
+      "pearlsEyes": {
+        "unit": "pearl/eye equivalents",
+        "supplied": 2,
+        "earned": null,
+        "held": 0,
+        "spent": null,
+        "lost": 1,
+        "observedGains": 1,
+        "recoveredOrEarned": 0,
+        "unexplainedDecrease": 2,
+        "peakHeld": 3,
+        "heldBeforeDeath": 1,
+        "earnedBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedGains": 1,
+          "exact": false
+        },
+        "spentBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedDecreases": 2,
+          "exact": false
+        },
+        "lostBasis": "Last sampled holdings dropped at an observed death; inferred loss of possession, not verified destruction or exact loss between samples."
+      },
+      "gold": {
+        "unit": "barterable ingot equivalents (block=9, nugget=1/9)",
+        "supplied": 0,
+        "earned": null,
+        "held": 0,
+        "spent": null,
+        "lost": 0,
+        "observedGains": 0,
+        "recoveredOrEarned": 0,
+        "unexplainedDecrease": 0,
+        "peakHeld": 0,
+        "heldBeforeDeath": 0,
+        "earnedBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedGains": 0,
+          "exact": false
+        },
+        "spentBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedDecreases": 0,
+          "exact": false
+        },
+        "lostBasis": "Last sampled holdings dropped at an observed death; inferred loss of possession, not verified destruction or exact loss between samples."
+      }
+    },
+    "milestones": {
+      "wood": {
+        "firstObservedAt": 1792864481928,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "planks": {
+        "firstObservedAt": 1792864481928,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "crafting_table": {
+        "firstObservedAt": 1792864481928,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "wooden_pickaxe": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "stone": {
+        "firstObservedAt": 1792864481928,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "stone_pickaxe": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "furnace": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "cooked_food": {
+        "firstObservedAt": 1792864481928,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "iron_ingot": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "iron_pickaxe": {
+        "firstObservedAt": 1792864481928,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "iron_armour": {
+        "firstObservedAt": 1792864481928,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "bucket": {
+        "firstObservedAt": 1792864481928,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "diamond": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "obsidian": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "flint_and_steel": {
+        "firstObservedAt": 1792864481928,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "nether": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "fortress": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": null,
+        "reached": false
+      },
+      "blaze_rod": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "ender_pearl": {
+        "firstObservedAt": 1792864481928,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "blaze_powder": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "ender_eye": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "stronghold": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": null,
+        "reached": false
+      },
+      "end": {
+        "firstObservedAt": 1792864481928,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "dragon": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": null,
+        "reached": false
+      }
+    },
+    "status": "observed_death",
+    "durationMs": 799984,
+    "retentionRequirements": {
+      "rodsHeldAtStageEnd": false,
+      "pearlsOrEyesHeldAtStageEnd": false,
+      "required": {
+        "rods": 6,
+        "pearlsEyes": 12
+      }
+    },
+    "resourceBasis": "Inventory deltas. Earned/spent remain unknown without a causal receipt; positive deltas can be recovery, gifts or container transfers. Lost is the observed death-associated decrease, not item destruction. Counter units are vanilla tenths of HP."
+  },
+  "afterDeath": {
+    "name": "after_death",
+    "samples": 3366,
+    "startedAt": 1792865281901,
+    "endedAt": 1792868981589,
+    "deaths": 3,
+    "damageTakenCounterDelta": 1795,
+    "healthDropLowerBound": 146.74666382,
+    "resources": {
+      "rods": {
+        "unit": "rod equivalents (rod=1, powder=0.5, eye=0.5)",
+        "supplied": 0,
+        "earned": null,
+        "held": 0,
+        "spent": null,
+        "lost": 0,
+        "observedGains": 0,
+        "recoveredOrEarned": 0,
+        "unexplainedDecrease": 0,
+        "peakHeld": 0,
+        "earnedBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedGains": 0,
+          "exact": false
+        },
+        "spentBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedDecreases": 0,
+          "exact": false
+        },
+        "lostBasis": "Last sampled holdings dropped at an observed death; inferred loss of possession, not verified destruction or exact loss between samples."
+      },
+      "pearlsEyes": {
+        "unit": "pearl/eye equivalents",
+        "supplied": 0,
+        "earned": null,
+        "held": 3,
+        "spent": null,
+        "lost": 5,
+        "observedGains": 9,
+        "recoveredOrEarned": 9,
+        "unexplainedDecrease": 1,
+        "peakHeld": 5,
+        "earnedBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedGains": 9,
+          "exact": false
+        },
+        "spentBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedDecreases": 1,
+          "exact": false
+        },
+        "lostBasis": "Last sampled holdings dropped at an observed death; inferred loss of possession, not verified destruction or exact loss between samples."
+      },
+      "gold": {
+        "unit": "barterable ingot equivalents (block=9, nugget=1/9)",
+        "supplied": 0,
+        "earned": null,
+        "held": 0,
+        "spent": null,
+        "lost": 0,
+        "observedGains": 0,
+        "recoveredOrEarned": 0,
+        "unexplainedDecrease": 0,
+        "peakHeld": 0,
+        "earnedBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedGains": 0,
+          "exact": false
+        },
+        "spentBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedDecreases": 0,
+          "exact": false
+        },
+        "lostBasis": "Last sampled holdings dropped at an observed death; inferred loss of possession, not verified destruction or exact loss between samples."
+      }
+    },
+    "milestones": {
+      "wood": {
+        "firstObservedAt": 1792866203756,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "planks": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "crafting_table": {
+        "firstObservedAt": 1792866517260,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "wooden_pickaxe": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "stone": {
+        "firstObservedAt": 1792865305993,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "stone_pickaxe": {
+        "firstObservedAt": 1792865305993,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "furnace": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "cooked_food": {
+        "firstObservedAt": 1792865305993,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "iron_ingot": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "iron_pickaxe": {
+        "firstObservedAt": 1792865832722,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "iron_armour": {
+        "firstObservedAt": 1792865832722,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "bucket": {
+        "firstObservedAt": 1792865307087,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "diamond": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "obsidian": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "flint_and_steel": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "nether": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "fortress": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": null,
+        "reached": false
+      },
+      "blaze_rod": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "ender_pearl": {
+        "firstObservedAt": 1792865859039,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "blaze_powder": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "ender_eye": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "stronghold": {
+        "firstObservedAt": 1792865285092,
+        "heldAtStageEnd": null,
+        "reached": true
+      },
+      "end": {
+        "firstObservedAt": 1792866351432,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "dragon": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": null,
+        "reached": false
+      }
+    },
+    "status": "censored",
+    "durationMs": 3699688,
+    "retentionRequirements": {
+      "rodsHeldAtStageEnd": false,
+      "pearlsOrEyesHeldAtStageEnd": false,
+      "required": {
+        "rods": 6,
+        "pearlsEyes": 12
+      }
+    },
+    "resourceBasis": "Inventory deltas. Earned/spent remain unknown without a causal receipt; positive deltas can be recovery, gifts or container transfers. Lost is the observed death-associated decrease, not item destruction. Counter units are vanilla tenths of HP."
+  },
+  "suppliedKit": {
+    "inventory": {
+      "rods": 0,
+      "pearlsEyes": 2,
+      "gold": 0
+    },
+    "reserveContainers": {
+      "rods": 0,
+      "pearlsEyes": 0,
+      "gold": 0
+    }
+  },
+  "observedDeaths": 4,
+  "firstLifeDeathTrace": {
+    "death": {
+      "at": 1792865281901,
+      "cause": "ha_q_mp70n_p7grm hit the ground too hard while trying to escape Ender Dragon",
+      "source": "protocol"
+    },
+    "encounterStartAt": 1792865280951,
+    "hazards": [
+      {
+        "kind": "fall",
+        "source": {
+          "type": "fall",
+          "entityId": null,
+          "block": [
+            3,
+            61,
+            -32
+          ],
+          "pos": null
+        },
+        "firstSensedAt": 1792865280951,
+        "watcherOpenedAt": 1792865280951,
+        "watcherDamageTakenHp": 0,
+        "advertisedRules": [
+          "fall:falling"
+        ],
+        "firings": [
+          {
+            "rule": "fall",
+            "atMs": 1792865281109,
+            "result": "failed: no minecraft:water_bucket in hotbar or offhand"
+          }
+        ]
+      }
+    ],
+    "liveReflexCoverage": [
+      {
+        "at": 1792865281100,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 7,
+            "expiresInS": 2834,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 18,
+            "expiresInS": 2807,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3393,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 7,
+            "expiresInS": 3033,
+            "lacks": "no minecraft:water_bucket in hotbar or offhand",
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 562,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3562,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "dragon",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 3,
+            "expiresInS": 3570,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "fall"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792865281600,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 7,
+            "expiresInS": 2834,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 18,
+            "expiresInS": 2807,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3392,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 562,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3562,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "dragon",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 3,
+            "expiresInS": 3569,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [],
+        "basis": "server observation status; live at observation time"
+      }
+    ],
+    "dispatchedCommands": [],
+    "ownership": [],
+    "damage": {
+      "taken": [],
+      "dealt": [],
+      "dealtTotal": null,
+      "basis": "Taken: vanilla counter deltas (tenths of HP), health-drop lower bounds, and per-hazard Watcher damage (can overlap, do not sum). Dealt: unknown without attributed damage receipts; attack dispatch is not a hit."
+    },
+    "gaps": [
+      "Hands and aim ownership were not recorded; dispatched action types cannot prove controller ownership.",
+      "Damage dealt is unknown unless an attributed damage receipt is present."
+    ],
+    "traceWindow": {
+      "from": 1792865280951,
+      "through": 1792865281901,
+      "basis": "Watcher first sensed/opened time"
+    },
+    "controllerSnapshots": [
+      {
+        "at": 1792865281100,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": true,
+          "actionId": "native:0387b276-3545-4846-89d5-2a2255e8c3e9:143:1baf1218-3fce-46da-9bea-ffcdf2f4:1",
+          "actionType": "navigate_to"
+        },
+        "reflexFiring": {
+          "id": "fall",
+          "ms": 0,
+          "detail": "no minecraft:water_bucket in hotbar or offhand"
+        },
+        "input": {
+          "active": true,
+          "forward": 1,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": true,
+          "attack": false,
+          "use": false,
+          "yaw": 32.73579406738281,
+          "pitch": 60,
+          "selectedSlot": 4,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792865281600,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": true,
+          "actionId": "native:0387b276-3545-4846-89d5-2a2255e8c3e9:143:1baf1218-3fce-46da-9bea-ffcdf2f4:1",
+          "actionType": "navigate_to"
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": true,
+          "forward": 1,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": true,
+          "attack": false,
+          "use": false,
+          "yaw": 32.736663818359375,
+          "pitch": 60,
+          "selectedSlot": 4,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      }
+    ],
+    "actionReceipts": [
+      {
+        "at": 1792865281499,
+        "traceId": "native-0387b276-3545-4846-89d5-2a2255e8c3e9-143-1baf1218-3fce-46da-9bea-ffcdf2f4-1",
+        "goalRevision": 1,
+        "actionId": "native:0387b276-3545-4846-89d5-2a2255e8c3e9:143:1baf1218-3fce-46da-9bea-ffcdf2f4:1",
+        "commandId": "native:0387b276-3545-4846-89d5-2a2255e8c3e9:143:1baf1218-3fce-46da-9bea-ffcdf2f4:1",
+        "actionType": "navigate_to",
+        "state": "RUNNING",
+        "progress": 0,
+        "elapsedMs": 2653,
+        "observedAtEpochMs": 1792865281499,
+        "serverTick": 16566,
+        "actionObservation": {
+          "observedAtEpochMs": 1792865281499,
+          "worldTick": 16222,
+          "position": {
+            "x": 4.418971721104295,
+            "y": 73.87363659249603,
+            "z": -32.59589220380825
+          },
+          "velocity": {
+            "x": -0.13182418987888458,
+            "y": -1.2078725651974982,
+            "z": 0.2050713431787639
+          },
+          "yaw": 32.7364501953125,
+          "pitch": 60,
+          "collision": {
+            "horizontal": false,
+            "vertical": false,
+            "inWall": false
+          },
+          "lookedAt": {
+            "type": "block",
+            "hitDistance": 4.49995100625635,
+            "position": {
+              "x": 3,
+              "y": 71,
+              "z": -31
+            },
+            "id": "minecraft:air",
+            "face": "up"
+          },
+          "target": {
+            "kind": "position",
+            "position": {
+              "x": 0,
+              "y": 61,
+              "z": -39
+            },
+            "tolerance": 1,
+            "standable": false
+          },
+          "onGround": false,
+          "progress": {
+            "value": 0,
+            "basis": "world_position",
+            "verified": true
+          }
+        }
+      }
+    ],
+    "lastObservationAt": 1792865281600,
+    "lastObservationAgeAtDeathMs": 301,
+    "coordinatorEvents": [
+      {
+        "event": "reflexes_fired",
+        "agentId": "1baf1218-3fce-46da-9bea-ffcdf2f4dd11",
+        "goalRevision": 1,
+        "events": [
+          "fall:failed",
+          "fall:disabled"
+        ],
+        "at": 1792865281613,
+        "mono": 830074.4
+      }
+    ]
+  },
+  "timing": {
+    "decisionSegments": 706,
+    "decisionP50Ms": 3263.9224999998696,
+    "usageRecords": 504,
+    "usageRecordP50Ms": 2,
+    "basis": "completed provider decision segments; usage notification timing shown separately, never substituted"
+  },
+  "coverage": {
+    "protocolRecords": 27425,
+    "samples": 4100,
+    "watcherFiles": 1,
+    "diagnostics": []
+  }
+}

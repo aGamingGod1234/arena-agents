@@ -1,0 +1,58 @@
+{
+  "at": "2026-10-25T16:55:52.761Z",
+  "model": "gpt-6.1-sol",
+  "effort": "low",
+  "serviceTier": "default",
+  "fastServiceRequested": false,
+  "launcher": "unchanged production CodexStdioTransport",
+  "observedModel": "gpt-6.1-sol",
+  "responseMs": null,
+  "passed": false,
+  "failure": "NO_RESPONSE_WITHIN_30_SECONDS",
+  "observedServiceTier": "default",
+  "phases": {
+    "transportStartedMs": 3,
+    "initializedMs": 171,
+    "threadCreatedMs": 252,
+    "turnAcknowledgedMs": 255
+  },
+  "mcpStartup": [
+    {
+      "afterMs": 252,
+      "state": "starting"
+    },
+    {
+      "afterMs": 252,
+      "state": "starting"
+    },
+    {
+      "afterMs": 252,
+      "state": "starting"
+    },
+    {
+      "afterMs": 265,
+      "state": "failed"
+    },
+    {
+      "afterMs": 316,
+      "state": "ready"
+    },
+    {
+      "afterMs": 1136,
+      "state": "ready"
+    }
+  ],
+  "itemTypes": {
+    "userMessage": 1
+  },
+  "eventTypes": {
+    "remoteControl/status/changed": 1,
+    "mcpServer/startupStatus/updated": 6,
+    "thread/started": 1,
+    "thread/status/changed": 1,
+    "turn/started": 1,
+    "account/updated": 1,
+    "item/started": 1,
+    "item/completed": 1
+  }
+}

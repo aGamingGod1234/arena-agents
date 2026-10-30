@@ -1,0 +1,25 @@
+{
+  "currentFixtures": 27,
+  "idleSeconds": [
+    60.38,
+    62.86
+  ],
+  "ticks": [
+    1202,
+    1261
+  ],
+  "portalRoundTrips": 5,
+  "naturalNewPools": 4,
+  "endShelters": 2,
+  "shaMatched": true,
+  "8-lava-pool-v2.json": {
+    "naturalPoolSources": 85,
+    "exposed": 69,
+    "distance": 12
+  },
+  "8-lava-pool-bed-v2.json": {
+    "naturalPoolSources": 85,
+    "exposed": 69,
+    "distance": 12
+  }
+}

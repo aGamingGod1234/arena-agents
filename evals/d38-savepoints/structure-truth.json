@@ -1,0 +1,98 @@
+{
+  "visibility": "Evaluator only. Do not inject into model goals, observations, notebooks, or agent workspaces.",
+  "method": "Initial candidates: evals/d37-blaze/locate.py, radius 0, step 1. Final positions: vanilla /locate from each actual Nether portal origin after surveying natural standing ground. Distances are Euclidean horizontal distances to structure starts; vanilla rounded distance receipts are retained.",
+  "seeds": [
+    {
+      "seed": "8675309",
+      "portalXZ": [
+        16,
+        0
+      ],
+      "fortress": {
+        "position": [
+          272,
+          192
+        ],
+        "distanceBlocks": 320,
+        "receipt": "The nearest minecraft:fortress is at [272, ~, 192] (320 blocks away)"
+      },
+      "bastion_remnant": {
+        "position": [
+          -112,
+          -224
+        ],
+        "distanceBlocks": 257.9922479455536,
+        "receipt": "The nearest minecraft:bastion_remnant is at [-112, ~, -224] (257 blocks away)"
+      }
+    },
+    {
+      "seed": "20261024",
+      "portalXZ": [
+        0,
+        0
+      ],
+      "fortress": {
+        "position": [
+          16,
+          320
+        ],
+        "distanceBlocks": 320.3997503120126,
+        "receipt": "The nearest minecraft:fortress is at [16, ~, 320] (320 blocks away)"
+      },
+      "bastion_remnant": {
+        "position": [
+          -224,
+          688
+        ],
+        "distanceBlocks": 723.5468194940809,
+        "receipt": "The nearest minecraft:bastion_remnant is at [-224, ~, 688] (723 blocks away)"
+      }
+    },
+    {
+      "seed": "123456789",
+      "portalXZ": [
+        0,
+        8
+      ],
+      "fortress": {
+        "position": [
+          -160,
+          -304
+        ],
+        "distanceBlocks": 350.633712012978,
+        "receipt": "The nearest minecraft:fortress is at [-160, ~, -304] (350 blocks away)"
+      },
+      "bastion_remnant": {
+        "position": [
+          320,
+          16
+        ],
+        "distanceBlocks": 320.09998437988094,
+        "receipt": "The nearest minecraft:bastion_remnant is at [320, ~, 16] (320 blocks away)"
+      }
+    },
+    {
+      "seed": "987654321",
+      "portalXZ": [
+        0,
+        0
+      ],
+      "fortress": {
+        "position": [
+          176,
+          352
+        ],
+        "distanceBlocks": 393.547964039963,
+        "receipt": "The nearest minecraft:fortress is at [176, ~, 352] (393 blocks away)"
+      },
+      "bastion_remnant": {
+        "position": [
+          -80,
+          16
+        ],
+        "distanceBlocks": 81.58431221748457,
+        "receipt": "The nearest minecraft:bastion_remnant is at [-80, ~, 16] (81 blocks away)"
+      }
+    }
+  ]
+}

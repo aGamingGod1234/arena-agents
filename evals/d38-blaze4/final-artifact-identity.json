@@ -1,0 +1,17 @@
+{
+    "allClassHashesMatchReplayedCandidate":  true,
+    "harnessSha256":  "c7b835b698d8f4389090c0fb3285541c968ca811136aca334b2f0be2721e6a50",
+    "differentClasses":  [
+
+                         ],
+    "classes":  1564,
+    "source":  "c9bb6914c39b08533edb54f6c3d4f90073f7661d",
+    "baseJarSha256":  "f566af7502ed2cbc73311e649d2ddfefd254eb74538504bb7e7518bd2c3571de",
+    "modelFacts":  [
+                       {
+                           "entry":  "arena-agents/coordinator/src/combat-facts.mjs",
+                           "sha256":  "fb3085e2b8a2726716b0397278a5b1cbdb2e41d57ad8c86d71a173b35e6260c8"
+                       }
+                   ],
+    "jarSha256":  "056be600acbbba4df670396a8fb156f5e88188d752ea9138be202a6f9c18a534"
+}

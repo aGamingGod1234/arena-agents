@@ -1,0 +1,13 @@
+{
+  "reason": "User excludes games ended from the Oct 25 Sol provider stall. The still-running queue game is retained separately and has no scored gold outcome in this report.",
+  "voidQueueTags": [
+    "d39-nether-sol-y55-30"
+  ],
+  "voidCandidateTags": [],
+  "evidence": {
+    "firstRecordedPlanningTimeout": "2026-10-25T22:20:46.224+08:00",
+    "lastVerifiedPlanningTimeout": "2026-10-25T23:00:25.139+08:00",
+    "freshLowDefaultReadinessProbe": "resume-health.json",
+    "probeResult": "PLANNING_TIMEOUT; 121181 ms; no accepted call"
+  }
+}

@@ -1,0 +1,263 @@
+{
+  "kind": "provider-free live mechanics, not Sol decision performance",
+  "base": "590fa635",
+  "candidate": "b8c17dcd",
+  "bar": "at least 3 rods held at cutoff and zero deaths in every one of six repeats",
+  "arms": {
+    "base": {
+      "jarSha256": "472c5fa734bf737e5140f36a2348c09f69e967923c85f9a07b8e41d3a40f753a",
+      "rows": [
+        {
+          "gap": "gap0",
+          "repeat": 1,
+          "kills": 1,
+          "shotsFired": 5,
+          "shotsRefused": 13,
+          "rodsPicked": 1,
+          "rodsAtEnd": 0,
+          "deaths": 1,
+          "seconds": 88,
+          "approxTps": 20.206129644697587,
+          "passed": false,
+          "shelter": "SHELTER_BUILT"
+        },
+        {
+          "gap": "gap0",
+          "repeat": 2,
+          "kills": 7,
+          "shotsFired": 25,
+          "shotsRefused": 32,
+          "rodsPicked": 2,
+          "rodsAtEnd": 0,
+          "deaths": 1,
+          "seconds": 185,
+          "approxTps": 20.003128016783428,
+          "passed": false,
+          "shelter": "SHELTER_BUILT"
+        },
+        {
+          "gap": "gap0",
+          "repeat": 3,
+          "kills": 0,
+          "shotsFired": 0,
+          "shotsRefused": 0,
+          "rodsPicked": 0,
+          "rodsAtEnd": 0,
+          "deaths": 1,
+          "seconds": 24,
+          "approxTps": 20.023706714080095,
+          "passed": false,
+          "shelter": "MISSED_LANDING"
+        },
+        {
+          "gap": "gap5",
+          "repeat": 1,
+          "kills": 3,
+          "shotsFired": 9,
+          "shotsRefused": 2,
+          "rodsPicked": 0,
+          "rodsAtEnd": 0,
+          "deaths": 0,
+          "seconds": 240,
+          "approxTps": 19.99991666701389,
+          "passed": false,
+          "shelter": "SHELTER_BUILT"
+        },
+        {
+          "gap": "gap5",
+          "repeat": 2,
+          "kills": 2,
+          "shotsFired": 5,
+          "shotsRefused": 0,
+          "rodsPicked": 2,
+          "rodsAtEnd": 0,
+          "deaths": 1,
+          "seconds": 134,
+          "approxTps": 20.0022357193427,
+          "passed": false,
+          "shelter": "SHELTER_BUILT"
+        },
+        {
+          "gap": "gap5",
+          "repeat": 3,
+          "kills": 0,
+          "shotsFired": 0,
+          "shotsRefused": 0,
+          "rodsPicked": 0,
+          "rodsAtEnd": 0,
+          "deaths": 1,
+          "seconds": 28,
+          "approxTps": 20.00215850631363,
+          "passed": false,
+          "shelter": "ACTION_CANCELLED"
+        }
+      ],
+      "passed": 0,
+      "complete": true,
+      "totals": {
+        "kills": 13,
+        "shotsFired": 44,
+        "shotsRefused": 47,
+        "rodsPicked": 5,
+        "rodsAtEnd": 0,
+        "deaths": 5
+      },
+      "rangedReasons": {
+        "OWNED_PROJECTILE_CONFIRMED": 37,
+        "TARGET_NOT_VISIBLE": 9,
+        "TARGET_OBSTRUCTED": 47,
+        "RANGED_USE_TIMED_OUT": 4,
+        "TARGET_UNAVAILABLE": 2,
+        "ACTION_CANCELLED": 1,
+        "FIXTURE_RUN_DEADLINE": 1
+      },
+      "returnShelterReasons": {
+        "SHELTER_BLOCKED": 3,
+        "SHELTER_BUILT": 5,
+        "ACTION_CANCELLED": 1
+      },
+      "blockedMessages": {
+        "The bow's arc to the target from here meets minecraft:cobblestone at 82,73,91 before the target": 43,
+        "The bow's arc to the target from here meets minecraft:cobblestone at 82,75,91 before the target": 1,
+        "The bow's arc to the target from here meets minecraft:nether_bricks at 78,74,89 before the target": 1,
+        "The bow's arc to the target from here meets minecraft:cobblestone at 83,74,92 before the target": 2
+      }
+    },
+    "candidate": {
+      "jarSha256": "3d76f0c7295c6ca247c09d79d39ee4971d735f0ef6e5220d9e18eac19e75173b",
+      "rows": [
+        {
+          "gap": "gap0",
+          "repeat": 1,
+          "kills": 0,
+          "shotsFired": 0,
+          "shotsRefused": 0,
+          "rodsPicked": 0,
+          "rodsAtEnd": 0,
+          "deaths": 1,
+          "seconds": 22,
+          "approxTps": 20.00717746276691,
+          "passed": false,
+          "shelter": "ACTION_CANCELLED"
+        },
+        {
+          "gap": "gap0",
+          "repeat": 2,
+          "kills": 4,
+          "shotsFired": 17,
+          "shotsRefused": 3,
+          "rodsPicked": 3,
+          "rodsAtEnd": 0,
+          "deaths": 1,
+          "seconds": 148,
+          "approxTps": 20.001212602987046,
+          "passed": false,
+          "shelter": "SHELTER_BUILT"
+        },
+        {
+          "gap": "gap0",
+          "repeat": 3,
+          "kills": 12,
+          "shotsFired": 32,
+          "shotsRefused": 128,
+          "rodsPicked": 4,
+          "rodsAtEnd": 4,
+          "deaths": 0,
+          "seconds": 240,
+          "approxTps": 20.00158312884586,
+          "passed": true,
+          "shelter": "SHELTER_BUILT"
+        },
+        {
+          "gap": "gap5",
+          "repeat": 1,
+          "kills": 0,
+          "shotsFired": 0,
+          "shotsRefused": 0,
+          "rodsPicked": 0,
+          "rodsAtEnd": 0,
+          "deaths": 1,
+          "seconds": 64,
+          "approxTps": 20.00996605313152,
+          "passed": false,
+          "shelter": "SHELTER_BLOCKED"
+        },
+        {
+          "gap": "gap5",
+          "repeat": 2,
+          "kills": 2,
+          "shotsFired": 6,
+          "shotsRefused": 0,
+          "rodsPicked": 1,
+          "rodsAtEnd": 1,
+          "deaths": 0,
+          "seconds": 240,
+          "approxTps": 19.99983333472221,
+          "passed": false,
+          "shelter": "SHELTER_BUILT"
+        },
+        {
+          "gap": "gap5",
+          "repeat": 3,
+          "kills": 1,
+          "shotsFired": 9,
+          "shotsRefused": 0,
+          "rodsPicked": 0,
+          "rodsAtEnd": 0,
+          "deaths": 1,
+          "seconds": 201,
+          "approxTps": 20.002789928358624,
+          "passed": false,
+          "shelter": "SHELTER_BUILT"
+        }
+      ],
+      "passed": 1,
+      "complete": true,
+      "totals": {
+        "kills": 19,
+        "shotsFired": 64,
+        "shotsRefused": 131,
+        "rodsPicked": 8,
+        "rodsAtEnd": 5,
+        "deaths": 4
+      },
+      "rangedReasons": {
+        "RANGED_DRAW_INTERRUPTED": 9,
+        "OWNED_PROJECTILE_CONFIRMED": 54,
+        "TARGET_OBSTRUCTED": 131,
+        "TARGET_UNAVAILABLE": 1,
+        "TARGET_NOT_OBSERVED": 2,
+        "FIXTURE_RUN_DEADLINE": 1,
+        "TARGET_NOT_VISIBLE": 1
+      },
+      "returnShelterReasons": {
+        "SHELTER_BUILT": 12,
+        "FIXTURE_RUN_DEADLINE": 1
+      },
+      "blockedMessages": {
+        "The bow's arc to the target from here meets minecraft:cobblestone at 83,74,92 before the target; currently visible targets with a clear full-draw arrow line, nearest first: none": 3,
+        "No line from this eye reaches the target unblocked; arrows stop at minecraft:cobblestone at 83,75,91; currently visible targets with a clear full-draw arrow line, nearest first: none": 2,
+        "The bow's arc to the target from here meets minecraft:cobblestone at 82,73,91 before the target; currently visible targets with a clear full-draw arrow line, nearest first: minecraft:blaze uuid=4fd2b0a9-d5c5-424a-9978-d89496991de3 distance=5.3": 1,
+        "The bow's arc to the target from here meets minecraft:cobblestone at 82,73,91 before the target; currently visible targets with a clear full-draw arrow line, nearest first: minecraft:blaze uuid=4fd2b0a9-d5c5-424a-9978-d89496991de3 distance=5.4": 123,
+        "The bow's arc to the target from here meets minecraft:cobblestone at 82,73,91 before the target; currently visible targets with a clear full-draw arrow line, nearest first: minecraft:blaze uuid=4fd2b0a9-d5c5-424a-9978-d89496991de3 distance=5.5": 1,
+        "The bow's arc to the target from here meets minecraft:nether_brick_fence at 83,74,95 before the target; currently visible targets with a clear full-draw arrow line, nearest first: minecraft:blaze uuid=3f8eacf2-0824-42eb-9229-3f062b71c39f distance=5.3": 1
+      }
+    }
+  },
+  "baseD31": {
+    "completed": 10,
+    "survived": 9,
+    "deaths": 1,
+    "errors": 0,
+    "failedIds": [
+      "q-kiuc06-6727-LONG-r1-667b99e1/2f15fc06-d655-4d03-a17c-9fcfcf84e8d3-1792733048454-7-ft"
+    ]
+  },
+  "candidateD31": {
+    "completed": 10,
+    "survived": 10,
+    "deaths": 0,
+    "errors": 0,
+    "failedIds": []
+  }
+}

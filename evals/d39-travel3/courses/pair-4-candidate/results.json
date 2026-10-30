@@ -1,0 +1,133 @@
+{
+  "mode": "travel",
+  "jar": "/home/agaminggod/Desktop/Projects/arena-beat-game/jars/d25-6345839e.jar",
+  "results": [
+    {
+      "id": "entry9-east300",
+      "mode": "travel",
+      "checkpoint": "9-nether-entry-sol-bed-gold10.json",
+      "target": {
+        "x": 309.5,
+        "z": 24.5,
+        "located": "heading -90 300"
+      },
+      "start": [
+        9.5,
+        37,
+        24.5
+      ],
+      "startDistance": 300,
+      "legChoices": {
+        "landmark": 0,
+        "bearing": 0
+      },
+      "bearingTries": 0,
+      "detours": 4,
+      "stopWhenSeen": null,
+      "results": {
+        "FAILED TUNNEL_FLOODED": 1,
+        "SUCCEEDED ARRIVED (detour)": 1,
+        "FAILED NO_ROUTE": 5,
+        "FAILED TUNNEL_FLOODED (detour)": 1,
+        "FAILED NO_ROUTE (detour)": 2
+      },
+      "actions": 10,
+      "failures": 6,
+      "damage": 0,
+      "actionDamage": 0,
+      "actionDamageEvents": 0,
+      "minHealth": 20,
+      "fireSamples": 0,
+      "lavaSamples": 0,
+      "deaths": 0,
+      "path": 182.05410729790498,
+      "stops": [
+        {
+          "at": 58.8,
+          "state": "FAILED",
+          "reasonCode": "TUNNEL_FLOODED",
+          "message": "Fluid flowed into the opened tunnel at 100,34,21; not entered; backed out to 92,33,19 and the flow stopped short of it; at 92.6,33.0,19.5; 217 blocks left to the target (yaw -89); covered 83 blocks toward it in 59 s (85 blocks/min, 107 walked); 10 legs, bridged 41, pillared 1, tunnelled 12; 204 plain blocks carried"
+        },
+        {
+          "at": 110.7,
+          "state": "SUCCEEDED",
+          "reasonCode": "ARRIVED",
+          "detour": true,
+          "message": "Arrived within 4.0 blocks of the target; at 103.0,32.0,45.5; 4 blocks left to the target (yaw -86); covered 26 blocks toward it in 52 s (30 blocks/min, 38 walked); 1 legs, bridged 0, pillared 0, tunnelled 36; 263 plain blocks carried"
+        },
+        {
+          "at": 113.1,
+          "state": "FAILED",
+          "reasonCode": "NO_ROUTE",
+          "message": "No seen way on toward the target, and building cannot continue: lava or another hazard fills the head cell 106,33,45; at 105.3,32.0,45.5; 205 blocks left to the target (yaw -96); covered 2 blocks toward it in 2 s (57 blocks/min, 2 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 263 plain blocks carried"
+        },
+        {
+          "at": 128.8,
+          "state": "FAILED",
+          "reasonCode": "TUNNEL_FLOODED",
+          "detour": true,
+          "message": "Fluid flowed into the opened tunnel at 101,33,25; not entered; backed out to 101,32,37 and the flow stopped short of it; at 101.5,32.0,37.5; 25 blocks left to the target (yaw -140); covered 5 blocks toward it in 16 s (18 blocks/min, 28 walked); 3 legs, bridged 0, pillared 0, tunnelled 4; 275 plain blocks carried"
+        },
+        {
+          "at": 150,
+          "state": "FAILED",
+          "reasonCode": "NO_ROUTE",
+          "message": "No seen way on toward the target, and building cannot continue: lava or another hazard fills the head cell 114,33,37; at 113.3,32.0,37.5; 197 blocks left to the target (yaw -94); covered 12 blocks toward it in 21 s (34 blocks/min, 12 walked); 0 legs, bridged 0, pillared 0, tunnelled 12; 293 plain blocks carried"
+        },
+        {
+          "at": 150.6,
+          "state": "FAILED",
+          "reasonCode": "NO_ROUTE",
+          "detour": true,
+          "message": "No seen way on toward the target, and building cannot continue: lava or another hazard fills the head cell 113,33,38; at 113.3,32.0,37.5; 30 blocks left to the target (yaw -34); covered 0 blocks toward it in 1 s (1 blocks/min, 0 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 293 plain blocks carried"
+        },
+        {
+          "at": 151.2,
+          "state": "FAILED",
+          "reasonCode": "NO_ROUTE",
+          "message": "No seen way on toward the target, and building cannot continue: lava or another hazard fills the head cell 114,33,37; at 113.3,32.0,37.5; 197 blocks left to the target (yaw -94); covered 0 blocks toward it in 1 s (0 blocks/min, 0 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 293 plain blocks carried"
+        },
+        {
+          "at": 151.8,
+          "state": "FAILED",
+          "reasonCode": "NO_ROUTE",
+          "detour": true,
+          "message": "No seen way on toward the target, and building cannot continue: lava or another hazard fills the head cell 113,33,36; at 113.3,32.0,37.5; 30 blocks left to the target (yaw -154); covered 0 blocks toward it in 1 s (0 blocks/min, 0 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 293 plain blocks carried"
+        },
+        {
+          "at": 152.6,
+          "state": "FAILED",
+          "reasonCode": "NO_ROUTE",
+          "message": "No seen way on toward the target, and building cannot continue: lava or another hazard fills the head cell 114,33,37; at 113.3,32.0,37.5; 197 blocks left to the target (yaw -94); covered 0 blocks toward it in 1 s (0 blocks/min, 0 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 293 plain blocks carried"
+        },
+        {
+          "at": 153.2,
+          "state": "FAILED",
+          "reasonCode": "NO_ROUTE",
+          "message": "No seen way on toward the target, and building cannot continue: lava or another hazard fills the head cell 114,33,37; at 113.3,32.0,37.5; 197 blocks left to the target (yaw -94); covered 0 blocks toward it in 1 s (0 blocks/min, 0 walked); 0 legs, bridged 0, pillared 0, tunnelled 0; 293 plain blocks carried"
+        }
+      ],
+      "gaveUp": "no progress over 3 actions",
+      "damageLowerBound": 0,
+      "end": [
+        113.32,
+        32,
+        37.5
+      ],
+      "endDistance": 196.6,
+      "arrived": false,
+      "wallSeconds": 153.5,
+      "progressBlocks": 103.4,
+      "blocksPerMinute": 40.4,
+      "startedAtEpochMs": 1792944839365,
+      "endedAtEpochMs": 1792944992872,
+      "gameTicks": 3074,
+      "gameSeconds": 153.7,
+      "observedTicksPerSecond": 20.03,
+      "blocksPerGameMinute": 40.4,
+      "gameClockSource": "ready observation world.gameTime",
+      "pathBlocks": 182.1,
+      "blocksPerMinuteWithModel5s": 30.5
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "at": "2026-10-25T23:10:37.811171",
+  "tag": "d39-travel3-123456789",
+  "result": "VOID: no gameplay artifact or observer",
+  "reason": "EADDRINUSE on 127.0.0.1:28101 immediately after slot admission. Port owner at that instant is unverified. Fresh attempt waits for all three slot ports after admission before launching."
+}

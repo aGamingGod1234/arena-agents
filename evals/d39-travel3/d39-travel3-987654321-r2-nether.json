@@ -1,0 +1,36 @@
+{
+  "protocol": "/home/agaminggod/Desktop/Projects/aa-run-6345839e/runtime/headless-runs/run-1792959535135-93e3686e/q-o9tb67-3181-LONG-r1-0827675e/quality-protocol.jsonl",
+  "playingWindow": {
+    "startedAt": 1792959579379,
+    "endedAt": 1792964979379
+  },
+  "netherMinutes": 10.814933333333334,
+  "pathBlocks": 444.510529020288,
+  "path10Blocks": 326.8982454595383,
+  "blocksPerNetherMinute": 30.226561309627886,
+  "sampledPathBlocksPerNetherMinute": 41.10155054310287,
+  "maxFromEntry": 70.32065058701025,
+  "maxDisplacementPerNetherMinute": 6.5021806810654015,
+  "firstFortress": null,
+  "deaths": 4,
+  "travel": {
+    "calls": 7,
+    "activeMinutes": 2.43655,
+    "netGain": 56,
+    "netBlocksPerActiveMinute": 22.983316574664997,
+    "reasons": {
+      "TRAVEL_DAMAGED": 1,
+      "NO_ROUTE": 1,
+      "TRAVEL_TIMEOUT": 1,
+      "ARRIVED": 2,
+      "HOSTILE_NEAR": 1,
+      "TARGET_SEEN": 1
+    }
+  },
+  "serverTickRate": 20.001664365322025,
+  "sampling": {
+    "displacementCadenceSeconds": 10,
+    "gapsOver5s": 0,
+    "excludedJumps": 0
+  }
+}

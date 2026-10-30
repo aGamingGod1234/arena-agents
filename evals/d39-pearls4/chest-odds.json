@@ -1,0 +1,62 @@
+{
+  "minecraft:chests/bastion_bridge": {
+    "expectedGoldIngots": 2.0551282051282054,
+    "currency": [
+      {
+        "id": "minecraft:gold_block",
+        "expectedIngots": 1.0384615384615385
+      },
+      {
+        "id": "minecraft:gold_ingot",
+        "expectedIngots": 0.75
+      },
+      {
+        "id": "minecraft:gold_nugget",
+        "expectedIngots": 0.26666666666666666
+      }
+    ]
+  },
+  "minecraft:chests/bastion_hoglin_stable": {
+    "expectedGoldIngots": 4.45888888888889,
+    "currency": [
+      {
+        "id": "minecraft:gold_block",
+        "expectedIngots": 4.32
+      },
+      {
+        "id": "minecraft:gold_nugget",
+        "expectedIngots": 0.1388888888888889
+      }
+    ]
+  },
+  "minecraft:chests/bastion_other": {
+    "expectedGoldIngots": 2.6495726495726495,
+    "currency": [
+      {
+        "id": "minecraft:gold_block",
+        "expectedIngots": 1.8
+      },
+      {
+        "id": "minecraft:gold_ingot",
+        "expectedIngots": 0.7000000000000001
+      },
+      {
+        "id": "minecraft:gold_nugget",
+        "expectedIngots": 0.14957264957264957
+      }
+    ]
+  },
+  "minecraft:chests/bastion_treasure": {
+    "expectedGoldIngots": 14.583333333333334,
+    "currency": [
+      {
+        "id": "minecraft:gold_block",
+        "expectedIngots": 12.25
+      },
+      {
+        "id": "minecraft:gold_ingot",
+        "expectedIngots": 2.3333333333333335
+      }
+    ]
+  }
+}

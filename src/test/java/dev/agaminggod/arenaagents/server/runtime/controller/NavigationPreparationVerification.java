@@ -1,0 +1,317 @@
+package dev.agaminggod.arenaagents.server.runtime.controller;
+
+import dev.agaminggod.arenaagents.client.navigation.*;
+import dev.agaminggod.arenaagents.world.WorldMutationRevisions;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.Shapes;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
+
+/** Real preparation/state code with deterministic terrain and budgets; no live player physics. */
+public final class NavigationPreparationVerification {
+	public static int verify() {
+		verifyEndpointComposition();
+		verifyOrderedResumption();
+		verifyRegionSupport();
+		verifySharedExhaustion();
+		verifyCancellation();
+		return 19 + verifyPortalEntry() + verifyEndpointConvergence() + verifyFractionalPointSupport() + verifyLocalRevisionScopes()
+				+ verifySubmergedEndpointsAndBreath();
+	}
+
+	/**
+	 * A stronghold portal room: stone floor top y=63 (feet y=64), a frame ring at y=64 round a 3x3 End portal pool at
+	 * x0..2 z0..2 whose cells have no floor, lava under the pool. A move to the pool centre arrives in the pool.
+	 */
+	private static int verifyPortalEntry() {
+		Set<GridPosition> pool = new java.util.HashSet<>();
+		for (int x = 0; x <= 2; x++) for (int z = 0; z <= 2; z++) pool.add(new GridPosition(x, 64, z));
+		java.util.function.Function<GridPosition, WalkabilityView.Cell> room = p -> {
+			boolean inPool = p.x() >= 0 && p.x() <= 2 && p.z() >= 0 && p.z() <= 2;
+			boolean ring = !inPool && p.x() >= -1 && p.x() <= 3 && p.z() >= -1 && p.z() <= 3;
+			if (inPool) return p.y() == 64 ? WalkabilityView.Cell.CLEAR : p.y() == 63 ? WalkabilityView.Cell.HAZARD
+					: p.y() < 63 ? WalkabilityView.Cell.SAFE_SUPPORT : WalkabilityView.Cell.CLEAR;
+			if (ring) return p.y() <= 64 ? WalkabilityView.Cell.SAFE_SUPPORT : WalkabilityView.Cell.CLEAR;
+			return p.y() <= 63 ? WalkabilityView.Cell.SAFE_SUPPORT : WalkabilityView.Cell.CLEAR;
+		};
+		WalkabilityView plain = room::apply;
+		WalkabilityView portal = new WalkabilityView() {
+			@Override public Cell cellAt(GridPosition position) { return room.apply(position); }
+			@Override public boolean teleportsOnContact(GridPosition position) { return pool.contains(position); }
+			@Override public Set<GridPosition> portalEntries() { return pool; }
+		};
+		Vec3 centre = new Vec3(1.5D, 64.0D, 1.5D);
+		GridPosition start = new GridPosition(-4, 64, 1);
+		ServerNavigationController.Preparation before = new ServerNavigationController.Preparation(start, centre, 0.5D, null, new Vec3(-3.5D, 64.0D, 1.5D));
+		check(before.advance(plain, p -> Double.NaN, () -> true) && before.destinationHasNoSupport,
+				"without the targeted portal the pool has no supported arrival (the NO_STANDABLE_PATH of round 1)");
+		ServerNavigationController.Preparation preparation = new ServerNavigationController.Preparation(start, centre, 0.5D, null, new Vec3(-3.5D, 64.0D, 1.5D));
+		check(preparation.advance(portal, p -> pool.contains(p) ? Double.NaN : p.y(), () -> true)
+				&& !preparation.destinationHasNoSupport && preparation.goals.containsAll(pool), "every cell of the targeted pool is an arrival");
+		var search = new LocalPathfinder().beginSearch(preparation.start, Set.copyOf(preparation.goals), new GridPosition(1, 64, 1), 16, Set.of());
+		PathPlan plan = search.advance(portal, new LocalPathfinder.SearchBudget(4096, 1_000_000L, () -> 0L));
+		check(plan.outcome() == PathOutcome.FOUND && pool.contains(plan.nodes().getLast().position())
+				&& plan.nodes().get(plan.nodes().size() - 2).position().y() == 65
+				&& plan.nodes().getLast().traversal() == TraversalType.DROP_DOWN,
+				"the route climbs onto the frame and steps off it into the pool");
+		check(plan.nodes().stream().limit(plan.nodes().size() - 1).noneMatch(n -> pool.contains(n.position())),
+				"no other route cell is in the pool");
+		// Across the room: an untargeted pool is still no route cell.
+		var across = new LocalPathfinder().beginSearch(start, Set.of(new GridPosition(6, 64, 1)), new GridPosition(6, 64, 1), 16, Set.of());
+		PathPlan round = across.advance(plain, new LocalPathfinder.SearchBudget(8192, 1_000_000L, () -> 0L));
+		check(round.outcome() == PathOutcome.FOUND && round.nodes().stream().noneMatch(n -> pool.contains(n.position())),
+				"a move across the room never enters an untargeted pool");
+		// The brink guard: stepping off the frame over the pool lands in the portal, not the lava under it.
+		AABB overPool = new AABB(1.2D, 65.0D, 1.2D, 1.8D, 66.8D, 1.8D);
+		BrinkGuard.VoidProbe none = (x, y, z) -> false;
+		check(BrinkGuard.fall(portal, overPool, -64, none, 0.0D, 20.0D) == null, "a step over an End portal pool is no brink");
+		BrinkGuard.Fall lava = BrinkGuard.fall(plain, overPool, -64, none, 0.0D, 20.0D);
+		check(lava != null && "lava".equals(lava.below()), "the same step over a pool of open air above lava is one");
+		return 7;
+	}
+
+	/** Flooded cave: rock floor at y=63, water from y=64 to y=70, open air above. */
+	private static int verifySubmergedEndpointsAndBreath() {
+		WalkabilityView flooded = p -> p.y() <= 63 ? WalkabilityView.Cell.SAFE_SUPPORT
+				: p.y() <= 70 ? WalkabilityView.Cell.WATER : WalkabilityView.Cell.CLEAR;
+		GridPosition floor = new GridPosition(4, 64, 0);
+		check(ServerNavigationController.submergedFloor(flooded, floor)
+				&& ServerNavigationController.goalEndpoint(flooded, floor), "the floor of a flooded cave is a valid arrival");
+		check(!ServerNavigationController.goalEndpoint(flooded, new GridPosition(4, 67, 0)), "open water mid-column is not a standing arrival");
+		Vec3 ore = new Vec3(4.5D, 64.0D, 0.5D);
+		ServerNavigationController.Preparation preparation = new ServerNavigationController.Preparation(
+				new GridPosition(0, 70, 0), ore, 0.5D, null, new Vec3(0.5D, 70.0D, 0.5D));
+		check(preparation.advance(flooded, p -> p.y() - 0D, () -> true), "submerged preparation finishes");
+		check(preparation.start != null && preparation.goals.contains(floor) && !preparation.destinationHasNoSupport,
+				"a navigation into flooded space starts from the water and may end on its floor");
+
+		List<PathNode> route = List.of(new PathNode(new GridPosition(0, 70, 0), TraversalType.START),
+				new PathNode(new GridPosition(1, 69, 0), TraversalType.SWIM), new PathNode(new GridPosition(2, 68, 0), TraversalType.SWIM),
+				new PathNode(new GridPosition(3, 70, 0), TraversalType.SWIM), new PathNode(new GridPosition(4, 64, 0), TraversalType.SWIM));
+		check(ServerNavigationController.submergedNodesAhead(flooded, route, 1) == 2,
+				"the breath check counts only the submerged stretch before the route reaches air");
+		check(SwimPlanning.breathNodes(300) == dev.agaminggod.arenaagents.client.navigation.LocalPathfinder.FULL_BREATH_SUBMERGED_NODES
+				&& SwimPlanning.breathNodes(SwimPlanning.AIR_RESERVE_TICKS) == 0 && SwimPlanning.breathNodes(100) == 4,
+				"breath in route cells keeps the reserve at the conservative swim speed");
+		check(SwimPlanning.breathCovers(300, 24) && !SwimPlanning.breathCovers(100, 5), "a dive is only continued while breath covers it");
+		check(SwimPlanning.navigationJump(true, 0.2D, false) && !SwimPlanning.navigationJump(true, -0.8D, false)
+				&& !SwimPlanning.navigationJump(true, 0.0D, true) && !SwimPlanning.navigationJump(false, 1.0D, false),
+				"jump rises or stays afloat, releases to dive toward a lower waypoint and to settle on a flooded floor");
+		Vec3 surfaceTarget = new Vec3(0.5, 70.75, 0.5);
+		GridPosition surface = new GridPosition(0, 70, 0);
+		check(ServerNavigationController.breathableDestination(flooded, surfaceTarget), "chosen surface destination has breathable head space");
+		check(ServerNavigationController.swimEndpointTarget(surface, surfaceTarget).equals(surfaceTarget), "final swim aim preserves the model-selected feet height");
+		var ascent = new LocalPathfinder().beginSearch(new GridPosition(0, 67, 0), Set.of(surface), surface, 8, Set.of(),
+				SwimPlanning.navigationBreathNodes(40, true));
+		PathPlan ascentPlan = ascent.advance(flooded, new LocalPathfinder.SearchBudget(4096, 1_000_000L, () -> 0L));
+		check(ascentPlan.outcome() == PathOutcome.FOUND && ascentPlan.nodes().getLast().position().equals(surface),
+				"with two seconds left navigation plans an upward swim to the model's surface target");
+		check(ascentPlan.nodes().stream().skip(1).allMatch(n -> n.traversal() == TraversalType.SWIM), "ascent uses swim inputs through the surface endpoint");
+
+		var surfacePreparation = new ServerNavigationController.Preparation(new GridPosition(0, 67, 0), surfaceTarget, 0.5, null);
+		check(surfacePreparation.advance(flooded, p -> Double.NaN, () -> true) && surfacePreparation.goals.contains(surface)
+				&& !surfacePreparation.destinationHasNoSupport, "real preparation accepts a breathable endpoint without solid support");
+		check(ServerNavigationController.surfaceArrival(true, true, false, true, true, false), "breathing at the chosen water target completes without onGround");
+		check(!ServerNavigationController.surfaceArrival(true, true, true, true, true, false), "nearby submerged eyes never prove arrival");
+		check(!ServerNavigationController.surfaceArrival(true, true, false, false, true, false)
+				&& !ServerNavigationController.surfaceArrival(true, true, false, true, false, false), "surface arrival still requires tolerance and collision clearance");
+
+		return 16;
+	}
+
+	private static int verifyFractionalPointSupport() {
+		WalkabilityView floor = p -> p.y() == 63 ? WalkabilityView.Cell.SAFE_SUPPORT : WalkabilityView.Cell.CLEAR;
+		GridPosition feet = new GridPosition(0, 64, 0);
+		Vec3 destination = new Vec3(0.5D, 63.5D, 0.5D);
+		double support = 63D + MinecraftNavigationWorld.collisionHeightAt(Shapes.box(0, 0, 0, 1, 0.5D, 1), 0.5D, 0.5D);
+		for (Vec3 actual : List.of(destination, destination.add(1D, 0D, 0D))) {
+			ServerNavigationController.Preparation preparation = new ServerNavigationController.Preparation(
+					new GridPosition((int) Math.floor(actual.x), 63, 0), destination, 0.2D, null, actual);
+			check(preparation.advance(floor, p -> support, () -> true), "fractional point preparation finishes");
+			check(preparation.goals.equals(List.of(feet)) && !preparation.destinationHasNoSupport,
+					"exact and approaching slab destinations use actual collision height within tight radius");
+		}
+		check(!ServerNavigationController.approachableEndpoint(feet, new Vec3(0.65D, 63.65D, 0.5D), 0.2D, support, destination),
+				"combined horizontal and vertical error cannot exceed the radius after conservative pruning");
+		check(!ServerNavigationController.approachableEndpoint(feet, destination, 0.2D, Double.NaN, destination),
+				"missing collision support remains rejected");
+		return 6;
+	}
+
+	private static int verifyLocalRevisionScopes() {
+		WorldMutationRevisions revisions = new WorldMutationRevisions();
+		MinecraftNavigationWorld.SampledRevisions local = new MinecraftNavigationWorld.SampledRevisions(
+				(center, radius) -> revisions.revision(center.getX(), center.getZ(), radius));
+		local.sample(128, 128);
+		long wide = revisions.revision(128, 128, 257);
+		revisions.recordMutation(240, 240);
+		check(local.isCurrent(), "distant same-region changes preserve local search facts");
+		check(revisions.revision(128, 128, 257) > wide, "wide perception still observes the distant change");
+		revisions.recordMutation(127, 127);
+		check(!local.isCurrent(), "neighboring collision reach invalidates across a chunk boundary");
+		MinecraftNavigationWorld.SampledRevisions negative = new MinecraftNavigationWorld.SampledRevisions(
+				(center, radius) -> revisions.revision(center.getX(), center.getZ(), radius));
+		negative.sample(-16, -16);
+		revisions.recordMutation(-17, -17);
+		check(!negative.isCurrent(), "negative chunk boundaries preserve collision invalidation");
+		MinecraftNavigationWorld.SampledRevisions evicted = new MinecraftNavigationWorld.SampledRevisions(
+				(center, radius) -> revisions.revision(center.getX(), center.getZ(), radius));
+		evicted.sample(0, 0);
+		for (int i = 1; i <= 300; i++) revisions.revision(i * 2048, 0, 0);
+		check(!evicted.isCurrent(), "eviction never revives stale local terrain");
+		return 5;
+	}
+
+	private static void verifyEndpointComposition() {
+		Vec3 requested = new Vec3(2.5D, 64.0D, 0.5D);
+		ServerNavigationController controller = new ServerNavigationController(requested, 1D, false, 0L, 1_000L);
+		GridPosition adjusted = new GridPosition(1, 64, 0);
+		Vec3 endpoint = new Vec3(1.5D, 64D, 0.5D);
+		setField(controller, "resolvedEndpointPosition", adjusted);
+		setField(controller, "resolvedEndpointTarget", endpoint);
+		check(!controller.withinEndpoint(new Vec3(0.5D, 64D, 0.5D)),
+				"two composed radii must not grant success two blocks from a one-block request");
+		check(controller.withinEndpoint(endpoint), "exact original-radius boundary remains accepted");
+		check(!controller.satisfiesRequestedEndpoint(new Vec3(1.5D, 65D, 0.5D), adjusted, endpoint), "adjusted radius includes vertical displacement");
+		ServerNavigationController slab = new ServerNavigationController(requested, 0.2D, false, 0L, 1_000L);
+		check(slab.satisfiesRequestedEndpoint(new Vec3(2.5D, 63.5D, 0.5D), new GridPosition(2, 64, 0),
+				new Vec3(2.5D, 63.5D, 0.5D)), "exact-cell collision surface semantics remain explicit");
+	}
+
+	private static int verifyEndpointConvergence() {
+		Vec3 requested = new Vec3(-71.5D, 64D, -282.5D);
+		GridPosition endpoint = new GridPosition(-71, 64, -283);
+		Vec3 captured = new Vec3(-70.44505777684265D, 64D, -282.3891719247275D);
+		ServerNavigationController controller = new ServerNavigationController(requested, 1D, true, 0L, 30_000L);
+		setField(controller, "resolvedEndpointPosition", endpoint);
+		setField(controller, "resolvedEndpointTarget", new Vec3(-70.5D, 64D, -282.5D));
+		PathNode node = new PathNode(endpoint, TraversalType.WALK);
+		check(!controller.reachedTarget(captured, node, true), "captured endpoint-near position must continue driving until original radius is reached");
+		check(controller.reachedTarget(captured, node, false), "intermediate waypoint advancement keeps its existing tolerance");
+		double innerX = MinecraftNavigationWorld.inwardCoordinate(endpoint.x(), requested.x, 0.3D);
+		Vec3 innerTarget = new Vec3(innerX, 64D, requested.z);
+		check(innerTarget.distanceTo(requested) < 1D && innerX - 0.3D > endpoint.x(), "relocated aim lies inside both the original radius and the supported cell footprint");
+		setField(controller, "resolvedEndpointTarget", innerTarget);
+		check(!controller.withinEndpoint(captured), "moving the steering target does not enlarge the original radius");
+		check(controller.reachedTarget(innerTarget, node, true) && controller.withinEndpoint(innerTarget), "final advancement and success agree inside the reachable region");
+		Vec3 verticalRequest = new Vec3(-74.5D, 65D, -280.5D);
+		GridPosition ground = new GridPosition(-75, 64, -281);
+		Vec3 capturedVertical = new Vec3(-74.49838710470216D, 64D, -280.50390553935966D);
+		check(!ServerNavigationController.approachableEndpoint(ground, verticalRequest, 1D, 64D, capturedVertical), "captured tangent sphere has no horizontal standing region and must not enter an endless arrival loop");
+		check(ServerNavigationController.approachableEndpoint(ground, verticalRequest, 1D, 64D, new Vec3(-74.5D, 64D, -280.5D)), "an already satisfied exact boundary is retained");
+		check(ServerNavigationController.approachableEndpoint(new GridPosition(-74, 65, -281),
+				new Vec3(-74.1D, 65D, -280.5D), 1D, 64.5D, capturedVertical), "actual raised partial support provides a nonempty horizontal arrival region");
+		check(ServerNavigationController.approachableEndpoint(new GridPosition(-75, 65, -281), verticalRequest, 0.2D, 64.5D, capturedVertical), "exact-cell slab height normalization remains eligible");
+		AABB footprint = new AABB(0.1D, 0D, 0.2D, 0.7D, 1D, 0.8D);
+		check(MinecraftNavigationWorld.supportsFootprintAt(Shapes.block(), footprint, 1D), "full block supports shifted footprint");
+		check(MinecraftNavigationWorld.supportsFootprintAt(Shapes.box(0D, 0D, 0D, 1D, 0.5D, 1D), footprint, 0.5D), "slab target uses the actual top face");
+		check(!MinecraftNavigationWorld.supportsFootprintAt(Shapes.or(Shapes.box(0D, 0D, 0D, 0.3D, 1D, 1D),
+				Shapes.box(0.5D, 0D, 0D, 1D, 1D, 1D)), footprint, 1D), "a gap under the shifted footprint rejects the target");
+		check(MinecraftNavigationWorld.supportsFootprintAt(Shapes.or(Shapes.box(0D, 0D, 0D, 0.4D, 1D, 1D),
+				Shapes.box(0.4D, 0D, 0D, 1D, 1D, 1D)), footprint, 1D), "touching support boxes cover the footprint as a union");
+		return 13;
+	}
+
+	private static void verifyOrderedResumption() {
+		Vec3 destination = new Vec3(0.1D, 64.1D, 0.9D);
+		GridPosition origin = new GridPosition(0, 64, 0);
+		CountingTerrain terrain = new CountingTerrain();
+		ServerNavigationController.Preparation preparation = new ServerNavigationController.Preparation(origin, destination, 16D, null);
+		List<GridPosition> expected = new ArrayList<>();
+		int possibleSurfaces = 0;
+		for (int x = -17; x <= 17; x++) for (int z = -17; z <= 17; z++) for (int y = 47; y <= 81; y++) {
+			GridPosition candidate = new GridPosition(x, y, z);
+			if (candidate.equals(origin) || new Vec3(x + 0.5D, y, z + 0.5D).distanceTo(destination) <= 16D) expected.add(candidate);
+			double nearestSurfaceY = Math.max(y - 1D, Math.min(y, destination.y));
+			if (candidate.equals(origin) || new Vec3(x + 0.5D, nearestSurfaceY, z + 0.5D).distanceTo(destination) <= 16D) possibleSurfaces++;
+		}
+		int slices = 0;
+		long totalWork = 0;
+		boolean done;
+		do {
+			ServerPathPlanner.TickBudget budget = new ServerPathPlanner.TickBudget(137, 1_000L, () -> 0L);
+			done = preparation.advance(terrain, p -> p.y(), budget::tryPrepare);
+			totalWork += budget.preparationWork();
+			check(++slices < 400, "enumeration must retain its cursor rather than restart");
+		} while (!done);
+		check(expected.equals(preparation.goals), "sliced preparation preserves exact candidates in enumeration order");
+		check(totalWork == 42_876L, "every cube candidate plus one start is charged exactly once");
+		check(terrain.traversals == possibleSurfaces + 1, "only geometrically possible support intervals query terrain");
+		check(slices > 1, "maximum-tolerance preparation spans bounded slices");
+	}
+
+	private static void verifyRegionSupport() {
+		AABB region = new AABB(0D, 63.4D, 0D, 1D, 63.6D, 1D);
+		ServerNavigationController.Preparation preparation = new ServerNavigationController.Preparation(
+				new GridPosition(0, 64, 0), new Vec3(0.5D, 63.5D, 0.5D), 0.2D, region);
+		CountingTerrain terrain = new CountingTerrain();
+		check(preparation.advance(terrain, p -> p.y() == 64 ? 63.5D : 62.5D, () -> true), "region preparation completes");
+		check(preparation.goals.equals(List.of(new GridPosition(0, 64, 0))), "region admits actual slab surface even when feet-grid Y is outside region");
+		check(terrain.traversals == 3, "region X/Z pruning avoids impossible columns without pruning support Y");
+	}
+
+	private static void verifySharedExhaustion() {
+		AtomicLong clock = new AtomicLong();
+		ServerPathPlanner.TickBudget timeBudget = new ServerPathPlanner.TickBudget(10, 10L, clock::get);
+		clock.set(10L);
+		CountingTerrain terrain = new CountingTerrain();
+		ServerNavigationController.Preparation pending = new ServerNavigationController.Preparation(
+				new GridPosition(0, 64, 0), new Vec3(1.5D, 64D, 0.5D), 1D, null);
+		check(!pending.advance(terrain, p -> p.y(), timeBudget::tryPrepare) && terrain.traversals == 0,
+				"expired time budget defers before any terrain query");
+		ServerPathPlanner.TickBudget exhausted = new ServerPathPlanner.TickBudget(1, 100L, () -> 0L);
+		check(exhausted.tryPrepare() && !exhausted.tryPrepare(), "preparation claims aggregate work limit");
+		check(!pending.advance(terrain, p -> p.y(), exhausted::tryPrepare) && terrain.traversals == 0,
+				"exhausted aggregate work defers another controller without terrain queries");
+		WalkabilityView pathTerrain = p -> p.y() == 63 ? WalkabilityView.Cell.SAFE_SUPPORT : WalkabilityView.Cell.CLEAR;
+		ServerPathPlanner.PlanningResult result = new ServerPathPlanner().planPath(pathTerrain,
+				new GridPosition(0, 64, 0), new GridPosition(1, 64, 0), exhausted);
+		check(result.deferred() && result.plan().expandedNodes() == 0, "preparation consumption leaves no fresh expansion budget");
+	}
+
+	private static void verifyCancellation() {
+		try {
+			ServerNavigationController controller = new ServerNavigationController(new Vec3(0.5D, 64D, 0.5D), 1D, false, 0L, 1_000L);
+			Field preparation = ServerNavigationController.class.getDeclaredField("preparation");
+			Field search = ServerNavigationController.class.getDeclaredField("search");
+			preparation.setAccessible(true);
+			search.setAccessible(true);
+			preparation.set(controller, new ServerNavigationController.Preparation(new GridPosition(0, 64, 0), new Vec3(0.5D, 64D, 0.5D), 1D, null));
+			search.set(controller, new LocalPathfinder().beginSearch(new GridPosition(0, 64, 0), Set.of(), new GridPosition(8, 64, 0), 8, Set.of()));
+			controller.cancel(null);
+			check(preparation.get(controller) == null && search.get(controller) == null, "cancellation discards both retained planning stages");
+			GridPosition origin = new GridPosition(0, 64, 0);
+			preparation.set(controller, new ServerNavigationController.Preparation(origin, new Vec3(0.5D, 64D, 0.5D), 1D, null));
+			search.set(controller, new LocalPathfinder().beginSearch(origin, Set.of(), new GridPosition(8, 64, 0), 8, Set.of()));
+			controller.invalidatePlanning(origin, false);
+			check(preparation.get(controller) == null && search.get(controller) == null, "terrain invalidation discards both retained planning stages");
+			preparation.set(controller, new ServerNavigationController.Preparation(origin, new Vec3(0.5D, 64D, 0.5D), 1D, null));
+			setField(controller, "searchOrigin", origin);
+			controller.invalidatePlanning(origin.above(), true);
+			check(preparation.get(controller) == null, "moving to a different origin discards incomplete preparation");
+		} catch (ReflectiveOperationException exception) { throw new AssertionError(exception); }
+	}
+
+	private static void setField(Object target, String name, Object value) {
+		try {
+			Field field = target.getClass().getDeclaredField(name);
+			field.setAccessible(true);
+			field.set(target, value);
+		} catch (ReflectiveOperationException exception) { throw new AssertionError(exception); }
+	}
+
+	private static final class CountingTerrain implements WalkabilityView {
+		int traversals;
+		@Override public Cell cellAt(GridPosition position) { return Cell.CLEAR; }
+		@Override public TraversalType traversalAt(GridPosition position) { traversals++; return TraversalType.WALK; }
+	}
+
+	private static void check(boolean condition, String message) {
+		if (!condition) throw new AssertionError(message);
+	}
+}

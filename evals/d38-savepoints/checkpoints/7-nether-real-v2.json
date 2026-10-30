@@ -1,0 +1,189 @@
+{
+  "milestone": "dim:nether",
+  "sampleIndex": 4318,
+  "minute": 73.35,
+  "seed": "-8891462362762682724",
+  "source": "/home/agaminggod/Desktop/Projects/aa-run-04c7eb6f/runtime/headless-runs/run-1792572050992-1dcbdca5/q-hv46ld-e023-LONG-r1-765ee875",
+  "priorAdvancements": [
+    "story/iron_tools",
+    "story/obtain_armor",
+    "story/enter_the_nether"
+  ],
+  "deathsBefore": 1,
+  "setup": {
+    "dimension": "minecraft:the_nether",
+    "position": [
+      15.5,
+      110,
+      5.5
+    ],
+    "generality": true,
+    "freezeUntilGoalStart": true,
+    "time": 1000,
+    "weather": "clear",
+    "commands": [
+      "execute in minecraft:overworld run fill 67 81 139 75 85 145 minecraft:cobblestone",
+      "execute in minecraft:overworld run fill 68 82 140 74 84 144 minecraft:air",
+      "execute in minecraft:overworld run setblock 67 82 142 minecraft:oak_door[facing=west,half=lower]",
+      "execute in minecraft:overworld run setblock 67 83 142 minecraft:oak_door[facing=west,half=upper]",
+      "execute in minecraft:overworld run setblock 70 82 142 minecraft:red_bed[facing=east,part=foot]",
+      "execute in minecraft:overworld run setblock 71 82 142 minecraft:red_bed[facing=east,part=head]",
+      "execute in minecraft:overworld run setblock 69 82 143 minecraft:chest[facing=north]",
+      "execute in minecraft:overworld run setblock 72 82 141 minecraft:crafting_table",
+      "execute in minecraft:overworld run setblock 69 82 141 minecraft:torch",
+      "execute in minecraft:overworld run setblock 73 82 141 minecraft:torch",
+      "execute in minecraft:overworld run item replace block 69 82 143 container.0 with minecraft:stone_pickaxe 1",
+      "execute in minecraft:overworld run item replace block 69 82 143 container.1 with minecraft:stone_axe 1",
+      "execute in minecraft:overworld run item replace block 69 82 143 container.2 with minecraft:cooked_beef 16",
+      "execute in minecraft:overworld run item replace block 69 82 143 container.3 with minecraft:cobblestone 64",
+      "execute in minecraft:overworld run item replace block 69 82 143 container.4 with minecraft:oak_log 8",
+      "execute in minecraft:overworld run item replace block 69 82 143 container.5 with minecraft:shield 1",
+      "execute in minecraft:overworld run item replace block 69 82 143 container.6 with minecraft:golden_helmet 1",
+      "execute in minecraft:overworld run item replace block 69 82 143 container.7 with minecraft:flint_and_steel 1",
+      "execute in minecraft:overworld run fill 68 81 140 71 85 140 minecraft:obsidian",
+      "execute in minecraft:overworld run fill 69 82 140 70 84 140 minecraft:nether_portal[axis=x]",
+      "execute in minecraft:the_nether run fill 12 109 4 19 113 10 minecraft:cobblestone",
+      "execute in minecraft:the_nether run fill 13 110 5 18 112 9 minecraft:air",
+      "execute in minecraft:the_nether run setblock 12 110 6 minecraft:oak_door[facing=west,half=lower]",
+      "execute in minecraft:the_nether run setblock 12 111 6 minecraft:oak_door[facing=west,half=upper]",
+      "execute in minecraft:the_nether run setblock 14 110 6 minecraft:torch",
+      "execute in minecraft:the_nether run fill 14 109 8 17 113 8 minecraft:obsidian",
+      "execute in minecraft:the_nether run fill 15 110 8 16 112 8 minecraft:nether_portal[axis=x]"
+    ],
+    "inventory": [
+      {
+        "item": "minecraft:iron_pickaxe",
+        "count": 1
+      },
+      {
+        "item": "minecraft:iron_sword",
+        "count": 1
+      },
+      {
+        "item": "minecraft:shield",
+        "count": 1
+      },
+      {
+        "item": "minecraft:water_bucket",
+        "count": 1
+      },
+      {
+        "item": "minecraft:flint_and_steel",
+        "count": 1
+      },
+      {
+        "item": "minecraft:cooked_beef",
+        "count": 32
+      },
+      {
+        "item": "minecraft:cobblestone",
+        "count": 64
+      },
+      {
+        "item": "minecraft:cobblestone",
+        "count": 64
+      },
+      {
+        "item": "minecraft:oak_planks",
+        "count": 32
+      },
+      {
+        "item": "minecraft:oak_log",
+        "count": 8
+      },
+      {
+        "item": "minecraft:crafting_table",
+        "count": 1
+      },
+      {
+        "item": "minecraft:stone_axe",
+        "count": 1
+      },
+      {
+        "item": "minecraft:torch",
+        "count": 32
+      },
+      {
+        "item": "minecraft:gold_ingot",
+        "count": 2
+      }
+    ],
+    "armour": {
+      "head": "minecraft:golden_helmet",
+      "chest": "minecraft:iron_chestplate",
+      "legs": "minecraft:iron_leggings",
+      "feet": "minecraft:iron_boots"
+    },
+    "effects": [],
+    "mobs": [],
+    "loadChunks": [
+      {
+        "dimension": "minecraft:overworld",
+        "position": [
+          70,
+          82,
+          142
+        ]
+      }
+    ],
+    "usedBedSpawn": {
+      "dimension": "minecraft:overworld",
+      "position": [
+        70,
+        82,
+        142
+      ]
+    }
+  },
+  "notes": [
+    "Version 2: reconstructed player preparation on the original seed; original file retained unchanged.",
+    "The bed is used through vanilla interaction. Breaking or moving it invalidates this respawn.",
+    "A lit recovery camp contains a spare kit and crafting table. The camp opens onto the surface.",
+    "Only visible world blocks supply route information; no hidden terrain memory or structure coordinates are injected."
+  ],
+  "variantOf": "7-nether-real.json",
+  "fixtureVersion": 2,
+  "bedSpawn": {
+    "dimension": "minecraft:overworld",
+    "position": [
+      70,
+      82,
+      142
+    ]
+  },
+  "recoveryRoute": null,
+  "spareKit": [
+    [
+      "stone_pickaxe",
+      1
+    ],
+    [
+      "stone_axe",
+      1
+    ],
+    [
+      "cooked_beef",
+      16
+    ],
+    [
+      "cobblestone",
+      64
+    ],
+    [
+      "oak_log",
+      8
+    ],
+    [
+      "shield",
+      1
+    ],
+    [
+      "golden_helmet",
+      1
+    ],
+    [
+      "flint_and_steel",
+      1
+    ]
+  ]
+}

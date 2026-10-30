@@ -1,0 +1,57 @@
+jdk.JavaExceptionThrow {
+  startTime = 11:47:14.069 (2026-10-25)
+  message = "input lease is no longer active"
+  thrownClass = dev.agaminggod.arenaagents.server.runtime.input.LeasedServerInputController$StaleInputLeaseException (classLoader = knot)
+  eventThread = "Server thread" (javaThreadId = 40)
+  stackTrace = [
+    java.lang.Throwable.<init>(String) line: 286
+    java.lang.Exception.<init>(String) line: 67
+    java.lang.RuntimeException.<init>(String) line: 63
+    java.lang.IllegalStateException.<init>(String) line: 54
+    dev.agaminggod.arenaagents.server.runtime.input.LeasedServerInputController$StaleInputLeaseException.<init>() line: 13
+    dev.agaminggod.arenaagents.server.runtime.input.LeasedServerInputController.requireActive(InputLease) line: 234
+    dev.agaminggod.arenaagents.server.runtime.input.LeasedServerInputController.apply(InputLease, AgentInputState) line: 58
+    dev.agaminggod.arenaagents.server.runtime.controller.CombatInputLease.apply(ServerPlayer, AgentInputState) line: 25
+    dev.agaminggod.arenaagents.server.runtime.controller.ServerShelterController.tick(ServerPlayer, long) line: 81
+    dev.agaminggod.arenaagents.server.runtime.ServerActionExecutor$ActiveAction.tick(long) line: 3495
+    dev.agaminggod.arenaagents.server.runtime.ServerActionExecutor.tick(Set, Set) line: 444
+    dev.agaminggod.arenaagents.server.bridge.MultiplexedServerBridge.executeAcceptedInput() line: 547
+    dev.agaminggod.arenaagents.server.bridge.BoundedServerTaskQueue.drainBeforePhysics(int, int, int, Consumer, Runnable) line: 94
+    dev.agaminggod.arenaagents.server.bridge.MultiplexedServerBridge.drainServerTasks() line: 531
+    dev.agaminggod.arenaagents.server.bridge.MultiplexedServerBridge.startTick() line: 485
+    dev.agaminggod.arenaagents.server.CodexAgentServerRuntime.startTick(MinecraftServer) line: 415
+    net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents.lambda$static$1(ServerTickEvents$StartTick[], MinecraftServer) line: 44
+    net.minecraft.server.MinecraftServer.handler$zpo000$fabric-lifecycle-events-v1$onStartTick(BooleanSupplier, CallbackInfo) line: 5401
+    net.minecraft.server.MinecraftServer.tickServer(BooleanSupplier) line: 1002
+    net.minecraft.server.dedicated.DedicatedServer.tickServer(BooleanSupplier) line: 322
+  ]
+}
+
+jdk.JavaExceptionThrow {
+  startTime = 11:47:14.069 (2026-10-25)
+  message = "input lease is no longer active"
+  thrownClass = dev.agaminggod.arenaagents.server.runtime.input.LeasedServerInputController$StaleInputLeaseException (classLoader = knot)
+  eventThread = "Server thread" (javaThreadId = 40)
+  stackTrace = [
+    java.lang.Throwable.<init>(String) line: 286
+    java.lang.Exception.<init>(String) line: 67
+    java.lang.RuntimeException.<init>(String) line: 63
+    java.lang.IllegalStateException.<init>(String) line: 54
+    dev.agaminggod.arenaagents.server.runtime.input.LeasedServerInputController$StaleInputLeaseException.<init>() line: 13
+    dev.agaminggod.arenaagents.server.runtime.input.LeasedServerInputController.requireActive(InputLease) line: 234
+    dev.agaminggod.arenaagents.server.runtime.input.LeasedServerInputController.release(InputLease) line: 71
+    dev.agaminggod.arenaagents.server.runtime.controller.CombatInputLease.release() line: 31
+    dev.agaminggod.arenaagents.server.runtime.controller.ServerShelterController.cancel(ServerPlayer) line: 217
+    dev.agaminggod.arenaagents.server.runtime.ServerActionExecutor$ActiveAction.lambda$cleanup$1() line: 3752
+    dev.agaminggod.arenaagents.server.runtime.transaction.ServerTransactionAdapter.runBestEffort(Runnable[]) line: 123
+    dev.agaminggod.arenaagents.server.runtime.ServerActionExecutor$ActiveAction.cleanup() line: 3750
+    dev.agaminggod.arenaagents.server.runtime.ServerActionExecutor$CleanupRetry.complete(Runnable) line: 1181
+    dev.agaminggod.arenaagents.server.runtime.ServerActionExecutor.finish(ServerActionExecutor$ActiveAction, ServerActionResult) line: 1061
+    dev.agaminggod.arenaagents.server.runtime.ServerActionExecutor.tick(Set, Set) line: 450
+    dev.agaminggod.arenaagents.server.bridge.MultiplexedServerBridge.executeAcceptedInput() line: 547
+    dev.agaminggod.arenaagents.server.bridge.BoundedServerTaskQueue.drainBeforePhysics(int, int, int, Consumer, Runnable) line: 94
+    dev.agaminggod.arenaagents.server.bridge.MultiplexedServerBridge.drainServerTasks() line: 531
+    dev.agaminggod.arenaagents.server.bridge.MultiplexedServerBridge.startTick() line: 485
+    dev.agaminggod.arenaagents.server.CodexAgentServerRuntime.startTick(MinecraftServer) line: 415
+  ]
+}

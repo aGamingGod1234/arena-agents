@@ -1,0 +1,1231 @@
+{
+  "runtimeHead": "6345839ef4a61df87e8da7115c6ce0e61f433be5",
+  "protocol": "Six substantive original travel courses, fresh base 4682f12e and candidate arms, same Mini PC worker, CPU quota 400%, JVM ActiveProcessorCount=4. Odd pairs base first, even pairs candidate first. No outcome resampling.",
+  "method": "Fresh world per course/arm, base then candidate, two rounds; matched CPU budgets within each pair, retained in arm metadata. Only complete matched attempts enter aggregates. Pace excludes initially-visible gold2-seen; safety counts include it. Game minutes are observed world.gameTime /1200. Host CPU is sampled during each physical course interval.",
+  "requestedPairs": 6,
+  "acceptedPairs": 6,
+  "unavailable": [],
+  "base": {
+    "courses": 6,
+    "substantiveCourses": 6,
+    "seconds": 3210.2,
+    "blocks": 1700.2,
+    "pace": 31.777459348327213,
+    "gameTicks": 64225,
+    "observedTPS": 20.00654164849542,
+    "gamePace": 31.767068898404048,
+    "deaths": 0,
+    "fire": 0,
+    "lava": 0,
+    "damage": 10.480001068115234,
+    "sampledDamage": 8.760002136230469,
+    "arrivals": 0,
+    "actions": 50
+  },
+  "candidate": {
+    "courses": 6,
+    "substantiveCourses": 6,
+    "seconds": 1554.6000000000001,
+    "blocks": 1610.2000000000003,
+    "pace": 62.14588961790815,
+    "gameTicks": 31119,
+    "observedTPS": 20.01736781165573,
+    "gamePace": 62.09196953629616,
+    "deaths": 0,
+    "fire": 15,
+    "lava": 0,
+    "damage": 7.5,
+    "sampledDamage": 7.5,
+    "arrivals": 0,
+    "actions": 54
+  },
+  "runs": [
+    {
+      "run": 1,
+      "base": {
+        "courses": 6,
+        "substantiveCourses": 6,
+        "seconds": 3210.2,
+        "blocks": 1700.2,
+        "pace": 31.777459348327213,
+        "gameTicks": 64225,
+        "observedTPS": 20.00654164849542,
+        "gamePace": 31.767068898404048,
+        "deaths": 0,
+        "fire": 0,
+        "lava": 0,
+        "damage": 10.480001068115234,
+        "sampledDamage": 8.760002136230469,
+        "arrivals": 0,
+        "actions": 50
+      },
+      "candidate": {
+        "courses": 6,
+        "substantiveCourses": 6,
+        "seconds": 1554.6000000000001,
+        "blocks": 1610.2000000000003,
+        "pace": 62.14588961790815,
+        "gameTicks": 31119,
+        "observedTPS": 20.01736781165573,
+        "gamePace": 62.09196953629616,
+        "deaths": 0,
+        "fire": 15,
+        "lava": 0,
+        "damage": 7.5,
+        "sampledDamage": 7.5,
+        "arrivals": 0,
+        "actions": 54
+      }
+    },
+    {
+      "run": 2,
+      "base": {
+        "courses": 0,
+        "substantiveCourses": 0,
+        "seconds": 0,
+        "blocks": 0,
+        "pace": null,
+        "gameTicks": null,
+        "observedTPS": null,
+        "gamePace": null,
+        "deaths": 0,
+        "fire": 0,
+        "lava": 0,
+        "damage": 0,
+        "sampledDamage": 0,
+        "arrivals": 0,
+        "actions": 0
+      },
+      "candidate": {
+        "courses": 0,
+        "substantiveCourses": 0,
+        "seconds": 0,
+        "blocks": 0,
+        "pace": null,
+        "gameTicks": null,
+        "observedTPS": null,
+        "gamePace": null,
+        "deaths": 0,
+        "fire": 0,
+        "lava": 0,
+        "damage": 0,
+        "sampledDamage": 0,
+        "arrivals": 0,
+        "actions": 0
+      }
+    }
+  ],
+  "hosts": [
+    {
+      "host": "minipc",
+      "base": {
+        "courses": 6,
+        "substantiveCourses": 6,
+        "seconds": 3210.2,
+        "blocks": 1700.2,
+        "pace": 31.777459348327213,
+        "gameTicks": 64225,
+        "observedTPS": 20.00654164849542,
+        "gamePace": 31.767068898404048,
+        "deaths": 0,
+        "fire": 0,
+        "lava": 0,
+        "damage": 10.480001068115234,
+        "sampledDamage": 8.760002136230469,
+        "arrivals": 0,
+        "actions": 50
+      },
+      "candidate": {
+        "courses": 6,
+        "substantiveCourses": 6,
+        "seconds": 1554.6000000000001,
+        "blocks": 1610.2000000000003,
+        "pace": 62.14588961790815,
+        "gameTicks": 31119,
+        "observedTPS": 20.01736781165573,
+        "gamePace": 62.09196953629616,
+        "deaths": 0,
+        "fire": 15,
+        "lava": 0,
+        "damage": 7.5,
+        "sampledDamage": 7.5,
+        "arrivals": 0,
+        "actions": 54
+      }
+    }
+  ],
+  "pairs": [
+    {
+      "pair": 1,
+      "run": 1,
+      "courseId": "entry9-fortress",
+      "attempts": 1,
+      "bootstrapFailures": [],
+      "loadFlags": [
+        "host mean CPU differs by over 15 percentage points"
+      ],
+      "wallRatio": 1.3141466592828799,
+      "gameRatio": 1.3150298223603554,
+      "orderFlipsAfterTPSAdjustment": false
+    },
+    {
+      "pair": 2,
+      "run": 1,
+      "courseId": "y55-fortress",
+      "attempts": 1,
+      "bootstrapFailures": [],
+      "loadFlags": [],
+      "wallRatio": 1.5908146946738049,
+      "gameRatio": 1.5870333818767937,
+      "orderFlipsAfterTPSAdjustment": false
+    },
+    {
+      "pair": 3,
+      "run": 1,
+      "courseId": "high110-fortress",
+      "attempts": 1,
+      "bootstrapFailures": [],
+      "loadFlags": [],
+      "wallRatio": 2.9098481907182667,
+      "gameRatio": 2.9088801108090085,
+      "orderFlipsAfterTPSAdjustment": false
+    },
+    {
+      "pair": 4,
+      "run": 1,
+      "courseId": "entry9-east300",
+      "attempts": 1,
+      "bootstrapFailures": [],
+      "loadFlags": [],
+      "wallRatio": 1.3498097034116237,
+      "gameRatio": 1.3480532821970346,
+      "orderFlipsAfterTPSAdjustment": false
+    },
+    {
+      "pair": 5,
+      "run": 1,
+      "courseId": "gold2-north300",
+      "attempts": 1,
+      "bootstrapFailures": [],
+      "loadFlags": [],
+      "wallRatio": 3.8973896698267407,
+      "gameRatio": 3.8945736339132564,
+      "orderFlipsAfterTPSAdjustment": false
+    },
+    {
+      "pair": 6,
+      "run": 1,
+      "courseId": "fortress3-bastion",
+      "attempts": 1,
+      "bootstrapFailures": [],
+      "loadFlags": [],
+      "wallRatio": 2.6476638012104043,
+      "gameRatio": 2.642614639241334,
+      "orderFlipsAfterTPSAdjustment": false
+    }
+  ],
+  "entries": [
+    {
+      "pair": 1,
+      "run": 1,
+      "arm": "base",
+      "source": "/home/agaminggod/Desktop/Projects/arena-beat-game/evals/d39-travel3/courses/pair-1-base",
+      "jar": "/home/agaminggod/Desktop/Projects/arena-beat-game/jars/d25-4682f12e.jar",
+      "nativeExitCode": 0,
+      "cleanupWarning": null,
+      "host": "minipc",
+      "cpuCount": 4,
+      "cpuAffinityMask": null,
+      "reusedBaseline": false,
+      "hostCpu": {
+        "mean": 16.661308314365684,
+        "max": 64.89795918367346,
+        "samples": 223,
+        "basis": "host /proc/stat at 2-second cadence, only the measured course interval",
+        "nominalSampleCoverageFraction": 0.9991039426523298
+      },
+      "result": {
+        "id": "entry9-fortress",
+        "mode": "travel",
+        "checkpoint": "9-nether-entry-sol-bed-gold10.json",
+        "target": {
+          "x": -127.5,
+          "z": 624.5,
+          "located": "The nearest minecraft:fortress is at [-128, ~, 624] (615 blocks away)"
+        },
+        "start": [
+          9.5,
+          37,
+          24.5
+        ],
+        "startDistance": 615.4,
+        "legChoices": {
+          "landmark": 0,
+          "bearing": 0
+        },
+        "bearingTries": 0,
+        "detours": 2,
+        "stopWhenSeen": null,
+        "results": {
+          "FAILED LAVA_INCOMING": 1,
+          "SUCCEEDED ARRIVED (detour)": 1,
+          "FAILED NO_ROUTE": 1,
+          "FAILED TRAVEL_DAMAGED (detour)": 1,
+          "FAILED TRAVEL_DAMAGED": 4
+        },
+        "actions": 8,
+        "failures": 6,
+        "damage": 1.8800010681152344,
+        "actionDamage": 3.6,
+        "actionDamageEvents": 4,
+        "minHealth": 19.059999465942383,
+        "fireSamples": 0,
+        "lavaSamples": 0,
+        "deaths": 0,
+        "gaveUp": "no progress over 3 actions",
+        "damageLowerBound": 3.6,
+        "end": [
+          -33.32,
+          33,
+          280.5
+        ],
+        "endDistance": 356.7,
+        "arrived": false,
+        "wallSeconds": 446.4,
+        "progressBlocks": 258.7,
+        "blocksPerMinute": 34.8,
+        "startedAtEpochMs": 1792940971366,
+        "endedAtEpochMs": 1792941417762,
+        "gameTicks": 8934,
+        "gameSeconds": 446.7,
+        "observedTicksPerSecond": 20.01,
+        "blocksPerGameMinute": 34.7,
+        "gameClockSource": "ready observation world.gameTime",
+        "pathBlocks": 376.6,
+        "blocksPerMinuteWithModel5s": 31.9
+      }
+    },
+    {
+      "pair": 1,
+      "run": 1,
+      "arm": "candidate",
+      "source": "/home/agaminggod/Desktop/Projects/arena-beat-game/evals/d39-travel3/courses/pair-1-candidate",
+      "jar": "/home/agaminggod/Desktop/Projects/arena-beat-game/jars/d25-6345839e.jar",
+      "nativeExitCode": 0,
+      "cleanupWarning": null,
+      "host": "minipc",
+      "cpuCount": 4,
+      "cpuAffinityMask": null,
+      "reusedBaseline": false,
+      "hostCpu": {
+        "mean": 36.726352114057434,
+        "max": 90.9572809479264,
+        "samples": 235,
+        "basis": "host /proc/stat at 2-second cadence, only the measured course interval",
+        "nominalSampleCoverageFraction": 0.9987250318742031
+      },
+      "result": {
+        "id": "entry9-fortress",
+        "mode": "travel",
+        "checkpoint": "9-nether-entry-sol-bed-gold10.json",
+        "target": {
+          "x": -127.5,
+          "z": 624.5,
+          "located": "The nearest minecraft:fortress is at [-128, ~, 624] (615 blocks away)"
+        },
+        "start": [
+          9.5,
+          37,
+          24.5
+        ],
+        "startDistance": 615.4,
+        "legChoices": {
+          "landmark": 0,
+          "bearing": 0
+        },
+        "bearingTries": 0,
+        "detours": 4,
+        "stopWhenSeen": null,
+        "results": {
+          "FAILED HOSTILE_NEAR": 3,
+          "FAILED BUILD_FAILED": 3,
+          "FAILED HOSTILE_NEAR (detour)": 1,
+          "FAILED LAVA_INCOMING": 1,
+          "FAILED TUNNEL_FLOODED (detour)": 1,
+          "TIMED_OUT TRAVEL_TIMEOUT (detour)": 1,
+          "SUCCEEDED ARRIVED (detour)": 1,
+          "FAILED NO_ROUTE": 4
+        },
+        "actions": 15,
+        "failures": 11,
+        "damage": 0,
+        "actionDamage": 0,
+        "actionDamageEvents": 0,
+        "minHealth": 20,
+        "fireSamples": 0,
+        "lavaSamples": 0,
+        "deaths": 0,
+        "hostilesRemoved": 3,
+        "gaveUp": "no progress over 3 actions",
+        "damageLowerBound": 0,
+        "end": [
+          -21.5,
+          33,
+          390.33
+        ],
+        "endDistance": 257,
+        "arrived": false,
+        "wallSeconds": 470.6,
+        "progressBlocks": 358.4,
+        "blocksPerMinute": 45.7,
+        "startedAtEpochMs": 1792941501215,
+        "endedAtEpochMs": 1792941971792,
+        "gameTicks": 9412,
+        "gameSeconds": 470.6,
+        "observedTicksPerSecond": 20,
+        "blocksPerGameMinute": 45.7,
+        "gameClockSource": "ready observation world.gameTime",
+        "pathBlocks": 494.2,
+        "blocksPerMinuteWithModel5s": 39.4
+      }
+    },
+    {
+      "pair": 2,
+      "run": 1,
+      "arm": "base",
+      "source": "/home/agaminggod/Desktop/Projects/arena-beat-game/evals/d39-travel3/courses/pair-2-base",
+      "jar": "/home/agaminggod/Desktop/Projects/arena-beat-game/jars/d25-4682f12e.jar",
+      "nativeExitCode": 0,
+      "cleanupWarning": null,
+      "host": "minipc",
+      "cpuCount": 4,
+      "cpuAffinityMask": null,
+      "reusedBaseline": false,
+      "hostCpu": {
+        "mean": 25.304322625667616,
+        "max": 82.25705329153605,
+        "samples": 360,
+        "basis": "host /proc/stat at 2-second cadence, only the measured course interval",
+        "nominalSampleCoverageFraction": 0.9997222993612884
+      },
+      "result": {
+        "id": "y55-fortress",
+        "mode": "travel",
+        "checkpoint": "2b-nether-sol-y55.json",
+        "target": {
+          "x": -127.5,
+          "z": 624.5,
+          "located": "The nearest minecraft:fortress is at [-128, ~, 624] (634 blocks away)"
+        },
+        "start": [
+          26.7,
+          31.88,
+          8.5
+        ],
+        "startDistance": 635,
+        "legChoices": {
+          "landmark": 0,
+          "bearing": 0
+        },
+        "bearingTries": 0,
+        "detours": 1,
+        "stopWhenSeen": null,
+        "results": {
+          "FAILED HOSTILE_NEAR": 1,
+          "FAILED OUT_OF_BLOCKS": 3,
+          "FAILED LAVA_INCOMING": 1,
+          "TIMED_OUT TRAVEL_TIMEOUT (detour)": 1,
+          "TIMED_OUT TRAVEL_TIMEOUT": 1
+        },
+        "actions": 7,
+        "failures": 6,
+        "damage": 0,
+        "actionDamage": 0,
+        "actionDamageEvents": 0,
+        "minHealth": 20,
+        "fireSamples": 0,
+        "lavaSamples": 0,
+        "deaths": 0,
+        "hostilesRemoved": 1,
+        "blockSwaps": 3,
+        "damageLowerBound": 0,
+        "end": [
+          -45.5,
+          41,
+          434.39
+        ],
+        "endDistance": 207,
+        "arrived": false,
+        "wallSeconds": 720.2,
+        "progressBlocks": 428,
+        "blocksPerMinute": 35.7,
+        "startedAtEpochMs": 1792942228209,
+        "endedAtEpochMs": 1792942948370,
+        "gameTicks": 14409,
+        "gameSeconds": 720.45,
+        "observedTicksPerSecond": 20.01,
+        "blocksPerGameMinute": 35.6,
+        "gameClockSource": "ready observation world.gameTime",
+        "pathBlocks": 597,
+        "blocksPerMinuteWithModel5s": 34
+      }
+    },
+    {
+      "pair": 2,
+      "run": 1,
+      "arm": "candidate",
+      "source": "/home/agaminggod/Desktop/Projects/arena-beat-game/evals/d39-travel3/courses/pair-2-candidate",
+      "jar": "/home/agaminggod/Desktop/Projects/arena-beat-game/jars/d25-6345839e.jar",
+      "nativeExitCode": 0,
+      "cleanupWarning": null,
+      "host": "minipc",
+      "cpuCount": 4,
+      "cpuAffinityMask": null,
+      "reusedBaseline": false,
+      "hostCpu": {
+        "mean": 17.58681771301917,
+        "max": 65.88902900378311,
+        "samples": 83,
+        "basis": "host /proc/stat at 2-second cadence, only the measured course interval",
+        "nominalSampleCoverageFraction": 1
+      },
+      "result": {
+        "id": "y55-fortress",
+        "mode": "travel",
+        "checkpoint": "2b-nether-sol-y55.json",
+        "target": {
+          "x": -127.5,
+          "z": 624.5,
+          "located": "The nearest minecraft:fortress is at [-128, ~, 624] (634 blocks away)"
+        },
+        "start": [
+          26.7,
+          31.88,
+          8.5
+        ],
+        "startDistance": 635,
+        "legChoices": {
+          "landmark": 0,
+          "bearing": 0
+        },
+        "bearingTries": 0,
+        "detours": 4,
+        "stopWhenSeen": null,
+        "results": {
+          "FAILED HOSTILE_NEAR": 5,
+          "FAILED BUILD_FAILED": 1,
+          "FAILED HOSTILE_NEAR (detour)": 1,
+          "FAILED TRAVEL_DAMAGED": 2,
+          "FAILED ON_FIRE": 1,
+          "FAILED NO_ROUTE": 4,
+          "FAILED NO_ROUTE (detour)": 3
+        },
+        "actions": 17,
+        "failures": 13,
+        "damage": 7.5,
+        "actionDamage": 5,
+        "actionDamageEvents": 2,
+        "minHealth": 16,
+        "fireSamples": 15,
+        "lavaSamples": 0,
+        "deaths": 0,
+        "hostilesRemoved": 5,
+        "gaveUp": "no progress over 3 actions",
+        "damageLowerBound": 7.5,
+        "end": [
+          -25.51,
+          33,
+          156.28
+        ],
+        "endDistance": 479.2,
+        "arrived": false,
+        "wallSeconds": 164.8,
+        "progressBlocks": 155.8,
+        "blocksPerMinute": 56.7,
+        "startedAtEpochMs": 1792942020333,
+        "endedAtEpochMs": 1792942185093,
+        "gameTicks": 3305,
+        "gameSeconds": 165.25,
+        "observedTicksPerSecond": 20.06,
+        "blocksPerGameMinute": 56.6,
+        "gameClockSource": "ready observation world.gameTime",
+        "pathBlocks": 200.6,
+        "blocksPerMinuteWithModel5s": 37.4
+      }
+    },
+    {
+      "pair": 3,
+      "run": 1,
+      "arm": "base",
+      "source": "/home/agaminggod/Desktop/Projects/arena-beat-game/evals/d39-travel3/courses/pair-3-base",
+      "jar": "/home/agaminggod/Desktop/Projects/arena-beat-game/jars/d25-4682f12e.jar",
+      "nativeExitCode": 0,
+      "cleanupWarning": null,
+      "host": "minipc",
+      "cpuCount": 4,
+      "cpuAffinityMask": null,
+      "reusedBaseline": false,
+      "hostCpu": {
+        "mean": 19.48960978601676,
+        "max": 71.2035286704474,
+        "samples": 182,
+        "basis": "host /proc/stat at 2-second cadence, only the measured course interval",
+        "nominalSampleCoverageFraction": 0.5054151624548736,
+        "samplingNote": "Pair 3 base host-CPU sampler covers about 50.5% of its measured interval because the Python coordinator and sampler thread were SIGSTOPped to yield the next live slot to the fire diagnostic. The Minecraft child continued; full wall time and game ticks are retained."
+      },
+      "result": {
+        "id": "high110-fortress",
+        "mode": "travel",
+        "checkpoint": "7-nether-real.json",
+        "target": {
+          "x": -591.5,
+          "z": -415.5,
+          "located": "The nearest minecraft:fortress is at [-592, ~, -416] (672 blocks away)"
+        },
+        "start": [
+          -48.5,
+          102,
+          -18.52
+        ],
+        "startDistance": 672.6,
+        "legChoices": {
+          "landmark": 0,
+          "bearing": 0
+        },
+        "bearingTries": 0,
+        "detours": 1,
+        "stopWhenSeen": null,
+        "results": {
+          "FAILED LAVA_INCOMING": 1,
+          "TIMED_OUT TRAVEL_TIMEOUT (detour)": 1,
+          "FAILED OUT_OF_BLOCKS": 1,
+          "TIMED_OUT TRAVEL_TIMEOUT": 1
+        },
+        "actions": 4,
+        "failures": 3,
+        "damage": 0,
+        "actionDamage": 0,
+        "actionDamageEvents": 0,
+        "minHealth": 20,
+        "fireSamples": 0,
+        "lavaSamples": 0,
+        "deaths": 0,
+        "blockSwaps": 1,
+        "damageLowerBound": 0,
+        "end": [
+          -307.41,
+          109,
+          -130.51
+        ],
+        "endDistance": 402.4,
+        "arrived": false,
+        "wallSeconds": 720.2,
+        "progressBlocks": 270.2,
+        "blocksPerMinute": 22.5,
+        "startedAtEpochMs": 1792943040332,
+        "endedAtEpochMs": 1792943760575,
+        "gameTicks": 14406,
+        "gameSeconds": 720.3,
+        "observedTicksPerSecond": 20,
+        "blocksPerGameMinute": 22.5,
+        "gameClockSource": "ready observation world.gameTime",
+        "pathBlocks": 735,
+        "blocksPerMinuteWithModel5s": 21.9
+      }
+    },
+    {
+      "pair": 3,
+      "run": 1,
+      "arm": "candidate",
+      "source": "/home/agaminggod/Desktop/Projects/arena-beat-game/evals/d39-travel3/courses/pair-3-candidate",
+      "jar": "/home/agaminggod/Desktop/Projects/arena-beat-game/jars/d25-6345839e.jar",
+      "nativeExitCode": 0,
+      "cleanupWarning": null,
+      "host": "minipc",
+      "cpuCount": 4,
+      "cpuAffinityMask": null,
+      "reusedBaseline": false,
+      "hostCpu": {
+        "mean": 18.394490451213876,
+        "max": 65.59748427672956,
+        "samples": 265,
+        "basis": "host /proc/stat at 2-second cadence, only the measured course interval",
+        "nominalSampleCoverageFraction": 1
+      },
+      "result": {
+        "id": "high110-fortress",
+        "mode": "travel",
+        "checkpoint": "7-nether-real.json",
+        "target": {
+          "x": -591.5,
+          "z": -415.5,
+          "located": "The nearest minecraft:fortress is at [-592, ~, -416] (672 blocks away)"
+        },
+        "start": [
+          -48.5,
+          102,
+          -18.52
+        ],
+        "startDistance": 672.6,
+        "legChoices": {
+          "landmark": 0,
+          "bearing": 0
+        },
+        "bearingTries": 0,
+        "detours": 0,
+        "stopWhenSeen": null,
+        "results": {
+          "FAILED OUT_OF_BLOCKS": 4
+        },
+        "actions": 4,
+        "failures": 4,
+        "damage": 0,
+        "actionDamage": 0,
+        "actionDamageEvents": 0,
+        "minHealth": 20,
+        "fireSamples": 0,
+        "lavaSamples": 0,
+        "deaths": 0,
+        "gaveUp": "no progress over 3 actions",
+        "damageLowerBound": 0,
+        "end": [
+          -525.58,
+          81,
+          -348.5
+        ],
+        "endDistance": 94,
+        "arrived": false,
+        "wallSeconds": 530,
+        "progressBlocks": 578.6,
+        "blocksPerMinute": 65.5,
+        "startedAtEpochMs": 1792944227118,
+        "endedAtEpochMs": 1792944757098,
+        "gameTicks": 10605,
+        "gameSeconds": 530.25,
+        "observedTicksPerSecond": 20.01,
+        "blocksPerGameMinute": 65.5,
+        "gameClockSource": "ready observation world.gameTime",
+        "pathBlocks": 815.6,
+        "blocksPerMinuteWithModel5s": 63.1
+      }
+    },
+    {
+      "pair": 4,
+      "run": 1,
+      "arm": "base",
+      "source": "/home/agaminggod/Desktop/Projects/arena-beat-game/evals/d39-travel3/courses/pair-4-base",
+      "jar": "/home/agaminggod/Desktop/Projects/arena-beat-game/jars/d25-4682f12e.jar",
+      "nativeExitCode": 0,
+      "cleanupWarning": null,
+      "host": "minipc",
+      "cpuCount": 4,
+      "cpuAffinityMask": null,
+      "reusedBaseline": false,
+      "hostCpu": {
+        "mean": 21.50182110825682,
+        "max": 82.6868495742668,
+        "samples": 209,
+        "basis": "host /proc/stat at 2-second cadence, only the measured course interval",
+        "nominalSampleCoverageFraction": 0.9980897803247373
+      },
+      "result": {
+        "id": "entry9-east300",
+        "mode": "travel",
+        "checkpoint": "9-nether-entry-sol-bed-gold10.json",
+        "target": {
+          "x": 309.5,
+          "z": 24.5,
+          "located": "heading -90 300"
+        },
+        "start": [
+          9.5,
+          37,
+          24.5
+        ],
+        "startDistance": 300,
+        "legChoices": {
+          "landmark": 0,
+          "bearing": 0
+        },
+        "bearingTries": 0,
+        "detours": 4,
+        "stopWhenSeen": null,
+        "results": {
+          "FAILED NO_ROUTE": 10,
+          "FAILED NO_ROUTE (detour)": 2,
+          "FAILED TRAVEL_DAMAGED (detour)": 1,
+          "FAILED TRAVEL_DAMAGED": 1,
+          "TIMED_OUT TRAVEL_TIMEOUT (detour)": 1
+        },
+        "actions": 15,
+        "failures": 11,
+        "damage": 1.8800010681152344,
+        "actionDamage": 0.9,
+        "actionDamageEvents": 1,
+        "minHealth": 19.059999465942383,
+        "fireSamples": 0,
+        "lavaSamples": 0,
+        "deaths": 0,
+        "toolSwaps": 2,
+        "gaveUp": "no progress over 3 actions",
+        "damageLowerBound": 1.8800010681152344,
+        "end": [
+          221.43,
+          32,
+          1.5
+        ],
+        "endDistance": 91,
+        "arrived": false,
+        "wallSeconds": 418.8,
+        "progressBlocks": 209,
+        "blocksPerMinute": 29.9,
+        "startedAtEpochMs": 1792945078563,
+        "endedAtEpochMs": 1792945497354,
+        "gameTicks": 8376,
+        "gameSeconds": 418.8,
+        "observedTicksPerSecond": 20,
+        "blocksPerGameMinute": 29.9,
+        "gameClockSource": "ready observation world.gameTime",
+        "pathBlocks": 280.7,
+        "blocksPerMinuteWithModel5s": 25.4
+      }
+    },
+    {
+      "pair": 4,
+      "run": 1,
+      "arm": "candidate",
+      "source": "/home/agaminggod/Desktop/Projects/arena-beat-game/evals/d39-travel3/courses/pair-4-candidate",
+      "jar": "/home/agaminggod/Desktop/Projects/arena-beat-game/jars/d25-6345839e.jar",
+      "nativeExitCode": 0,
+      "cleanupWarning": null,
+      "host": "minipc",
+      "cpuCount": 4,
+      "cpuAffinityMask": null,
+      "reusedBaseline": false,
+      "hostCpu": {
+        "mean": 31.500983925474767,
+        "max": 71.7219589257504,
+        "samples": 77,
+        "basis": "host /proc/stat at 2-second cadence, only the measured course interval",
+        "nominalSampleCoverageFraction": 1
+      },
+      "result": {
+        "id": "entry9-east300",
+        "mode": "travel",
+        "checkpoint": "9-nether-entry-sol-bed-gold10.json",
+        "target": {
+          "x": 309.5,
+          "z": 24.5,
+          "located": "heading -90 300"
+        },
+        "start": [
+          9.5,
+          37,
+          24.5
+        ],
+        "startDistance": 300,
+        "legChoices": {
+          "landmark": 0,
+          "bearing": 0
+        },
+        "bearingTries": 0,
+        "detours": 4,
+        "stopWhenSeen": null,
+        "results": {
+          "FAILED TUNNEL_FLOODED": 1,
+          "SUCCEEDED ARRIVED (detour)": 1,
+          "FAILED NO_ROUTE": 5,
+          "FAILED TUNNEL_FLOODED (detour)": 1,
+          "FAILED NO_ROUTE (detour)": 2
+        },
+        "actions": 10,
+        "failures": 6,
+        "damage": 0,
+        "actionDamage": 0,
+        "actionDamageEvents": 0,
+        "minHealth": 20,
+        "fireSamples": 0,
+        "lavaSamples": 0,
+        "deaths": 0,
+        "gaveUp": "no progress over 3 actions",
+        "damageLowerBound": 0,
+        "end": [
+          113.32,
+          32,
+          37.5
+        ],
+        "endDistance": 196.6,
+        "arrived": false,
+        "wallSeconds": 153.5,
+        "progressBlocks": 103.4,
+        "blocksPerMinute": 40.4,
+        "startedAtEpochMs": 1792944839365,
+        "endedAtEpochMs": 1792944992872,
+        "gameTicks": 3074,
+        "gameSeconds": 153.7,
+        "observedTicksPerSecond": 20.03,
+        "blocksPerGameMinute": 40.4,
+        "gameClockSource": "ready observation world.gameTime",
+        "pathBlocks": 182.1,
+        "blocksPerMinuteWithModel5s": 30.5
+      }
+    },
+    {
+      "pair": 5,
+      "run": 1,
+      "arm": "base",
+      "source": "/home/agaminggod/Desktop/Projects/arena-beat-game/evals/d39-travel3/courses/pair-5-base",
+      "jar": "/home/agaminggod/Desktop/Projects/arena-beat-game/jars/d25-4682f12e.jar",
+      "nativeExitCode": 0,
+      "cleanupWarning": null,
+      "host": "minipc",
+      "cpuCount": 4,
+      "cpuAffinityMask": null,
+      "reusedBaseline": false,
+      "hostCpu": {
+        "mean": 7.56525623429075,
+        "max": 33.617963314358,
+        "samples": 166,
+        "basis": "host /proc/stat at 2-second cadence, only the measured course interval",
+        "nominalSampleCoverageFraction": 1
+      },
+      "result": {
+        "id": "gold2-north300",
+        "mode": "travel",
+        "checkpoint": "2-nether-gold10.json",
+        "target": {
+          "x": 16.5,
+          "z": -213.5,
+          "located": "heading 180 300"
+        },
+        "start": [
+          16.5,
+          62,
+          86.5
+        ],
+        "startDistance": 300,
+        "legChoices": {
+          "landmark": 0,
+          "bearing": 0
+        },
+        "bearingTries": 0,
+        "detours": 1,
+        "stopWhenSeen": null,
+        "results": {
+          "FAILED OUT_OF_BLOCKS": 5,
+          "FAILED NO_ROUTE": 1,
+          "SUCCEEDED ARRIVED (detour)": 1
+        },
+        "actions": 7,
+        "failures": 6,
+        "damage": 0,
+        "actionDamage": 0,
+        "actionDamageEvents": 0,
+        "minHealth": 20,
+        "fireSamples": 0,
+        "lavaSamples": 0,
+        "deaths": 0,
+        "blockSwaps": 1,
+        "gaveUp": "no progress over 3 actions",
+        "damageLowerBound": 0,
+        "end": [
+          41.5,
+          56,
+          -55.45
+        ],
+        "endDistance": 160,
+        "arrived": false,
+        "wallSeconds": 331.4,
+        "progressBlocks": 140,
+        "blocksPerMinute": 25.3,
+        "startedAtEpochMs": 1792945582011,
+        "endedAtEpochMs": 1792945913385,
+        "gameTicks": 6627,
+        "gameSeconds": 331.35,
+        "observedTicksPerSecond": 20,
+        "blocksPerGameMinute": 25.4,
+        "gameClockSource": "ready observation world.gameTime",
+        "pathBlocks": 356.7,
+        "blocksPerMinuteWithModel5s": 22.9
+      }
+    },
+    {
+      "pair": 5,
+      "run": 1,
+      "arm": "candidate",
+      "source": "/home/agaminggod/Desktop/Projects/arena-beat-game/evals/d39-travel3/courses/pair-5-candidate",
+      "jar": "/home/agaminggod/Desktop/Projects/arena-beat-game/jars/d25-6345839e.jar",
+      "nativeExitCode": 0,
+      "cleanupWarning": null,
+      "host": "minipc",
+      "cpuCount": 4,
+      "cpuAffinityMask": null,
+      "reusedBaseline": false,
+      "hostCpu": {
+        "mean": 10.676387284897443,
+        "max": 67.92571608435631,
+        "samples": 43,
+        "basis": "host /proc/stat at 2-second cadence, only the measured course interval",
+        "nominalSampleCoverageFraction": 0.9839816933638443
+      },
+      "result": {
+        "id": "gold2-north300",
+        "mode": "travel",
+        "checkpoint": "2-nether-gold10.json",
+        "target": {
+          "x": 16.5,
+          "z": -213.5,
+          "located": "heading 180 300"
+        },
+        "start": [
+          16.5,
+          62,
+          86.5
+        ],
+        "startDistance": 300,
+        "legChoices": {
+          "landmark": 0,
+          "bearing": 0
+        },
+        "bearingTries": 0,
+        "detours": 0,
+        "stopWhenSeen": null,
+        "results": {
+          "FAILED OUT_OF_BLOCKS": 4
+        },
+        "actions": 4,
+        "failures": 4,
+        "damage": 0,
+        "actionDamage": 0,
+        "actionDamageEvents": 0,
+        "minHealth": 20,
+        "fireSamples": 0,
+        "lavaSamples": 0,
+        "deaths": 0,
+        "gaveUp": "no progress over 3 actions",
+        "damageLowerBound": 0,
+        "end": [
+          17.5,
+          57,
+          -57.42
+        ],
+        "endDistance": 156.1,
+        "arrived": false,
+        "wallSeconds": 87.4,
+        "progressBlocks": 143.9,
+        "blocksPerMinute": 98.7,
+        "startedAtEpochMs": 1792945996842,
+        "endedAtEpochMs": 1792946084282,
+        "gameTicks": 1749,
+        "gameSeconds": 87.45,
+        "observedTicksPerSecond": 20,
+        "blocksPerGameMinute": 98.7,
+        "gameClockSource": "ready observation world.gameTime",
+        "pathBlocks": 147.9,
+        "blocksPerMinuteWithModel5s": 80.4
+      }
+    },
+    {
+      "pair": 6,
+      "run": 1,
+      "arm": "base",
+      "source": "/home/agaminggod/Desktop/Projects/arena-beat-game/evals/d39-travel3/courses/pair-6-base",
+      "jar": "/home/agaminggod/Desktop/Projects/arena-beat-game/jars/d25-4682f12e.jar",
+      "nativeExitCode": 0,
+      "cleanupWarning": null,
+      "host": "minipc",
+      "cpuCount": 4,
+      "cpuAffinityMask": null,
+      "reusedBaseline": false,
+      "hostCpu": {
+        "mean": 15.593035917175326,
+        "max": 75.62519784742007,
+        "samples": 287,
+        "basis": "host /proc/stat at 2-second cadence, only the measured course interval",
+        "nominalSampleCoverageFraction": 1
+      },
+      "result": {
+        "id": "fortress3-bastion",
+        "mode": "travel",
+        "checkpoint": "3-fortress.json",
+        "target": {
+          "x": -367.5,
+          "z": 624.5,
+          "located": "The nearest minecraft:bastion_remnant is at [-368, ~, 624] (713 blocks away)"
+        },
+        "start": [
+          69.5,
+          64,
+          60.45
+        ],
+        "startDistance": 713.5,
+        "legChoices": {
+          "landmark": 0,
+          "bearing": 0
+        },
+        "bearingTries": 0,
+        "detours": 4,
+        "stopWhenSeen": null,
+        "results": {
+          "FAILED TRAVEL_DAMAGED": 1,
+          "FAILED NO_ROUTE": 4,
+          "TIMED_OUT TRAVEL_TIMEOUT (detour)": 2,
+          "FAILED NO_ROUTE (detour)": 2
+        },
+        "actions": 9,
+        "failures": 5,
+        "damage": 5,
+        "actionDamage": 5,
+        "actionDamageEvents": 1,
+        "minHealth": 15,
+        "fireSamples": 0,
+        "lavaSamples": 0,
+        "deaths": 0,
+        "gaveUp": "no progress over 3 actions",
+        "damageLowerBound": 5,
+        "end": [
+          -141.5,
+          54,
+          399.09
+        ],
+        "endDistance": 319.2,
+        "arrived": false,
+        "wallSeconds": 573.2,
+        "progressBlocks": 394.3,
+        "blocksPerMinute": 41.3,
+        "startedAtEpochMs": 1792947120521,
+        "endedAtEpochMs": 1792947693770,
+        "gameTicks": 11473,
+        "gameSeconds": 573.65,
+        "observedTicksPerSecond": 20.01,
+        "blocksPerGameMinute": 41.2,
+        "gameClockSource": "ready observation world.gameTime",
+        "pathBlocks": 1061.9,
+        "blocksPerMinuteWithModel5s": 38.3
+      }
+    },
+    {
+      "pair": 6,
+      "run": 1,
+      "arm": "candidate",
+      "source": "/home/agaminggod/Desktop/Projects/arena-beat-game/evals/d39-travel3/courses/pair-6-candidate",
+      "jar": "/home/agaminggod/Desktop/Projects/arena-beat-game/jars/d25-6345839e.jar",
+      "nativeExitCode": 0,
+      "cleanupWarning": null,
+      "host": "minipc",
+      "cpuCount": 4,
+      "cpuAffinityMask": null,
+      "reusedBaseline": false,
+      "hostCpu": {
+        "mean": 7.6558250308125455,
+        "max": 16.650928548945544,
+        "samples": 74,
+        "basis": "host /proc/stat at 2-second cadence, only the measured course interval",
+        "nominalSampleCoverageFraction": 0.9979770734996628
+      },
+      "result": {
+        "id": "fortress3-bastion",
+        "mode": "travel",
+        "checkpoint": "3-fortress.json",
+        "target": {
+          "x": -367.5,
+          "z": 624.5,
+          "located": "The nearest minecraft:bastion_remnant is at [-368, ~, 624] (713 blocks away)"
+        },
+        "start": [
+          69.5,
+          64,
+          60.45
+        ],
+        "startDistance": 713.5,
+        "legChoices": {
+          "landmark": 0,
+          "bearing": 0
+        },
+        "bearingTries": 0,
+        "detours": 0,
+        "stopWhenSeen": null,
+        "results": {
+          "FAILED OUT_OF_BLOCKS": 4
+        },
+        "actions": 4,
+        "failures": 4,
+        "damage": 0,
+        "actionDamage": 0,
+        "actionDamageEvents": 0,
+        "minHealth": 20,
+        "fireSamples": 0,
+        "lavaSamples": 0,
+        "deaths": 0,
+        "gaveUp": "no progress over 3 actions",
+        "damageLowerBound": 0,
+        "end": [
+          -52.42,
+          33,
+          312.49
+        ],
+        "endDistance": 443.4,
+        "arrived": false,
+        "wallSeconds": 148.3,
+        "progressBlocks": 270.1,
+        "blocksPerMinute": 109.2,
+        "startedAtEpochMs": 1792946165585,
+        "endedAtEpochMs": 1792946313930,
+        "gameTicks": 2974,
+        "gameSeconds": 148.7,
+        "observedTicksPerSecond": 20.05,
+        "blocksPerGameMinute": 109,
+        "gameClockSource": "ready observation world.gameTime",
+        "pathBlocks": 379.8,
+        "blocksPerMinuteWithModel5s": 96.3
+      }
+    }
+  ],
+  "measuredSight": null,
+  "roundedReplaySight": null,
+  "histogram": {},
+  "comparison": {
+    "wallRatio": 1.9556594797808955,
+    "gameRatio": 1.9546017838433816,
+    "orderFlipsAfterTPSAdjustment": false
+  },
+  "bars": {
+    "completeTwoRounds": false,
+    "candidate100WallBlocksPerMinuteBothRounds": false,
+    "candidate100GameBlocksPerMinuteBothRounds": false,
+    "noCandidateDeathsFireLava": false,
+    "pairsWithLoadFlags": 1,
+    "pairsWhosePaceOrderFlipsAfterTPSAdjustment": 0
+  },
+  "samplingNotes": [
+    "Pair 3 base host-CPU sampler covers about 50.5% of its measured interval because the Python coordinator and sampler thread were SIGSTOPped to yield the next live slot to the fire diagnostic. The Minecraft child continued; full wall time and game ticks are retained."
+  ],
+  "d39Acceptance": {
+    "sixMatchedPairs": true,
+    "paceGain": true,
+    "bothArmsZeroDeathsFireLava": false
+  },
+  "handbacks": {
+    "base": {
+      "LAVA_INCOMING": 3,
+      "TRAVEL_TIMEOUT": 7,
+      "OUT_OF_BLOCKS": 9,
+      "TRAVEL_DAMAGED": 8,
+      "NO_ROUTE": 20,
+      "HOSTILE_NEAR": 1,
+      "ARRIVED": 2
+    },
+    "candidate": {
+      "HOSTILE_NEAR": 10,
+      "BUILD_FAILED": 4,
+      "TRAVEL_DAMAGED": 2,
+      "ON_FIRE": 1,
+      "NO_ROUTE": 18,
+      "OUT_OF_BLOCKS": 12,
+      "LAVA_INCOMING": 1,
+      "TUNNEL_FLOODED": 3,
+      "TRAVEL_TIMEOUT": 1,
+      "ARRIVED": 2
+    }
+  }
+}

@@ -1,0 +1,597 @@
+[
+  {
+    "file": "1-iron-pickaxe-v2.json",
+    "variantOf": "1-iron-pickaxe.json",
+    "originalSha256": "2bf897338b4054d8b6630a3370e4f37294f99005b2e861a9c55a7b09c8ef1019",
+    "route": {
+      "dimension": "minecraft:overworld",
+      "kind": "ladder",
+      "bottom": [
+        17,
+        66,
+        108
+      ],
+      "top": [
+        17,
+        70,
+        108
+      ],
+      "support": [
+        18,
+        108
+      ]
+    },
+    "bed": [
+      13,
+      66,
+      107
+    ]
+  },
+  {
+    "file": "1b-iron-pickaxe-morning-v2.json",
+    "variantOf": "1b-iron-pickaxe-morning.json",
+    "originalSha256": "712b541a2b199c387a64acf1fd652ccf6b24984fdab9712c95fef420cc92a981",
+    "route": {
+      "dimension": "minecraft:overworld",
+      "kind": "ladder",
+      "bottom": [
+        17,
+        66,
+        108
+      ],
+      "top": [
+        17,
+        70,
+        108
+      ],
+      "support": [
+        18,
+        108
+      ]
+    },
+    "bed": [
+      13,
+      66,
+      107
+    ]
+  },
+  {
+    "file": "2-nether-gold-v2.json",
+    "variantOf": "2-nether-gold.json",
+    "originalSha256": "b9c2b7e4039f437d2636c9d0921c4add43849e226b82d651082b277013679a3c",
+    "route": null,
+    "bed": [
+      114,
+      64,
+      687
+    ]
+  },
+  {
+    "file": "2-nether-gold10-v2.json",
+    "variantOf": "2-nether-gold10.json",
+    "originalSha256": "9f0a57405fbefa4abccf25950942442c937ccf034c7c6d4157adca93c6621f62",
+    "route": null,
+    "bed": [
+      114,
+      64,
+      687
+    ]
+  },
+  {
+    "file": "2-nether-v2.json",
+    "variantOf": "2-nether.json",
+    "originalSha256": "193d560515701c771d69bf11b445abdfad4aaac6cb100c1a5ba3a09ed17dd452",
+    "route": null,
+    "bed": [
+      114,
+      64,
+      687
+    ]
+  },
+  {
+    "file": "2b-nether-sol-y55-v2.json",
+    "variantOf": "2b-nether-sol-y55.json",
+    "originalSha256": "1229c303dc668d0d8d3127e1f5d8b084be82a192a4b1a8dad0b5c83c0da63cee",
+    "route": {
+      "dimension": "minecraft:overworld",
+      "kind": "ladder",
+      "bottom": [
+        89,
+        -53,
+        64
+      ],
+      "top": [
+        89,
+        86,
+        64
+      ],
+      "support": [
+        90,
+        64
+      ]
+    },
+    "bed": [
+      85,
+      -53,
+      63
+    ]
+  },
+  {
+    "file": "3-fortress-v2.json",
+    "variantOf": "3-fortress.json",
+    "originalSha256": "56ed07064c6c5d9e1838c4ca2b1ae0b2072dd6b66b28100e37797fff749b768a",
+    "route": {
+      "dimension": "minecraft:overworld",
+      "kind": "ladder",
+      "bottom": [
+        548,
+        64,
+        501
+      ],
+      "top": [
+        548,
+        68,
+        501
+      ],
+      "support": [
+        549,
+        501
+      ]
+    },
+    "bed": [
+      544,
+      64,
+      500
+    ]
+  },
+  {
+    "file": "4-stronghold-search-v2.json",
+    "variantOf": "4-stronghold-search.json",
+    "originalSha256": "717fd197564de898238e75f1bfb37400e277303c6239f25d85482e8ac2bcbe87",
+    "route": null,
+    "bed": [
+      1048,
+      63,
+      2536
+    ]
+  },
+  {
+    "file": "5-stronghold-v2.json",
+    "variantOf": "5-stronghold.json",
+    "originalSha256": "96fe1fcb953cae47c3947706de207d5a99656ac72e62883e1518467a279f1474",
+    "route": {
+      "dimension": "minecraft:overworld",
+      "kind": "ladder",
+      "bottom": [
+        264,
+        -12,
+        2549
+      ],
+      "top": [
+        264,
+        70,
+        2549
+      ],
+      "support": [
+        265,
+        2549
+      ]
+    },
+    "bed": [
+      260,
+      -12,
+      2548
+    ]
+  },
+  {
+    "file": "6-end-bed-v2.json",
+    "variantOf": "6-end-bed.json",
+    "originalSha256": "52f5679bdeb395fa00d6beaf3ecf3306993c2829b1d5625c7fe14faae37d0b51",
+    "route": {
+      "dimension": "minecraft:overworld",
+      "kind": "ladder",
+      "bottom": [
+        327,
+        -28,
+        2554
+      ],
+      "top": [
+        327,
+        67,
+        2554
+      ],
+      "support": [
+        328,
+        2554
+      ]
+    },
+    "bed": [
+      323,
+      -28,
+      2553
+    ]
+  },
+  {
+    "file": "6-end-portal-room-v2.json",
+    "variantOf": "6-end-portal-room.json",
+    "originalSha256": "07c117ee36a56f4a67aa1bbac2aa35eb7d97fa3f9c606902b424fed0f7fc4dfa",
+    "route": {
+      "dimension": "minecraft:overworld",
+      "kind": "ladder",
+      "bottom": [
+        327,
+        -28,
+        2554
+      ],
+      "top": [
+        327,
+        67,
+        2554
+      ],
+      "support": [
+        328,
+        2554
+      ]
+    },
+    "bed": [
+      323,
+      -28,
+      2553
+    ]
+  },
+  {
+    "file": "6-end-v2.json",
+    "variantOf": "6-end.json",
+    "originalSha256": "fe67d41caa3536e7c678d52a22d690282fc52ab428e5b7b1eb2b9249e5af63d3",
+    "route": {
+      "dimension": "minecraft:overworld",
+      "kind": "ladder",
+      "bottom": [
+        327,
+        -28,
+        2554
+      ],
+      "top": [
+        327,
+        67,
+        2554
+      ],
+      "support": [
+        328,
+        2554
+      ]
+    },
+    "bed": [
+      323,
+      -28,
+      2553
+    ]
+  },
+  {
+    "file": "7-nether-real-v2.json",
+    "variantOf": "7-nether-real.json",
+    "originalSha256": "fea44db6ea89e28f40cec36c519f01179e24c9737294a406ac8e9c065b855938",
+    "route": null,
+    "bed": [
+      70,
+      82,
+      142
+    ]
+  },
+  {
+    "file": "8-lava-pool-bed-v2.json",
+    "variantOf": "8-lava-pool-bed.json",
+    "originalSha256": "360ad952175d5b3455ff2b0b5bcc4837264dcffbb4c0cf83f731563428cdce71",
+    "route": {
+      "dimension": "minecraft:overworld",
+      "kind": "ladder",
+      "bottom": [
+        -1,
+        -53,
+        98
+      ],
+      "top": [
+        -1,
+        75,
+        98
+      ],
+      "support": [
+        0,
+        98
+      ]
+    },
+    "bed": [
+      -5,
+      -53,
+      97
+    ]
+  },
+  {
+    "file": "8-lava-pool-v2.json",
+    "variantOf": "8-lava-pool.json",
+    "originalSha256": "4a1e180e01fe4bba392e825505251997bf9d27fea5c95c8d809b6ef576b5cc1a",
+    "route": {
+      "dimension": "minecraft:overworld",
+      "kind": "ladder",
+      "bottom": [
+        -1,
+        -53,
+        98
+      ],
+      "top": [
+        -1,
+        75,
+        98
+      ],
+      "support": [
+        0,
+        98
+      ]
+    },
+    "bed": [
+      -5,
+      -53,
+      97
+    ]
+  },
+  {
+    "file": "9-nether-entry-sol-bed-gold-v2.json",
+    "variantOf": "9-nether-entry-sol-bed-gold.json",
+    "originalSha256": "4751c54242322207ff935188d97259c4f097dfc10a67514fa4c1ab250d8160f2",
+    "route": {
+      "dimension": "minecraft:overworld",
+      "kind": "ladder",
+      "bottom": [
+        -14,
+        -54,
+        95
+      ],
+      "top": [
+        -14,
+        78,
+        95
+      ],
+      "support": [
+        -13,
+        95
+      ]
+    },
+    "bed": [
+      -18,
+      -54,
+      94
+    ]
+  },
+  {
+    "file": "9-nether-entry-sol-bed-gold10-v2.json",
+    "variantOf": "9-nether-entry-sol-bed-gold10.json",
+    "originalSha256": "238bc259c0f85303ae986e2996526c8e90671786dc0f9f255b1a69b301be7ef4",
+    "route": {
+      "dimension": "minecraft:overworld",
+      "kind": "ladder",
+      "bottom": [
+        -14,
+        -54,
+        95
+      ],
+      "top": [
+        -14,
+        78,
+        95
+      ],
+      "support": [
+        -13,
+        95
+      ]
+    },
+    "bed": [
+      -18,
+      -54,
+      94
+    ]
+  },
+  {
+    "file": "9-nether-entry-sol-bed-v2.json",
+    "variantOf": "9-nether-entry-sol-bed.json",
+    "originalSha256": "79d7b39a43194dfc7e74f3bec088d6e25b688ad2afbf7e6a90d83e8dadb7cfcd",
+    "route": {
+      "dimension": "minecraft:overworld",
+      "kind": "ladder",
+      "bottom": [
+        -14,
+        -54,
+        95
+      ],
+      "top": [
+        -14,
+        78,
+        95
+      ],
+      "support": [
+        -13,
+        95
+      ]
+    },
+    "bed": [
+      -18,
+      -54,
+      94
+    ]
+  },
+  {
+    "file": "9-nether-entry-sol-v2.json",
+    "variantOf": "9-nether-entry-sol.json",
+    "originalSha256": "fb9ec78d5aff54bbbbd811175600d37f12a710dfda164a1cfa7d654ead2b2171",
+    "route": {
+      "dimension": "minecraft:overworld",
+      "kind": "ladder",
+      "bottom": [
+        -14,
+        -54,
+        95
+      ],
+      "top": [
+        -14,
+        78,
+        95
+      ],
+      "support": [
+        -13,
+        95
+      ]
+    },
+    "bed": [
+      -18,
+      -54,
+      94
+    ]
+  },
+  {
+    "file": "9-nether-entry-20261024-v2.json",
+    "bed": [
+      0,
+      63,
+      0
+    ],
+    "route": null,
+    "newSeed": true
+  },
+  {
+    "file": "9-nether-entry-8675309-v2.json",
+    "bed": [
+      128,
+      63,
+      0
+    ],
+    "route": null,
+    "newSeed": true
+  },
+  {
+    "file": "9-nether-entry-123456789-v2.json",
+    "bed": [
+      0,
+      64,
+      64
+    ],
+    "route": null,
+    "newSeed": true
+  },
+  {
+    "file": "9-nether-entry-987654321-v2.json",
+    "bed": [
+      0,
+      67,
+      0
+    ],
+    "route": null,
+    "newSeed": true
+  },
+  {
+    "file": "8-lava-pool-8675309-v2.json",
+    "bed": [
+      157,
+      -54,
+      37
+    ],
+    "route": {
+      "dimension": "minecraft:overworld",
+      "kind": "ladder",
+      "bottom": [
+        161,
+        -54,
+        38
+      ],
+      "top": [
+        161,
+        63,
+        38
+      ],
+      "support": [
+        162,
+        38
+      ]
+    },
+    "newSeed": true
+  },
+  {
+    "file": "8-lava-pool-20261024-v2.json",
+    "bed": [
+      10,
+      -54,
+      0
+    ],
+    "route": {
+      "dimension": "minecraft:overworld",
+      "kind": "ladder",
+      "bottom": [
+        14,
+        -54,
+        1
+      ],
+      "top": [
+        14,
+        63,
+        1
+      ],
+      "support": [
+        15,
+        1
+      ]
+    },
+    "newSeed": true
+  },
+  {
+    "file": "8-lava-pool-123456789-v2.json",
+    "bed": [
+      -15,
+      -54,
+      62
+    ],
+    "route": {
+      "dimension": "minecraft:overworld",
+      "kind": "ladder",
+      "bottom": [
+        -11,
+        -54,
+        63
+      ],
+      "top": [
+        -11,
+        64,
+        63
+      ],
+      "support": [
+        -10,
+        63
+      ]
+    },
+    "newSeed": true
+  },
+  {
+    "file": "8-lava-pool-987654321-v2.json",
+    "bed": [
+      16,
+      -54,
+      0
+    ],
+    "route": {
+      "dimension": "minecraft:overworld",
+      "kind": "ladder",
+      "bottom": [
+        20,
+        -54,
+        1
+      ],
+      "top": [
+        20,
+        65,
+        1
+      ],
+      "support": [
+        21,
+        1
+      ]
+    },
+    "newSeed": true
+  }
+]

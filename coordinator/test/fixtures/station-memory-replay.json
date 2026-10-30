@@ -1,0 +1,138 @@
+{
+  "actions": [
+    [
+      52,
+      "place_block",
+      134,
+      68,
+      486,
+      "minecraft:crafting_table",
+      null,
+      1791620067971
+    ],
+    [
+      197,
+      "place_block",
+      133,
+      58,
+      487,
+      "minecraft:crafting_table",
+      null,
+      1791620167421
+    ],
+    [
+      219,
+      "break_block",
+      133,
+      58,
+      487,
+      "minecraft:crafting_table",
+      34350,
+      1791620193722
+    ],
+    [
+      479,
+      "place_block",
+      -18,
+      72,
+      454,
+      "minecraft:crafting_table",
+      null,
+      1791620551471
+    ],
+    [
+      481,
+      "place_block",
+      -18,
+      72,
+      456,
+      "minecraft:furnace",
+      null,
+      1791620551771
+    ],
+    [
+      684,
+      "break_block",
+      -18,
+      72,
+      454,
+      "minecraft:crafting_table",
+      45848,
+      1791620769171
+    ],
+    [
+      693,
+      "break_block",
+      -18,
+      72,
+      456,
+      "minecraft:furnace",
+      46069,
+      1791620780221
+    ],
+    [
+      2068,
+      "place_block",
+      116,
+      58,
+      338,
+      "minecraft:crafting_table",
+      null,
+      1791622325921
+    ],
+    [
+      2073,
+      "place_block",
+      117,
+      58,
+      338,
+      "minecraft:furnace",
+      null,
+      1791622333221
+    ],
+    [
+      2103,
+      "break_block",
+      117,
+      58,
+      338,
+      "minecraft:furnace",
+      79381,
+      1791622445821
+    ],
+    [
+      2122,
+      "break_block",
+      116,
+      58,
+      338,
+      "minecraft:crafting_table",
+      79746,
+      1791622464071
+    ]
+  ],
+  "verification": {
+    "world": {
+      "gameTime": 83349,
+      "dimension": "minecraft:overworld"
+    },
+    "observedAtEpochMs": 1791622644478,
+    "position": {
+      "x": 116.0607569544125,
+      "y": 63,
+      "z": 311.58297767088044
+    },
+    "inventory": {
+      "items": [
+        {
+          "itemId": "minecraft:furnace",
+          "count": 1
+        },
+        {
+          "itemId": "minecraft:crafting_table",
+          "count": 1
+        }
+      ]
+    }
+  }
+}

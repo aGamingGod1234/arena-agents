@@ -1,0 +1,359 @@
+{
+  "source": "/home/agaminggod/Desktop/Projects/arena-beat-game/evals/d38-blaze4/resume-candidate-bow/trace.jsonl",
+  "serverDeathMessage": "Blazer1 was slain by Blaze",
+  "serverDeathSource": "/tmp/d38-blaze4-candidate-bow/server.log:208",
+  "stage": "repeated reentry repair, then eating",
+  "events": [
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 147.8,
+      "type": "pick_up_item",
+      "args": {
+        "targetSelector": "98d107a5-2a09-408f-9d8e-b8caac34a3ac"
+      },
+      "result": {
+        "traceId": "bz-492",
+        "goalRevision": 1,
+        "actionId": "bz-492",
+        "commandId": "bz-492",
+        "actionType": "pick_up_item",
+        "state": "SUCCEEDED",
+        "reasonCode": "ITEM_PICKED_UP",
+        "message": "Collected into inventory",
+        "elapsedMs": 650,
+        "observedAtEpochMs": 1792901245440,
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "timing": {
+          "acceptedAtEpochMs": 1792901244790,
+          "startedAtEpochMs": 1792901244791,
+          "startedTick": 8152,
+          "endedTick": 8165
+        },
+        "replayProof": "3_WdzZJcdpgrdtWTRftz0pmCk2mUPaAS1dYhcgcb2AI"
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 153.9,
+      "inventoryRods": 3,
+      "position": {
+        "x": 83.55272251612189,
+        "y": 73.12160004615784,
+        "z": 91.49093712185021
+      },
+      "player": {
+        "fallDamage": 0,
+        "pose": "standing",
+        "underWater": false,
+        "swimming": false,
+        "gliding": false,
+        "sprinting": false,
+        "crouching": false,
+        "onClimbable": false,
+        "inLava": false,
+        "horizontalCollision": false,
+        "verticalCollision": false,
+        "passenger": false,
+        "health": 10.166664123535156,
+        "maxHealth": 20,
+        "armor": 15,
+        "foodLevel": 17,
+        "saturation": 0,
+        "gameMode": "survival",
+        "onGround": false,
+        "inWater": false,
+        "onFire": false,
+        "air": 300,
+        "maxAir": 300,
+        "suffocating": false,
+        "fallDistance": 0.07840000092983246,
+        "effects": []
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 154.7,
+      "type": "pick_up_item",
+      "args": {
+        "targetSelector": "7f295f3b-081b-47a1-a5e7-b3d913c8e580"
+      },
+      "result": {
+        "traceId": "bz-496",
+        "goalRevision": 1,
+        "actionId": "bz-496",
+        "commandId": "bz-496",
+        "actionType": "pick_up_item",
+        "state": "FAILED",
+        "reasonCode": "ITEM_NOT_FOUND",
+        "message": "Drop not visible; seen: 8e1c1dd6-fe31-4fca-b06d-b349621e77f2 1 minecraft:cobblestone",
+        "elapsedMs": 0,
+        "observedAtEpochMs": 1792901252340,
+        "executionStarted": false,
+        "physicalAttempted": false,
+        "replayProof": "TJxtRPxSZqAbSBZ9-hE2TfyPg7abrW6JvXW-oDed92A"
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 159.2,
+      "inventoryRods": 3,
+      "position": {
+        "x": 83.55272251612189,
+        "y": 73.12160004615784,
+        "z": 91.49093712185021
+      },
+      "player": {
+        "fallDamage": 0,
+        "pose": "standing",
+        "underWater": false,
+        "swimming": false,
+        "gliding": false,
+        "sprinting": false,
+        "crouching": false,
+        "onClimbable": false,
+        "inLava": false,
+        "horizontalCollision": false,
+        "verticalCollision": false,
+        "passenger": false,
+        "health": 10.166664123535156,
+        "maxHealth": 20,
+        "armor": 15,
+        "foodLevel": 17,
+        "saturation": 0,
+        "gameMode": "survival",
+        "onGround": false,
+        "inWater": false,
+        "onFire": false,
+        "air": 300,
+        "maxAir": 300,
+        "suffocating": false,
+        "fallDistance": 0.07840000092983246,
+        "effects": []
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 160.1,
+      "type": "pick_up_item",
+      "args": {
+        "targetSelector": "8f24262d-478b-4c58-b60c-36c1aec8cc96"
+      },
+      "result": {
+        "traceId": "bz-500",
+        "goalRevision": 1,
+        "actionId": "bz-500",
+        "commandId": "bz-500",
+        "actionType": "pick_up_item",
+        "state": "FAILED",
+        "reasonCode": "ITEM_NOT_FOUND",
+        "message": "Drop not visible; seen: 1b967675-0ec7-41d0-af32-9d9644808e57 1 minecraft:cobblestone",
+        "elapsedMs": 0,
+        "observedAtEpochMs": 1792901257690,
+        "executionStarted": false,
+        "physicalAttempted": false,
+        "replayProof": "jM70KRgcRuSLcQ_bXENxtdbcDO86sgz54hUU2X7DwqU"
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 166.2,
+      "inventoryRods": 3,
+      "position": {
+        "x": 83.57776483569455,
+        "y": 73.12160004615784,
+        "z": 91.52562105914602
+      },
+      "player": {
+        "harm": {
+          "source": "minecraft:on_fire",
+          "ongoing": true,
+          "hpLossPerSecond": 1,
+          "options": [
+            "leave_fire",
+            "fire_resistance"
+          ],
+          "waterEvaporates": true,
+          "exits": [
+            "back 0.9m up1 remembered 1s (84,74,91)"
+          ]
+        },
+        "recentDamage": {
+          "cause": "on_fire",
+          "secondsAgo": 0
+        },
+        "fallDamage": 0,
+        "pose": "standing",
+        "underWater": false,
+        "swimming": false,
+        "gliding": false,
+        "sprinting": false,
+        "crouching": false,
+        "onClimbable": false,
+        "inLava": false,
+        "horizontalCollision": false,
+        "verticalCollision": false,
+        "passenger": false,
+        "fireTicks": 57,
+        "exits": [
+          "back 0.9m up1 remembered 1s (84,74,91)"
+        ],
+        "hurtBy": "on_fire",
+        "health": 2.546664237976074,
+        "maxHealth": 20,
+        "armor": 15,
+        "foodLevel": 17,
+        "saturation": 0,
+        "gameMode": "survival",
+        "onGround": false,
+        "inWater": false,
+        "onFire": true,
+        "air": 300,
+        "maxAir": 300,
+        "suffocating": false,
+        "fallDistance": 0.07840000092983246,
+        "effects": []
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 168,
+      "type": "use_item",
+      "args": {
+        "durationMs": 1700,
+        "expectedItemId": "minecraft:cooked_beef"
+      },
+      "result": {
+        "traceId": "bz-503",
+        "goalRevision": 1,
+        "actionId": "bz-503",
+        "commandId": "bz-503",
+        "actionType": "use_item",
+        "state": "SUCCEEDED",
+        "reasonCode": "USE_INPUT_CONFIRMED",
+        "message": "Held use for 34 server ticks; accepted interactions=1, using state observed=true, input released=true; downstream effects are unconfirmed",
+        "elapsedMs": 1691,
+        "observedAtEpochMs": 1792901265590,
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "timing": {
+          "acceptedAtEpochMs": 1792901263899,
+          "startedAtEpochMs": 1792901263900,
+          "startedTick": 8534,
+          "endedTick": 8568
+        },
+        "replayProof": "uONon9rsfE8dY9RRZhqjufzyXb1jcdSNugh1HYkKXxI"
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 168,
+      "inventoryRods": 3,
+      "position": {
+        "x": 83.57776483569455,
+        "y": 73,
+        "z": 91.52562105914602
+      },
+      "player": {
+        "harm": {
+          "source": "minecraft:on_fire",
+          "ongoing": true,
+          "hpLossPerSecond": 1,
+          "options": [
+            "leave_fire",
+            "fire_resistance"
+          ],
+          "waterEvaporates": true,
+          "exits": [
+            "back 0.9m up1 remembered 3s (84,74,91)"
+          ]
+        },
+        "recentDamage": {
+          "cause": "on_fire",
+          "secondsAgo": 0
+        },
+        "stand": {
+          "here": {
+            "pushSafe": false,
+            "roof": true,
+            "walls": 3
+          },
+          "searchedSteps": 16
+        },
+        "pose": "standing",
+        "underWater": false,
+        "swimming": false,
+        "gliding": false,
+        "sprinting": false,
+        "crouching": false,
+        "onClimbable": false,
+        "inLava": false,
+        "horizontalCollision": false,
+        "verticalCollision": true,
+        "passenger": false,
+        "fireTicks": 21,
+        "exits": [
+          "back 0.9m up1 remembered 3s (84,74,91)"
+        ],
+        "hurtBy": "on_fire",
+        "groundAhead": {
+          "status": "blocked",
+          "at": 0.75
+        },
+        "health": 1.5466642379760742,
+        "maxHealth": 20,
+        "armor": 15,
+        "foodLevel": 20,
+        "saturation": 12.800000190734863,
+        "gameMode": "survival",
+        "onGround": true,
+        "inWater": false,
+        "onFire": true,
+        "air": 300,
+        "maxAir": 300,
+        "suffocating": false,
+        "fallDistance": 0,
+        "effects": []
+      }
+    },
+    {
+      "variant": "gap0",
+      "repeat": 1,
+      "s": 168.2,
+      "type": "use_item",
+      "args": {
+        "durationMs": 1700,
+        "expectedItemId": "minecraft:cooked_beef"
+      },
+      "result": {
+        "traceId": "bz-505",
+        "goalRevision": 1,
+        "actionId": "bz-505",
+        "commandId": "bz-505",
+        "actionType": "use_item",
+        "state": "CANCELLED",
+        "reasonCode": "ACTION_CANCELLED",
+        "message": "Lifecycle changed to DEAD",
+        "elapsedMs": 88,
+        "observedAtEpochMs": 1792901265793,
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "timing": {
+          "acceptedAtEpochMs": 1792901265705,
+          "startedAtEpochMs": 1792901265706,
+          "startedTick": 8570,
+          "endedTick": 8572
+        },
+        "replayProof": "HZJ2pzmlkXLUSzrVKlQKb0SszjRTQa_pDN9vLrEK5DA"
+      }
+    }
+  ]
+}

@@ -1,0 +1,6431 @@
+{
+  "schemaVersion": 1,
+  "scorer": "d38-measure",
+  "scoredAt": "2026-10-24T19:31:38.613Z",
+  "run": "w-desk-d38-end90-b-codex",
+  "raw": "..\\..\\..\\aa-run-fae8af21\\runtime\\headless-runs\\run-1792845270601-af2262ce\\q-mds6lo-49ab-LONG-r1-b590a683",
+  "evaluationReferences": [],
+  "identity": {
+    "agentId": "ff3928cf-8056-4b11-895a-a2d2ffa9abbe",
+    "agentName": "ha_q_mds6l_dsppo",
+    "seed": "20261009",
+    "profile": {
+      "provider": "codex",
+      "model": "gpt-6.1-sol",
+      "reasoningEffort": "low",
+      "serviceTier": "default"
+    },
+    "build": {
+      "commit": null,
+      "jar": {
+        "path": "C:\\Users\\player\\arena-runner\\jars\\d38-fae8af21.jar",
+        "sha256": "5b5f6ba7c45201635a68ff931a07b0958adeb90a0c5da970b780b86cbe147d57"
+      },
+      "coordinatorSha256": "9e9059c3a0a4aa9e34e744a34a6275cd2d6674623227611c2709b909c870f3be"
+    },
+    "checkpoint": "checkpoint-end"
+  },
+  "window": {
+    "startedAt": 1792845314996,
+    "observedThrough": 1792850714947,
+    "plannedEndAt": 1792850714996,
+    "windowMs": 5400000
+  },
+  "ending": {
+    "kind": "budget_end",
+    "reason": "WALL_CLOCK_BUDGET",
+    "at": 1792850715266,
+    "censored": true
+  },
+  "postRunFailure": null,
+  "censoring": {
+    "censored": true,
+    "unobservedRemainder": true,
+    "observedFirstLifeFailure": true,
+    "reason": "Continuation after the last observation is unobserved, including after a fixed budget. Observed first-life deaths remain failures."
+  },
+  "firstLife": {
+    "name": "first_life",
+    "samples": 254,
+    "startedAt": 1792845314996,
+    "endedAt": 1792845593623,
+    "deaths": 1,
+    "damageTakenCounterDelta": 354,
+    "healthDropLowerBound": 26.5933316,
+    "resources": {
+      "rods": {
+        "unit": "rod equivalents (rod=1, powder=0.5, eye=0.5)",
+        "supplied": 0,
+        "earned": null,
+        "held": 0,
+        "spent": null,
+        "lost": 0,
+        "observedGains": 0,
+        "recoveredOrEarned": 0,
+        "unexplainedDecrease": 0,
+        "peakHeld": 0,
+        "heldBeforeDeath": 0,
+        "earnedBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedGains": 0,
+          "exact": false
+        },
+        "spentBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedDecreases": 0,
+          "exact": false
+        },
+        "lostBasis": "Last sampled holdings dropped at an observed death; inferred loss of possession, not verified destruction or exact loss between samples."
+      },
+      "pearlsEyes": {
+        "unit": "pearl/eye equivalents",
+        "supplied": 2,
+        "earned": null,
+        "held": 0,
+        "spent": null,
+        "lost": 1,
+        "observedGains": 0,
+        "recoveredOrEarned": 0,
+        "unexplainedDecrease": 1,
+        "peakHeld": 2,
+        "heldBeforeDeath": 1,
+        "earnedBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedGains": 0,
+          "exact": false
+        },
+        "spentBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedDecreases": 1,
+          "exact": false
+        },
+        "lostBasis": "Last sampled holdings dropped at an observed death; inferred loss of possession, not verified destruction or exact loss between samples."
+      },
+      "gold": {
+        "unit": "barterable ingot equivalents (block=9, nugget=1/9)",
+        "supplied": 0,
+        "earned": null,
+        "held": 0,
+        "spent": null,
+        "lost": 0,
+        "observedGains": 0,
+        "recoveredOrEarned": 0,
+        "unexplainedDecrease": 0,
+        "peakHeld": 0,
+        "heldBeforeDeath": 0,
+        "earnedBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedGains": 0,
+          "exact": false
+        },
+        "spentBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedDecreases": 0,
+          "exact": false
+        },
+        "lostBasis": "Last sampled holdings dropped at an observed death; inferred loss of possession, not verified destruction or exact loss between samples."
+      }
+    },
+    "milestones": {
+      "wood": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "planks": {
+        "firstObservedAt": 1792845315004,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "crafting_table": {
+        "firstObservedAt": 1792845315004,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "wooden_pickaxe": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "stone": {
+        "firstObservedAt": 1792845315004,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "stone_pickaxe": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "furnace": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "cooked_food": {
+        "firstObservedAt": 1792845315004,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "iron_ingot": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "iron_pickaxe": {
+        "firstObservedAt": 1792845315004,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "iron_armour": {
+        "firstObservedAt": 1792845315004,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "bucket": {
+        "firstObservedAt": 1792845315004,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "diamond": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "obsidian": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "flint_and_steel": {
+        "firstObservedAt": 1792845315004,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "nether": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "fortress": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": null,
+        "reached": false
+      },
+      "blaze_rod": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "ender_pearl": {
+        "firstObservedAt": 1792845315004,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "blaze_powder": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "ender_eye": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "stronghold": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": null,
+        "reached": false
+      },
+      "end": {
+        "firstObservedAt": 1792845315004,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "dragon": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": null,
+        "reached": false
+      }
+    },
+    "status": "observed_death",
+    "durationMs": 278627,
+    "retentionRequirements": {
+      "rodsHeldAtStageEnd": false,
+      "pearlsOrEyesHeldAtStageEnd": false,
+      "required": {
+        "rods": 6,
+        "pearlsEyes": 12
+      }
+    },
+    "resourceBasis": "Inventory deltas. Earned/spent remain unknown without a causal receipt; positive deltas can be recovery, gifts or container transfers. Lost is the observed death-associated decrease, not item destruction. Counter units are vanilla tenths of HP."
+  },
+  "afterDeath": {
+    "name": "after_death",
+    "samples": 4655,
+    "startedAt": 1792845593623,
+    "endedAt": 1792850714947,
+    "deaths": 5,
+    "damageTakenCounterDelta": 1505,
+    "healthDropLowerBound": 113.66666570000001,
+    "resources": {
+      "rods": {
+        "unit": "rod equivalents (rod=1, powder=0.5, eye=0.5)",
+        "supplied": 0,
+        "earned": null,
+        "held": 0,
+        "spent": null,
+        "lost": 0,
+        "observedGains": 0,
+        "recoveredOrEarned": 0,
+        "unexplainedDecrease": 0,
+        "peakHeld": 0,
+        "earnedBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedGains": 0,
+          "exact": false
+        },
+        "spentBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedDecreases": 0,
+          "exact": false
+        },
+        "lostBasis": "Last sampled holdings dropped at an observed death; inferred loss of possession, not verified destruction or exact loss between samples."
+      },
+      "pearlsEyes": {
+        "unit": "pearl/eye equivalents",
+        "supplied": 0,
+        "earned": null,
+        "held": 0,
+        "spent": null,
+        "lost": 0,
+        "observedGains": 0,
+        "recoveredOrEarned": 0,
+        "unexplainedDecrease": 0,
+        "peakHeld": 0,
+        "earnedBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedGains": 0,
+          "exact": false
+        },
+        "spentBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedDecreases": 0,
+          "exact": false
+        },
+        "lostBasis": "Last sampled holdings dropped at an observed death; inferred loss of possession, not verified destruction or exact loss between samples."
+      },
+      "gold": {
+        "unit": "barterable ingot equivalents (block=9, nugget=1/9)",
+        "supplied": 0,
+        "earned": null,
+        "held": 0,
+        "spent": null,
+        "lost": 0,
+        "observedGains": 0,
+        "recoveredOrEarned": 0,
+        "unexplainedDecrease": 0,
+        "peakHeld": 0,
+        "earnedBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedGains": 0,
+          "exact": false
+        },
+        "spentBounds": {
+          "minimum": 0,
+          "maximum": null,
+          "classifiableObservedDecreases": 0,
+          "exact": false
+        },
+        "lostBasis": "Last sampled holdings dropped at an observed death; inferred loss of possession, not verified destruction or exact loss between samples."
+      }
+    },
+    "milestones": {
+      "wood": {
+        "firstObservedAt": 1792846143292,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "planks": {
+        "firstObservedAt": 1792845632891,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "crafting_table": {
+        "firstObservedAt": 1792845633990,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "wooden_pickaxe": {
+        "firstObservedAt": 1792845660391,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "stone": {
+        "firstObservedAt": 1792845676744,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "stone_pickaxe": {
+        "firstObservedAt": 1792845801537,
+        "heldAtStageEnd": true,
+        "reached": true
+      },
+      "furnace": {
+        "firstObservedAt": 1792846731281,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "cooked_food": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "iron_ingot": {
+        "firstObservedAt": 1792846771984,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "iron_pickaxe": {
+        "firstObservedAt": 1792846773081,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "iron_armour": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "bucket": {
+        "firstObservedAt": 1792846874238,
+        "heldAtStageEnd": false,
+        "reached": true
+      },
+      "diamond": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "obsidian": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "flint_and_steel": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "nether": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "fortress": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": null,
+        "reached": false
+      },
+      "blaze_rod": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "ender_pearl": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "blaze_powder": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "ender_eye": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "stronghold": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": null,
+        "reached": false
+      },
+      "end": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": false,
+        "reached": false
+      },
+      "dragon": {
+        "firstObservedAt": null,
+        "heldAtStageEnd": null,
+        "reached": false
+      }
+    },
+    "status": "censored",
+    "durationMs": 5121324,
+    "retentionRequirements": {
+      "rodsHeldAtStageEnd": false,
+      "pearlsOrEyesHeldAtStageEnd": false,
+      "required": {
+        "rods": 6,
+        "pearlsEyes": 12
+      }
+    },
+    "resourceBasis": "Inventory deltas. Earned/spent remain unknown without a causal receipt; positive deltas can be recovery, gifts or container transfers. Lost is the observed death-associated decrease, not item destruction. Counter units are vanilla tenths of HP."
+  },
+  "suppliedKit": {
+    "inventory": {
+      "rods": 0,
+      "pearlsEyes": 2,
+      "gold": 0
+    },
+    "reserveContainers": {
+      "rods": 0,
+      "pearlsEyes": 0,
+      "gold": 0
+    }
+  },
+  "observedDeaths": 6,
+  "firstLifeDeathTrace": {
+    "death": {
+      "at": 1792845593623,
+      "cause": "ha_q_mds6l_dsppo was slain by Enderman",
+      "source": "protocol"
+    },
+    "encounterStartAt": 1792845577826,
+    "hazards": [
+      {
+        "kind": "enderman",
+        "source": {
+          "type": "minecraft:enderman",
+          "entityId": "b048d699-b5f5-45d9-be9e-dbe76777229b",
+          "block": null,
+          "pos": {
+            "x": -19.05,
+            "y": 63,
+            "z": 17.68
+          }
+        },
+        "firstSensedAt": 1792845577826,
+        "watcherOpenedAt": 1792845578722,
+        "watcherDamageTakenHp": 49,
+        "advertisedRules": [
+          "gaze:enderman_gaze",
+          "angry:enderman_provoked"
+        ],
+        "firings": [
+          {
+            "rule": "gaze",
+            "atMs": 1792845578879,
+            "result": "done: looked away"
+          },
+          {
+            "rule": "angry",
+            "atMs": 1792845579877,
+            "result": "preempted: by gaze"
+          },
+          {
+            "rule": "gaze",
+            "atMs": 1792845579978,
+            "result": "done: looked away"
+          },
+          {
+            "rule": "angry",
+            "atMs": 1792845580726,
+            "result": "preempted: by gaze"
+          },
+          {
+            "rule": "gaze",
+            "atMs": 1792845580923,
+            "result": "done: looked away"
+          },
+          {
+            "rule": "angry",
+            "atMs": 1792845581426,
+            "result": "preempted: by gaze"
+          },
+          {
+            "rule": "gaze",
+            "atMs": 1792845584323,
+            "result": "done: looked away"
+          },
+          {
+            "rule": "angry",
+            "atMs": 1792845584825,
+            "result": "preempted: by charge"
+          },
+          {
+            "rule": "gaze",
+            "atMs": 1792845589474,
+            "result": "done: looked away"
+          },
+          {
+            "rule": "angry",
+            "atMs": 1792845589575,
+            "result": "running"
+          }
+        ]
+      }
+    ],
+    "liveReflexCoverage": [
+      {
+        "at": 1792845578324,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 6,
+            "expiresInS": 3345,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3345,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3345,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3345,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3345,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3408,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 1,
+            "expiresInS": 3408,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845578822,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 6,
+            "expiresInS": 3345,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3345,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3345,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3345,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3345,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3407,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 1,
+            "expiresInS": 3407,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845578876,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 7,
+            "expiresInS": 3345,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3345,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3345,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3345,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3345,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3407,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "cooldown",
+            "fired": 1,
+            "expiresInS": 3407,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845578972,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "cooldown",
+            "fired": 7,
+            "expiresInS": 3345,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3345,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3345,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3345,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3345,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3407,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "cooldown",
+            "fired": 1,
+            "expiresInS": 3407,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845579473,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 7,
+            "expiresInS": 3344,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3344,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3344,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3344,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3344,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3407,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3407,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845579524,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 7,
+            "expiresInS": 3344,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3344,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3344,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3344,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3344,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3406,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3406,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845579872,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 7,
+            "expiresInS": 3344,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3344,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3344,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3344,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 2,
+            "expiresInS": 3344,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3406,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3406,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845579974,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 8,
+            "expiresInS": 3344,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3344,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3344,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3344,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "cooldown",
+            "fired": 2,
+            "expiresInS": 3344,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3406,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3406,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845580477,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "cooldown",
+            "fired": 8,
+            "expiresInS": 3343,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3343,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3343,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3343,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3343,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3406,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3406,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845580723,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 8,
+            "expiresInS": 3343,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3343,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3343,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3343,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 3,
+            "expiresInS": 3343,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3405,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3405,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845580921,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 9,
+            "expiresInS": 3343,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3343,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3343,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3343,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "cooldown",
+            "fired": 3,
+            "expiresInS": 3343,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3405,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3405,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845581223,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "cooldown",
+            "fired": 9,
+            "expiresInS": 3343,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3343,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3343,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3343,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "cooldown",
+            "fired": 3,
+            "expiresInS": 3343,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3405,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3405,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845581272,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "cooldown",
+            "fired": 9,
+            "expiresInS": 3342,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3342,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3342,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3342,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "cooldown",
+            "fired": 3,
+            "expiresInS": 3342,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3405,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3405,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845581423,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "cooldown",
+            "fired": 9,
+            "expiresInS": 3342,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3342,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3342,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3342,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 4,
+            "expiresInS": 3342,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3405,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3405,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845581922,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 9,
+            "expiresInS": 3342,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3342,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3342,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3342,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 4,
+            "expiresInS": 3342,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3404,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3404,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845582422,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 9,
+            "expiresInS": 3341,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3341,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3341,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3341,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 4,
+            "expiresInS": 3341,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3404,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3404,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845582473,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 9,
+            "expiresInS": 3341,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3341,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3341,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3341,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 4,
+            "expiresInS": 3341,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3404,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3404,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845582523,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 9,
+            "expiresInS": 3341,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3341,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3341,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3341,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 4,
+            "expiresInS": 3341,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3403,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3403,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845583023,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 9,
+            "expiresInS": 3341,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3341,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3341,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3341,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 4,
+            "expiresInS": 3341,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3403,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3403,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845583423,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 9,
+            "expiresInS": 3340,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3340,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3340,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3340,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 4,
+            "expiresInS": 3340,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3403,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3403,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845583472,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 9,
+            "expiresInS": 3340,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3340,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3340,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3340,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 4,
+            "expiresInS": 3340,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3403,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3403,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845583973,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 9,
+            "expiresInS": 3340,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3340,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3340,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3340,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 4,
+            "expiresInS": 3340,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3402,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3402,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845584321,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 10,
+            "expiresInS": 3339,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3339,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3339,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3339,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "cooldown",
+            "fired": 4,
+            "expiresInS": 3339,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3402,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3402,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845584423,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "cooldown",
+            "fired": 10,
+            "expiresInS": 3339,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3339,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3339,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3339,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "cooldown",
+            "fired": 4,
+            "expiresInS": 3339,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3402,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3402,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845584523,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "cooldown",
+            "fired": 10,
+            "expiresInS": 3339,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3339,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3339,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3339,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "cooldown",
+            "fired": 4,
+            "expiresInS": 3339,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3401,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3401,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845584573,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "cooldown",
+            "fired": 10,
+            "expiresInS": 3339,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3339,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3339,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3339,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "cooldown",
+            "fired": 4,
+            "expiresInS": 3339,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3401,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3401,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845584823,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "cooldown",
+            "fired": 10,
+            "expiresInS": 3339,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3339,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3339,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3339,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 5,
+            "expiresInS": 3339,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3401,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3401,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845585375,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 10,
+            "expiresInS": 3338,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3338,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3338,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3338,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 5,
+            "expiresInS": 3338,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3401,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3401,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845585476,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 10,
+            "expiresInS": 3338,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3338,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3338,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3338,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "cooldown",
+            "fired": 5,
+            "expiresInS": 3338,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3401,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 2,
+            "expiresInS": 3401,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845585524,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 10,
+            "expiresInS": 3338,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3338,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3338,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3338,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "cooldown",
+            "fired": 5,
+            "expiresInS": 3338,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3400,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 2,
+            "expiresInS": 3400,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845585573,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 10,
+            "expiresInS": 3338,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3338,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3338,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3338,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "cooldown",
+            "fired": 5,
+            "expiresInS": 3338,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3400,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 2,
+            "expiresInS": 3400,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845586073,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 10,
+            "expiresInS": 3338,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3338,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3338,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3338,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 5,
+            "expiresInS": 3338,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3400,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 2,
+            "expiresInS": 3400,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845586573,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 10,
+            "expiresInS": 3337,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3337,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3337,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3337,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 5,
+            "expiresInS": 3337,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3399,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 2,
+            "expiresInS": 3399,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845586825,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 10,
+            "expiresInS": 3337,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3337,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3337,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3337,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 5,
+            "expiresInS": 3337,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3399,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 2,
+            "expiresInS": 3399,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845586875,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 10,
+            "expiresInS": 3337,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3337,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3337,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3337,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 5,
+            "expiresInS": 3337,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3399,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 2,
+            "expiresInS": 3399,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845587372,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 10,
+            "expiresInS": 3336,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3336,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3336,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3336,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 5,
+            "expiresInS": 3336,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3399,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 2,
+            "expiresInS": 3399,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845587623,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 10,
+            "expiresInS": 3336,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3336,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3336,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3336,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 5,
+            "expiresInS": 3336,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3398,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 2,
+            "expiresInS": 3398,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845587673,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 10,
+            "expiresInS": 3336,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3336,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3336,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3336,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 5,
+            "expiresInS": 3336,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3398,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 2,
+            "expiresInS": 3398,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845588174,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 10,
+            "expiresInS": 3336,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3336,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3336,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3336,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 5,
+            "expiresInS": 3336,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3398,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 2,
+            "expiresInS": 3398,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845588671,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 10,
+            "expiresInS": 3335,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3335,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3335,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3335,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 5,
+            "expiresInS": 3335,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3397,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 2,
+            "expiresInS": 3397,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845588773,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 10,
+            "expiresInS": 3335,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3335,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3335,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3335,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 5,
+            "expiresInS": 3335,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3397,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 2,
+            "expiresInS": 3397,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845588823,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 10,
+            "expiresInS": 3335,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3335,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3335,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3335,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 5,
+            "expiresInS": 3335,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3397,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 2,
+            "expiresInS": 3397,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845589323,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 10,
+            "expiresInS": 3334,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3334,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3334,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3334,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "armed",
+            "fired": 5,
+            "expiresInS": 3334,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3397,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "firing",
+            "fired": 2,
+            "expiresInS": 3397,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845589572,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "cooldown",
+            "fired": 11,
+            "expiresInS": 3334,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3334,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3334,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3334,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 6,
+            "expiresInS": 3334,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3396,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "cooldown",
+            "fired": 2,
+            "expiresInS": 3396,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845589622,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "cooldown",
+            "fired": 11,
+            "expiresInS": 3334,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3334,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3334,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3334,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 6,
+            "expiresInS": 3334,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3396,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "cooldown",
+            "fired": 2,
+            "expiresInS": 3396,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845589672,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "cooldown",
+            "fired": 11,
+            "expiresInS": 3334,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3334,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3334,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3334,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 6,
+            "expiresInS": 3334,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3396,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "cooldown",
+            "fired": 2,
+            "expiresInS": 3396,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845590172,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 11,
+            "expiresInS": 3334,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3334,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3334,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3334,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 6,
+            "expiresInS": 3334,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3396,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3396,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845590672,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 11,
+            "expiresInS": 3333,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3333,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3333,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3333,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 6,
+            "expiresInS": 3333,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3395,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3395,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845590722,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 11,
+            "expiresInS": 3333,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3333,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3333,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3333,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 6,
+            "expiresInS": 3333,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3395,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3395,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845591222,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 11,
+            "expiresInS": 3333,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3333,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3333,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3333,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 6,
+            "expiresInS": 3333,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3395,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3395,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845591623,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 11,
+            "expiresInS": 3332,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3332,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3332,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3332,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 6,
+            "expiresInS": 3332,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3394,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3394,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845591672,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 11,
+            "expiresInS": 3332,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3332,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3332,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3332,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 6,
+            "expiresInS": 3332,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3394,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3394,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845592174,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 11,
+            "expiresInS": 3332,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3332,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3332,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3332,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 6,
+            "expiresInS": 3332,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3394,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3394,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845592623,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 11,
+            "expiresInS": 3331,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3331,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3331,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3331,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 6,
+            "expiresInS": 3331,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3393,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3393,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845592673,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 11,
+            "expiresInS": 3331,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3331,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3331,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3331,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 6,
+            "expiresInS": 3331,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3393,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3393,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845593172,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 11,
+            "expiresInS": 3331,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3331,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3331,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3331,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 6,
+            "expiresInS": 3331,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3393,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3393,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      },
+      {
+        "at": 1792845593434,
+        "rules": [
+          {
+            "id": "gaze",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 11,
+            "expiresInS": 3330,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "cloud",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3330,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "ball",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 1,
+            "expiresInS": 3330,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "fall",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3330,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "angry",
+            "kind": "stance",
+            "state": "firing",
+            "fired": 6,
+            "expiresInS": 3330,
+            "coversRecordedHazard": true
+          },
+          {
+            "id": "suff",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 0,
+            "expiresInS": 3393,
+            "coversRecordedHazard": false
+          },
+          {
+            "id": "charge",
+            "kind": "trigger",
+            "state": "armed",
+            "fired": 2,
+            "expiresInS": 3393,
+            "coversRecordedHazard": false
+          }
+        ],
+        "coveringRules": [
+          "gaze",
+          "angry"
+        ],
+        "basis": "server observation status; live at observation time"
+      }
+    ],
+    "dispatchedCommands": [
+      {
+        "at": 1792845593410,
+        "source": "protocol",
+        "traceId": "native-fea70154-f8db-442e-86bc-356b0ab66db0-38-ff3928cf-8056-4b11-895a-a2d2ffa9-1",
+        "goalRevision": 1,
+        "actionId": "native:fea70154-f8db-442e-86bc-356b0ab66db0:38:ff3928cf-8056-4b11-895a-a2d2ffa9:1",
+        "actionType": "fight_target",
+        "arguments": {
+          "targetId": "b048d699-b5f5-45d9-be9e-dbe76777229b",
+          "pursue": false,
+          "shield": true,
+          "fleeAtHealth": 10,
+          "timeoutMs": 20000
+        },
+        "provenance": {
+          "provider": "codex",
+          "model": "gpt-6.1-sol",
+          "reasoningEffort": "low",
+          "serviceTier": "default",
+          "programId": "native-01a16dec-360b-7b21-aa02-e88b2f210ba8",
+          "programVersion": 1,
+          "sourceStepId": "exec-6d130649-e6d9-4769-9b86-6b094d1a7721",
+          "eventSequence": 796,
+          "traceId": "native-fea70154-f8db-442e-86bc-356b0ab66db0-38-ff3928cf-8056-4b11-895a-a2d2ffa9-1"
+        }
+      },
+      {
+        "at": 1792845593400,
+        "actionId": "native:fea70154-f8db-442e-86bc-356b0ab66db0:38:ff3928cf-8056-4b11-895a-a2d2ffa9:1",
+        "actionType": "fight_target",
+        "source": "coordinator"
+      }
+    ],
+    "ownership": [],
+    "damage": {
+      "taken": [
+        {
+          "at": 1792845581643,
+          "health": 16.220001,
+          "damageTakenCounter": 88,
+          "deathCounter": 0,
+          "position": {
+            "x": 4.983625685205795,
+            "y": 64.58268274250653,
+            "z": 15.08674730521144
+          },
+          "dimension": "minecraft:the_end",
+          "counts": {
+            "rods": 0,
+            "pearlsEyes": 1,
+            "gold": 0
+          },
+          "counterDelta": 38,
+          "hpLowerBound": 3.779999
+        },
+        {
+          "at": 1792845584944,
+          "health": 16.220001,
+          "damageTakenCounter": 126,
+          "deathCounter": 0,
+          "position": {
+            "x": 9.149266971523808,
+            "y": 64.58268274250653,
+            "z": 11.444845001342006
+          },
+          "dimension": "minecraft:the_end",
+          "counts": {
+            "rods": 0,
+            "pearlsEyes": 1,
+            "gold": 0
+          },
+          "counterDelta": 38,
+          "hpLowerBound": 3.779999
+        },
+        {
+          "at": 1792845586043,
+          "health": 14.873334,
+          "damageTakenCounter": 164,
+          "deathCounter": 0,
+          "position": {
+            "x": 11.163703161171926,
+            "y": 66.76495011647752,
+            "z": 13.934180701616993
+          },
+          "dimension": "minecraft:the_end",
+          "counts": {
+            "rods": 0,
+            "pearlsEyes": 1,
+            "gold": 0
+          },
+          "counterDelta": 38,
+          "hpLowerBound": 1.346667
+        },
+        {
+          "at": 1792845587144,
+          "health": 11.860001,
+          "damageTakenCounter": 202,
+          "deathCounter": 0,
+          "position": {
+            "x": 10.242488852907078,
+            "y": 64.91429687607155,
+            "z": 14.22117767449182
+          },
+          "dimension": "minecraft:the_end",
+          "counts": {
+            "rods": 0,
+            "pearlsEyes": 1,
+            "gold": 0
+          },
+          "counterDelta": 38,
+          "hpLowerBound": 3.0133329999999994
+        },
+        {
+          "at": 1792845588246,
+          "health": 8.513334,
+          "damageTakenCounter": 240,
+          "deathCounter": 0,
+          "position": {
+            "x": 7.6131738473851485,
+            "y": 64,
+            "z": 11.365644806002063
+          },
+          "dimension": "minecraft:the_end",
+          "counts": {
+            "rods": 0,
+            "pearlsEyes": 1,
+            "gold": 0
+          },
+          "counterDelta": 38,
+          "hpLowerBound": 3.346667
+        },
+        {
+          "at": 1792845589342,
+          "health": 5.000001,
+          "damageTakenCounter": 278,
+          "deathCounter": 0,
+          "position": {
+            "x": 4.55368778957537,
+            "y": 64,
+            "z": 10.957239551682623
+          },
+          "dimension": "minecraft:the_end",
+          "counts": {
+            "rods": 0,
+            "pearlsEyes": 1,
+            "gold": 0
+          },
+          "counterDelta": 38,
+          "hpLowerBound": 3.5133330000000003
+        },
+        {
+          "at": 1792845590435,
+          "health": 1.3533344,
+          "damageTakenCounter": 316,
+          "deathCounter": 0,
+          "position": {
+            "x": 4.300000011920929,
+            "y": 64,
+            "z": 12.904168325407808
+          },
+          "dimension": "minecraft:the_end",
+          "counts": {
+            "rods": 0,
+            "pearlsEyes": 1,
+            "gold": 0
+          },
+          "counterDelta": 38,
+          "hpLowerBound": 3.6466666
+        }
+      ],
+      "dealt": [],
+      "dealtTotal": null,
+      "basis": "Taken: vanilla counter deltas (tenths of HP), health-drop lower bounds, and per-hazard Watcher damage (can overlap, do not sum). Dealt: unknown without attributed damage receipts; attack dispatch is not a hit."
+    },
+    "gaps": [
+      "Hands and aim ownership were not recorded; dispatched action types cannot prove controller ownership.",
+      "Damage dealt is unknown unless an attributed damage receipt is present."
+    ],
+    "traceWindow": {
+      "from": 1792845577826,
+      "through": 1792845593623,
+      "basis": "Watcher first sensed/opened time"
+    },
+    "controllerSnapshots": [
+      {
+        "at": 1792845578324,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "charge",
+          "ms": 2950,
+          "detail": "moving 4 cell(s) left"
+        },
+        "input": {
+          "active": true,
+          "forward": 0.9958943128585815,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": true,
+          "attack": false,
+          "use": false,
+          "yaw": 131.3582000732422,
+          "pitch": 0,
+          "selectedSlot": 7,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845578822,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "charge",
+          "ms": 3450,
+          "detail": "moving 1 cell(s) left"
+        },
+        "input": {
+          "active": true,
+          "forward": 1,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": true,
+          "attack": false,
+          "use": false,
+          "yaw": 88.9303207397461,
+          "pitch": 0,
+          "selectedSlot": 7,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845578876,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "gaze",
+          "ms": 0,
+          "detail": "looking away"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 133.93032836914062,
+          "pitch": 45,
+          "selectedSlot": 7,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845578972,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 177.57383728027344,
+          "pitch": 68.5,
+          "selectedSlot": 7,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845579473,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 177.57383728027344,
+          "pitch": 68.5,
+          "selectedSlot": 7,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845579524,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 177.57383728027344,
+          "pitch": 68.5,
+          "selectedSlot": 7,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845579872,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "angry",
+          "ms": 0,
+          "detail": "shield raised"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": -173.64869689941406,
+          "pitch": 23.5,
+          "selectedSlot": 7,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845579974,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "gaze",
+          "ms": 0,
+          "detail": "looking away"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -52.421077728271484,
+          "pitch": -12.72146224975586,
+          "selectedSlot": 7,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845580477,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -29.279884338378906,
+          "pitch": 58.683563232421875,
+          "selectedSlot": 7,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845580723,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "angry",
+          "ms": 0,
+          "detail": "shield raised"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": -31.292417526245117,
+          "pitch": 19.455055236816406,
+          "selectedSlot": 7,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845580921,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "gaze",
+          "ms": 0,
+          "detail": "looking away"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": -13.308406829833984,
+          "pitch": 49.43068313598633,
+          "selectedSlot": 7,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845581223,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 37.427852630615234,
+          "pitch": 69.82920837402344,
+          "selectedSlot": 7,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845581272,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 37.427852630615234,
+          "pitch": 69.82920837402344,
+          "selectedSlot": 7,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845581423,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "angry",
+          "ms": 0,
+          "detail": "shield raised"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": 36.730430603027344,
+          "pitch": 55.393348693847656,
+          "selectedSlot": 7,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845581922,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "angry",
+          "ms": 500,
+          "detail": "shield raised"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": 45.75957107543945,
+          "pitch": 4.813507080078125,
+          "selectedSlot": 7,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845582422,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "angry",
+          "ms": 1000,
+          "detail": "shield raised"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": 45.709293365478516,
+          "pitch": 4.619059085845947,
+          "selectedSlot": 7,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845582473,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "angry",
+          "ms": 1050,
+          "detail": "shield raised"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": 45.83453369140625,
+          "pitch": 5.108323097229004,
+          "selectedSlot": 7,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845582523,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "angry",
+          "ms": 1100,
+          "detail": "blocked 1 hit(s)"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": 46.09096908569336,
+          "pitch": 6.1076436042785645,
+          "selectedSlot": 7,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845583023,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "angry",
+          "ms": 1600,
+          "detail": "blocked 1 hit(s)"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": 47.8865852355957,
+          "pitch": 30.7708740234375,
+          "selectedSlot": 7,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845583423,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "angry",
+          "ms": 2000,
+          "detail": "blocked 1 hit(s)"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": 47.70146179199219,
+          "pitch": 8.803041458129883,
+          "selectedSlot": 7,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845583472,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "angry",
+          "ms": 2050,
+          "detail": "blocked 2 hit(s)"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": 48.310874938964844,
+          "pitch": 10.748749732971191,
+          "selectedSlot": 7,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845583973,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "angry",
+          "ms": 2550,
+          "detail": "blocked 2 hit(s)"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": 52.59023666381836,
+          "pitch": 18.355487823486328,
+          "selectedSlot": 7,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845584321,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "gaze",
+          "ms": 0,
+          "detail": "looking away"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 94.89608001708984,
+          "pitch": 49.530460357666016,
+          "selectedSlot": 7,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845584423,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 134.61868286132812,
+          "pitch": 69.85913848876953,
+          "selectedSlot": 7,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845584523,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 134.61868286132812,
+          "pitch": 69.85913848876953,
+          "selectedSlot": 7,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845584573,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": null,
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 134.61868286132812,
+          "pitch": 69.85913848876953,
+          "selectedSlot": 7,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845584823,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "angry",
+          "ms": 0,
+          "detail": "shield raised"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": 89.61868286132812,
+          "pitch": 46.04765701293945,
+          "selectedSlot": 7,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845585375,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "angry",
+          "ms": 500,
+          "detail": "shield raised"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": 56.38716125488281,
+          "pitch": 4.132427215576172,
+          "selectedSlot": 7,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845585476,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "charge",
+          "ms": 0,
+          "detail": "moving 4 cell(s) left"
+        },
+        "input": {
+          "active": true,
+          "forward": 0.9970439076423645,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": true,
+          "attack": false,
+          "use": false,
+          "yaw": 67.7273941040039,
+          "pitch": 0,
+          "selectedSlot": 7,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845585524,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "charge",
+          "ms": 50,
+          "detail": "moving 4 cell(s) left"
+        },
+        "input": {
+          "active": true,
+          "forward": 1,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": true,
+          "attack": false,
+          "use": false,
+          "yaw": 72.75733947753906,
+          "pitch": 0,
+          "selectedSlot": 7,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845585573,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "charge",
+          "ms": 100,
+          "detail": "moving 4 cell(s) left; lost 3.0 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 1,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": true,
+          "attack": false,
+          "use": false,
+          "yaw": 73.25459289550781,
+          "pitch": 0,
+          "selectedSlot": 7,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845586073,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "charge",
+          "ms": 600,
+          "detail": "moving 4 cell(s) left; lost 2.3 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 1,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": true,
+          "attack": false,
+          "use": false,
+          "yaw": 132.42210388183594,
+          "pitch": 0,
+          "selectedSlot": 7,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845586573,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "charge",
+          "ms": 1100,
+          "detail": "moving 4 cell(s) left; lost 1.9 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 1,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": true,
+          "attack": false,
+          "use": false,
+          "yaw": 139.16299438476562,
+          "pitch": 0,
+          "selectedSlot": 7,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845586825,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "charge",
+          "ms": 1350,
+          "detail": "moving 4 cell(s) left; lost 1.9 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 1,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": true,
+          "attack": false,
+          "use": false,
+          "yaw": 139.78794860839844,
+          "pitch": 0,
+          "selectedSlot": 7,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845586875,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "charge",
+          "ms": 1400,
+          "detail": "moving 4 cell(s) left; lost 5.7 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 1,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": true,
+          "attack": false,
+          "use": false,
+          "yaw": 139.81719970703125,
+          "pitch": 0,
+          "selectedSlot": 7,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845587372,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "charge",
+          "ms": 1900,
+          "detail": "moving 4 cell(s) left; lost 5.4 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 1,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": true,
+          "attack": false,
+          "use": false,
+          "yaw": 152.63302612304688,
+          "pitch": 0,
+          "selectedSlot": 7,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845587623,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "charge",
+          "ms": 2150,
+          "detail": "moving 4 cell(s) left; lost 5.1 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 1,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": true,
+          "attack": false,
+          "use": false,
+          "yaw": 155.14865112304688,
+          "pitch": 0,
+          "selectedSlot": 7,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845587673,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "charge",
+          "ms": 2200,
+          "detail": "moving 4 cell(s) left; lost 8.8 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 1,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": true,
+          "attack": false,
+          "use": false,
+          "yaw": 155.2696990966797,
+          "pitch": 0,
+          "selectedSlot": 7,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845588174,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "charge",
+          "ms": 2700,
+          "detail": "moving 4 cell(s) left; lost 8.7 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 0.997601330280304,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": true,
+          "attack": false,
+          "use": false,
+          "yaw": -101.47686004638672,
+          "pitch": 0,
+          "selectedSlot": 7,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845588671,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "charge",
+          "ms": 3200,
+          "detail": "moving 3 cell(s) left; lost 8.6 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 0.9989901185035706,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": true,
+          "attack": false,
+          "use": false,
+          "yaw": 98.17526245117188,
+          "pitch": 0,
+          "selectedSlot": 7,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845588773,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "charge",
+          "ms": 3300,
+          "detail": "moving 2 cell(s) left; lost 8.6 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 1,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": true,
+          "attack": false,
+          "use": false,
+          "yaw": 95.01615905761719,
+          "pitch": 0,
+          "selectedSlot": 7,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845588823,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "charge",
+          "ms": 3350,
+          "detail": "moving 2 cell(s) left; lost 12.4 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 1,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": true,
+          "attack": false,
+          "use": false,
+          "yaw": 95.43885803222656,
+          "pitch": 0,
+          "selectedSlot": 7,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845589323,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "charge",
+          "ms": 3850,
+          "detail": "moving 1 cell(s) left; lost 12.2 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 0.9983468651771545,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": true,
+          "attack": false,
+          "use": false,
+          "yaw": -50.70901107788086,
+          "pitch": 0,
+          "selectedSlot": 7,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845589572,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "angry",
+          "ms": 0,
+          "detail": "shield raised"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": -103.49131774902344,
+          "pitch": 24.667041778564453,
+          "selectedSlot": 7,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845589622,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "angry",
+          "ms": 50,
+          "detail": "shield raised"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": -114.84211730957031,
+          "pitch": 11.548883438110352,
+          "selectedSlot": 7,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845589672,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "angry",
+          "ms": 100,
+          "detail": "shield raised; lost 3.8 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": -117.97956085205078,
+          "pitch": 6.741237640380859,
+          "selectedSlot": 7,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845590172,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "angry",
+          "ms": 600,
+          "detail": "shield raised; lost 3.8 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": -179.06814575195312,
+          "pitch": 14.593157768249512,
+          "selectedSlot": 7,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845590672,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "angry",
+          "ms": 1100,
+          "detail": "shield raised; lost 3.8 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": -179.93923950195312,
+          "pitch": 7.677783489227295,
+          "selectedSlot": 7,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845590722,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "angry",
+          "ms": 1150,
+          "detail": "blocked 1 hit(s); lost 3.8 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": -177.3996124267578,
+          "pitch": 10.100902557373047,
+          "selectedSlot": 7,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845591222,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "angry",
+          "ms": 1650,
+          "detail": "blocked 1 hit(s); lost 3.8 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": -164.7804718017578,
+          "pitch": 27.461261749267578,
+          "selectedSlot": 7,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845591623,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "angry",
+          "ms": 2050,
+          "detail": "blocked 1 hit(s); lost 3.8 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": -165.82786560058594,
+          "pitch": 7.338869094848633,
+          "selectedSlot": 7,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845591672,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "angry",
+          "ms": 2100,
+          "detail": "blocked 2 hit(s); lost 3.8 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": -163.76388549804688,
+          "pitch": 8.613720893859863,
+          "selectedSlot": 7,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845592174,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "angry",
+          "ms": 2600,
+          "detail": "blocked 2 hit(s); lost 3.8 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": -156.63499450683594,
+          "pitch": 27.672607421875,
+          "selectedSlot": 7,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845592623,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "angry",
+          "ms": 3050,
+          "detail": "blocked 2 hit(s); lost 3.8 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": -157.36891174316406,
+          "pitch": 7.834780693054199,
+          "selectedSlot": 7,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845592673,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "angry",
+          "ms": 3100,
+          "detail": "blocked 3 hit(s); lost 3.8 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": -153.146240234375,
+          "pitch": 9.186491966247559,
+          "selectedSlot": 7,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845593172,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "angry",
+          "ms": 3600,
+          "detail": "blocked 3 hit(s); lost 3.8 health"
+        },
+        "input": {
+          "active": true,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": true,
+          "yaw": 151.47837829589844,
+          "pitch": -4.263874053955078,
+          "selectedSlot": 7,
+          "hand": "off_hand"
+        },
+        "activeHand": "off_hand",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      },
+      {
+        "at": 1792845593434,
+        "handsOwner": null,
+        "aimOwner": null,
+        "currentAction": {
+          "active": false
+        },
+        "reflexFiring": {
+          "id": "angry",
+          "ms": 3850,
+          "detail": "blocked 3 hit(s) (fight); lost 3.8 health"
+        },
+        "input": {
+          "active": false,
+          "forward": 0,
+          "strafe": 0,
+          "jump": false,
+          "sneak": false,
+          "sprint": false,
+          "attack": false,
+          "use": false,
+          "yaw": 154.51492309570312,
+          "pitch": -28.92974090576172,
+          "selectedSlot": 7,
+          "hand": "main_hand"
+        },
+        "activeHand": "none",
+        "mainHand": "minecraft:bow",
+        "offHand": "minecraft:shield",
+        "basis": "observed controllers and inputs; null owner means no ownership proof"
+      }
+    ],
+    "actionReceipts": [
+      {
+        "at": 1792845593424,
+        "traceId": "native-fea70154-f8db-442e-86bc-356b0ab66db0-38-ff3928cf-8056-4b11-895a-a2d2ffa9-1",
+        "goalRevision": 1,
+        "actionId": "native:fea70154-f8db-442e-86bc-356b0ab66db0:38:ff3928cf-8056-4b11-895a-a2d2ffa9:1",
+        "commandId": "native:fea70154-f8db-442e-86bc-356b0ab66db0:38:ff3928cf-8056-4b11-895a-a2d2ffa9:1",
+        "actionType": "fight_target",
+        "state": "FAILED",
+        "reasonCode": "LOW_HEALTH_BAILOUT",
+        "message": "body idle; no retreat performed; health 1.4; onGround=true; footing below center: minecraft:end_stone at 3,63,15; Health 1.4 reached fleeAtHealth 10.0; repeating this threshold cannot attack until health rises; choose retreat or cover now; minecraft:enderman is 1.0 above you, 1.5 horizontal; melee cells: not checked; target airborne=false, verticalGap=0.0m, outOfVerticalReach=false; body: input idle, motion moving, onFire=false (0.0s), contact=none; nearest known water: none known; non-burning ground: (3.5,64,15.5) 0.6m remembered 1s (ground does not extinguish; routes unverified; hazards/attackers may remain)",
+        "elapsedMs": 2,
+        "observedAtEpochMs": 1792845593424,
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "timing": {
+          "acceptedAtEpochMs": 1792845593422,
+          "startedAtEpochMs": 1792845593424,
+          "startedTick": 6162,
+          "endedTick": 6162
+        }
+      }
+    ],
+    "lastObservationAt": 1792845593434,
+    "lastObservationAgeAtDeathMs": 189,
+    "coordinatorEvents": [
+      {
+        "event": "reflexes_fired",
+        "agentId": "ff3928cf-8056-4b11-895a-a2d2ffa9abbe",
+        "goalRevision": 1,
+        "events": [
+          "charge:done"
+        ],
+        "at": 1792845578885,
+        "mono": 292986.2
+      },
+      {
+        "event": "reflexes_fired",
+        "agentId": "ff3928cf-8056-4b11-895a-a2d2ffa9abbe",
+        "goalRevision": 1,
+        "events": [
+          "gaze:done"
+        ],
+        "at": 1792845578978,
+        "mono": 293079.9
+      },
+      {
+        "event": "reflexes_fired",
+        "agentId": "ff3928cf-8056-4b11-895a-a2d2ffa9abbe",
+        "goalRevision": 1,
+        "events": [
+          "angry:preempted"
+        ],
+        "at": 1792845579983,
+        "mono": 294084.6
+      },
+      {
+        "event": "reflexes_fired",
+        "agentId": "ff3928cf-8056-4b11-895a-a2d2ffa9abbe",
+        "goalRevision": 1,
+        "events": [
+          "gaze:done"
+        ],
+        "at": 1792845580487,
+        "mono": 294588.6
+      },
+      {
+        "event": "reflexes_fired",
+        "agentId": "ff3928cf-8056-4b11-895a-a2d2ffa9abbe",
+        "goalRevision": 1,
+        "events": [
+          "angry:preempted"
+        ],
+        "at": 1792845580927,
+        "mono": 295028.3
+      },
+      {
+        "event": "reflexes_fired",
+        "agentId": "ff3928cf-8056-4b11-895a-a2d2ffa9abbe",
+        "goalRevision": 1,
+        "events": [
+          "gaze:done"
+        ],
+        "at": 1792845581231,
+        "mono": 295332.3
+      },
+      {
+        "event": "reflexes_fired",
+        "agentId": "ff3928cf-8056-4b11-895a-a2d2ffa9abbe",
+        "goalRevision": 1,
+        "events": [
+          "angry:preempted"
+        ],
+        "at": 1792845584328,
+        "mono": 298430.1
+      },
+      {
+        "event": "reflexes_fired",
+        "agentId": "ff3928cf-8056-4b11-895a-a2d2ffa9abbe",
+        "goalRevision": 1,
+        "events": [
+          "gaze:done"
+        ],
+        "at": 1792845584429,
+        "mono": 298530.9
+      },
+      {
+        "event": "reflexes_fired",
+        "agentId": "ff3928cf-8056-4b11-895a-a2d2ffa9abbe",
+        "goalRevision": 1,
+        "events": [
+          "angry:preempted"
+        ],
+        "at": 1792845585484,
+        "mono": 299586.1
+      },
+      {
+        "event": "reflexes_fired",
+        "agentId": "ff3928cf-8056-4b11-895a-a2d2ffa9abbe",
+        "goalRevision": 1,
+        "events": [
+          "charge:timeout",
+          "gaze:done"
+        ],
+        "at": 1792845589581,
+        "mono": 303682.2
+      },
+      {
+        "event": "native_tool_action_completed",
+        "agentId": "ff3928cf-8056-4b11-895a-a2d2ffa9abbe",
+        "goalRevision": 1,
+        "actionId": "native:fea70154-f8db-442e-86bc-356b0ab66db0:38:ff3928cf-8056-4b11-895a-a2d2ffa9:1",
+        "state": "FAILED",
+        "reasonCode": "LOW_HEALTH_BAILOUT",
+        "durationMs": 34,
+        "failure": {
+          "changed": "input applied",
+          "blockedBy": "body idle; no retreat performed; health 1.4; onGround=true; footing below center: minecraft:end_stone at 3,63,15; Health 1.4 reached fleeAtHealth 10.0; repeating this threshold cannot attack until health rises; choose retreat or cover now; minecraft:enderman is 1.0 above you, 1.5 horizontal; melee cells: not checked; target airborne=false, verticalGap=0.0m, outOfVerticalReach=false; body: input idle, motion moving, onFire=false (0.0s), contact=none; nearest known water: none known; non-burning ground: (3.5,64,15.5) 0.6m remembered 1s (ground does not extinguish; routes unverified; hazards/attackers may remain)",
+          "validWhen": "your health stays above fleeAtHealth"
+        },
+        "message": "body idle; no retreat performed; health 1.4; onGround=true; footing below center: minecraft:end_stone at 3,63,15; Health 1.4 reached fleeAtHealth 10.0; repeating this threshold cannot attack until health rises; choose retreat or cover now; minecraft:enderman is 1.0 above you, 1.5 horizontal; melee cells: not checked; target airborne=false, verticalGap=0.0m, outOfVerticalReach=false; body: input idle, motion moving, onFire=false (0.0s), contact=none; nearest known water: none known; non-burning ground: (3.5,64,15.5) 0.6m remembered 1s (ground does not extinguish; routes unverified; hazards/attackers may remain)",
+        "executionStarted": true,
+        "physicalAttempted": true,
+        "failureClass": "action",
+        "javaElapsedMs": 2,
+        "javaEndedAtEpochMs": 1792845593424,
+        "javaAcceptedAtEpochMs": 1792845593422,
+        "javaStartedAtEpochMs": 1792845593424,
+        "javaStartedTick": 6162,
+        "javaEndedTick": 6162,
+        "at": 1792845593434,
+        "mono": 307535.4
+      }
+    ]
+  },
+  "timing": {
+    "decisionSegments": 478,
+    "decisionP50Ms": 5156.759549999842,
+    "usageRecords": 400,
+    "usageRecordP50Ms": 5,
+    "basis": "completed provider decision segments; usage notification timing shown separately, never substituted"
+  },
+  "coverage": {
+    "protocolRecords": 31029,
+    "samples": 4909,
+    "watcherFiles": 1,
+    "diagnostics": []
+  }
+}

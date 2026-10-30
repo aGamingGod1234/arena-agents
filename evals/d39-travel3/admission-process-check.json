@@ -1,0 +1,6 @@
+{
+  "unit": "d39-travel3-games-second.service",
+  "observedCommands": [
+    "flock -w 0.5 10"
+  ]
+}

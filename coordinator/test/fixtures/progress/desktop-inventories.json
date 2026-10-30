@@ -1,0 +1,146 @@
+[
+  {
+    "name": "before-first-death",
+    "source": "task-world first death lostInventory",
+    "items": [
+      {
+        "itemId": "minecraft:stone_pickaxe",
+        "count": 1
+      },
+      {
+        "itemId": "minecraft:cooked_porkchop",
+        "count": 2
+      },
+      {
+        "itemId": "minecraft:dirt",
+        "count": 18
+      },
+      {
+        "itemId": "minecraft:cobblestone",
+        "count": 8
+      },
+      {
+        "itemId": "minecraft:stone_sword",
+        "count": 1
+      },
+      {
+        "itemId": "minecraft:stick",
+        "count": 2
+      },
+      {
+        "itemId": "minecraft:stone_axe",
+        "count": 1
+      },
+      {
+        "itemId": "minecraft:wooden_pickaxe",
+        "count": 1
+      },
+      {
+        "itemId": "minecraft:birch_planks",
+        "count": 16
+      },
+      {
+        "itemId": "minecraft:crafting_table",
+        "count": 1
+      },
+      {
+        "itemId": "minecraft:cooked_mutton",
+        "count": 5
+      },
+      {
+        "itemId": "minecraft:oak_sapling",
+        "count": 1
+      },
+      {
+        "itemId": "minecraft:oak_log",
+        "count": 7
+      },
+      {
+        "itemId": "minecraft:furnace",
+        "count": 1
+      },
+      {
+        "itemId": "minecraft:white_wool",
+        "count": 2
+      },
+      {
+        "itemId": "minecraft:mutton",
+        "count": 2
+      },
+      {
+        "itemId": "minecraft:coal",
+        "count": 10
+      }
+    ]
+  },
+  {
+    "name": "late-stone-tools",
+    "source": "tool-responses row 16574, observation inventory",
+    "items": [
+      {
+        "itemId": "minecraft:stone_pickaxe",
+        "count": 1
+      },
+      {
+        "itemId": "minecraft:stone_sword",
+        "count": 1
+      },
+      {
+        "itemId": "minecraft:stick",
+        "count": 1
+      },
+      {
+        "itemId": "minecraft:dirt",
+        "count": 64
+      },
+      {
+        "itemId": "minecraft:stone_axe",
+        "count": 1
+      },
+      {
+        "itemId": "minecraft:wooden_pickaxe",
+        "count": 1
+      },
+      {
+        "itemId": "minecraft:cobblestone",
+        "count": 11
+      },
+      {
+        "itemId": "minecraft:oak_log",
+        "count": 2
+      },
+      {
+        "itemId": "minecraft:oak_sapling",
+        "count": 1
+      },
+      {
+        "itemId": "minecraft:cooked_beef",
+        "count": 5
+      },
+      {
+        "itemId": "minecraft:leather",
+        "count": 1
+      },
+      {
+        "itemId": "minecraft:cooked_porkchop",
+        "count": 3
+      },
+      {
+        "itemId": "minecraft:furnace",
+        "count": 1
+      },
+      {
+        "itemId": "minecraft:crafting_table",
+        "count": 1
+      },
+      {
+        "itemId": "minecraft:leaf_litter",
+        "count": 5
+      },
+      {
+        "itemId": "minecraft:coal",
+        "count": 10
+      }
+    ]
+  }
+]
