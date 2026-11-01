@@ -708,6 +708,35 @@ test('stopping the Claude tool server during listener startup leaves no live rou
 	} finally { await server.stop(); }
 });
 
+test('the Claude tool server answers JSON-RPC errors with the request id and the matching code', async () => {
+	const server = new ClaudeToolServer();
+	const route = await server.register({ callTool: async (name) => { throw new Error(`body lost while running ${name}`); } });
+	const post = async (body) => {
+		const response = await fetch(route.url, { method: 'POST', headers: { 'content-type': 'application/json', authorization: `Bearer ${route.token}` }, body });
+		return { status: response.status, body: response.status === 200 ? await response.json() : null };
+	};
+	const rpc = (message) => post(JSON.stringify({ jsonrpc: '2.0', ...message }));
+	const error = ({ body }) => ({ id: body.id, code: body.error?.code });
+	try {
+		// Only a body that cannot be parsed, or carries no usable id, gets a null id.
+		assert.deepEqual(error(await post('{"jsonrpc":"2.0","id":1,')), { id: null, code: -32700 });
+		assert.deepEqual(error(await post('[]')), { id: null, code: -32600 });
+		assert.deepEqual(error(await rpc({ id: { nested: true }, method: 'ping' })), { id: null, code: -32600 });
+		assert.deepEqual(error(await post(JSON.stringify({ jsonrpc: '1.0', id: 4, method: 'ping' }))), { id: 4, code: -32600 });
+		assert.deepEqual(error(await rpc({ id: 5, method: 42 })), { id: 5, code: -32600 });
+		assert.deepEqual(error(await rpc({ id: 'unknown-6', method: 'resources/list' })), { id: 'unknown-6', code: -32601 });
+		assert.deepEqual(error(await rpc({ id: 7, method: 'tools/list', params: 'all' })), { id: 7, code: -32602 });
+		assert.deepEqual(error(await rpc({ id: 8, method: 'tools/call', params: { arguments: {} } })), { id: 8, code: -32602 });
+		assert.deepEqual(error(await rpc({ id: 9, method: 'tools/call', params: { name: 'say', arguments: 'hello' } })), { id: 9, code: -32602 });
+		// A tool that throws used to come back as a null-id parse error, which Claude Code cannot match to its call.
+		const failed = await rpc({ id: 'call-10', method: 'tools/call', params: { name: 'say', arguments: { message: 'hi' } } });
+		assert.deepEqual(error(failed), { id: 'call-10', code: -32603 });
+		assert.match(failed.body.error.message, /body lost while running say/);
+		assert.deepEqual((await rpc({ id: 11, method: 'ping' })).body, { jsonrpc: '2.0', id: 11, result: {} });
+		assert.equal((await rpc({ method: 'notifications/initialized' })).status, 202);
+	} finally { await server.stop(); }
+});
+
 test('removing a Claude agent while its tool route registers unregisters the late route', async () => {
 	const h = await harness();
 	let releaseRegister;
