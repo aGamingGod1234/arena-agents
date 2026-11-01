@@ -434,8 +434,14 @@ Mine one observed, in-range block coordinate with its exact current blockId. It 
 
 timeoutMs defaults to 15000 and accepts 1..600000ms, matching act and sequence break_block. Program deadlines still apply.
 
+`vein:true` with an optional `maxBlocks` (1..64, default 32) runs act mine_vein on that log or ore instead: the whole tree or ore vein in one call (timeoutMs defaults to 120000). expectedBlockId, autoAim and acceptLavaRisk do not apply to it.
+
 ```json executor-call
 {"tool":"mine","arguments":{"x":11,"y":64,"z":10,"expectedBlockId":"minecraft:oak_log","timeoutMs":15000}}
+```
+
+```json executor-call
+{"tool":"mine","arguments":{"x":11,"y":64,"z":10,"vein":true,"maxBlocks":32}}
 ```
 
 ### say
@@ -716,6 +722,16 @@ Ways down, measured with an iron pickaxe (provider-free, 12 surface spots, 4 see
 
 ```json executor-call
 {"tool":"act","arguments":{"actionType":"dig_to","arguments":{"pattern":"shaft","y":-55,"timeoutMs":600000}}}
+```
+
+### mine_vein
+
+Fields: `x`, `y`, `z` (a seen log, stem or ore), `maxBlocks` optional (1..64, default 32), `timeoutMs` (default 120000).
+
+One call fells the tree or mines the ore vein that block belongs to, at body speed, instead of one mine call per block. It counts only blocks you have seen (touching corner to corner, one log species, an ore with its deepslate twin); each block is an ordinary break_block with its own tool choice and every gate (sight, reach, LAVA_BEHIND, UNSEEN_BELOW, NO_TOOL for a wasted ore). A tree: it walks to a seen standing cell beside the trunk base, cuts the two lowest trunk logs, steps into the trunk's column and cuts every log above looking up (up to six above the feet), cutting leaves that hide a branch log. It refuses before any swing with TREE_OUT_OF_REACH when a seen log is beyond that reach, TREE_TOO_BIG above maxBlocks, or NO_STANCE with no seen standing cell beside the trunk, so it never leaves floating logs it saw. An ore vein: it mines the vein's blocks in reach and sight from where you stand, nearest first, as breaking each reveals the next. It never breaks a block you stand on or anything under you, and never walks except beside a trunk and into its column. It stops with the facts so far on LAVA_AHEAD or LAVA_OPENED, DAMAGE_TAKEN, HOSTILE_NEAR (within 12), INVENTORY_FULL or VEIN_TIMEOUT; success is TREE_FELLED or VEIN_MINED, and every result lists seen blocks of it left and why (out of reach, not in sight, under the body). NOTHING_MINED: no block of it was in reach and sight.
+
+```json executor-call
+{"tool":"act","arguments":{"actionType":"mine_vein","arguments":{"x":11,"y":64,"z":10,"maxBlocks":32,"timeoutMs":120000}}}
 ```
 
 ### cast_obsidian

@@ -24,6 +24,7 @@ public enum ActionType {
 	DROP_ITEM("drop_item"),
 	NAVIGATE_TO("navigate_to"),
 	DIG_TO("dig_to"),
+	MINE_VEIN("mine_vein"),
 	BUILD_SHELTER("build_shelter"),
 	CAST_OBSIDIAN("cast_obsidian"),
 	BARTER_UNTIL("barter_until"),

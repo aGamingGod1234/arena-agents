@@ -190,6 +190,8 @@ export const MINECRAFT_DYNAMIC_TOOLS = Object.freeze([
 		timeoutMs: integerSchema(MIN_DURATION_MS, MAX_DURATION_MS),
 		autoAim: { type: 'boolean' },
 		acceptLavaRisk: { type: 'boolean' },
+		vein: { type: 'boolean' },
+		maxBlocks: integerSchema(1, 64),
 	}, ['x', 'y', 'z'])),
 	tool('say', objectSchema({
 		message: { type: 'string', minLength: 1, maxLength: MAX_CHAT_LENGTH },
@@ -362,7 +364,7 @@ function repairToolArguments(name, value) {
 		case 'act': case 'startAction': case 'replaceAction':
 			args.arguments = repairAction(args.actionType, args.arguments, 'arguments.');
 			break;
-		case 'mine': return done(repairAction('break_block', args));
+		case 'mine': return args.vein === true ? done(args) : done(repairAction('break_block', args));
 		case 'sequence':
 			if (Array.isArray(args.actions)) {
 				// mine is a tool, not an actionType; DeepSeek wrote it as a step 24 times in five runs. Run the steps the mine
@@ -653,10 +655,17 @@ function normalizeMinecraftToolArguments(name, value) {
 			};
 		}
 		case 'mine':
-			requireExactKeys(args, ['x', 'y', 'z', 'expectedBlockId', 'timeoutMs', 'autoAim', 'acceptLavaRisk']);
+			requireExactKeys(args, ['x', 'y', 'z', 'expectedBlockId', 'timeoutMs', 'autoAim', 'acceptLavaRisk', 'vein', 'maxBlocks']);
+			if (optionalBoolean(args.vein, false, 'vein')) {
+				// The whole tree or ore vein in one call; each block is still an ordinary break with every gate.
+				for (const key of ['expectedBlockId', 'autoAim', 'acceptLavaRisk']) if (args[key] !== undefined) invalid(`${key} does not apply to vein:true`);
+				const { vein: _vein, ...veinArguments } = args;
+				return normalizeMinecraftToolArguments('act', { actionType: 'mine_vein', arguments: veinArguments });
+			}
+			if (args.maxBlocks !== undefined) invalid('maxBlocks needs vein:true');
 			try {
 				const autoAim = optionalBoolean(args.autoAim, false, 'autoAim');
-				const { autoAim: _autoAim, ...miningArguments } = args;
+				const { autoAim: _autoAim, vein: _vein, ...miningArguments } = args;
 				const normalized = normalizeMinecraftToolArguments('act', { actionType: 'break_block', arguments: miningArguments });
 				const action = { type: normalized.actionType, ...normalized.arguments };
 				if (autoAim) {
@@ -705,6 +714,7 @@ function normalizeMinecraftToolArguments(name, value) {
 			if (args.actionType === 'break_block') actionArguments = { timeoutMs: 15_000, ...actionArguments };
 			if (args.actionType === 'build_shelter') actionArguments = { timeoutMs: 120_000, ...actionArguments };
 			if (args.actionType === 'dig_to') actionArguments = { timeoutMs: 600_000, ...actionArguments };
+			if (args.actionType === 'mine_vein') actionArguments = { timeoutMs: 120_000, ...actionArguments };
 			if (args.actionType === 'cast_obsidian' || args.actionType === 'barter_until') actionArguments = { timeoutMs: 300_000, ...actionArguments };
 			try {
 				const normalizedArguments = stripActionType(validateAction({ type: args.actionType, ...actionArguments }));

@@ -106,7 +106,7 @@ public final class ServerActionExecutor {
 		}
 	}
 	private static final Set<ActionType> ARENA_SCRIPT_PRIMITIVES = Set.of(
-			ActionType.MOVE_TO, ActionType.NAVIGATE_TO, ActionType.TRAVEL_TO, ActionType.DIG_TO, ActionType.BUILD_SHELTER, ActionType.CAST_OBSIDIAN, ActionType.BARTER_UNTIL, ActionType.CONTROL, ActionType.CONTROL_SEQUENCE, ActionType.LOOK_AT, ActionType.ATTACK,
+			ActionType.MOVE_TO, ActionType.NAVIGATE_TO, ActionType.TRAVEL_TO, ActionType.DIG_TO, ActionType.MINE_VEIN, ActionType.BUILD_SHELTER, ActionType.CAST_OBSIDIAN, ActionType.BARTER_UNTIL, ActionType.CONTROL, ActionType.CONTROL_SEQUENCE, ActionType.LOOK_AT, ActionType.ATTACK,
 			ActionType.SELECT_ITEM, ActionType.USE_ITEM, ActionType.BREAK_BLOCK, ActionType.PLACE_BLOCK,
 			ActionType.CHAT, ActionType.WAIT, ActionType.SET_DOOR, ActionType.PICK_UP_ITEM, ActionType.DROP_ITEM,
 			ActionType.TRANSFER_CONTAINER, ActionType.CRAFT_INVENTORY, ActionType.CRAFT_TABLE,
@@ -868,6 +868,13 @@ public final class ServerActionExecutor {
 						System.currentTimeMillis()).fightThrough(arguments.has("fightThrough") && bool(arguments, "fightThrough")));
 			}
 			case DIG_TO -> ActiveAction.controller(request, player, digController(arguments));
+			case MINE_VEIN -> {
+				BlockPos at = blockPosition(arguments);
+				int maxBlocks = arguments.has("maxBlocks") ? integer(arguments, "maxBlocks")
+						: dev.agaminggod.arenaagents.server.runtime.controller.VeinPlan.DEFAULT_MAX_BLOCKS;
+				yield ActiveAction.controller(request, player, new dev.agaminggod.arenaagents.server.runtime.controller.ServerVeinController(
+						at, maxBlocks, integer(arguments, "timeoutMs"), System.currentTimeMillis(), (body, cell, timeoutMs) -> veinBreak(request, body, cell, timeoutMs)));
+			}
 			case BUILD_SHELTER -> ActiveAction.controller(request, player, shelterController(request, arguments));
 			// Model-chosen goal skills: the model picks the site or item and the count; the body repeats the clicks.
 			case CAST_OBSIDIAN -> ActiveAction.controller(request, player, new ServerCastObsidianController(
@@ -1915,6 +1922,46 @@ public final class ServerActionExecutor {
 				return placeBlock(protection, body, at, face, item, DesiredBlockState.parse(null, expectedBlockId(item)), false).placed()
 						? null : "Vanilla placement did not place a block";
 			}
+		};
+	}
+
+	/**
+	 * One break_block for mine_vein, through break_block's own admission gates (sight, reach, lava behind, an unseen
+	 * drop under the feet, a wasted ore, protection) and its own tool choice. Refusals are thrown to the controller.
+	 */
+	private ServerController veinBreak(ServerActionRequest parent, ServerPlayer body, BlockPos at, long timeoutMs) {
+		if (!protection.mayModifyBlock(body, body.level(), at) || !body.level().mayInteract(body, at)
+				|| body.level().getServer().isUnderSpawnProtection(body.level(), at, body))
+			throw new AgentDomainException("PROTECTION_DENIED", "Breaking " + coordinates(at) + " was denied");
+		BreakTarget target = validateBreakTarget(body, at, null);
+		String lava = lavaBehind(body, at);
+		if (lava != null) throw new AgentDomainException("LAVA_BEHIND", "Lava is " + lava + "; breaking " + target.blockId() + " at " + coordinates(at) + " may let it flow in");
+		String unseen = unseenDropUnderFeet(body, at);
+		if (unseen != null) throw new AgentDomainException("UNSEEN_BELOW", unseen);
+		String wasted = wastedOre(body, at);
+		if (wasted != null) throw new AgentDomainException("NO_TOOL", wasted);
+		JsonObject args = new JsonObject();
+		args.addProperty("x", at.getX()); args.addProperty("y", at.getY()); args.addProperty("z", at.getZ());
+		args.addProperty("timeoutMs", timeoutMs); args.addProperty("expectedBlockId", target.blockId());
+		ServerActionRequest internal = new ServerActionRequest(parent.agentId(), parent.goalRevision(), parent.actionId(),
+				ActionType.BREAK_BLOCK, args, parent.provenance(), parent.traceId());
+		ActiveAction mine = ActiveAction.breakBlock(internal, body, at, timeoutMs, target.blockId(), target.blockId(), target.aim());
+		mine.selectsBreakTool = true;
+		mine.breakNamesBlock = true;
+		mine.plantProtection = cell -> {
+			if (!protection.mayModifyBlock(body, body.level(), cell) || !body.level().mayInteract(body, cell)
+					|| body.level().getServer().isUnderSpawnProtection(body.level(), cell, body))
+				throw new AgentDomainException("PROTECTION_DENIED", "Clearing the obstructing plant was denied");
+		};
+		return new ServerController() {
+			public TickResult tick(ServerPlayer player, long now) {
+				ServerActionResult result = mine.tick(now);
+				if (result == null) return TickResult.running(0.0D);
+				mine.cleanup();
+				return result.state() == ServerActionState.SUCCEEDED ? TickResult.succeeded(result.reasonCode(), result.message())
+						: TickResult.failed(result.reasonCode(), result.message(), 0.0D);
+			}
+			public void cancel(ServerPlayer player) { mine.cancel("mine_vein ended"); }
 		};
 	}
 

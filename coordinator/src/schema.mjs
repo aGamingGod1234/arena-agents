@@ -156,6 +156,11 @@ export function validateAction(value) {
 			if (action.count !== undefined) requireIntRange(action.count, 'action.count', 1, 64);
 			requireDuration(action.timeoutMs, 'action.timeoutMs');
 			break;
+		case 'mine_vein':
+			requireCoordinates(action, true, 'action');
+			if (action.maxBlocks !== undefined) requireIntRange(action.maxBlocks, 'action.maxBlocks', 1, 64);
+			requireDuration(action.timeoutMs, 'action.timeoutMs');
+			break;
 		case 'barter_until':
 			requireText(action.itemId, 'action.itemId', MAX_IDENTIFIER_LENGTH);
 			requireIntRange(action.count, 'action.count', 1, 64);

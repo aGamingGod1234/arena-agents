@@ -84,6 +84,23 @@ test('action aliases retain defaults, exact fields, and explicit mine autoAim ex
 });
 
 
+test('mine vein:true runs mine_vein with only its own fields', () => {
+	const at = { x: 1, y: 64, z: 2 };
+	// One call for the whole tree or vein: before, every block was its own mine call (plus a select_tool).
+	const tree = normalizeMinecraftToolCall('mine', { ...at, vein: true });
+	assert.deepEqual(tree, { kind: 'action', actionType: 'mine_vein', arguments: { timeoutMs: 120_000, ...at } });
+	assert.deepEqual(normalizeMinecraftToolCall('mine', { ...at, vein: true, maxBlocks: 64, timeoutMs: 5_000 }).arguments, { ...at, maxBlocks: 64, timeoutMs: 5_000 });
+	assert.deepEqual(normalizeMinecraftToolCall('act', { actionType: 'mine_vein', arguments: at }), tree);
+	assert.equal(normalizeMinecraftToolCall('mine', { ...at, vein: false }).actionType, 'break_block');
+	for (const extra of [{ autoAim: true }, { expectedBlockId: 'minecraft:oak_log' }, { acceptLavaRisk: true }, { maxBlocks: 0 }, { maxBlocks: 65 }]) {
+		assert.throws(() => normalizeMinecraftToolCall('mine', { ...at, vein: true, ...extra }), invalid);
+	}
+	assert.throws(() => normalizeMinecraftToolCall('mine', { ...at, maxBlocks: 8 }), invalid);
+	assert.doesNotThrow(() => validateAction({ type: 'mine_vein', ...at, timeoutMs: 1_000 }));
+	assert.throws(() => validateAction({ type: 'mine_vein', ...at, maxBlocks: 1.5, timeoutMs: 1_000 }));
+	assert.throws(() => validateAction({ type: 'mine_vein', x: 1, y: 64, timeoutMs: 1_000 }));
+});
+
 test('template tuning at either mistaken boundary is repaired once and conflicts identify the legal call', () => {
 	for (const args of [
 		{ standing: { template: 'survival', fightAtHealth: 12 } },

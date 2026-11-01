@@ -4695,7 +4695,7 @@
     },
     {
       "id": "program-reference:9bc07a565044a37a:program-predicate:0",
-      "parent": "program-reference:25f902457a13dc85",
+      "parent": "program-reference:696558ec419d937e",
       "claim": "Every advertised player member emits its exact primitive with accepted arguments and resumes its own correlated receipt",
       "predicate": "Every advertised player member emits its exact primitive with accepted arguments and resumes its own correlated receipt",
       "checks": [
@@ -4743,7 +4743,7 @@
     },
     {
       "id": "program-reference:9bc07a565044a37a:program-predicate:1",
-      "parent": "program-reference:25f902457a13dc85",
+      "parent": "program-reference:696558ec419d937e",
       "claim": "Floating item positions cannot be used as navigateTo targets",
       "predicate": "Floating item positions cannot be used as navigateTo targets",
       "checks": [
@@ -4791,7 +4791,7 @@
     },
     {
       "id": "program-reference:9bc07a565044a37a:program-predicate:2",
-      "parent": "program-reference:25f902457a13dc85",
+      "parent": "program-reference:696558ec419d937e",
       "claim": "Exact stable targets reject selector fallback strings",
       "predicate": "Exact stable targets reject selector fallback strings",
       "checks": [
@@ -4839,7 +4839,7 @@
     },
     {
       "id": "program-reference:9bc07a565044a37a:program-predicate:3",
-      "parent": "program-reference:25f902457a13dc85",
+      "parent": "program-reference:696558ec419d937e",
       "claim": "Zero-argument respawn emits an empty coordinate-free action",
       "predicate": "Zero-argument respawn emits an empty coordinate-free action",
       "checks": [
@@ -4887,7 +4887,7 @@
     },
     {
       "id": "program-reference:9bc07a565044a37a:program-predicate:4",
-      "parent": "program-reference:25f902457a13dc85",
+      "parent": "program-reference:696558ec419d937e",
       "claim": "repeatUntil executes authored callbacks until the predicate or literal bound",
       "predicate": "repeatUntil executes authored callbacks until the predicate or literal bound",
       "checks": [
@@ -4935,7 +4935,7 @@
     },
     {
       "id": "program-reference:9bc07a565044a37a:program-predicate:5",
-      "parent": "program-reference:25f902457a13dc85",
+      "parent": "program-reference:696558ec419d937e",
       "claim": "Exhausted repeatUntil checkpoints instead of inventing another action",
       "predicate": "Exhausted repeatUntil checkpoints instead of inventing another action",
       "checks": [
@@ -4983,7 +4983,7 @@
     },
     {
       "id": "program-reference:9bc07a565044a37a:program-predicate:6",
-      "parent": "program-reference:25f902457a13dc85",
+      "parent": "program-reference:696558ec419d937e",
       "claim": "checkpoint emits the authored reason and stops this continuation",
       "predicate": "checkpoint emits the authored reason and stops this continuation",
       "checks": [
@@ -5031,7 +5031,7 @@
     },
     {
       "id": "program-reference:9bc07a565044a37a:program-predicate:7",
-      "parent": "program-reference:25f902457a13dc85",
+      "parent": "program-reference:696558ec419d937e",
       "claim": "finish emits the authored summary and stops this continuation",
       "predicate": "finish emits the authored summary and stops this continuation",
       "checks": [
@@ -5079,7 +5079,7 @@
     },
     {
       "id": "program-reference:9bc07a565044a37a:program-predicate:8",
-      "parent": "program-reference:25f902457a13dc85",
+      "parent": "program-reference:696558ec419d937e",
       "claim": "tryResult preserves the real succeeded/reasonCode action outcome",
       "predicate": "tryResult preserves the real succeeded/reasonCode action outcome",
       "checks": [
@@ -5409,7 +5409,7 @@
     },
     {
       "id": "program-reference:9bc07a565044a37a:program-predicate:onError",
-      "parent": "program-reference:25f902457a13dc85",
+      "parent": "program-reference:696558ec419d937e",
       "predicate": "An explicit tryResult physical-call onError receives the failed correlated receipt before repeated-failure escalation, returns the authored recovery result, skips success, and keeps fallback-action and recursion fences.",
       "status": "checked",
       "checks": [
@@ -9655,6 +9655,30 @@
       "status": "checked"
     },
     {
+      "predicate": "normalizeMinecraftToolCall accepts the advertised \"mine_vein\" alternative in a valid replaceAction.actionType witness and rejects an unknown enum member.",
+      "checks": [
+        {
+          "file": "coordinator/test/tool-contract-schema.test.mjs",
+          "test": "contract enum tool:replaceAction:enum:actionType:mine_vein",
+          "type": "node-behavior"
+        }
+      ],
+      "id": "tool:replaceAction:enum:actionType:mine_vein",
+      "contract": {
+        "id": "tool:replaceAction:enum:actionType:mine_vein",
+        "claim": "\"mine_vein\"",
+        "kind": "enum",
+        "tool": "replaceAction",
+        "path": "actionType",
+        "value": "mine_vein"
+      },
+      "location": {
+        "file": "coordinator/src/native-minecraft-tools.mjs",
+        "line": 117
+      },
+      "status": "checked"
+    },
+    {
       "predicate": "normalizeMinecraftToolCall accepts the advertised \"cast_obsidian\" alternative in a valid replaceAction.actionType witness and rejects an unknown enum member.",
       "checks": [
         {
@@ -11008,6 +11032,30 @@
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
         "line": 124
+      },
+      "status": "checked"
+    },
+    {
+      "predicate": "normalizeMinecraftToolCall accepts the advertised \"mine_vein\" alternative in a valid startAction.actionType witness and rejects an unknown enum member.",
+      "checks": [
+        {
+          "file": "coordinator/test/tool-contract-schema.test.mjs",
+          "test": "contract enum tool:startAction:enum:actionType:mine_vein",
+          "type": "node-behavior"
+        }
+      ],
+      "id": "tool:startAction:enum:actionType:mine_vein",
+      "contract": {
+        "id": "tool:startAction:enum:actionType:mine_vein",
+        "claim": "\"mine_vein\"",
+        "kind": "enum",
+        "tool": "startAction",
+        "path": "actionType",
+        "value": "mine_vein"
+      },
+      "location": {
+        "file": "coordinator/src/native-minecraft-tools.mjs",
+        "line": 121
       },
       "status": "checked"
     },
@@ -17620,7 +17668,7 @@
       }
     },
     {
-      "predicate": "break_block (the mine tool) selects MiningTools.forBreak's slot when its break starts: the fastest non-worn harvesting item in slots 0-35 (main inventory swapped into the hotbar), the held item on a tie, a held enchanted harvesting item kept, a worn tool only when nothing else harvests; exact expected identity/reach remain authoritative; break outcomes name the held item; an ore no carried tool harvests is refused NO_TOOL.",
+      "predicate": "break_block (the mine tool) selects MiningTools.forBreak's slot when its break starts: the fastest non-worn harvesting item in slots 0-35 (main inventory swapped into the hotbar), the held item on a tie, a held enchanted harvesting item kept, a worn tool only when nothing else harvests; exact expected identity/reach remain authoritative; break outcomes name the held item; an ore no carried tool harvests is refused NO_TOOL.; vein:true normalizes to act mine_vein with x,y,z, optional maxBlocks (1..64) and timeoutMs (default 120000), rejecting expectedBlockId, autoAim and acceptLavaRisk, and maxBlocks without vein.",
       "checks": [
         {
           "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/BreakSightlineVerification.java",
@@ -17674,12 +17722,23 @@
           "test": "verifyChoices",
           "type": "java-behavior",
           "entryPoint": "verifyCore"
+        },
+        {
+          "file": "coordinator/test/native-tool-normalization-regressions.test.mjs",
+          "test": "mine vein:true runs mine_vein with only its own fields",
+          "type": "node-behavior"
+        },
+        {
+          "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/VeinPlanVerification.java",
+          "test": "verifyFamilies + verifyTree + verifyTallTree + verifyVein",
+          "type": "java-behavior",
+          "entryPoint": "verifyCore"
         }
       ],
-      "id": "tool:mine:description:3d00e9c0268987e2",
+      "id": "tool:mine:description:9d0b69929307592e",
       "contract": {
-        "id": "tool:mine:description:3d00e9c0268987e2",
-        "claim": "Mine the chosen block with exact blockId; holds the fastest carried tool that harvests it (a held enchanted one stays); an ore no carried tool harvests fails NO_TOOL unswung.",
+        "id": "tool:mine:description:9d0b69929307592e",
+        "claim": "Mine the chosen block with exact blockId; holds the fastest carried tool that harvests it (a held enchanted one stays); an ore no carried tool harvests fails NO_TOOL unswung. vein:true (maxBlocks, default 32) fells the whole tree or ore vein of that log/ore in one call (mine_vein).",
         "kind": "description",
         "tool": "mine"
       },
@@ -17688,7 +17747,7 @@
         "line": 139
       },
       "status": "partial",
-      "reason": "The tool choice is witnessed on fixture inventories; the selection at break start and the hotbar swap have no world-level fixture."
+      "reason": "Contract removed; explicitly review its removal and delete this retired entry."
     },
     {
       "predicate": "Production outline ray finds player-reproducible visible block parts (including obscured centers/slivers), rejects hidden/unreachable parts, and eases aim; exact expected identity/reach remain authoritative.; Mining eases from an opposite heading and nearby drops enter inventory without a pickup action",
@@ -18108,6 +18167,60 @@
         "file": "coordinator/src/native-minecraft-tools.mjs",
         "line": 185
       }
+    },
+    {
+      "predicate": "A real accepted witness for mine.vein passes normalizeMinecraftToolCall; all advertised type/required/extra/range/length/item constraints reject counterexamples before dispatch.",
+      "checks": [
+        {
+          "file": "coordinator/test/tool-contract-schema.test.mjs",
+          "test": "contract schema tool:mine:schema:vein",
+          "type": "node-behavior"
+        }
+      ],
+      "id": "tool:mine:schema:vein",
+      "contract": {
+        "id": "tool:mine:schema:vein",
+        "claim": "{\"type\":\"boolean\"}",
+        "kind": "schema",
+        "tool": "mine",
+        "path": "vein",
+        "contract": {
+          "type": "boolean"
+        }
+      },
+      "location": {
+        "file": "coordinator/src/native-minecraft-tools.mjs",
+        "line": 182
+      },
+      "status": "checked"
+    },
+    {
+      "predicate": "A real accepted witness for mine.maxBlocks passes normalizeMinecraftToolCall; all advertised type/required/extra/range/length/item constraints reject counterexamples before dispatch.",
+      "checks": [
+        {
+          "file": "coordinator/test/tool-contract-schema.test.mjs",
+          "test": "contract schema tool:mine:schema:maxBlocks",
+          "type": "node-behavior"
+        }
+      ],
+      "id": "tool:mine:schema:maxBlocks",
+      "contract": {
+        "id": "tool:mine:schema:maxBlocks",
+        "claim": "{\"type\":\"integer\",\"minimum\":1,\"maximum\":64}",
+        "kind": "schema",
+        "tool": "mine",
+        "path": "maxBlocks",
+        "contract": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 64
+        }
+      },
+      "location": {
+        "file": "coordinator/src/native-minecraft-tools.mjs",
+        "line": 182
+      },
+      "status": "checked"
     },
     {
       "id": "tool:mine:schema:view",
@@ -19709,6 +19822,30 @@
       "status": "checked"
     },
     {
+      "predicate": "normalizeMinecraftToolCall accepts the advertised \"mine_vein\" alternative in a valid act.actionType witness and rejects an unknown enum member.",
+      "checks": [
+        {
+          "file": "coordinator/test/tool-contract-schema.test.mjs",
+          "test": "contract enum tool:act:enum:actionType:mine_vein",
+          "type": "node-behavior"
+        }
+      ],
+      "id": "tool:act:enum:actionType:mine_vein",
+      "contract": {
+        "id": "tool:act:enum:actionType:mine_vein",
+        "claim": "\"mine_vein\"",
+        "kind": "enum",
+        "tool": "act",
+        "path": "actionType",
+        "value": "mine_vein"
+      },
+      "location": {
+        "file": "coordinator/src/native-minecraft-tools.mjs",
+        "line": 201
+      },
+      "status": "checked"
+    },
+    {
       "predicate": "normalizeMinecraftToolCall accepts the advertised \"cast_obsidian\" alternative in a valid act.actionType witness and rejects an unknown enum member.",
       "checks": [
         {
@@ -20359,7 +20496,7 @@
       }
     },
     {
-      "predicate": "Retrace follows actual walked turns across deaths; dimension transitions retain portal edges and require reissue after the standard lifecycle cancellation. Current legs retain ordinary travel safety. No connected route fails NO_ROUTE.; acceptLavaRisk (use_item, interact_block) is a validated optional boolean that lets a lava pour proceed past LAVA_POUR_AT_BODY.",
+      "predicate": "Retrace follows actual walked turns across deaths; dimension transitions retain portal edges and require reissue after the standard lifecycle cancellation. Current legs retain ordinary travel safety. No connected route fails NO_ROUTE.; acceptLavaRisk (use_item, interact_block) is a validated optional boolean that lets a lava pour proceed past LAVA_POUR_AT_BODY.; mine_vein(x,y,z,maxBlocks?,timeoutMs) is advertised exactly as validation requires.",
       "checks": [
         {
           "file": "coordinator/test/native-minecraft-tools.test.mjs",
@@ -21441,6 +21578,30 @@
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
         "line": 209
+      },
+      "status": "checked"
+    },
+    {
+      "predicate": "normalizeMinecraftToolCall accepts the advertised \"mine_vein\" alternative in a valid sequence.actions[].actionType witness and rejects an unknown enum member.",
+      "checks": [
+        {
+          "file": "coordinator/test/tool-contract-schema.test.mjs",
+          "test": "contract enum tool:sequence:enum:actions[].actionType:mine_vein",
+          "type": "node-behavior"
+        }
+      ],
+      "id": "tool:sequence:enum:actions[].actionType:mine_vein",
+      "contract": {
+        "id": "tool:sequence:enum:actions[].actionType:mine_vein",
+        "claim": "\"mine_vein\"",
+        "kind": "enum",
+        "tool": "sequence",
+        "path": "actions[].actionType",
+        "value": "mine_vein"
+      },
+      "location": {
+        "file": "coordinator/src/native-minecraft-tools.mjs",
+        "line": 206
       },
       "status": "checked"
     },
@@ -25104,10 +25265,10 @@
           "test": "shelter is available through the production action boundary with a body timeout"
         }
       ],
-      "id": "program-reference:25f902457a13dc85",
+      "id": "program-reference:696558ec419d937e",
       "contract": {
-        "id": "program-reference:25f902457a13dc85",
-        "claim": "Physical calls: player.moveTo({ x, y, z, tolerance, sprint? }), player.control({ forward, strafe, jump, sneak, sprint, attack, use, yaw, pitch, selectedSlot, hand, ticks, instantLook? }), player.controlSequence({ frames, maxTicks }), player.lookAt({ x, y, z }), player.attack({ targetId, timeoutMs }), player.fightTarget({ targetId, timeoutMs, desiredRange?, fleeAtHealth?, continueWithAttackers?, targetPolicy?, includePlayers?, pursue?, sneak?, shield?, collect?, untilItem?, untilCount?, roof?, single? }), player.fightUntil({ mob, untilItem, untilCount, weapon?, collect?, fleeAtHealth?, x?, y?, z?, radius?, roof?, timeoutMs? }), player.fleeFrom({ targetId, distance, timeoutMs }), player.selectItem({ itemId }), player.useItem({ durationMs, hand?, expectedItemId?, mode?, aimX?, aimY?, aimZ?, acceptLavaRisk? }), player.breakBlock({ x, y, z, timeoutMs, expectedBlockId?, acceptLavaRisk? }), player.pickUpItem({ targetSelector }), player.placeBlock({ x, y, z, face, itemId, desiredState?, faceMode? }), player.chat({ message, audience?, recipientId? }), player.wait(durationMs), player.setDoor({ x, y, z, open }), player.dropItem({ slot, count }), player.navigateTo({ x, y, z, tolerance, sprint, timeoutMs }), player.buildShelter({ x, y, z, opening, itemId, timeoutMs, roof? }), player.digTo({ timeoutMs, pattern?, y?, x?, z?, heading?, maxBlocks?, throughCaves?, maxShaftY?, stopWhenSeen? }), player.castObsidian({ x, y, z, timeoutMs, axis?, frame?, count? }), player.barterUntil({ itemId, count, timeoutMs }), player.travelTo({ x?, y?, z?, yaw?, distance?, tolerance?, build?, retrace?, dimension?, stopWhenSeen?, minHealth?, fightThrough?, timeoutMs? }), player.transferContainer({ x, y, z, sourceKind, sourceSlot, destinationKind, destinationSlot, count, expectedItemId, timeoutMs }), player.craftInventory({ recipeId, count, timeoutMs }), player.craftTable({ recipeId, x, y, z, count, timeoutMs }), player.furnaceTransaction({ x, y, z, operation, timeoutMs, inventorySlot?, count?, expectedItemId?, fuelSlot?, fuelCount?, expectedFuelItemId? }), player.equipItem({ sourceSlot, targetSlot, expectedItemId }), player.selectTool({ sourceSlot, hotbarSlot, expectedItemId, minRemainingDurability }), player.blockWithShield({ durationMs }), player.useRanged({ targetId, drawDurationMs, timeoutMs?, aimX?, aimY?, aimZ?, trackTarget?, untilDead?, fleeAtHealth?, collect?, untilItem?, untilCount?, single? }), player.interactBlock({ x, y, z, face, hand, expectedItemId, hitX?, hitY?, hitZ?, acceptLavaRisk? }), player.interactEntity({ targetId, hand, expectedItemId, hitX?, hitY?, hitZ? }), player.dismount(), player.startFallFlying(), player.wakeUp(), player.setFlight({ enabled }), player.writeSign({ x, y, z, front, lines, expectedLines }), player.editBook({ slot, pages, expectedFingerprint, title? }), player.menuClick({ menuId, containerId, stateId, slot, button, clickType, expectedItemId, expectedCount, expectedFingerprint? }), player.menuClose({ menuId, containerId, stateId }), player.beaconEffects({ menuId, containerId, stateId, primaryEffectId, secondaryEffectId }), player.menuTransfer({ menuId, sourceSlot, destinationSlot, count, expectedItemId, timeoutMs, containerId?, stateId? }), player.menuButton({ menuId, buttonId, timeoutMs, containerId?, stateId? }), player.anvilRename({ menuId, name, timeoutMs, containerId?, stateId? }), player.respawn(), player.mine({ x, y, z, timeoutMs, expectedBlockId?, acceptLavaRisk? }), player.place({ x, y, z, face, itemId, desiredState?, faceMode? }). Chat: public by default; audience:\"proximity\" nearby, audience:\"direct\" needs observed player stableId or PLAYER_MESSAGE sourceId as recipientId. When useful, acknowledge briefly with the first concrete world action in the same program. Never replace a physical goal with chat-only output. Interactions need hand/observed held item; menus need observed menuId/raw slot indexes; unknown modded menus fail closed. moveTo requires tolerance 0.01..16 (sprint boolean, default true); navigateTo also requires sprint and timeoutMs 1..600000. Give them the far target over observed safe ground (about 30 blocks per leg). Mining proves a broken block, not collected inventory. A break result naming a faster inventory tool means selectTool to it before the next block. Collect stragglers from fresh world.items with player.pickUpItem({ targetSelector: drop.stableId }); do not navigate to floating item coordinates or invent selectors. attack/useRanged/interactEntity require a visible candidate.stableId; names, invented UUIDs and nearest_hostile/nearest_player/nearest_living are invalid. Coordinate-free player.respawn() is valid only while the authoritative player facts report dead; it accepts no coordinates and chooses no spawn point. player_death reports respawnDimensionId, respawnX, respawnY, respawnZ, respawnYaw, respawnPitch, respawnForced, gameMode; null means no configured vanilla target. Never invent a respawn target. Use program.repeatUntil(condition, { maxIterations: N }, async () => { ... }), program.watch(condition, { mode: \"boundary\"|\"interrupt\" }, async () => { ... }), program.checkpoint(reason), program.finish(summary), and tryResult(call,onError?) with their fixed signatures. onError(failedReceipt) returns its authored fallback result before repeated-failure escalation; its own actions retain escalation. Do not use program.checkpoint for routine reassessment or a successful step boundary; checkpoints pause the task for genuine blockers.",
+        "id": "program-reference:696558ec419d937e",
+        "claim": "Physical calls: player.moveTo({ x, y, z, tolerance, sprint? }), player.control({ forward, strafe, jump, sneak, sprint, attack, use, yaw, pitch, selectedSlot, hand, ticks, instantLook? }), player.controlSequence({ frames, maxTicks }), player.lookAt({ x, y, z }), player.attack({ targetId, timeoutMs }), player.fightTarget({ targetId, timeoutMs, desiredRange?, fleeAtHealth?, continueWithAttackers?, targetPolicy?, includePlayers?, pursue?, sneak?, shield?, collect?, untilItem?, untilCount?, roof?, single? }), player.fightUntil({ mob, untilItem, untilCount, weapon?, collect?, fleeAtHealth?, x?, y?, z?, radius?, roof?, timeoutMs? }), player.fleeFrom({ targetId, distance, timeoutMs }), player.selectItem({ itemId }), player.useItem({ durationMs, hand?, expectedItemId?, mode?, aimX?, aimY?, aimZ?, acceptLavaRisk? }), player.breakBlock({ x, y, z, timeoutMs, expectedBlockId?, acceptLavaRisk? }), player.pickUpItem({ targetSelector }), player.placeBlock({ x, y, z, face, itemId, desiredState?, faceMode? }), player.chat({ message, audience?, recipientId? }), player.wait(durationMs), player.setDoor({ x, y, z, open }), player.dropItem({ slot, count }), player.navigateTo({ x, y, z, tolerance, sprint, timeoutMs }), player.buildShelter({ x, y, z, opening, itemId, timeoutMs, roof? }), player.digTo({ timeoutMs, pattern?, y?, x?, z?, heading?, maxBlocks?, throughCaves?, maxShaftY?, stopWhenSeen? }), player.mineVein({ x, y, z, timeoutMs, maxBlocks? }), player.castObsidian({ x, y, z, timeoutMs, axis?, frame?, count? }), player.barterUntil({ itemId, count, timeoutMs }), player.travelTo({ x?, y?, z?, yaw?, distance?, tolerance?, build?, retrace?, dimension?, stopWhenSeen?, minHealth?, fightThrough?, timeoutMs? }), player.transferContainer({ x, y, z, sourceKind, sourceSlot, destinationKind, destinationSlot, count, expectedItemId, timeoutMs }), player.craftInventory({ recipeId, count, timeoutMs }), player.craftTable({ recipeId, x, y, z, count, timeoutMs }), player.furnaceTransaction({ x, y, z, operation, timeoutMs, inventorySlot?, count?, expectedItemId?, fuelSlot?, fuelCount?, expectedFuelItemId? }), player.equipItem({ sourceSlot, targetSlot, expectedItemId }), player.selectTool({ sourceSlot, hotbarSlot, expectedItemId, minRemainingDurability }), player.blockWithShield({ durationMs }), player.useRanged({ targetId, drawDurationMs, timeoutMs?, aimX?, aimY?, aimZ?, trackTarget?, untilDead?, fleeAtHealth?, collect?, untilItem?, untilCount?, single? }), player.interactBlock({ x, y, z, face, hand, expectedItemId, hitX?, hitY?, hitZ?, acceptLavaRisk? }), player.interactEntity({ targetId, hand, expectedItemId, hitX?, hitY?, hitZ? }), player.dismount(), player.startFallFlying(), player.wakeUp(), player.setFlight({ enabled }), player.writeSign({ x, y, z, front, lines, expectedLines }), player.editBook({ slot, pages, expectedFingerprint, title? }), player.menuClick({ menuId, containerId, stateId, slot, button, clickType, expectedItemId, expectedCount, expectedFingerprint? }), player.menuClose({ menuId, containerId, stateId }), player.beaconEffects({ menuId, containerId, stateId, primaryEffectId, secondaryEffectId }), player.menuTransfer({ menuId, sourceSlot, destinationSlot, count, expectedItemId, timeoutMs, containerId?, stateId? }), player.menuButton({ menuId, buttonId, timeoutMs, containerId?, stateId? }), player.anvilRename({ menuId, name, timeoutMs, containerId?, stateId? }), player.respawn(), player.mine({ x, y, z, timeoutMs, expectedBlockId?, acceptLavaRisk? }), player.place({ x, y, z, face, itemId, desiredState?, faceMode? }). Chat: public by default; audience:\"proximity\" nearby, audience:\"direct\" needs observed player stableId or PLAYER_MESSAGE sourceId as recipientId. When useful, acknowledge briefly with the first concrete world action in the same program. Never replace a physical goal with chat-only output. Interactions need hand/observed held item; menus need observed menuId/raw slot indexes; unknown modded menus fail closed. moveTo requires tolerance 0.01..16 (sprint boolean, default true); navigateTo also requires sprint and timeoutMs 1..600000. Give them the far target over observed safe ground (about 30 blocks per leg). Mining proves a broken block, not collected inventory. A break result naming a faster inventory tool means selectTool to it before the next block. Collect stragglers from fresh world.items with player.pickUpItem({ targetSelector: drop.stableId }); do not navigate to floating item coordinates or invent selectors. attack/useRanged/interactEntity require a visible candidate.stableId; names, invented UUIDs and nearest_hostile/nearest_player/nearest_living are invalid. Coordinate-free player.respawn() is valid only while the authoritative player facts report dead; it accepts no coordinates and chooses no spawn point. player_death reports respawnDimensionId, respawnX, respawnY, respawnZ, respawnYaw, respawnPitch, respawnForced, gameMode; null means no configured vanilla target. Never invent a respawn target. Use program.repeatUntil(condition, { maxIterations: N }, async () => { ... }), program.watch(condition, { mode: \"boundary\"|\"interrupt\" }, async () => { ... }), program.checkpoint(reason), program.finish(summary), and tryResult(call,onError?) with their fixed signatures. onError(failedReceipt) returns its authored fallback result before repeated-failure escalation; its own actions retain escalation. Do not use program.checkpoint for routine reassessment or a successful step boundary; checkpoints pause the task for genuine blockers.",
         "kind": "program-reference"
       },
       "location": {
@@ -26188,6 +26349,27 @@
       "contract": {
         "id": "script-action:5b42feff896b5776",
         "claim": "player.digTo({ timeoutMs, pattern?, y?, x?, z?, heading?, maxBlocks?, throughCaves?, maxShaftY?, stopWhenSeen? })",
+        "kind": "script-action"
+      },
+      "location": {
+        "file": "coordinator/src/prompts.mjs",
+        "line": 8
+      },
+      "status": "checked"
+    },
+    {
+      "predicate": "The exact player.mineVein({ x, y, z, timeoutMs, maxBlocks? }) member parses accepted production action arguments, emits its declared primitive, preserves the action fields and resumes its correlated real typed receipt.",
+      "checks": [
+        {
+          "file": "coordinator/test/program-contract-truth.test.mjs",
+          "test": "contract: every advertised player API member executes its declared physical primitive with accepted arguments",
+          "type": "node-behavior"
+        }
+      ],
+      "id": "script-action:3d966a7deb1ade8a",
+      "contract": {
+        "id": "script-action:3d966a7deb1ade8a",
+        "claim": "player.mineVein({ x, y, z, timeoutMs, maxBlocks? })",
         "kind": "script-action"
       },
       "location": {
@@ -27410,6 +27592,28 @@
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
         "line": 77
+      },
+      "status": "checked"
+    },
+    {
+      "predicate": "Advertised mine_vein field/required/optional shape matches actual accepted validation and interpreter dispatch with detached action values.",
+      "checks": [
+        {
+          "file": "coordinator/test/program-contract-truth.test.mjs",
+          "test": "contract: every advertised player API member executes its declared physical primitive with accepted arguments",
+          "type": "node-behavior"
+        }
+      ],
+      "id": "capability:action:mine_vein",
+      "contract": {
+        "id": "capability:action:mine_vein",
+        "claim": "{\"actionType\":\"mine_vein\",\"fields\":[\"x\",\"y\",\"z\",\"maxBlocks\",\"timeoutMs\"],\"requiredFields\":[\"x\",\"y\",\"z\",\"timeoutMs\"],\"optionalFields\":[\"maxBlocks\"]}",
+        "kind": "action-contract",
+        "actionType": "mine_vein"
+      },
+      "location": {
+        "file": "coordinator/src/native-minecraft-tools.mjs",
+        "line": 74
       },
       "status": "checked"
     },
@@ -34281,6 +34485,28 @@
       }
     },
     {
+      "predicate": "mine vein:true with optional maxBlocks (1..64, default 32) normalizes to act mine_vein (timeoutMs default 120000) and rejects expectedBlockId, autoAim and acceptLavaRisk.",
+      "checks": [
+        {
+          "file": "coordinator/test/native-tool-normalization-regressions.test.mjs",
+          "test": "mine vein:true runs mine_vein with only its own fields",
+          "type": "node-behavior"
+        }
+      ],
+      "id": "control:3fd30542fe3f61b1:fbbc3b39717448aa",
+      "contract": {
+        "id": "control:3fd30542fe3f61b1:fbbc3b39717448aa",
+        "claim": "`vein:true` with an optional `maxBlocks` (1..64, default 32) runs act mine_vein on that log or ore instead: the whole tree or ore vein in one call (timeoutMs defaults to 120000). expectedBlockId, autoAim and acceptLavaRisk do not apply to it.",
+        "kind": "control-reference",
+        "topic": "mine"
+      },
+      "location": {
+        "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
+        "line": 425
+      },
+      "status": "checked"
+    },
+    {
       "id": "control:3fd30542fe3f61b1:764e21846b0c8605",
       "predicate": "The exact published JSON tool example is parsed and normalized through the production tool boundary; accepted examples pass and executor-bad-call examples reject before dispatch.",
       "status": "checked",
@@ -34301,6 +34527,28 @@
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
         "line": 437
       }
+    },
+    {
+      "predicate": "The exact published JSON tool example is parsed and normalized through the production tool boundary; accepted examples pass and executor-bad-call examples reject before dispatch.",
+      "checks": [
+        {
+          "file": "coordinator/test/tool-contract-coverage.test.mjs",
+          "test": "contract example control:3fd30542fe3f61b1:6cdf66d35395b313",
+          "type": "node-behavior"
+        }
+      ],
+      "id": "control:3fd30542fe3f61b1:6cdf66d35395b313",
+      "contract": {
+        "id": "control:3fd30542fe3f61b1:6cdf66d35395b313",
+        "claim": "```json executor-call\n{\"tool\":\"mine\",\"arguments\":{\"x\":11,\"y\":64,\"z\":10,\"vein\":true,\"maxBlocks\":32}}\n```",
+        "kind": "example",
+        "topic": "mine"
+      },
+      "location": {
+        "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
+        "line": 431
+      },
+      "status": "checked"
     },
     {
       "id": "control:a0b967fc60136d2e:1b657e21dca7a94f",
@@ -37053,6 +37301,86 @@
         "claim": "```json executor-call\n{\"tool\":\"act\",\"arguments\":{\"actionType\":\"dig_to\",\"arguments\":{\"pattern\":\"shaft\",\"y\":-55,\"timeoutMs\":600000}}}\n```",
         "kind": "example",
         "topic": "dig_to"
+      },
+      "location": {
+        "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
+        "line": 717
+      },
+      "status": "checked"
+    },
+    {
+      "predicate": "mine_vein takes x, y, z, optional maxBlocks 1..64 (default 32) and timeoutMs (default 120000) at the coordinator and the Java protocol boundary.",
+      "checks": [
+        {
+          "file": "coordinator/test/native-tool-normalization-regressions.test.mjs",
+          "test": "mine vein:true runs mine_vein with only its own fields",
+          "type": "node-behavior"
+        },
+        {
+          "file": "src/test/java/dev/agaminggod/arenaagents/verification/VerificationMain.java",
+          "test": "main",
+          "type": "java-behavior",
+          "entryPoint": "verifyCore"
+        }
+      ],
+      "id": "control:c46616ae6acf4919:b9aeb43b854abfed",
+      "contract": {
+        "id": "control:c46616ae6acf4919:b9aeb43b854abfed",
+        "claim": "Fields: `x`, `y`, `z` (a seen log, stem or ore), `maxBlocks` optional (1..64, default 32), `timeoutMs` (default 120000).",
+        "kind": "control-reference",
+        "topic": "mine_vein"
+      },
+      "location": {
+        "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
+        "line": 713
+      },
+      "status": "checked"
+    },
+    {
+      "predicate": "VeinPlan counts only known blocks of one family connected through 26 neighbours (one log species; an ore with its deepslate twin), picks the trunk base and the stance beside it, reaches up to six logs above the feet from inside the column, refuses trees with seen logs out of reach, never breaks a cell under the body, and cuts trees bottom up and veins nearest first; each block goes through break_block's gates and tool choice.",
+      "checks": [
+        {
+          "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/VeinPlanVerification.java",
+          "test": "verifyFamilies + verifyTree + verifyTallTree + verifyVein",
+          "type": "java-behavior",
+          "entryPoint": "verifyCore"
+        },
+        {
+          "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/MiningToolsVerification.java",
+          "test": "verifyChoices",
+          "type": "java-behavior",
+          "entryPoint": "verifyCore"
+        }
+      ],
+      "id": "control:c46616ae6acf4919:405ae4f467ecefcb",
+      "contract": {
+        "id": "control:c46616ae6acf4919:405ae4f467ecefcb",
+        "claim": "One call fells the tree or mines the ore vein that block belongs to, at body speed, instead of one mine call per block. It counts only blocks you have seen (touching corner to corner, one log species, an ore with its deepslate twin); each block is an ordinary break_block with its own tool choice and every gate (sight, reach, LAVA_BEHIND, UNSEEN_BELOW, NO_TOOL for a wasted ore). A tree: it walks to a seen standing cell beside the trunk base, cuts the two lowest trunk logs, steps into the trunk's column and cuts every log above looking up (up to six above the feet), cutting leaves that hide a branch log. It refuses before any swing with TREE_OUT_OF_REACH when a seen log is beyond that reach, TREE_TOO_BIG above maxBlocks, or NO_STANCE with no seen standing cell beside the trunk, so it never leaves floating logs it saw. An ore vein: it mines the vein's blocks in reach and sight from where you stand, nearest first, as breaking each reveals the next. It never breaks a block you stand on or anything under you, and never walks except beside a trunk and into its column. It stops with the facts so far on LAVA_AHEAD or LAVA_OPENED, DAMAGE_TAKEN, HOSTILE_NEAR (within 12), INVENTORY_FULL or VEIN_TIMEOUT; success is TREE_FELLED or VEIN_MINED, and every result lists seen blocks of it left and why (out of reach, not in sight, under the body). NOTHING_MINED: no block of it was in reach and sight.",
+        "kind": "control-reference",
+        "topic": "mine_vein"
+      },
+      "location": {
+        "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
+        "line": 715
+      },
+      "status": "partial",
+      "reason": "The planning rules are witnessed on fixtures; the controller that drives the breaks in a live world has no world-level fixture."
+    },
+    {
+      "predicate": "The exact published JSON tool example is parsed and normalized through the production tool boundary; accepted examples pass and executor-bad-call examples reject before dispatch.",
+      "checks": [
+        {
+          "file": "coordinator/test/tool-contract-coverage.test.mjs",
+          "test": "contract example control:c46616ae6acf4919:4f7af2228f153ca0",
+          "type": "node-behavior"
+        }
+      ],
+      "id": "control:c46616ae6acf4919:4f7af2228f153ca0",
+      "contract": {
+        "id": "control:c46616ae6acf4919:4f7af2228f153ca0",
+        "claim": "```json executor-call\n{\"tool\":\"act\",\"arguments\":{\"actionType\":\"mine_vein\",\"arguments\":{\"x\":11,\"y\":64,\"z\":10,\"maxBlocks\":32,\"timeoutMs\":120000}}}\n```",
+        "kind": "example",
+        "topic": "mine_vein"
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
@@ -43128,12 +43456,30 @@
       "reason": "Carried predicates and witnesses cover the implemented API and report behavior. Tactical choices and first-call authoring are evaluated separately in rx-teach2; guidance does not guarantee compliance."
     },
     {
-      "predicate": "The model is instructed to choose an iron source from exposed ore, remembered places and new ground, compare yield against work spent, and begin source selection with direct tools before authoring a mining routine. Held smeltable supply is compared with the next useful capability before gathering a larger reserve.",
-      "checks": [],
-      "id": "agent:09bdccc5fb698cfb:9a846175b9cfa008",
+      "predicate": "Advisory: points the model at mine vein:true for a whole tree or seen ore vein; mining picks the carried tool and refuses a wasted ore.",
+      "checks": [
+        {
+          "file": "coordinator/test/native-tool-normalization-regressions.test.mjs",
+          "test": "mine vein:true runs mine_vein with only its own fields",
+          "type": "node-behavior"
+        },
+        {
+          "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/MiningToolsVerification.java",
+          "test": "verifyChoices",
+          "type": "java-behavior",
+          "entryPoint": "verifyCore"
+        },
+        {
+          "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/VeinPlanVerification.java",
+          "test": "verifyFamilies + verifyTree + verifyTallTree + verifyVein",
+          "type": "java-behavior",
+          "entryPoint": "verifyCore"
+        }
+      ],
+      "id": "agent:09bdccc5fb698cfb:e02dac8dc1fcf4bf",
       "contract": {
-        "id": "agent:09bdccc5fb698cfb:9a846175b9cfa008",
-        "claim": "For first iron, mine exposed ore within reach with a stone pickaxe; otherwise approach remembered ore, a cave opening or village from safe ground and inspect the source. Compare now.options with taskMemory.places: authored places are leads to recheck, even when automatic sightings say none remembered. With no source known, survey or exploreFrontier to choose new ground. Use now.mining and taskMemory.progress to compare blocks broken and time against iron gained; a long fruitless tunnel warrants a different source. Once held ingots and raw iron cover the next tool, process that supply rather than extending the tunnel for a larger kit. A source approach or targeted lookAround can begin with a direct tool call; source selection comes before programming a mining routine.",
+        "id": "agent:09bdccc5fb698cfb:e02dac8dc1fcf4bf",
+        "claim": "Fell a tree or take a seen ore vein in one call with mine({x,y,z,vein:true}): mining picks the right carried tool itself and refuses an ore no carried tool harvests. For first iron, mine exposed ore within reach with a stone pickaxe; otherwise approach remembered ore, a cave opening or village from safe ground and inspect the source. Compare now.options with taskMemory.places: authored places are leads to recheck, even when automatic sightings say none remembered. With no source known, survey or exploreFrontier to choose new ground. Use now.mining and taskMemory.progress to compare blocks broken and time against iron gained; a long fruitless tunnel warrants a different source. Once held ingots and raw iron cover the next tool, process that supply rather than extending the tunnel for a larger kit. A source approach or targeted lookAround can begin with a direct tool call; source selection comes before programming a mining routine.",
         "kind": "agent-reference",
         "topic": "Your role"
       },
@@ -43142,7 +43488,7 @@
         "line": 37
       },
       "status": "advisory",
-      "reason": "Source, work budget and batch size remain model decisions; no source selection or smelting is automatic."
+      "reason": "Strategy advice for the model; the tool behavior it names is witnessed by the mine and mine_vein contracts."
     },
     {
       "predicate": "The model chooses measurable source checkpoints, compares target yield and full access cost, preserves rejected-source evidence sizes iron trials against a stated typical tunnel yield and considers both high-ground and underground iron. Source presentation distinguishes potential leads from observed ore and exposes vertical separation.",
@@ -43693,21 +44039,21 @@
           "entryPoint": "verifyCore"
         }
       ],
-      "id": "tool:mine:description:3d00e9c0268987e2:result:NO_TOOL",
+      "id": "tool:mine:description:9d0b69929307592e:result:NO_TOOL",
       "contract": {
-        "id": "tool:mine:description:3d00e9c0268987e2:result:NO_TOOL",
-        "claim": "Mine the chosen block with exact blockId; holds the fastest carried tool that harvests it (a held enchanted one stays); an ore no carried tool harvests fails NO_TOOL unswung.",
+        "id": "tool:mine:description:9d0b69929307592e:result:NO_TOOL",
+        "claim": "Mine the chosen block with exact blockId; holds the fastest carried tool that harvests it (a held enchanted one stays); an ore no carried tool harvests fails NO_TOOL unswung. vein:true (maxBlocks, default 32) fells the whole tree or ore vein of that log/ore in one call (mine_vein).",
         "kind": "result-code",
         "tool": "mine",
         "code": "NO_TOOL",
-        "parent": "tool:mine:description:3d00e9c0268987e2"
+        "parent": "tool:mine:description:9d0b69929307592e"
       },
       "location": {
         "file": "coordinator/src/tool-descriptions.json",
         "line": 139
       },
       "status": "partial",
-      "reason": "The wasted-ore rule is witnessed on a fixture inventory; the executor's NO_TOOL throw before acceptance has no world-level fixture."
+      "reason": "The wasted-ore rule is witnessed on a fixture inventory; the executor NO_TOOL throw before acceptance has no world-level fixture."
     },
     {
       "predicate": "Production combat and targeting policies remain unchanged. A missing drop UUID with an owned collection receipt returns a successful historical acknowledgement and current holdings, performs no second collection, and retires the UUID from observed memory.",
@@ -44241,13 +44587,13 @@
           "test": "shelter is available through the production action boundary with a body timeout"
         }
       ],
-      "id": "program-reference:25f902457a13dc85:result:PLAYER_MESSAGE",
+      "id": "program-reference:696558ec419d937e:result:PLAYER_MESSAGE",
       "contract": {
-        "id": "program-reference:25f902457a13dc85:result:PLAYER_MESSAGE",
-        "claim": "Physical calls: player.moveTo({ x, y, z, tolerance, sprint? }), player.control({ forward, strafe, jump, sneak, sprint, attack, use, yaw, pitch, selectedSlot, hand, ticks, instantLook? }), player.controlSequence({ frames, maxTicks }), player.lookAt({ x, y, z }), player.attack({ targetId, timeoutMs }), player.fightTarget({ targetId, timeoutMs, desiredRange?, fleeAtHealth?, continueWithAttackers?, targetPolicy?, includePlayers?, pursue?, sneak?, shield?, collect?, untilItem?, untilCount?, roof?, single? }), player.fightUntil({ mob, untilItem, untilCount, weapon?, collect?, fleeAtHealth?, x?, y?, z?, radius?, roof?, timeoutMs? }), player.fleeFrom({ targetId, distance, timeoutMs }), player.selectItem({ itemId }), player.useItem({ durationMs, hand?, expectedItemId?, mode?, aimX?, aimY?, aimZ?, acceptLavaRisk? }), player.breakBlock({ x, y, z, timeoutMs, expectedBlockId?, acceptLavaRisk? }), player.pickUpItem({ targetSelector }), player.placeBlock({ x, y, z, face, itemId, desiredState?, faceMode? }), player.chat({ message, audience?, recipientId? }), player.wait(durationMs), player.setDoor({ x, y, z, open }), player.dropItem({ slot, count }), player.navigateTo({ x, y, z, tolerance, sprint, timeoutMs }), player.buildShelter({ x, y, z, opening, itemId, timeoutMs, roof? }), player.digTo({ timeoutMs, pattern?, y?, x?, z?, heading?, maxBlocks?, throughCaves?, maxShaftY?, stopWhenSeen? }), player.castObsidian({ x, y, z, timeoutMs, axis?, frame?, count? }), player.barterUntil({ itemId, count, timeoutMs }), player.travelTo({ x?, y?, z?, yaw?, distance?, tolerance?, build?, retrace?, dimension?, stopWhenSeen?, minHealth?, fightThrough?, timeoutMs? }), player.transferContainer({ x, y, z, sourceKind, sourceSlot, destinationKind, destinationSlot, count, expectedItemId, timeoutMs }), player.craftInventory({ recipeId, count, timeoutMs }), player.craftTable({ recipeId, x, y, z, count, timeoutMs }), player.furnaceTransaction({ x, y, z, operation, timeoutMs, inventorySlot?, count?, expectedItemId?, fuelSlot?, fuelCount?, expectedFuelItemId? }), player.equipItem({ sourceSlot, targetSlot, expectedItemId }), player.selectTool({ sourceSlot, hotbarSlot, expectedItemId, minRemainingDurability }), player.blockWithShield({ durationMs }), player.useRanged({ targetId, drawDurationMs, timeoutMs?, aimX?, aimY?, aimZ?, trackTarget?, untilDead?, fleeAtHealth?, collect?, untilItem?, untilCount?, single? }), player.interactBlock({ x, y, z, face, hand, expectedItemId, hitX?, hitY?, hitZ?, acceptLavaRisk? }), player.interactEntity({ targetId, hand, expectedItemId, hitX?, hitY?, hitZ? }), player.dismount(), player.startFallFlying(), player.wakeUp(), player.setFlight({ enabled }), player.writeSign({ x, y, z, front, lines, expectedLines }), player.editBook({ slot, pages, expectedFingerprint, title? }), player.menuClick({ menuId, containerId, stateId, slot, button, clickType, expectedItemId, expectedCount, expectedFingerprint? }), player.menuClose({ menuId, containerId, stateId }), player.beaconEffects({ menuId, containerId, stateId, primaryEffectId, secondaryEffectId }), player.menuTransfer({ menuId, sourceSlot, destinationSlot, count, expectedItemId, timeoutMs, containerId?, stateId? }), player.menuButton({ menuId, buttonId, timeoutMs, containerId?, stateId? }), player.anvilRename({ menuId, name, timeoutMs, containerId?, stateId? }), player.respawn(), player.mine({ x, y, z, timeoutMs, expectedBlockId?, acceptLavaRisk? }), player.place({ x, y, z, face, itemId, desiredState?, faceMode? }). Chat: public by default; audience:\"proximity\" nearby, audience:\"direct\" needs observed player stableId or PLAYER_MESSAGE sourceId as recipientId. When useful, acknowledge briefly with the first concrete world action in the same program. Never replace a physical goal with chat-only output. Interactions need hand/observed held item; menus need observed menuId/raw slot indexes; unknown modded menus fail closed. moveTo requires tolerance 0.01..16 (sprint boolean, default true); navigateTo also requires sprint and timeoutMs 1..600000. Give them the far target over observed safe ground (about 30 blocks per leg). Mining proves a broken block, not collected inventory. A break result naming a faster inventory tool means selectTool to it before the next block. Collect stragglers from fresh world.items with player.pickUpItem({ targetSelector: drop.stableId }); do not navigate to floating item coordinates or invent selectors. attack/useRanged/interactEntity require a visible candidate.stableId; names, invented UUIDs and nearest_hostile/nearest_player/nearest_living are invalid. Coordinate-free player.respawn() is valid only while the authoritative player facts report dead; it accepts no coordinates and chooses no spawn point. player_death reports respawnDimensionId, respawnX, respawnY, respawnZ, respawnYaw, respawnPitch, respawnForced, gameMode; null means no configured vanilla target. Never invent a respawn target. Use program.repeatUntil(condition, { maxIterations: N }, async () => { ... }), program.watch(condition, { mode: \"boundary\"|\"interrupt\" }, async () => { ... }), program.checkpoint(reason), program.finish(summary), and tryResult(call,onError?) with their fixed signatures. onError(failedReceipt) returns its authored fallback result before repeated-failure escalation; its own actions retain escalation. Do not use program.checkpoint for routine reassessment or a successful step boundary; checkpoints pause the task for genuine blockers.",
+        "id": "program-reference:696558ec419d937e:result:PLAYER_MESSAGE",
+        "claim": "Physical calls: player.moveTo({ x, y, z, tolerance, sprint? }), player.control({ forward, strafe, jump, sneak, sprint, attack, use, yaw, pitch, selectedSlot, hand, ticks, instantLook? }), player.controlSequence({ frames, maxTicks }), player.lookAt({ x, y, z }), player.attack({ targetId, timeoutMs }), player.fightTarget({ targetId, timeoutMs, desiredRange?, fleeAtHealth?, continueWithAttackers?, targetPolicy?, includePlayers?, pursue?, sneak?, shield?, collect?, untilItem?, untilCount?, roof?, single? }), player.fightUntil({ mob, untilItem, untilCount, weapon?, collect?, fleeAtHealth?, x?, y?, z?, radius?, roof?, timeoutMs? }), player.fleeFrom({ targetId, distance, timeoutMs }), player.selectItem({ itemId }), player.useItem({ durationMs, hand?, expectedItemId?, mode?, aimX?, aimY?, aimZ?, acceptLavaRisk? }), player.breakBlock({ x, y, z, timeoutMs, expectedBlockId?, acceptLavaRisk? }), player.pickUpItem({ targetSelector }), player.placeBlock({ x, y, z, face, itemId, desiredState?, faceMode? }), player.chat({ message, audience?, recipientId? }), player.wait(durationMs), player.setDoor({ x, y, z, open }), player.dropItem({ slot, count }), player.navigateTo({ x, y, z, tolerance, sprint, timeoutMs }), player.buildShelter({ x, y, z, opening, itemId, timeoutMs, roof? }), player.digTo({ timeoutMs, pattern?, y?, x?, z?, heading?, maxBlocks?, throughCaves?, maxShaftY?, stopWhenSeen? }), player.mineVein({ x, y, z, timeoutMs, maxBlocks? }), player.castObsidian({ x, y, z, timeoutMs, axis?, frame?, count? }), player.barterUntil({ itemId, count, timeoutMs }), player.travelTo({ x?, y?, z?, yaw?, distance?, tolerance?, build?, retrace?, dimension?, stopWhenSeen?, minHealth?, fightThrough?, timeoutMs? }), player.transferContainer({ x, y, z, sourceKind, sourceSlot, destinationKind, destinationSlot, count, expectedItemId, timeoutMs }), player.craftInventory({ recipeId, count, timeoutMs }), player.craftTable({ recipeId, x, y, z, count, timeoutMs }), player.furnaceTransaction({ x, y, z, operation, timeoutMs, inventorySlot?, count?, expectedItemId?, fuelSlot?, fuelCount?, expectedFuelItemId? }), player.equipItem({ sourceSlot, targetSlot, expectedItemId }), player.selectTool({ sourceSlot, hotbarSlot, expectedItemId, minRemainingDurability }), player.blockWithShield({ durationMs }), player.useRanged({ targetId, drawDurationMs, timeoutMs?, aimX?, aimY?, aimZ?, trackTarget?, untilDead?, fleeAtHealth?, collect?, untilItem?, untilCount?, single? }), player.interactBlock({ x, y, z, face, hand, expectedItemId, hitX?, hitY?, hitZ?, acceptLavaRisk? }), player.interactEntity({ targetId, hand, expectedItemId, hitX?, hitY?, hitZ? }), player.dismount(), player.startFallFlying(), player.wakeUp(), player.setFlight({ enabled }), player.writeSign({ x, y, z, front, lines, expectedLines }), player.editBook({ slot, pages, expectedFingerprint, title? }), player.menuClick({ menuId, containerId, stateId, slot, button, clickType, expectedItemId, expectedCount, expectedFingerprint? }), player.menuClose({ menuId, containerId, stateId }), player.beaconEffects({ menuId, containerId, stateId, primaryEffectId, secondaryEffectId }), player.menuTransfer({ menuId, sourceSlot, destinationSlot, count, expectedItemId, timeoutMs, containerId?, stateId? }), player.menuButton({ menuId, buttonId, timeoutMs, containerId?, stateId? }), player.anvilRename({ menuId, name, timeoutMs, containerId?, stateId? }), player.respawn(), player.mine({ x, y, z, timeoutMs, expectedBlockId?, acceptLavaRisk? }), player.place({ x, y, z, face, itemId, desiredState?, faceMode? }). Chat: public by default; audience:\"proximity\" nearby, audience:\"direct\" needs observed player stableId or PLAYER_MESSAGE sourceId as recipientId. When useful, acknowledge briefly with the first concrete world action in the same program. Never replace a physical goal with chat-only output. Interactions need hand/observed held item; menus need observed menuId/raw slot indexes; unknown modded menus fail closed. moveTo requires tolerance 0.01..16 (sprint boolean, default true); navigateTo also requires sprint and timeoutMs 1..600000. Give them the far target over observed safe ground (about 30 blocks per leg). Mining proves a broken block, not collected inventory. A break result naming a faster inventory tool means selectTool to it before the next block. Collect stragglers from fresh world.items with player.pickUpItem({ targetSelector: drop.stableId }); do not navigate to floating item coordinates or invent selectors. attack/useRanged/interactEntity require a visible candidate.stableId; names, invented UUIDs and nearest_hostile/nearest_player/nearest_living are invalid. Coordinate-free player.respawn() is valid only while the authoritative player facts report dead; it accepts no coordinates and chooses no spawn point. player_death reports respawnDimensionId, respawnX, respawnY, respawnZ, respawnYaw, respawnPitch, respawnForced, gameMode; null means no configured vanilla target. Never invent a respawn target. Use program.repeatUntil(condition, { maxIterations: N }, async () => { ... }), program.watch(condition, { mode: \"boundary\"|\"interrupt\" }, async () => { ... }), program.checkpoint(reason), program.finish(summary), and tryResult(call,onError?) with their fixed signatures. onError(failedReceipt) returns its authored fallback result before repeated-failure escalation; its own actions retain escalation. Do not use program.checkpoint for routine reassessment or a successful step boundary; checkpoints pause the task for genuine blockers.",
         "kind": "result-code",
         "code": "PLAYER_MESSAGE",
-        "parent": "program-reference:25f902457a13dc85"
+        "parent": "program-reference:696558ec419d937e"
       },
       "location": {
         "file": "coordinator/src/prompts.mjs",
@@ -48705,6 +49051,396 @@
         "line": 711
       },
       "status": "checked"
+    },
+    {
+      "predicate": "A block with seen or heard lava beside it is refused by the break gate before any swing; mine_vein reports it as LAVA_AHEAD and stops.",
+      "checks": [
+        {
+          "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/VeinPlanVerification.java",
+          "test": "verifyFamilies + verifyTree + verifyTallTree + verifyVein",
+          "type": "java-behavior",
+          "entryPoint": "verifyCore"
+        }
+      ],
+      "id": "control:c46616ae6acf4919:405ae4f467ecefcb:result:LAVA_BEHIND",
+      "contract": {
+        "id": "control:c46616ae6acf4919:405ae4f467ecefcb:result:LAVA_BEHIND",
+        "claim": "One call fells the tree or mines the ore vein that block belongs to, at body speed, instead of one mine call per block. It counts only blocks you have seen (touching corner to corner, one log species, an ore with its deepslate twin); each block is an ordinary break_block with its own tool choice and every gate (sight, reach, LAVA_BEHIND, UNSEEN_BELOW, NO_TOOL for a wasted ore). A tree: it walks to a seen standing cell beside the trunk base, cuts the two lowest trunk logs, steps into the trunk's column and cuts every log above looking up (up to six above the feet), cutting leaves that hide a branch log. It refuses before any swing with TREE_OUT_OF_REACH when a seen log is beyond that reach, TREE_TOO_BIG above maxBlocks, or NO_STANCE with no seen standing cell beside the trunk, so it never leaves floating logs it saw. An ore vein: it mines the vein's blocks in reach and sight from where you stand, nearest first, as breaking each reveals the next. It never breaks a block you stand on or anything under you, and never walks except beside a trunk and into its column. It stops with the facts so far on LAVA_AHEAD or LAVA_OPENED, DAMAGE_TAKEN, HOSTILE_NEAR (within 12), INVENTORY_FULL or VEIN_TIMEOUT; success is TREE_FELLED or VEIN_MINED, and every result lists seen blocks of it left and why (out of reach, not in sight, under the body). NOTHING_MINED: no block of it was in reach and sight.",
+        "kind": "result-code",
+        "topic": "mine_vein",
+        "code": "LAVA_BEHIND",
+        "parent": "control:c46616ae6acf4919:405ae4f467ecefcb"
+      },
+      "location": {
+        "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
+        "line": 715
+      },
+      "status": "partial",
+      "reason": "The planning rules are witnessed on fixtures; the controller that drives the breaks in a live world has no world-level fixture."
+    },
+    {
+      "predicate": "The break gate refuses the block the body stands on over an unseen drop where water evaporates; mine_vein leaves that block and goes on.",
+      "checks": [
+        {
+          "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/VeinPlanVerification.java",
+          "test": "verifyFamilies + verifyTree + verifyTallTree + verifyVein",
+          "type": "java-behavior",
+          "entryPoint": "verifyCore"
+        }
+      ],
+      "id": "control:c46616ae6acf4919:405ae4f467ecefcb:result:UNSEEN_BELOW",
+      "contract": {
+        "id": "control:c46616ae6acf4919:405ae4f467ecefcb:result:UNSEEN_BELOW",
+        "claim": "One call fells the tree or mines the ore vein that block belongs to, at body speed, instead of one mine call per block. It counts only blocks you have seen (touching corner to corner, one log species, an ore with its deepslate twin); each block is an ordinary break_block with its own tool choice and every gate (sight, reach, LAVA_BEHIND, UNSEEN_BELOW, NO_TOOL for a wasted ore). A tree: it walks to a seen standing cell beside the trunk base, cuts the two lowest trunk logs, steps into the trunk's column and cuts every log above looking up (up to six above the feet), cutting leaves that hide a branch log. It refuses before any swing with TREE_OUT_OF_REACH when a seen log is beyond that reach, TREE_TOO_BIG above maxBlocks, or NO_STANCE with no seen standing cell beside the trunk, so it never leaves floating logs it saw. An ore vein: it mines the vein's blocks in reach and sight from where you stand, nearest first, as breaking each reveals the next. It never breaks a block you stand on or anything under you, and never walks except beside a trunk and into its column. It stops with the facts so far on LAVA_AHEAD or LAVA_OPENED, DAMAGE_TAKEN, HOSTILE_NEAR (within 12), INVENTORY_FULL or VEIN_TIMEOUT; success is TREE_FELLED or VEIN_MINED, and every result lists seen blocks of it left and why (out of reach, not in sight, under the body). NOTHING_MINED: no block of it was in reach and sight.",
+        "kind": "result-code",
+        "topic": "mine_vein",
+        "code": "UNSEEN_BELOW",
+        "parent": "control:c46616ae6acf4919:405ae4f467ecefcb"
+      },
+      "location": {
+        "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
+        "line": 715
+      },
+      "status": "partial",
+      "reason": "The planning rules are witnessed on fixtures; the controller that drives the breaks in a live world has no world-level fixture."
+    },
+    {
+      "predicate": "An ore no carried tool harvests is refused before any swing (MiningTools.wastesOre); mine_vein stops with NO_TOOL.",
+      "checks": [
+        {
+          "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/VeinPlanVerification.java",
+          "test": "verifyFamilies + verifyTree + verifyTallTree + verifyVein",
+          "type": "java-behavior",
+          "entryPoint": "verifyCore"
+        }
+      ],
+      "id": "control:c46616ae6acf4919:405ae4f467ecefcb:result:NO_TOOL",
+      "contract": {
+        "id": "control:c46616ae6acf4919:405ae4f467ecefcb:result:NO_TOOL",
+        "claim": "One call fells the tree or mines the ore vein that block belongs to, at body speed, instead of one mine call per block. It counts only blocks you have seen (touching corner to corner, one log species, an ore with its deepslate twin); each block is an ordinary break_block with its own tool choice and every gate (sight, reach, LAVA_BEHIND, UNSEEN_BELOW, NO_TOOL for a wasted ore). A tree: it walks to a seen standing cell beside the trunk base, cuts the two lowest trunk logs, steps into the trunk's column and cuts every log above looking up (up to six above the feet), cutting leaves that hide a branch log. It refuses before any swing with TREE_OUT_OF_REACH when a seen log is beyond that reach, TREE_TOO_BIG above maxBlocks, or NO_STANCE with no seen standing cell beside the trunk, so it never leaves floating logs it saw. An ore vein: it mines the vein's blocks in reach and sight from where you stand, nearest first, as breaking each reveals the next. It never breaks a block you stand on or anything under you, and never walks except beside a trunk and into its column. It stops with the facts so far on LAVA_AHEAD or LAVA_OPENED, DAMAGE_TAKEN, HOSTILE_NEAR (within 12), INVENTORY_FULL or VEIN_TIMEOUT; success is TREE_FELLED or VEIN_MINED, and every result lists seen blocks of it left and why (out of reach, not in sight, under the body). NOTHING_MINED: no block of it was in reach and sight.",
+        "kind": "result-code",
+        "topic": "mine_vein",
+        "code": "NO_TOOL",
+        "parent": "control:c46616ae6acf4919:405ae4f467ecefcb"
+      },
+      "location": {
+        "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
+        "line": 715
+      },
+      "status": "partial",
+      "reason": "The planning rules are witnessed on fixtures; the controller that drives the breaks in a live world has no world-level fixture."
+    },
+    {
+      "predicate": "VeinPlan.outOfReach lists seen logs no stance (beside the trunk, inside its column) reaches; a non-empty list refuses the tree before any swing.",
+      "checks": [
+        {
+          "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/VeinPlanVerification.java",
+          "test": "verifyFamilies + verifyTree + verifyTallTree + verifyVein",
+          "type": "java-behavior",
+          "entryPoint": "verifyCore"
+        }
+      ],
+      "id": "control:c46616ae6acf4919:405ae4f467ecefcb:result:TREE_OUT_OF_REACH",
+      "contract": {
+        "id": "control:c46616ae6acf4919:405ae4f467ecefcb:result:TREE_OUT_OF_REACH",
+        "claim": "One call fells the tree or mines the ore vein that block belongs to, at body speed, instead of one mine call per block. It counts only blocks you have seen (touching corner to corner, one log species, an ore with its deepslate twin); each block is an ordinary break_block with its own tool choice and every gate (sight, reach, LAVA_BEHIND, UNSEEN_BELOW, NO_TOOL for a wasted ore). A tree: it walks to a seen standing cell beside the trunk base, cuts the two lowest trunk logs, steps into the trunk's column and cuts every log above looking up (up to six above the feet), cutting leaves that hide a branch log. It refuses before any swing with TREE_OUT_OF_REACH when a seen log is beyond that reach, TREE_TOO_BIG above maxBlocks, or NO_STANCE with no seen standing cell beside the trunk, so it never leaves floating logs it saw. An ore vein: it mines the vein's blocks in reach and sight from where you stand, nearest first, as breaking each reveals the next. It never breaks a block you stand on or anything under you, and never walks except beside a trunk and into its column. It stops with the facts so far on LAVA_AHEAD or LAVA_OPENED, DAMAGE_TAKEN, HOSTILE_NEAR (within 12), INVENTORY_FULL or VEIN_TIMEOUT; success is TREE_FELLED or VEIN_MINED, and every result lists seen blocks of it left and why (out of reach, not in sight, under the body). NOTHING_MINED: no block of it was in reach and sight.",
+        "kind": "result-code",
+        "topic": "mine_vein",
+        "code": "TREE_OUT_OF_REACH",
+        "parent": "control:c46616ae6acf4919:405ae4f467ecefcb"
+      },
+      "location": {
+        "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
+        "line": 715
+      },
+      "status": "partial",
+      "reason": "The planning rules are witnessed on fixtures; the controller that drives the breaks in a live world has no world-level fixture."
+    },
+    {
+      "predicate": "More seen logs than maxBlocks in the connected tree refuse it before any swing; VeinPlan.component stops at its limit.",
+      "checks": [
+        {
+          "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/VeinPlanVerification.java",
+          "test": "verifyFamilies + verifyTree + verifyTallTree + verifyVein",
+          "type": "java-behavior",
+          "entryPoint": "verifyCore"
+        }
+      ],
+      "id": "control:c46616ae6acf4919:405ae4f467ecefcb:result:TREE_TOO_BIG",
+      "contract": {
+        "id": "control:c46616ae6acf4919:405ae4f467ecefcb:result:TREE_TOO_BIG",
+        "claim": "One call fells the tree or mines the ore vein that block belongs to, at body speed, instead of one mine call per block. It counts only blocks you have seen (touching corner to corner, one log species, an ore with its deepslate twin); each block is an ordinary break_block with its own tool choice and every gate (sight, reach, LAVA_BEHIND, UNSEEN_BELOW, NO_TOOL for a wasted ore). A tree: it walks to a seen standing cell beside the trunk base, cuts the two lowest trunk logs, steps into the trunk's column and cuts every log above looking up (up to six above the feet), cutting leaves that hide a branch log. It refuses before any swing with TREE_OUT_OF_REACH when a seen log is beyond that reach, TREE_TOO_BIG above maxBlocks, or NO_STANCE with no seen standing cell beside the trunk, so it never leaves floating logs it saw. An ore vein: it mines the vein's blocks in reach and sight from where you stand, nearest first, as breaking each reveals the next. It never breaks a block you stand on or anything under you, and never walks except beside a trunk and into its column. It stops with the facts so far on LAVA_AHEAD or LAVA_OPENED, DAMAGE_TAKEN, HOSTILE_NEAR (within 12), INVENTORY_FULL or VEIN_TIMEOUT; success is TREE_FELLED or VEIN_MINED, and every result lists seen blocks of it left and why (out of reach, not in sight, under the body). NOTHING_MINED: no block of it was in reach and sight.",
+        "kind": "result-code",
+        "topic": "mine_vein",
+        "code": "TREE_TOO_BIG",
+        "parent": "control:c46616ae6acf4919:405ae4f467ecefcb"
+      },
+      "location": {
+        "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
+        "line": 715
+      },
+      "status": "partial",
+      "reason": "The planning rules are witnessed on fixtures; the controller that drives the breaks in a live world has no world-level fixture."
+    },
+    {
+      "predicate": "VeinPlan.stance returns null with no seen open side over a seen solid floor beside the trunk base; the tree is then refused.",
+      "checks": [
+        {
+          "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/VeinPlanVerification.java",
+          "test": "verifyFamilies + verifyTree + verifyTallTree + verifyVein",
+          "type": "java-behavior",
+          "entryPoint": "verifyCore"
+        }
+      ],
+      "id": "control:c46616ae6acf4919:405ae4f467ecefcb:result:NO_STANCE",
+      "contract": {
+        "id": "control:c46616ae6acf4919:405ae4f467ecefcb:result:NO_STANCE",
+        "claim": "One call fells the tree or mines the ore vein that block belongs to, at body speed, instead of one mine call per block. It counts only blocks you have seen (touching corner to corner, one log species, an ore with its deepslate twin); each block is an ordinary break_block with its own tool choice and every gate (sight, reach, LAVA_BEHIND, UNSEEN_BELOW, NO_TOOL for a wasted ore). A tree: it walks to a seen standing cell beside the trunk base, cuts the two lowest trunk logs, steps into the trunk's column and cuts every log above looking up (up to six above the feet), cutting leaves that hide a branch log. It refuses before any swing with TREE_OUT_OF_REACH when a seen log is beyond that reach, TREE_TOO_BIG above maxBlocks, or NO_STANCE with no seen standing cell beside the trunk, so it never leaves floating logs it saw. An ore vein: it mines the vein's blocks in reach and sight from where you stand, nearest first, as breaking each reveals the next. It never breaks a block you stand on or anything under you, and never walks except beside a trunk and into its column. It stops with the facts so far on LAVA_AHEAD or LAVA_OPENED, DAMAGE_TAKEN, HOSTILE_NEAR (within 12), INVENTORY_FULL or VEIN_TIMEOUT; success is TREE_FELLED or VEIN_MINED, and every result lists seen blocks of it left and why (out of reach, not in sight, under the body). NOTHING_MINED: no block of it was in reach and sight.",
+        "kind": "result-code",
+        "topic": "mine_vein",
+        "code": "NO_STANCE",
+        "parent": "control:c46616ae6acf4919:405ae4f467ecefcb"
+      },
+      "location": {
+        "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
+        "line": 715
+      },
+      "status": "partial",
+      "reason": "The planning rules are witnessed on fixtures; the controller that drives the breaks in a live world has no world-level fixture."
+    },
+    {
+      "predicate": "Seen or heard lava behind the next block (break gate LAVA_BEHIND) stops mine_vein with LAVA_AHEAD and the facts so far.",
+      "checks": [
+        {
+          "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/VeinPlanVerification.java",
+          "test": "verifyFamilies + verifyTree + verifyTallTree + verifyVein",
+          "type": "java-behavior",
+          "entryPoint": "verifyCore"
+        }
+      ],
+      "id": "control:c46616ae6acf4919:405ae4f467ecefcb:result:LAVA_AHEAD",
+      "contract": {
+        "id": "control:c46616ae6acf4919:405ae4f467ecefcb:result:LAVA_AHEAD",
+        "claim": "One call fells the tree or mines the ore vein that block belongs to, at body speed, instead of one mine call per block. It counts only blocks you have seen (touching corner to corner, one log species, an ore with its deepslate twin); each block is an ordinary break_block with its own tool choice and every gate (sight, reach, LAVA_BEHIND, UNSEEN_BELOW, NO_TOOL for a wasted ore). A tree: it walks to a seen standing cell beside the trunk base, cuts the two lowest trunk logs, steps into the trunk's column and cuts every log above looking up (up to six above the feet), cutting leaves that hide a branch log. It refuses before any swing with TREE_OUT_OF_REACH when a seen log is beyond that reach, TREE_TOO_BIG above maxBlocks, or NO_STANCE with no seen standing cell beside the trunk, so it never leaves floating logs it saw. An ore vein: it mines the vein's blocks in reach and sight from where you stand, nearest first, as breaking each reveals the next. It never breaks a block you stand on or anything under you, and never walks except beside a trunk and into its column. It stops with the facts so far on LAVA_AHEAD or LAVA_OPENED, DAMAGE_TAKEN, HOSTILE_NEAR (within 12), INVENTORY_FULL or VEIN_TIMEOUT; success is TREE_FELLED or VEIN_MINED, and every result lists seen blocks of it left and why (out of reach, not in sight, under the body). NOTHING_MINED: no block of it was in reach and sight.",
+        "kind": "result-code",
+        "topic": "mine_vein",
+        "code": "LAVA_AHEAD",
+        "parent": "control:c46616ae6acf4919:405ae4f467ecefcb"
+      },
+      "location": {
+        "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
+        "line": 715
+      },
+      "status": "partial",
+      "reason": "The planning rules are witnessed on fixtures; the controller that drives the breaks in a live world has no world-level fixture."
+    },
+    {
+      "predicate": "Seen lava beside a block just broken stops mine_vein with LAVA_OPENED.",
+      "checks": [
+        {
+          "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/VeinPlanVerification.java",
+          "test": "verifyFamilies + verifyTree + verifyTallTree + verifyVein",
+          "type": "java-behavior",
+          "entryPoint": "verifyCore"
+        }
+      ],
+      "id": "control:c46616ae6acf4919:405ae4f467ecefcb:result:LAVA_OPENED",
+      "contract": {
+        "id": "control:c46616ae6acf4919:405ae4f467ecefcb:result:LAVA_OPENED",
+        "claim": "One call fells the tree or mines the ore vein that block belongs to, at body speed, instead of one mine call per block. It counts only blocks you have seen (touching corner to corner, one log species, an ore with its deepslate twin); each block is an ordinary break_block with its own tool choice and every gate (sight, reach, LAVA_BEHIND, UNSEEN_BELOW, NO_TOOL for a wasted ore). A tree: it walks to a seen standing cell beside the trunk base, cuts the two lowest trunk logs, steps into the trunk's column and cuts every log above looking up (up to six above the feet), cutting leaves that hide a branch log. It refuses before any swing with TREE_OUT_OF_REACH when a seen log is beyond that reach, TREE_TOO_BIG above maxBlocks, or NO_STANCE with no seen standing cell beside the trunk, so it never leaves floating logs it saw. An ore vein: it mines the vein's blocks in reach and sight from where you stand, nearest first, as breaking each reveals the next. It never breaks a block you stand on or anything under you, and never walks except beside a trunk and into its column. It stops with the facts so far on LAVA_AHEAD or LAVA_OPENED, DAMAGE_TAKEN, HOSTILE_NEAR (within 12), INVENTORY_FULL or VEIN_TIMEOUT; success is TREE_FELLED or VEIN_MINED, and every result lists seen blocks of it left and why (out of reach, not in sight, under the body). NOTHING_MINED: no block of it was in reach and sight.",
+        "kind": "result-code",
+        "topic": "mine_vein",
+        "code": "LAVA_OPENED",
+        "parent": "control:c46616ae6acf4919:405ae4f467ecefcb"
+      },
+      "location": {
+        "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
+        "line": 715
+      },
+      "status": "partial",
+      "reason": "The planning rules are witnessed on fixtures; the controller that drives the breaks in a live world has no world-level fixture."
+    },
+    {
+      "predicate": "Any health drop during mine_vein stops it with DAMAGE_TAKEN and the source.",
+      "checks": [
+        {
+          "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/VeinPlanVerification.java",
+          "test": "verifyFamilies + verifyTree + verifyTallTree + verifyVein",
+          "type": "java-behavior",
+          "entryPoint": "verifyCore"
+        }
+      ],
+      "id": "control:c46616ae6acf4919:405ae4f467ecefcb:result:DAMAGE_TAKEN",
+      "contract": {
+        "id": "control:c46616ae6acf4919:405ae4f467ecefcb:result:DAMAGE_TAKEN",
+        "claim": "One call fells the tree or mines the ore vein that block belongs to, at body speed, instead of one mine call per block. It counts only blocks you have seen (touching corner to corner, one log species, an ore with its deepslate twin); each block is an ordinary break_block with its own tool choice and every gate (sight, reach, LAVA_BEHIND, UNSEEN_BELOW, NO_TOOL for a wasted ore). A tree: it walks to a seen standing cell beside the trunk base, cuts the two lowest trunk logs, steps into the trunk's column and cuts every log above looking up (up to six above the feet), cutting leaves that hide a branch log. It refuses before any swing with TREE_OUT_OF_REACH when a seen log is beyond that reach, TREE_TOO_BIG above maxBlocks, or NO_STANCE with no seen standing cell beside the trunk, so it never leaves floating logs it saw. An ore vein: it mines the vein's blocks in reach and sight from where you stand, nearest first, as breaking each reveals the next. It never breaks a block you stand on or anything under you, and never walks except beside a trunk and into its column. It stops with the facts so far on LAVA_AHEAD or LAVA_OPENED, DAMAGE_TAKEN, HOSTILE_NEAR (within 12), INVENTORY_FULL or VEIN_TIMEOUT; success is TREE_FELLED or VEIN_MINED, and every result lists seen blocks of it left and why (out of reach, not in sight, under the body). NOTHING_MINED: no block of it was in reach and sight.",
+        "kind": "result-code",
+        "topic": "mine_vein",
+        "code": "DAMAGE_TAKEN",
+        "parent": "control:c46616ae6acf4919:405ae4f467ecefcb"
+      },
+      "location": {
+        "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
+        "line": 715
+      },
+      "status": "partial",
+      "reason": "The planning rules are witnessed on fixtures; the controller that drives the breaks in a live world has no world-level fixture."
+    },
+    {
+      "predicate": "A sensed threat within 12 blocks (ThreatPerception.isSensedThreat, as dig_to) stops mine_vein.",
+      "checks": [
+        {
+          "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/VeinPlanVerification.java",
+          "test": "verifyFamilies + verifyTree + verifyTallTree + verifyVein",
+          "type": "java-behavior",
+          "entryPoint": "verifyCore"
+        }
+      ],
+      "id": "control:c46616ae6acf4919:405ae4f467ecefcb:result:HOSTILE_NEAR",
+      "contract": {
+        "id": "control:c46616ae6acf4919:405ae4f467ecefcb:result:HOSTILE_NEAR",
+        "claim": "One call fells the tree or mines the ore vein that block belongs to, at body speed, instead of one mine call per block. It counts only blocks you have seen (touching corner to corner, one log species, an ore with its deepslate twin); each block is an ordinary break_block with its own tool choice and every gate (sight, reach, LAVA_BEHIND, UNSEEN_BELOW, NO_TOOL for a wasted ore). A tree: it walks to a seen standing cell beside the trunk base, cuts the two lowest trunk logs, steps into the trunk's column and cuts every log above looking up (up to six above the feet), cutting leaves that hide a branch log. It refuses before any swing with TREE_OUT_OF_REACH when a seen log is beyond that reach, TREE_TOO_BIG above maxBlocks, or NO_STANCE with no seen standing cell beside the trunk, so it never leaves floating logs it saw. An ore vein: it mines the vein's blocks in reach and sight from where you stand, nearest first, as breaking each reveals the next. It never breaks a block you stand on or anything under you, and never walks except beside a trunk and into its column. It stops with the facts so far on LAVA_AHEAD or LAVA_OPENED, DAMAGE_TAKEN, HOSTILE_NEAR (within 12), INVENTORY_FULL or VEIN_TIMEOUT; success is TREE_FELLED or VEIN_MINED, and every result lists seen blocks of it left and why (out of reach, not in sight, under the body). NOTHING_MINED: no block of it was in reach and sight.",
+        "kind": "result-code",
+        "topic": "mine_vein",
+        "code": "HOSTILE_NEAR",
+        "parent": "control:c46616ae6acf4919:405ae4f467ecefcb"
+      },
+      "location": {
+        "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
+        "line": 715
+      },
+      "status": "partial",
+      "reason": "The planning rules are witnessed on fixtures; the controller that drives the breaks in a live world has no world-level fixture."
+    },
+    {
+      "predicate": "With no free slot, a drop the inventory cannot take stops mine_vein before the break.",
+      "checks": [
+        {
+          "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/VeinPlanVerification.java",
+          "test": "verifyFamilies + verifyTree + verifyTallTree + verifyVein",
+          "type": "java-behavior",
+          "entryPoint": "verifyCore"
+        }
+      ],
+      "id": "control:c46616ae6acf4919:405ae4f467ecefcb:result:INVENTORY_FULL",
+      "contract": {
+        "id": "control:c46616ae6acf4919:405ae4f467ecefcb:result:INVENTORY_FULL",
+        "claim": "One call fells the tree or mines the ore vein that block belongs to, at body speed, instead of one mine call per block. It counts only blocks you have seen (touching corner to corner, one log species, an ore with its deepslate twin); each block is an ordinary break_block with its own tool choice and every gate (sight, reach, LAVA_BEHIND, UNSEEN_BELOW, NO_TOOL for a wasted ore). A tree: it walks to a seen standing cell beside the trunk base, cuts the two lowest trunk logs, steps into the trunk's column and cuts every log above looking up (up to six above the feet), cutting leaves that hide a branch log. It refuses before any swing with TREE_OUT_OF_REACH when a seen log is beyond that reach, TREE_TOO_BIG above maxBlocks, or NO_STANCE with no seen standing cell beside the trunk, so it never leaves floating logs it saw. An ore vein: it mines the vein's blocks in reach and sight from where you stand, nearest first, as breaking each reveals the next. It never breaks a block you stand on or anything under you, and never walks except beside a trunk and into its column. It stops with the facts so far on LAVA_AHEAD or LAVA_OPENED, DAMAGE_TAKEN, HOSTILE_NEAR (within 12), INVENTORY_FULL or VEIN_TIMEOUT; success is TREE_FELLED or VEIN_MINED, and every result lists seen blocks of it left and why (out of reach, not in sight, under the body). NOTHING_MINED: no block of it was in reach and sight.",
+        "kind": "result-code",
+        "topic": "mine_vein",
+        "code": "INVENTORY_FULL",
+        "parent": "control:c46616ae6acf4919:405ae4f467ecefcb"
+      },
+      "location": {
+        "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
+        "line": 715
+      },
+      "status": "partial",
+      "reason": "The planning rules are witnessed on fixtures; the controller that drives the breaks in a live world has no world-level fixture."
+    },
+    {
+      "predicate": "timeoutMs ends mine_vein as TIMED_OUT with the facts so far.",
+      "checks": [
+        {
+          "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/VeinPlanVerification.java",
+          "test": "verifyFamilies + verifyTree + verifyTallTree + verifyVein",
+          "type": "java-behavior",
+          "entryPoint": "verifyCore"
+        }
+      ],
+      "id": "control:c46616ae6acf4919:405ae4f467ecefcb:result:VEIN_TIMEOUT",
+      "contract": {
+        "id": "control:c46616ae6acf4919:405ae4f467ecefcb:result:VEIN_TIMEOUT",
+        "claim": "One call fells the tree or mines the ore vein that block belongs to, at body speed, instead of one mine call per block. It counts only blocks you have seen (touching corner to corner, one log species, an ore with its deepslate twin); each block is an ordinary break_block with its own tool choice and every gate (sight, reach, LAVA_BEHIND, UNSEEN_BELOW, NO_TOOL for a wasted ore). A tree: it walks to a seen standing cell beside the trunk base, cuts the two lowest trunk logs, steps into the trunk's column and cuts every log above looking up (up to six above the feet), cutting leaves that hide a branch log. It refuses before any swing with TREE_OUT_OF_REACH when a seen log is beyond that reach, TREE_TOO_BIG above maxBlocks, or NO_STANCE with no seen standing cell beside the trunk, so it never leaves floating logs it saw. An ore vein: it mines the vein's blocks in reach and sight from where you stand, nearest first, as breaking each reveals the next. It never breaks a block you stand on or anything under you, and never walks except beside a trunk and into its column. It stops with the facts so far on LAVA_AHEAD or LAVA_OPENED, DAMAGE_TAKEN, HOSTILE_NEAR (within 12), INVENTORY_FULL or VEIN_TIMEOUT; success is TREE_FELLED or VEIN_MINED, and every result lists seen blocks of it left and why (out of reach, not in sight, under the body). NOTHING_MINED: no block of it was in reach and sight.",
+        "kind": "result-code",
+        "topic": "mine_vein",
+        "code": "VEIN_TIMEOUT",
+        "parent": "control:c46616ae6acf4919:405ae4f467ecefcb"
+      },
+      "location": {
+        "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
+        "line": 715
+      },
+      "status": "partial",
+      "reason": "The planning rules are witnessed on fixtures; the controller that drives the breaks in a live world has no world-level fixture."
+    },
+    {
+      "predicate": "A tree run that broke at least one log succeeds TREE_FELLED with counts, time and the seen logs left.",
+      "checks": [
+        {
+          "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/VeinPlanVerification.java",
+          "test": "verifyFamilies + verifyTree + verifyTallTree + verifyVein",
+          "type": "java-behavior",
+          "entryPoint": "verifyCore"
+        }
+      ],
+      "id": "control:c46616ae6acf4919:405ae4f467ecefcb:result:TREE_FELLED",
+      "contract": {
+        "id": "control:c46616ae6acf4919:405ae4f467ecefcb:result:TREE_FELLED",
+        "claim": "One call fells the tree or mines the ore vein that block belongs to, at body speed, instead of one mine call per block. It counts only blocks you have seen (touching corner to corner, one log species, an ore with its deepslate twin); each block is an ordinary break_block with its own tool choice and every gate (sight, reach, LAVA_BEHIND, UNSEEN_BELOW, NO_TOOL for a wasted ore). A tree: it walks to a seen standing cell beside the trunk base, cuts the two lowest trunk logs, steps into the trunk's column and cuts every log above looking up (up to six above the feet), cutting leaves that hide a branch log. It refuses before any swing with TREE_OUT_OF_REACH when a seen log is beyond that reach, TREE_TOO_BIG above maxBlocks, or NO_STANCE with no seen standing cell beside the trunk, so it never leaves floating logs it saw. An ore vein: it mines the vein's blocks in reach and sight from where you stand, nearest first, as breaking each reveals the next. It never breaks a block you stand on or anything under you, and never walks except beside a trunk and into its column. It stops with the facts so far on LAVA_AHEAD or LAVA_OPENED, DAMAGE_TAKEN, HOSTILE_NEAR (within 12), INVENTORY_FULL or VEIN_TIMEOUT; success is TREE_FELLED or VEIN_MINED, and every result lists seen blocks of it left and why (out of reach, not in sight, under the body). NOTHING_MINED: no block of it was in reach and sight.",
+        "kind": "result-code",
+        "topic": "mine_vein",
+        "code": "TREE_FELLED",
+        "parent": "control:c46616ae6acf4919:405ae4f467ecefcb"
+      },
+      "location": {
+        "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
+        "line": 715
+      },
+      "status": "partial",
+      "reason": "The planning rules are witnessed on fixtures; the controller that drives the breaks in a live world has no world-level fixture."
+    },
+    {
+      "predicate": "A vein run that broke at least one block succeeds VEIN_MINED with counts, time and the seen blocks left.",
+      "checks": [
+        {
+          "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/VeinPlanVerification.java",
+          "test": "verifyFamilies + verifyTree + verifyTallTree + verifyVein",
+          "type": "java-behavior",
+          "entryPoint": "verifyCore"
+        }
+      ],
+      "id": "control:c46616ae6acf4919:405ae4f467ecefcb:result:VEIN_MINED",
+      "contract": {
+        "id": "control:c46616ae6acf4919:405ae4f467ecefcb:result:VEIN_MINED",
+        "claim": "One call fells the tree or mines the ore vein that block belongs to, at body speed, instead of one mine call per block. It counts only blocks you have seen (touching corner to corner, one log species, an ore with its deepslate twin); each block is an ordinary break_block with its own tool choice and every gate (sight, reach, LAVA_BEHIND, UNSEEN_BELOW, NO_TOOL for a wasted ore). A tree: it walks to a seen standing cell beside the trunk base, cuts the two lowest trunk logs, steps into the trunk's column and cuts every log above looking up (up to six above the feet), cutting leaves that hide a branch log. It refuses before any swing with TREE_OUT_OF_REACH when a seen log is beyond that reach, TREE_TOO_BIG above maxBlocks, or NO_STANCE with no seen standing cell beside the trunk, so it never leaves floating logs it saw. An ore vein: it mines the vein's blocks in reach and sight from where you stand, nearest first, as breaking each reveals the next. It never breaks a block you stand on or anything under you, and never walks except beside a trunk and into its column. It stops with the facts so far on LAVA_AHEAD or LAVA_OPENED, DAMAGE_TAKEN, HOSTILE_NEAR (within 12), INVENTORY_FULL or VEIN_TIMEOUT; success is TREE_FELLED or VEIN_MINED, and every result lists seen blocks of it left and why (out of reach, not in sight, under the body). NOTHING_MINED: no block of it was in reach and sight.",
+        "kind": "result-code",
+        "topic": "mine_vein",
+        "code": "VEIN_MINED",
+        "parent": "control:c46616ae6acf4919:405ae4f467ecefcb"
+      },
+      "location": {
+        "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
+        "line": 715
+      },
+      "status": "partial",
+      "reason": "The planning rules are witnessed on fixtures; the controller that drives the breaks in a live world has no world-level fixture."
+    },
+    {
+      "predicate": "No block of the tree or vein in reach and sight fails NOTHING_MINED with the seen blocks left and why.",
+      "checks": [
+        {
+          "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/VeinPlanVerification.java",
+          "test": "verifyFamilies + verifyTree + verifyTallTree + verifyVein",
+          "type": "java-behavior",
+          "entryPoint": "verifyCore"
+        }
+      ],
+      "id": "control:c46616ae6acf4919:405ae4f467ecefcb:result:NOTHING_MINED",
+      "contract": {
+        "id": "control:c46616ae6acf4919:405ae4f467ecefcb:result:NOTHING_MINED",
+        "claim": "One call fells the tree or mines the ore vein that block belongs to, at body speed, instead of one mine call per block. It counts only blocks you have seen (touching corner to corner, one log species, an ore with its deepslate twin); each block is an ordinary break_block with its own tool choice and every gate (sight, reach, LAVA_BEHIND, UNSEEN_BELOW, NO_TOOL for a wasted ore). A tree: it walks to a seen standing cell beside the trunk base, cuts the two lowest trunk logs, steps into the trunk's column and cuts every log above looking up (up to six above the feet), cutting leaves that hide a branch log. It refuses before any swing with TREE_OUT_OF_REACH when a seen log is beyond that reach, TREE_TOO_BIG above maxBlocks, or NO_STANCE with no seen standing cell beside the trunk, so it never leaves floating logs it saw. An ore vein: it mines the vein's blocks in reach and sight from where you stand, nearest first, as breaking each reveals the next. It never breaks a block you stand on or anything under you, and never walks except beside a trunk and into its column. It stops with the facts so far on LAVA_AHEAD or LAVA_OPENED, DAMAGE_TAKEN, HOSTILE_NEAR (within 12), INVENTORY_FULL or VEIN_TIMEOUT; success is TREE_FELLED or VEIN_MINED, and every result lists seen blocks of it left and why (out of reach, not in sight, under the body). NOTHING_MINED: no block of it was in reach and sight.",
+        "kind": "result-code",
+        "topic": "mine_vein",
+        "code": "NOTHING_MINED",
+        "parent": "control:c46616ae6acf4919:405ae4f467ecefcb"
+      },
+      "location": {
+        "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
+        "line": 715
+      },
+      "status": "partial",
+      "reason": "The planning rules are witnessed on fixtures; the controller that drives the breaks in a live world has no world-level fixture."
     },
     {
       "predicate": "cast_obsidian casts obsidian in place with vanilla bucket clicks along the eased look within vanilla reach on faces the eye sees: count mode pours water beside a seen pool edge, waits for the flow and scoops it back until count new obsidian; frame mode fills the 10 cells of a 4x5 frame (lava from a seen source, water above or beside, scoop back, at most 3 carried mould blocks out of the plane or at corners), never pours lava the LAVA_POUR_AT_BODY check refuses, and stops with the listed codes; the measured outcomes come from the save-point runs.",

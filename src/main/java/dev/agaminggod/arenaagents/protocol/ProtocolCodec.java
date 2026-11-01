@@ -345,6 +345,11 @@ public final class ProtocolCodec {
 			case DROP_ITEM -> validateDropItem(arguments);
 			case NAVIGATE_TO -> validateNavigateTo(arguments);
 			case DIG_TO -> validateDigTo(arguments);
+			case MINE_VEIN -> {
+				validateCoordinates(arguments, true);
+				if (present(arguments, "maxBlocks")) requireIntegralRange(arguments, "maxBlocks", 1, 64);
+				requireDuration(arguments, FIELD_TIMEOUT_MS);
+			}
 			case BUILD_SHELTER -> {
 				validateCoordinates(arguments, true);
 				requireOneOf(arguments, "opening", List.of("north", "south", "east", "west"));
@@ -1135,6 +1140,7 @@ public final class ProtocolCodec {
 		fields.put(ActionType.CAST_OBSIDIAN, List.of(FIELD_X, FIELD_Y, FIELD_Z, "axis", "frame", FIELD_COUNT, FIELD_TIMEOUT_MS));
 		fields.put(ActionType.BARTER_UNTIL, List.of(FIELD_ITEM_ID, FIELD_COUNT, FIELD_TIMEOUT_MS));
 		fields.put(ActionType.BUILD_SHELTER, List.of(FIELD_X, FIELD_Y, FIELD_Z, "opening", FIELD_ITEM_ID, "roof", FIELD_TIMEOUT_MS));
+		fields.put(ActionType.MINE_VEIN, List.of(FIELD_X, FIELD_Y, FIELD_Z, "maxBlocks", FIELD_TIMEOUT_MS));
 		fields.put(ActionType.DIG_TO, List.of("pattern", FIELD_Y, FIELD_X, FIELD_Z, "heading", "maxBlocks", "throughCaves", "maxShaftY", "stopWhenSeen", FIELD_TIMEOUT_MS));
 		fields.put(ActionType.TRAVEL_TO, List.of(
 				FIELD_X, FIELD_Y, FIELD_Z, FIELD_YAW, FIELD_DISTANCE, FIELD_TOLERANCE, "build", "retrace", "dimension", "stopWhenSeen", "minHealth", "fightThrough", FIELD_TIMEOUT_MS
