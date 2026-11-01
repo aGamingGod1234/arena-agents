@@ -8,6 +8,8 @@ set -euo pipefail
 root="$(cd "$(dirname "$0")/.." && pwd)"
 target="${1:-}"
 properties="$root/gradle.properties"
+# The default target can be named explicitly too (CI matrices), as with ./gradlew -Pmc=26.3.
+[[ "$target" == "$(grep -E '^mc_compat=' "$properties" | cut -d= -f2-)" ]] && target=""
 if [[ -n "$target" ]]; then
 	properties="$root/gradle/mc/$target.properties"
 	[[ -f "$properties" ]] || { echo "Unknown Minecraft target $target (no gradle/mc/$target.properties)" >&2; exit 1; }
