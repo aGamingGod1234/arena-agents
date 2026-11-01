@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.server.runtime.controller;
 
+import dev.agaminggod.arenaagents.compat.McCompat;
+
 import dev.agaminggod.arenaagents.server.runtime.ArmSwing;
 import dev.agaminggod.arenaagents.client.navigation.GridPosition;
 import dev.agaminggod.arenaagents.client.navigation.LocalPathfinder;
@@ -378,7 +380,7 @@ public final class ServerFightController implements ServerController {
 		AABB box = strike.getBoundingBox();
 		// An enderman is hit in the legs, as players do: a view near its eyes inside 4 blocks is a stare, and vanilla
 		// then teleports it away mid-fight. The swing still has to clear the real hitbox.
-		AABB aimBox = strike instanceof net.minecraft.world.entity.monster.Enderman ? box.setMaxY(box.minY + 1.2D) : box;
+		AABB aimBox = McCompat.isEnderman(strike) ? box.setMaxY(box.minY + 1.2D) : box;
 		var heldRange = player.getAttackRangeWith(player.getMainHandItem());
 		boolean inReach = heldRange.isInRange(player, box, 0.0D);
 		// Being near a box is not a clear swing. Short, bouncing bodies can expose only their top or near edge.

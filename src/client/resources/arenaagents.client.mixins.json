@@ -12,7 +12,6 @@
     "MinecraftFontManagerAccessor",
     "PlayerInfoMixin",
     "PlanItemIconsRenderMixin",
-    "GuiItemAtlasPlanIconsMixin",
     "SkinManagerMixin",
     "ClientCommonPacketListenerPovMixin",
     "ClientPacketListenerPovMixin",
@@ -23,8 +22,6 @@
     "GameModeSwitcherScreenPovMixin",
     "GuiPovMixin",
     "GuiInBedPovMixin",
-    "ItemInHandRendererPovMixin",
-    "FirstPersonHandsRendererPovMixin",
     "LivingEntityPovRotationMixin",
     "KeyboardInputPovMixin",
     "LevelRendererPovMixin",
@@ -36,8 +33,7 @@
     "MenuScreensInvoker",
     "InBedChatScreenPovMixin",
     "InventoryScreenPovMixin",
-    "AbstractContainerScreenPovMixin",
-    "ScreenEffectRendererPovMixin"
+    "AbstractContainerScreenPovMixin"
   ],
   "injectors": {
     "defaultRequire": 1

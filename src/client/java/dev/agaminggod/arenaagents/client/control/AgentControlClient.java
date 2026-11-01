@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.client.control;
 
+import dev.agaminggod.arenaagents.client.compat.McClientCompat;
+
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.agaminggod.arenaagents.client.gui.AgentControlScreen;
 import dev.agaminggod.arenaagents.client.gui.scenario.ScenarioLaunchPlan;
@@ -53,13 +55,13 @@ public final class AgentControlClient {
 	);
 	private static final KeyMapping OPEN_CONTROL = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 			"key.arenaagents.open_controls",
-			InputConstants.Type.KEYBOARD,
+			McClientCompat.KEYBOARD,
 			InputConstants.KEY_G,
 			KEY_CATEGORY
 	));
 	private static final KeyMapping TOGGLE_CAMERA_ASSISTANT = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 			"key.arenaagents.toggle_camera_assistant",
-			InputConstants.Type.KEYBOARD,
+			McClientCompat.KEYBOARD,
 			InputConstants.KEY_H,
 			KEY_CATEGORY
 	));

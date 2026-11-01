@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.server.runtime;
 
+import dev.agaminggod.arenaagents.compat.McCompat;
+
 import dev.agaminggod.arenaagents.server.perception.ObservationVisibility;
 import dev.agaminggod.arenaagents.server.perception.ThreatPerception;
 import dev.agaminggod.arenaagents.server.runtime.controller.ServerController;
@@ -177,7 +179,7 @@ public final class ServerBarterController implements ServerController {
 		turnTicks = 0;
 		int selected = player.getInventory().getSelectedSlot();
 		ItemStack one = player.getInventory().removeItem(selected, 1);
-		if (one.isEmpty() || player.drop(one, true, net.minecraft.util.Prediction.PREDICTED) == null) return stop(player, "ITEM_DROP_REJECTED", "The gold ingot could not be thrown");
+		if (one.isEmpty() || McCompat.drop(player, one, true, true) == null) return stop(player, "ITEM_DROP_REJECTED", "The gold ingot could not be thrown");
 		ArmSwing.use(player, InteractionHand.MAIN_HAND);
 		thrown++;
 		lastThrowMs = nowEpochMs;

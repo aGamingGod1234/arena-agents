@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.client.camera;
 
+import dev.agaminggod.arenaagents.client.compat.McClientCompat;
+
 import com.mojang.blaze3d.platform.InputConstants;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -60,7 +62,7 @@ public final class CameraDirectorClient {
     private static String armedDollyName;
     private static boolean armedDollyReplace;
     private static boolean dollyRecording;
-    private static final net.minecraft.client.KeyMapping CAMERA_CONTROLS = new net.minecraft.client.KeyMapping("key.arenaagents.camera_controls", com.mojang.blaze3d.platform.InputConstants.Type.KEYBOARD, InputConstants.KEY_K, net.minecraft.client.KeyMapping.Category.MISC);
+    private static final net.minecraft.client.KeyMapping CAMERA_CONTROLS = new net.minecraft.client.KeyMapping("key.arenaagents.camera_controls", McClientCompat.KEYBOARD, InputConstants.KEY_K, net.minecraft.client.KeyMapping.Category.MISC);
 
     /** Arms physical capture. The next camera dolly clicked becomes the recording camera. */
     public static void startDollyRecordingFromGui(String name, boolean replace) {

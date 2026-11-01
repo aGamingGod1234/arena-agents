@@ -1,4 +1,4 @@
-package dev.agaminggod.arenaagents.mixin;
+package dev.agaminggod.arenaagents.compat.mixin;
 
 import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;

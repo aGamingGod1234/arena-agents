@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.server.runtime;
 
+import dev.agaminggod.arenaagents.compat.McCompat;
+
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 
@@ -14,7 +16,7 @@ public final class ArmSwing {
 	}
 
 	public static void attack(LivingEntity entity, InteractionHand hand) {
-		entity.swing(hand, entity.getItemInHand(hand).getAttackAnimation(), false);
+		McCompat.swingAttack(entity, hand);
 	}
 
 	public static void use(LivingEntity entity, InteractionHand hand) {
@@ -22,6 +24,6 @@ public final class ArmSwing {
 	}
 
 	public static void use(LivingEntity entity, InteractionHand hand, boolean toSelf) {
-		entity.swing(hand, entity.getItemInHand(hand).getInteractAnimation(), toSelf);
+		McCompat.swingUse(entity, hand, toSelf);
 	}
 }

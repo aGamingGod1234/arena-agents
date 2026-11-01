@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.server.runtime.controller;
 
+import dev.agaminggod.arenaagents.compat.McCompat;
+
 import carpet.helpers.EntityPlayerActionPack;
 import dev.agaminggod.arenaagents.client.navigation.GridPosition;
 import dev.agaminggod.arenaagents.client.navigation.LocalPathfinder;
@@ -1635,7 +1637,7 @@ public final class ServerNavigationController implements ServerController {
 						motorState.forward(), motorState.strafe(), motorState.jumpHeld(), lastSprint),
 				winner, lease, plan == null ? 0 : plan.nodes().size(), preparation != null,
 				search != null, waypointIndex, plan == null ? 0 : plan.nodes().size(), traversal,
-				player.fallDistance, player.hurtTime, player.syncVelocity,
+				player.fallDistance, player.hurtTime, McCompat.velocitySyncPending(player),
 				diagnosticTarget == null ? "-" : String.format(java.util.Locale.ROOT, "%.2f,%.2f,%.2f", diagnosticTarget.x, diagnosticTarget.y, diagnosticTarget.z));
 	}
 

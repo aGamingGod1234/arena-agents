@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.server.runtime;
 
+import dev.agaminggod.arenaagents.compat.McCompat;
+
 import com.google.gson.JsonObject;
 import dev.agaminggod.arenaagents.agent.AgentDomainException;
 import dev.agaminggod.arenaagents.agent.AgentId;
@@ -344,7 +346,7 @@ public final class AdvancedInteractionService implements ServerTransactionAdapte
 		if (removed.isEmpty()) return Result.failed("EMPTY_SLOT", "Inventory slot is empty");
 		try {
 			// As a vanilla Q drop: thrown ahead with the player as owner (piglins, allays and advancements read the thrower).
-			if (agent.drop(removed, true, net.minecraft.util.Prediction.PREDICTED) == null) {
+			if (McCompat.drop(agent, removed, true, true) == null) {
 				return dropFailure(agent.getInventory(), slot, before,
 						"ITEM_DROP_REJECTED", "World rejected item drop");
 			}
@@ -466,7 +468,7 @@ public final class AdvancedInteractionService implements ServerTransactionAdapte
 				int originalCount = stack.getCount();
 				int inventoryBefore = inventoryOwnershipCount(player.getInventory(), stack);
 				try {
-					player.getInventory().placeItemBackInInventory(stack, net.minecraft.util.Prediction.SERVER_ONLY);
+					McCompat.placeItemBackInInventory(player.getInventory(), stack);
 				} catch (RuntimeException exception) {
 					int inventoryAfter = inventoryOwnershipCount(player.getInventory(), stack);
 					int credited = Math.max(0, inventoryAfter - inventoryBefore);
@@ -477,7 +479,7 @@ public final class AdvancedInteractionService implements ServerTransactionAdapte
 				}
 				if (!stack.isEmpty()) {
 					try {
-						ItemEntity dropped = player.drop(stack, false, net.minecraft.util.Prediction.SERVER_ONLY);
+						ItemEntity dropped = McCompat.drop(player, stack, false, false);
 						if (dropped == null) {
 							throw new IllegalStateException("Escrow inventory and drop recovery were rejected");
 						}
@@ -1454,10 +1456,10 @@ public final class AdvancedInteractionService implements ServerTransactionAdapte
 		private void returnToInventoryOrDrop(ItemStack stack) {
 			if (stack == null || stack.isEmpty()) return;
 			int fits = Math.min(stack.getCount(), inventoryRoom(player.getInventory(), stack));
-			if (fits > 0) player.getInventory().placeItemBackInInventory(stack.split(fits), net.minecraft.util.Prediction.SERVER_ONLY);
+			if (fits > 0) McCompat.placeItemBackInInventory(player.getInventory(), stack.split(fits));
 			if (stack.isEmpty()) return;
 			droppedAtBody.add(ownedStack(stack.copy()));
-			player.drop(stack, false, net.minecraft.util.Prediction.SERVER_ONLY);
+			McCompat.drop(player, stack, false, false);
 		}
 
 		/** Returns the cursor and grid to the inventory (or the body when full) before the menu closes. */
@@ -1748,8 +1750,7 @@ public final class AdvancedInteractionService implements ServerTransactionAdapte
 
 		/** The old randomly scattered drop (26.3 removed it from LivingEntity.drop); a dead body does not swing. */
 		private void dropAtBody(ItemStack stack) {
-			ItemEntity entity = player.createItemStackToDrop(stack, true, false);
-			if (entity != null) player.level().addFreshEntity(entity);
+			McCompat.dropScattered(player, stack);
 		}
 
 		@Override
@@ -2083,7 +2084,7 @@ public final class AdvancedInteractionService implements ServerTransactionAdapte
 		int originalCount = stack.getCount();
 		int inventoryBefore = inventoryOwnershipCount(player.getInventory(), stack);
 		try {
-			player.getInventory().placeItemBackInInventory(stack, net.minecraft.util.Prediction.SERVER_ONLY);
+			McCompat.placeItemBackInInventory(player.getInventory(), stack);
 		} catch (RuntimeException ignored) {
 			int inventoryAfter = inventoryOwnershipCount(player.getInventory(), stack);
 			int credited = Math.max(0, inventoryAfter - inventoryBefore);
@@ -2264,7 +2265,7 @@ public final class AdvancedInteractionService implements ServerTransactionAdapte
 			return;
 		}
 		menu.setCarried(ItemStack.EMPTY);
-		player.getInventory().placeItemBackInInventory(carried, net.minecraft.util.Prediction.SERVER_ONLY);
+		McCompat.placeItemBackInInventory(player.getInventory(), carried);
 	}
 
 	private static String text(JsonObject object, String field) {

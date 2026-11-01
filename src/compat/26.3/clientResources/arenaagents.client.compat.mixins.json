@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "compatibilityLevel": "JAVA_25",
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "package": "dev.agaminggod.arenaagents.client.compat.mixin",
+  "client": [
+    "FirstPersonHandsRendererPovMixin",
+    "GuiItemAtlasPlanIconsMixin",
+    "ItemInHandRendererPovMixin",
+    "ScreenEffectRendererPovMixin"
+  ]
+}

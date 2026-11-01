@@ -2,7 +2,7 @@ plugins {
 	id 'net.fabricmc.fabric-loom' version "${loom_version}"
 }
 
-version = project.mod_version
+version = project.mc_compat == '26.3' ? project.mod_version : "${project.mod_version}+mc${project.minecraft_version}"
 group = project.maven_group
 
 base {
@@ -28,15 +28,16 @@ dependencies {
 	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 	implementation project(':')
 	implementation "de.maxhenkel.voicechat:voicechat-api:2.6.20"
-	runtimeOnly "maven.modrinth:9eGKb6K1:x9jLR94Q"
+	runtimeOnly "maven.modrinth:9eGKb6K1:${project.voicechat_modrinth_version}"
 	runtimeOnly "de.maxhenkel.voicechat:voicechat-api:2.6.20:fabric-stub"
 }
 
 processResources {
 	inputs.property 'version', project.version
 	inputs.property 'voicechatApiVersion', '2.6.20'
+	inputs.property 'minecraftDependency', project.minecraft_dependency
 	filesMatching('fabric.mod.json') {
-		expand version: project.version, voicechatApiVersion: '2.6.20'
+		expand version: project.version, voicechatApiVersion: '2.6.20', minecraftDependency: project.minecraft_dependency
 	}
 }
 

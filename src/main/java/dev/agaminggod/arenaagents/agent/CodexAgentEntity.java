@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.agent;
 
+import dev.agaminggod.arenaagents.compat.McCompat;
+
 import java.util.Optional;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -178,7 +180,7 @@ public final class CodexAgentEntity extends PathfinderMob {
 	private void applyGameModeCapabilities() {
 		boolean creative = getAgentGameMode() == AgentGameMode.CREATIVE;
 		setNoGravity(creative);
-		setPermanentlyInvulnerable(creative);
+		McCompat.setPermanentlyInvulnerable(this, creative);
 	}
 
 	private void refreshNameTag() {

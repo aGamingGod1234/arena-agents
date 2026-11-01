@@ -16,7 +16,7 @@
 	},
 	"depends": {
 		"fabricloader": ">=0.20.1",
-		"minecraft": "~26.3",
+		"minecraft": "${minecraftDependency}",
 		"java": ">=25",
 		"arenaagents": ">=0.1.0",
 		"voicechat_api": ">=${voicechatApiVersion}"

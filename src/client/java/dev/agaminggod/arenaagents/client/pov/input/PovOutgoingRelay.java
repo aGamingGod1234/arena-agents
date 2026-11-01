@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.client.pov.input;
 
+import dev.agaminggod.arenaagents.client.compat.McClientCompat;
+
 import dev.agaminggod.arenaagents.client.pov.PovClient;
 import dev.agaminggod.arenaagents.client.pov.screen.PovScreens;
 import dev.agaminggod.arenaagents.pov.OperatorAction;
@@ -37,7 +39,7 @@ public final class PovOutgoingRelay {
 			case ServerboundRenameItemPacket rename -> OperatorInputSender.sendText((session, sequence) ->
 					OperatorTextPayload.rename(session, sequence, clamp(rename.getName(), OperatorTextPayload.MAX_RENAME_LENGTH)));
 			case ServerboundSignUpdatePacket sign -> OperatorInputSender.sendText((session, sequence) ->
-					OperatorTextPayload.sign(session, sequence, sign.pos(), sign.slot() == net.minecraft.world.level.block.entity.SignTextSlot.FRONT, sign.lines()));
+					OperatorTextPayload.sign(session, sequence, McClientCompat.signPosition(sign), McClientCompat.signFrontText(sign), McClientCompat.signLines(sign)));
 			case ServerboundEditBookPacket book -> {
 				int slot = PovScreens.agentBookSlot();
 				// Only a book the agent opened is relayed; its slot comes from the server, not the operator's hotbar.

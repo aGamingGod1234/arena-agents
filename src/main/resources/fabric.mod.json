@@ -17,16 +17,21 @@
 	},
 	"mixins": [
 		"arenaagents.mixins.json",
+		"arenaagents.compat.mixins.json",
 		{
 			"config": "arenaagents.client.mixins.json",
+			"environment": "client"
+		},
+		{
+			"config": "arenaagents.client.compat.mixins.json",
 			"environment": "client"
 		}
 	],
 	"depends": {
 		"fabricloader": ">=0.20.1",
-		"minecraft": "~26.3",
+		"minecraft": "${minecraftDependency}",
 		"java": ">=25",
 		"fabric-api": "*",
-		"carpet": ">=26.3 <26.4"
+		"carpet": "${carpetDependency}"
 	}
 }

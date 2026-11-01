@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.server.runtime;
 
+import dev.agaminggod.arenaagents.compat.McCompat;
+
 import com.google.gson.JsonObject;
 import dev.agaminggod.arenaagents.agent.AgentDomainException;
 import dev.agaminggod.arenaagents.server.perception.ObservationVisibility;
@@ -43,7 +45,7 @@ final class PlayerTextInteraction {
 			}
 			SignBlockEntity sign = sign(player, position);
 			if (sign.isWaxed() || !player.getUUID().equals(sign.getPlayerWhoMayEdit())
-					|| (sign.getSlotPlayerIsFacing(player) == net.minecraft.world.level.block.entity.SignTextSlot.FRONT) != front) {
+					|| McCompat.facingFrontText(sign, player) != front) {
 				throw new AgentDomainException("SIGN_NOT_EDITABLE", "Open the requested unwaxed sign side through a vanilla interaction first");
 			}
 			if (!signLines(sign, front, player.isTextFilteringEnabled()).equals(expected)) {
@@ -53,7 +55,7 @@ final class PlayerTextInteraction {
 		preflight.run();
 		return new FilteredEdit(player, lines.stream().map(ChatFormatting::stripFormatting).toList(), preflight, filtered -> {
 			SignBlockEntity sign = sign(player, position);
-			sign.updateSignText(player, front ? net.minecraft.world.level.block.entity.SignTextSlot.FRONT : net.minecraft.world.level.block.entity.SignTextSlot.BACK, filtered);
+			McCompat.updateSignText(sign, player, front, filtered);
 			List<String> visible = filtered.stream().map(text -> player.isTextFilteringEnabled() ? text.filteredOrEmpty() : text.raw()).toList();
 			if (!signLines(sign, front, player.isTextFilteringEnabled()).equals(visible)) {
 				throw new AgentDomainException("SIGN_EDIT_NOT_CONFIRMED", "Requested filtered sign text was not observed");
@@ -125,7 +127,7 @@ final class PlayerTextInteraction {
 	}
 
 	private static List<String> signLines(SignBlockEntity sign, boolean front, boolean filtered) {
-		return sign.getText(front ? net.minecraft.world.level.block.entity.SignTextSlot.FRONT : net.minecraft.world.level.block.entity.SignTextSlot.BACK).getMessages(filtered).stream().map(Component::getString).toList();
+		return McCompat.signMessages(McCompat.signText(sign, front), filtered).stream().map(Component::getString).toList();
 	}
 
 	private static Filterable<String> outgoing(ServerPlayer player, FilteredText text) {

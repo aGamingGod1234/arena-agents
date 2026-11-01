@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.server.perception;
 
+import dev.agaminggod.arenaagents.compat.McCompat;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.core.BlockPos;
@@ -146,7 +148,7 @@ public final class PlayerHudInspection {
 		result.addProperty("dayPhase", phaseKnown ? dayPhase(level.getDefaultClockTime()) : "unknown");
 		result.addProperty("weather", skyVisible && level.canHaveWeather() ? level.isThundering() ? "thunderstorm" : level.isRaining() ? "rain" : "clear" : "unknown");
 		var bed = level.environmentAttributes().getValue(EnvironmentAttributes.BED_RULE, player.blockPosition());
-		result.addProperty("bedExplodes", bed.destroyOnUse());
+		result.addProperty("bedExplodes", McCompat.bedExplodes(bed));
 		result.addProperty("bedTimeAllowsSleep", bed.canSleep(level));
 		result.addProperty("sleepSafetyChecked", false);
 		return result;

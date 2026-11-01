@@ -1,8 +1,10 @@
 package dev.agaminggod.arenaagents.server.runtime.controller;
 
+import dev.agaminggod.arenaagents.compat.McCompat;
+
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.monster.Enderman;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -26,7 +28,7 @@ public final class EndermanGaze {
 	/** {@code pitch}, or the nearest pitch below (else above) it whose view along {@code yaw} meets no calm enderman's eyes. */
 	public static float clearPitch(ServerPlayer player, float yaw, float pitch) {
 		if (!LivingEntity.PLAYER_NOT_WEARING_DISGUISE_ITEM.test(player)) return pitch;
-		var endermen = player.level().getEntitiesOfClass(Enderman.class, player.getBoundingBox().inflate(RANGE),
+		var endermen = player.level().getEntitiesOfClass(McCompat.ENDERMAN, player.getBoundingBox().inflate(RANGE),
 				enderman -> enderman.isAlive() && enderman.getTarget() != player && !enderman.isInvisibleTo(player));
 		if (endermen.isEmpty()) return pitch;
 		Vec3 eye = player.getEyePosition();
@@ -44,17 +46,17 @@ public final class EndermanGaze {
 	 * The nearest calm enderman whose eyes a view along {@code yaw}/{@code pitch} meets (with line of sight), or null.
 	 * One whose box holds {@code onPurpose} is skipped: the view is on that enderman by the model's choice.
 	 */
-	public static Enderman staredAt(ServerPlayer player, float yaw, float pitch, Vec3 onPurpose) {
+	public static Monster staredAt(ServerPlayer player, float yaw, float pitch, Vec3 onPurpose) {
 		return staredAt(player, Vec3.directionFromRotation(pitch, yaw), onPurpose);
 	}
 
 	/** As {@link #staredAt(ServerPlayer, float, float, Vec3)} for a view direction. */
-	public static Enderman staredAt(ServerPlayer player, Vec3 view, Vec3 onPurpose) {
+	public static Monster staredAt(ServerPlayer player, Vec3 view, Vec3 onPurpose) {
 		var endermen = calm(player, onPurpose);
 		if (endermen.isEmpty()) return null;
 		Vec3 eye = player.getEyePosition();
-		Enderman nearest = null;
-		for (Enderman enderman : endermen) {
+		Monster nearest = null;
+		for (Monster enderman : endermen) {
 			if (!staring(eye, view, new Vec3(enderman.getX(), enderman.getEyeY(), enderman.getZ())) || !player.hasLineOfSight(enderman)) continue;
 			if (nearest == null || player.distanceToSqr(enderman) < player.distanceToSqr(nearest)) nearest = enderman;
 		}
@@ -80,16 +82,16 @@ public final class EndermanGaze {
 
 	static final int NEAR_LIMIT = 20;
 
-	private static java.util.List<Enderman> calm(ServerPlayer player, Vec3 onPurpose) {
-		var endermen = player.level().getEntitiesOfClass(Enderman.class, player.getBoundingBox().inflate(RANGE),
+	private static java.util.List<? extends Monster> calm(ServerPlayer player, Vec3 onPurpose) {
+		var endermen = player.level().getEntitiesOfClass(McCompat.ENDERMAN, player.getBoundingBox().inflate(RANGE),
 				enderman -> enderman.isAlive() && enderman.getTarget() != player && !enderman.isInvisibleTo(player)
 						&& (onPurpose == null || !enderman.getBoundingBox().inflate(0.3D).contains(onPurpose)));
-		return endermen.isEmpty() || LivingEntity.PLAYER_NOT_WEARING_DISGUISE_ITEM.test(player) ? endermen : java.util.List.of();
+		return endermen.isEmpty() || LivingEntity.PLAYER_NOT_WEARING_DISGUISE_ITEM.test(player) ? endermen : java.util.Collections.emptyList();
 	}
 
-	private static boolean clear(ServerPlayer player, Vec3 eye, java.util.List<Enderman> endermen, float yaw, float pitch) {
+	private static boolean clear(ServerPlayer player, Vec3 eye, java.util.List<? extends Monster> endermen, float yaw, float pitch) {
 		Vec3 view = Vec3.directionFromRotation(pitch, yaw);
-		for (Enderman enderman : endermen) {
+		for (Monster enderman : endermen) {
 			if (staring(eye, view, new Vec3(enderman.getX(), enderman.getEyeY(), enderman.getZ())) && player.hasLineOfSight(enderman)) return false;
 		}
 		return true;

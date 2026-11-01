@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.client.camera;
 
+import dev.agaminggod.arenaagents.client.compat.McClientCompat;
+
 import dev.agaminggod.arenaagents.camera.*;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
@@ -32,7 +34,7 @@ public final class CameraRigRenderer extends EntityRenderer<CameraRig, CameraRig
         pose.popPose(); pose.pushPose(); pose.translate(-0.5, 0.5, -0.5); pose.scale(1, state.height - 0.5f, 1);
         state.column.submit(pose, nodes, state.lightCoords, net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY, state.outlineColor);
         pose.popPose(); pose.pushPose(); pose.translate(0, state.height, 0);
-        pose.rotate(Axis.YP.rotationDegrees(180 - state.yaw)); pose.rotate(Axis.XP.rotationDegrees(-state.pitch)); pose.translate(-0.5, -0.2, -0.5);
+        McClientCompat.rotate(pose, Axis.YP.rotationDegrees(180 - state.yaw)); McClientCompat.rotate(pose, Axis.XP.rotationDegrees(-state.pitch)); pose.translate(-0.5, -0.2, -0.5);
         state.head.submit(pose, nodes, state.lightCoords, net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY, state.outlineColor);
         pose.popPose(); super.submit(state, pose, nodes, camera);
     }

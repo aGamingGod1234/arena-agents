@@ -1,9 +1,9 @@
 package dev.agaminggod.arenaagents.client.control;
 
+import dev.agaminggod.arenaagents.client.compat.McClientCompat;
+
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.renderpearl.api.buffers.GpuBuffer;
-import com.mojang.renderpearl.api.textures.GpuTexture;
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
 import java.util.Map;
@@ -59,7 +59,7 @@ public final class PlanItemIcons {
   * Only the private plan-icon atlas gains that usage; vanilla's own GUI atlas is unchanged.
   */
  public static int iconAtlasUsage(int usage) {
-  return allocatingIconAtlas ? usage | GpuTexture.USAGE_COPY_SRC : usage;
+  return allocatingIconAtlas ? usage | McClientCompat.TEXTURE_USAGE_COPY_SRC : usage;
  }
 
  /** Stable presentation keys come from evidence. No label parsing or gameplay choices occur. */
@@ -204,7 +204,7 @@ public final class PlanItemIcons {
     int x = Math.round(slot.u0() * atlas.textureSize());
     int y = Math.round(slot.v1() * atlas.textureSize());
     var device = RenderSystem.getDevice();
-    GpuBuffer buffer = device.createBuffer(() -> "Arena plan icon readback", GpuBuffer.USAGE_MAP_READ | GpuBuffer.USAGE_COPY_DST, SIZE * SIZE * 4L);
+    var buffer = McClientCompat.createReadbackBuffer(device, "Arena plan icon readback", SIZE * SIZE * 4L);
     var commands = device.createCommandEncoder();
     try {
      commands.copyTextureToBuffer(texture, buffer, 0, () -> {

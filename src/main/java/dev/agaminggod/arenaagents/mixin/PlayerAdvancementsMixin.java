@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.mixin;
 
+import dev.agaminggod.arenaagents.compat.McCompat;
+
 import carpet.patches.EntityPlayerMPFake;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
@@ -30,8 +32,8 @@ abstract class PlayerAdvancementsMixin {
 		if (player instanceof EntityPlayerMPFake && holder.value().display().isPresent() && dev.agaminggod.arenaagents.server.goal.PlanProgressFacts.advancementCompleted(
 				holder.value().display().isPresent(), wasDone.get(), getOrStartProgress(holder).isDone())) {
 			CodexAgentServerRuntime.advancementGranted(player, holder.id().toString());
-			holder.value().display().filter(display -> display.showToast()).ifPresent(display ->
-					dev.agaminggod.arenaagents.server.perception.PlayerObservationEvents.advancementToast(player, display.title().getString()));
+			holder.value().display().filter(display -> McCompat.advancementShowsToast(display)).ifPresent(display ->
+					dev.agaminggod.arenaagents.server.perception.PlayerObservationEvents.advancementToast(player, McCompat.advancementTitle(display).getString()));
 		}
 	}
 }

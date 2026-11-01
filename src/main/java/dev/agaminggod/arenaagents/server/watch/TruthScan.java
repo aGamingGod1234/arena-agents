@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.server.watch;
 
+import dev.agaminggod.arenaagents.compat.McCompat;
+
 import dev.agaminggod.arenaagents.mixin.AbstractArrowInvoker;
 import dev.agaminggod.arenaagents.server.perception.ProjectilePerception;
 import dev.agaminggod.arenaagents.server.perception.SeenTerrain;
@@ -20,7 +22,7 @@ import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.boss.enderdragon.phases.EnderDragonPhase;
 import net.minecraft.world.entity.monster.Blaze;
 import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.entity.monster.Enderman;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Ghast;
 import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
@@ -115,7 +117,7 @@ final class TruthScan {
 		} else if (mob instanceof AbstractPiglin) {
 			double eta = mob.isUsingItem() ? 1.0D + distance / 50.0D : meleeEta(distance, CHASE_SPEED);
 			out.add(entityDanger("piglin", mob, eta, distance));
-		} else if (mob instanceof Enderman) {
+		} else if (McCompat.isEnderman(mob)) {
 			out.add(entityDanger("enderman", mob, Math.max(0.0D, distance - 3.0D) / 8.0D, distance));
 		} else if (mob instanceof Enemy) {
 			out.add(entityDanger("mob", mob, meleeEta(distance, CHASE_SPEED), distance));

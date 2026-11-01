@@ -1,10 +1,10 @@
 package dev.agaminggod.arenaagents.server.runtime.reflex;
 
+import dev.agaminggod.arenaagents.compat.McCompat;
+
 import dev.agaminggod.arenaagents.server.runtime.ArmSwing;
 import carpet.script.utils.Tracer;
 import dev.agaminggod.arenaagents.client.navigation.GridPosition;
-import dev.agaminggod.arenaagents.mixin.LivingEntitySwingStateAccessor;
-import dev.agaminggod.arenaagents.mixin.SwingStateAccessor;
 import dev.agaminggod.arenaagents.server.perception.LavaSpread;
 import dev.agaminggod.arenaagents.server.perception.ThreatPerception;
 import dev.agaminggod.arenaagents.server.perception.WaterAirFacts;
@@ -400,10 +400,9 @@ final class ReflexActions {
 		}
 
 		/** Hostile mobs within {@link #GUARD_RANGE} that the player can see, nearest first. */
-		/** Old swinging && swingTime <= 1: swingTime started at -1 and rose each tick, 26.3 ticks start at 0. */
+		/** A swing that began this tick or the last (each target counts swing ticks its own way; see McCompat). */
 		private static boolean swingJustStarted(Mob mob) {
-			LivingEntity.SwingState swing = ((LivingEntitySwingStateAccessor) mob).arenaagents$swingState();
-			return mob.isSwinging() && ((SwingStateAccessor) swing).arenaagents$ticks() <= 2;
+			return McCompat.swingJustStarted(mob);
 		}
 
 		private static List<Mob> attackers(ServerPlayer player) {

@@ -5,13 +5,24 @@ plugins {
 	id 'maven-publish'
 }
 
-version = project.mod_version
+// A non-default Minecraft target says so in its version (arena-agents-0.2.0+mc26.2.jar); 26.3 keeps its historical name.
+version = project.mc_compat == '26.3' ? project.mod_version : "${project.mod_version}+mc${project.minecraft_version}"
 group = project.maven_group
+
+// Version-specific Minecraft API shims: one implementation per target, the same package and signatures in each.
+sourceSets.main.java.srcDir "src/compat/${project.mc_compat}/java"
+sourceSets.main.resources.srcDir "src/compat/${project.mc_compat}/resources"
+sourceSets.test.java.srcDir "src/compat/${project.mc_compat}/testJava"
 
 allprojects {
 	dependencyLocking {
 		lockAllConfigurations()
 		lockMode = LockMode.STRICT
+		// Each Minecraft target resolves its own dependency graph; the default keeps the historical lockfile path.
+		def lockTarget = rootProject.findProperty('mc_compat')
+		if (lockTarget != '26.3') {
+			lockFile = rootProject.file("gradle/locks/${lockTarget}/${project.name}.lockfile")
+		}
 	}
 }
 
@@ -44,6 +55,10 @@ loom {
 	}
 }
 
+// Loom creates the client source set above; its version shims sit beside the main ones (src/compat/<target>/client*).
+sourceSets.client.java.srcDir "src/compat/${project.mc_compat}/clientJava"
+sourceSets.client.resources.srcDir "src/compat/${project.mc_compat}/clientResources"
+
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
@@ -60,7 +75,7 @@ def carpetJarName = "fabric-carpet-${project.carpet_version}.jar"
 def carpetDependency = layout.projectDirectory.file("libs/${carpetJarName}")
 def voicechatJarName = "voicechat-fabric-${project.voicechat_version}.jar"
 def voicechatDependency = layout.projectDirectory.file("libs/${voicechatJarName}")
-def localDependencyChecksums = layout.projectDirectory.file('libs/checksums.sha256')
+def localDependencyChecksums = layout.projectDirectory.file("libs/${project.libs_checksums}")
 def localDependencyJars = fileTree(layout.projectDirectory.dir('libs')) {
 	include '*.jar'
 }
@@ -103,10 +118,14 @@ tasks.register('verifyLocalDependencies') {
 
 processResources {
 	def version = project.version
+	def minecraftRange = project.minecraft_dependency
+	def carpetRange = project.carpet_dependency
 	inputs.property "version", version
+	inputs.property "minecraftDependency", minecraftRange
+	inputs.property "carpetDependency", carpetRange
 
 	filesMatching("fabric.mod.json") {
-		expand "version": version
+		expand "version": version, "minecraftDependency": minecraftRange, "carpetDependency": carpetRange
 	}
 }
 

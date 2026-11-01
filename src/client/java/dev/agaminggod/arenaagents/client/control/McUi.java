@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.client.control;
 
+import dev.agaminggod.arenaagents.client.compat.McClientCompat;
+
 import com.mojang.blaze3d.platform.IconSet;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -55,7 +57,7 @@ final class McUi {
 		if (icons != null) return icons;
 		ArrayList<Image> list = new ArrayList<>();
 		try {
-			for (var supplier : IconSet.RELEASE.getStandardIcons(Minecraft.getInstance().getVanillaPackResources().fullResources())) {
+			for (var supplier : McClientCompat.windowIcons()) {
 				try (InputStream in = supplier.get()) {
 					BufferedImage image = ImageIO.read(in);
 					if (image != null) list.add(image);

@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.server.runtime.controller;
 
+import dev.agaminggod.arenaagents.compat.McCompat;
+
 import com.google.gson.JsonObject;
 import dev.agaminggod.arenaagents.agent.AgentDomainException;
 import dev.agaminggod.arenaagents.server.perception.ObservationVisibility;
@@ -31,7 +33,7 @@ import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.monster.Enderman;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ArrowItem;
 import net.minecraft.world.item.BowItem;
@@ -847,7 +849,7 @@ public final class ServerFightUntilController implements ServerController {
 	 */
 	private boolean startPerch(ServerPlayer player) {
 		if (perchTried || mob != EntityTypes.ENDERMAN || roofed || !player.onGround() || player.isInWater() || player.isInLava()) return false;
-		boolean hunted = !player.level().getEntitiesOfClass(Enderman.class, player.getBoundingBox().inflate(8.0D),
+		boolean hunted = !player.level().getEntitiesOfClass(McCompat.ENDERMAN, player.getBoundingBox().inflate(8.0D),
 				e -> e.isAlive() && e.getTarget() == player && e.getBoundingBox().maxY > player.getY()).isEmpty();
 		if (!hunted) return false;
 		if (!choices.mayMove()) {

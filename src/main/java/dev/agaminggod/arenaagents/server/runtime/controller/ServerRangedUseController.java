@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.server.runtime.controller;
 
+import dev.agaminggod.arenaagents.compat.McCompat;
+
 import com.google.gson.JsonObject;
 import dev.agaminggod.arenaagents.agent.AgentDomainException;
 import dev.agaminggod.arenaagents.server.perception.ObservationVisibility;
@@ -428,7 +430,7 @@ public final class ServerRangedUseController implements ServerTransactionAdapter
 				() -> {
 					ItemStack carried = player.containerMenu.getCarried();
 					player.containerMenu.setCarried(ItemStack.EMPTY);
-					if (!carried.isEmpty()) player.getInventory().placeItemBackInInventory(carried, net.minecraft.util.Prediction.SERVER_ONLY);
+					if (!carried.isEmpty()) McCompat.placeItemBackInInventory(player.getInventory(), carried);
 				}
 		));
 	}

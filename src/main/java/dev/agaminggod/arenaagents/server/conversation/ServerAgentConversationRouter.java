@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.server.conversation;
 
+import dev.agaminggod.arenaagents.compat.McCompat;
+
 import dev.agaminggod.arenaagents.server.pov.PovMessageRelay;
 import dev.agaminggod.arenaagents.agent.AgentDomainException;
 import dev.agaminggod.arenaagents.agent.AgentId;
@@ -470,7 +472,7 @@ public final class ServerAgentConversationRouter implements AgentConversationRou
 		for (var advancement : manager.server().getAdvancements().getAllAdvancements()) {
 			titles.put(
 					advancement.id().toString(),
-					advancement.value().display().map(display -> display.title().getString()).orElse("")
+					advancement.value().display().map(display -> McCompat.advancementTitle(display).getString()).orElse("")
 			);
 		}
 		return Map.copyOf(titles);

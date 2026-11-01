@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.server;
 
+import dev.agaminggod.arenaagents.compat.McCompat;
+
 import dev.agaminggod.arenaagents.agent.AgentDomainException;
 import dev.agaminggod.arenaagents.agent.AgentDeathSnapshot;
 import dev.agaminggod.arenaagents.agent.AgentGameMode;
@@ -791,7 +793,7 @@ public final class CodexAgentManager {
 		for (var advancement : server.getAdvancements().getAllAdvancements()) {
 			titles.put(
 					advancement.id().toString(),
-					advancement.value().display().map(display -> display.title().getString()).orElse("")
+					advancement.value().display().map(display -> McCompat.advancementTitle(display).getString()).orElse("")
 			);
 		}
 		return Map.copyOf(titles);

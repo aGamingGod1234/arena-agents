@@ -1213,11 +1213,10 @@ public final class AdvancedInteractionRollbackVerification {
 		assertTrue(ready.has("readySequence"), "actual live completion has an attention identity");
 	}
 
-	private static final class ObservedFurnace extends net.minecraft.world.level.block.entity.FurnaceBlockEntity
+	private static final class ObservedFurnace extends dev.agaminggod.arenaagents.compat.TestFurnaceBase
 			implements dev.agaminggod.arenaagents.mixin.AbstractFurnaceBlockEntityAccessor {
-		ObservedFurnace(BlockPos position) { super(position, net.minecraft.world.level.block.Blocks.FURNACE.defaultBlockState()); }
+		ObservedFurnace(BlockPos position) { super(position); }
 		@Override public net.minecraft.world.inventory.ContainerData arenaagents$getFurnaceData() { return dataAccess; }
-		@Override public int arenaagents$burnDuration(net.minecraft.server.level.ServerLevel level, ItemStack stack) { return getBurnDuration(level, stack); }
 	}
 
 	private static void verifyPlacementInventorySwap(ComponentBindings components) {

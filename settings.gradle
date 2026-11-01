@@ -15,3 +15,17 @@ pluginManagement {
 
 rootProject.name = 'arena-agents'
 include 'voice-addon'
+
+// Minecraft target: the default is gradle.properties (26.3); -Pmc=<target> loads gradle/mc/<target>.properties over it
+// for every project, so one source tree builds a mod for each 26.x drop (version differences live in src/compat/).
+def mcTarget = startParameter.projectProperties.get('mc')
+if (mcTarget != null) {
+	def targetFile = new File(settingsDir, "gradle/mc/${mcTarget}.properties")
+	if (!targetFile.isFile()) {
+		def known = new File(settingsDir, 'gradle/mc').list()?.findAll { it.endsWith('.properties') }?.collect { it - '.properties' }?.sort()
+		throw new GradleException("Unknown Minecraft target -Pmc=${mcTarget}; use one of ${known} or omit -Pmc for the default")
+	}
+	def targetProperties = new Properties()
+	targetFile.withInputStream { targetProperties.load(it) }
+	gradle.beforeProject { project -> targetProperties.each { key, value -> project.ext.set(key as String, value as String) } }
+}

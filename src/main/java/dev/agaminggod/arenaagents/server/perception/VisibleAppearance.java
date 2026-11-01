@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.server.perception;
 
+import dev.agaminggod.arenaagents.compat.McCompat;
+
 import com.google.gson.JsonObject;
 import java.util.Locale;
 import java.util.function.Predicate;
@@ -17,7 +19,7 @@ import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.monster.Blaze;
 import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.entity.monster.Enderman;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.Ghast;
 import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
 import net.minecraft.world.entity.monster.piglin.PiglinArmPose;
@@ -66,11 +68,11 @@ final class VisibleAppearance {
 			else if (cloud.getRadiusPerTick() > 0.0F) look.addProperty("growing", true);
 		} else if (entity instanceof Creeper creeper) {
 			if (creeper.isPowered()) look.addProperty("powered", true);
-		} else if (entity instanceof Enderman enderman) {
-			BlockState carried = enderman.getCarriedBlock();
+		} else if (McCompat.isEnderman(entity) && entity instanceof Monster enderman) {
+			BlockState carried = McCompat.endermanCarriedBlock(enderman);
 			if (carried != null) look.addProperty("carriedBlock", BuiltInRegistries.BLOCK.getKey(carried.getBlock()).toString());
 			// Open mouth and shaking: an angry enderman.
-			if (enderman.isCreepy()) look.addProperty("screaming", true);
+			if (McCompat.endermanCreepy(enderman)) look.addProperty("screaming", true);
 			if (eyeContact(viewer, enderman)) look.addProperty("eyeContact", true);
 		} else if (entity instanceof AbstractPiglin piglin) {
 			String pose = armPose(piglin.getArmPose());
@@ -113,7 +115,7 @@ final class VisibleAppearance {
 	}
 
 	/** Vanilla Enderman.isBeingStaredBy: the viewer's crosshair is on its head and no carved pumpkin hides the gaze. */
-	private static boolean eyeContact(ServerPlayer viewer, Enderman enderman) {
+	private static boolean eyeContact(ServerPlayer viewer, Monster enderman) {
 		return LivingEntity.PLAYER_NOT_WEARING_DISGUISE_ITEM.test(viewer)
 				&& enderman.isLookingAtMe(viewer, 0.025D, true, false, enderman.getEyeY());
 	}

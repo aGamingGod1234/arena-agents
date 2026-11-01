@@ -1,4 +1,4 @@
-package dev.agaminggod.arenaagents.client.mixin;
+package dev.agaminggod.arenaagents.client.compat.mixin;
 
 import dev.agaminggod.arenaagents.client.control.PlanItemIcons;
 import net.minecraft.client.gui.render.GuiItemAtlas;

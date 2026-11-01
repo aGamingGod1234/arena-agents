@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.client.pov;
 
+import dev.agaminggod.arenaagents.client.compat.McClientCompat;
+
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.agaminggod.arenaagents.agent.AgentIdentity;
 import dev.agaminggod.arenaagents.client.camera.CameraDirectorClient;
@@ -42,7 +44,7 @@ public final class PovClient {
 	// Category is a record, so an equal id joins AgentControlClient's registered "Arena Agents" group.
 	private static final KeyMapping EXIT_VIEW = new KeyMapping(
 			"key.arenaagents.exit_agent_view",
-			InputConstants.Type.KEYBOARD,
+			McClientCompat.KEYBOARD,
 			InputConstants.UNKNOWN.getValue(),
 			new KeyMapping.Category(Identifier.fromNamespaceAndPath("arenaagents", "controls"))
 	);
