@@ -1403,7 +1403,18 @@ function hoistFunctionDeclarations(statements, environment) {
 	for (const statement of statements) if (statement.type === 'FunctionDeclaration' && !environment.hasOwn(statement.id.name)) environment.define(statement.id.name, createFunction(statement, environment), 'const');
 }
 
+// Bindings are validated deeply frozen records, so one validation per bindings object holds for its lifetime.
+const NORMALIZED_BINDINGS = new WeakMap();
+
 function normalizeBindings(bindings) {
+	const cached = bindings !== null && typeof bindings === 'object' ? NORMALIZED_BINDINGS.get(bindings) : undefined;
+	if (cached !== undefined) return cached;
+	const normalized = normalizeBindingsOnce(bindings);
+	NORMALIZED_BINDINGS.set(bindings, normalized);
+	return normalized;
+}
+
+function normalizeBindingsOnce(bindings) {
 	const root = exactOwnDataRecord(bindings, 'bindings', ['player'], { requireNullPrototype: true, requireFrozen: true, errorCode: 'INVALID_BINDINGS' });
 	const player = ownDataEntries(root.player, 'bindings.player', { requireNullPrototype: true, requireFrozen: true, errorCode: 'INVALID_BINDINGS' });
 	const normalizedPlayer = Object.create(null);

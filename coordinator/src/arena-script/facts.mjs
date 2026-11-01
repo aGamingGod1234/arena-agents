@@ -10,6 +10,14 @@ const CANDIDATE_ORIGINS = new WeakMap();
 const INTERPRETER_FACTS = new WeakSet();
 const FACT_STATS = new WeakMap();
 const FACT_CLOCKS = new WeakMap();
+// The deepest container copyFactData reached since trackedDepth last read it, and the deepest absolute depth so far in
+// the fact tree being built. createInterpreterFacts places each copied subtree at a known depth in that tree.
+let deepestCopy = -1;
+let deepestFact = -1;
+// Per trusted fact tree: the validated input each domain was projected from, and the context it was projected in.
+const PROJECTIONS = new WeakMap();
+// Whether a validated subtree projects without the player/inventory context (no nested "world" record to mask).
+const CONTEXT_FREE = new WeakMap();
 // Observation facts include geometry and derived position/menu aliases. Their
 // structural allowance follows the existing bounded fact-byte envelope, rather
 // than the smaller limits for arbitrary script-authored values. Only this
@@ -49,6 +57,9 @@ export function createFactView(observation) {
 /** Serializable frozen facts used by the interpreter. */
 export function createInterpreterFacts(observation = {}, previousFacts = null) {
 	const previous = INTERPRETER_FACTS.has(previousFacts) ? previousFacts : null;
+	const before = PROJECTIONS.get(previous)?.input;
+	deepestCopy = -1;
+	deepestFact = -1;
 	const source = ownDataRecord(observation, 'observation');
 	const playerSource = ownDataRecord(source.player ?? Object.create(null), 'observation.player');
 	playerSource.harm ??= null;
@@ -60,36 +71,37 @@ export function createInterpreterFacts(observation = {}, previousFacts = null) {
 	if (!Object.hasOwn(playerSource, 'clouds')) playerSource.clouds = [];
 	if (!Object.hasOwn(playerSource, 'incomingProjectiles')) playerSource.incomingProjectiles = [];
 	// Validate nested data before deriving aliases, so accessors and proxies never execute here.
-	const checkedPlayer = copyFactData(playerSource, 'observation.player');
+	const checkedPlayer = trackedDepth(1, copyFactData(playerSource, 'observation.player'));
 	const dangerCloud = checkedPlayer.clouds.find((cloud) => cloud !== null && typeof cloud === 'object'
 		&& cloud.arming !== true && (cloud.harmful === true || cloud.harmUnknown === true) && (cloud.contact === true || cloud.entering === true));
 	const exitCells = reportedExitCells(checkedPlayer.harm?.exits ?? checkedPlayer.exits);
-	const frozenPlayer = reuseEqual(previous?.player, copyFactData({ ...checkedPlayer,
+	// checkedPlayer is already a validated frozen copy: only the derived aliases need copying, in the same key order.
+	const frozenPlayer = reuseDomain(previous?.player, before?.player, Object.freeze(Object.assign(Object.create(null), checkedPlayer, trackedDepth(1, copyFactData({
 		dropAhead: checkedPlayer.dropAhead == null ? null : { into: null, ...checkedPlayer.dropAhead },
 		exitCells, safeExit: exitCells.find(cell => cell.safe) ?? null,
 		cloudDanger: dangerCloud !== undefined, cloudExit: reportedCloudExit(dangerCloud),
-	}, 'observation.player'));
+	}, 'observation.player')))));
 	const inventorySource = ownDataRecord(source.inventory ?? Object.create(null), 'observation.inventory');
 	const tagCounts = Object.create(null);
 	for (const [tag, count] of Object.entries(ownDataRecord(inventorySource.tagCounts ?? Object.create(null), 'observation.inventory.tagCounts'))) {
 		if (validKey(tag) && nonNegativeInteger(count)) tagCounts[tag] = count;
 	}
-	const worldItems = reuseEqual(previous?.world.items, copyCandidates(source.items, 'item'));
-	const worldEntities = reuseEqual(previous?.world.entities, copyCandidates(source.entities, 'entity'));
-	const worldBlocks = reuseEqual(previous?.world.blocks, copyCandidates(source.blocks, 'block'));
-	const inventoryItems = reuseEqual(previous?.inventory.items, copyInventory(inventorySource.items));
-	const inventoryTagCounts = reuseEqual(previous?.inventory.tagCounts, freezeRecord(tagCounts));
+	const worldItems = reuseDomain(previous?.world.items, before?.world.items, trackedDepth(3, copyCandidates(source.items, 'item')));
+	const worldEntities = reuseDomain(previous?.world.entities, before?.world.entities, trackedDepth(3, copyCandidates(source.entities, 'entity')));
+	const worldBlocks = reuseDomain(previous?.world.blocks, before?.world.blocks, trackedDepth(3, copyCandidates(source.blocks, 'block')));
+	const inventoryItems = reuseDomain(previous?.inventory.items, before?.inventory.items, trackedDepth(3, copyInventory(inventorySource.items)));
+	const inventoryTagCounts = reuseDomain(previous?.inventory.tagCounts, before?.inventory.tagCounts, freezeRecord(tagCounts));
 	const worldSource = ownDataRecord(source.world ?? Object.create(null), 'observation.world');
 	for (const key of ['coverage', 'observedAtEpochMs', 'worldTick', 'interaction', 'recipes', 'events', 'perception', 'dimension', 'capabilities', 'landmarks', 'nearbyContainers', 'furnaces', 'reflexes']) {
 		if (Object.hasOwn(source, key)) worldSource[key] = source[key];
 	}
 	// The seen portal frame lets a program check each cast without the block rows' height window and per-type cap.
 	worldSource.portalFrames = Array.isArray(source.sighted?.portalFrames) ? source.sighted.portalFrames : [];
-	const worldState = reuseEqual(previous?.world.state, copyFactData(worldSource, 'observation.world'));
+	const worldState = reuseDomain(previous?.world.state, before?.world.state, trackedDepth(2, copyFactData(worldSource, 'observation.world')));
 	const interaction = ownDataRecord(source.interaction ?? Object.create(null), 'observation.interaction');
-	const menu = reuseEqual(previous?.world.menu, copyFactData(interaction.menu ?? source.menu ?? null, 'observation.menu'));
+	const menu = reuseDomain(previous?.world.menu, before?.world.menu, trackedDepth(2, copyFactData(interaction.menu ?? source.menu ?? null, 'observation.menu')));
 	const inventoryMetadata = Object.fromEntries(Object.entries(inventorySource).filter(([key]) => !['items', 'tagCounts'].includes(key)));
-	const inventoryState = reuseEqual(previous?.inventory.state, copyFactData(inventoryMetadata, 'observation.inventory'));
+	const inventoryState = reuseDomain(previous?.inventory.state, before?.inventory.state, trackedDepth(2, copyFactData(inventoryMetadata, 'observation.inventory')));
 	if (previous !== null
 		&& frozenPlayer === previous.player
 		&& worldItems === previous.world.items
@@ -99,18 +111,26 @@ export function createInterpreterFacts(observation = {}, previousFacts = null) {
 		&& inventoryTagCounts === previous.inventory.tagCounts
 		&& worldState === previous.world.state && menu === previous.world.menu
 		&& inventoryState === previous.inventory.state) return previous;
-	const facts = projectInterpreterFacts(freezeRecord({
+	const validated = freezeRecord({
 		player: frozenPlayer,
 		world: freezeRecord({ items: worldItems, entities: worldEntities, blocks: worldBlocks, state: worldState, menu }),
 		inventory: freezeRecord({ items: inventoryItems, tagCounts: inventoryTagCounts, state: inventoryState }),
-	}), previous);
-	return facts;
+	});
+	// Every subtree above is this module's own validated, frozen copy (or an equal one reused from the previous facts),
+	// so it is not copied and validated a second time. Only the depth differs: each copy counted from its own root,
+	// while a whole-tree copy counts from this one. A tree past that limit still takes the copy, which throws as before.
+	// (Fixed containers reach depth 4: a row's tags and position.)
+	if (deepestFact > TRUST_LIMITS.depth) copyFactData(validated, 'interpreter facts');
+	return projectFactTree(validated, previous);
 }
 
 /** Public script facts have HUD precision; raw samples remain available only to the runtime classifier. */
 export function projectInterpreterFacts(value, previousFacts = null) {
 	// Validate every subtree before the presentation helpers can read properties or spread records.
-	const data = copyFactData(value, 'interpreter facts');
+	return projectFactTree(copyFactData(value, 'interpreter facts'), previousFacts);
+}
+
+function projectFactTree(data, previousFacts) {
 	const previous = INTERPRETER_FACTS.has(previousFacts) ? previousFacts : null;
 	const state = data.world.state;
 	const rawTick = state.worldTick ?? state.gameTime;
@@ -123,7 +143,7 @@ export function projectInterpreterFacts(value, previousFacts = null) {
 		|| (dimension !== undefined && before.dimension !== undefined && dimension !== before.dimension)
 		|| (body !== undefined && before.body !== undefined && body !== before.body);
 	const clock = { origin: ticking ? reset ? rawTick : before.origin : null, lastTick: rawTick, dimension, body, dead };
-	const masked = projectValidatedData(data, { reduced: state.reducedDebugInfo === true, player: data.player, inventory: data.inventory });
+	const masked = projectDomains(data, PROJECTIONS.get(previous), state.reducedDebugInfo === true);
 	const player = reuseEqual(previous?.player, masked.player);
 	const worldState = reuseEqual(previous?.world.state, freezeRecord({ ...masked.world.state,
 		...(ticking ? { worldTick: rawTick - clock.origin } : {}),
@@ -141,8 +161,57 @@ export function projectInterpreterFacts(value, previousFacts = null) {
 		? previous : freezeRecord({ player, world: freezeRecord({ items, entities, blocks, state: worldState, menu }),
 			inventory: freezeRecord({ items: inventoryItems, tagCounts, state: inventoryState }) });
 	FACT_CLOCKS.set(facts, clock);
-	if (withinInterpreterFactLimits(facts)) INTERPRETER_FACTS.add(facts);
+	if (withinInterpreterFactLimits(facts)) {
+		INTERPRETER_FACTS.add(facts);
+		if (facts !== previous) PROJECTIONS.set(facts, { input: data, domains: masked.domains });
+	}
 	return facts;
+}
+
+/**
+ * The same projection as projectValidatedData over the whole tree, one domain at a time with the context that walk
+ * gives it: the root's reduced flag, the inventory's own, and the raw player and inventory as context. A domain whose
+ * validated input is the very one the previous facts projected, in the same context, keeps that projection. The world
+ * state changes with every sample's clock, so it is always projected.
+ */
+function projectDomains(data, memo, rootReduced) {
+	const world = { reduced: rootReduced || data.world.state?.reducedDebugInfo === true, player: data.player, inventory: data.inventory };
+	const inventory = { reduced: rootReduced || data.inventory.state?.reducedDebugInfo === true, player: data.player, inventory: data.inventory };
+	const sameContext = memo !== undefined && memo.input.player === data.player && memo.input.inventory === data.inventory;
+	const domains = { reduced: Object.create(null) };
+	const project = (name, input, previousInput, context, kind) => {
+		domains.reduced[name] = context.reduced;
+		const cached = memo?.domains;
+		domains[name] = cached !== undefined && input === previousInput && cached.reduced[name] === context.reduced && (sameContext || contextFree(input))
+			? cached[name] : projectValidatedData(input, context, kind);
+	};
+	const before = memo?.input;
+	project('player', data.player, before?.player, { reduced: rootReduced, player: data.player, inventory: data.inventory }, 'player');
+	project('items', data.world.items, before?.world.items, world, 'items');
+	project('entities', data.world.entities, before?.world.entities, world, 'entities');
+	project('blocks', data.world.blocks, before?.world.blocks, world, 'blocks');
+	domains.state = projectValidatedData(data.world.state, world, 'world-state');
+	project('menu', data.world.menu, before?.world.menu, world, 'menu');
+	project('inventoryItems', data.inventory.items, before?.inventory.items, inventory, 'items');
+	project('tagCounts', data.inventory.tagCounts, before?.inventory.tagCounts, inventory, 'tagCounts');
+	project('inventoryState', data.inventory.state, before?.inventory.state, inventory, 'state');
+	return { player: domains.player, world: { items: domains.items, entities: domains.entities, blocks: domains.blocks, state: domains.state, menu: domains.menu },
+		inventory: { items: domains.inventoryItems, tagCounts: domains.tagCounts, state: domains.inventoryState }, domains };
+}
+
+/** True when no record below value is keyed "world", so its projection never reads the player or inventory context. */
+function contextFree(value) {
+	if (value === null || typeof value !== 'object') return true;
+	let free = CONTEXT_FREE.get(value);
+	if (free === undefined) CONTEXT_FREE.set(value, free = !hasWorldRecord(value));
+	return free;
+}
+
+function hasWorldRecord(value) {
+	if (value === null || typeof value !== 'object') return false;
+	if (Array.isArray(value)) { for (const entry of value) if (hasWorldRecord(entry)) return true; return false; }
+	for (const key of Object.keys(value)) if (key === 'world' || hasWorldRecord(value[key])) return true;
+	return false;
 }
 
 /** Inspection/query results use the same semantic mask after ordinary query validation. */
@@ -152,16 +221,32 @@ export function projectScriptQueryData(value, context = {}) {
 	return projectValidatedData(data, { reduced: options.reducedDebugInfo === true });
 }
 
+// Absolute world age is not a visible clock. worldTick is reintroduced only as private-origin elapsed time.
+const HIDDEN_CLOCK_FIELDS = new Set(['gameTime', 'dayTime', 'naturalRegeneration', 'worldTick']);
+const ROUNDED_KINDS = new Set(['position', 'view', 'debug', 'items', 'entities', 'blocks']);
+const REDUCED_KINDS = new Set(['position', 'view', 'debug']);
+
 function projectValidatedData(value, context, kind = '') {
-	if (Array.isArray(value)) return Object.freeze(value.map((entry) => projectValidatedData(entry, context, kind === 'effects' ? 'effect' : kind)));
+	if (Array.isArray(value)) {
+		const entryKind = kind === 'effects' ? 'effect' : kind;
+		const projected = new Array(value.length);
+		for (let index = 0; index < value.length; index += 1) projected[index] = projectValidatedData(value[index], context, entryKind);
+		return Object.freeze(projected);
+	}
 	if (value === null || typeof value !== 'object') return value;
 	const reduced = context.reduced || value.world?.reducedDebugInfo === true || value.state?.reducedDebugInfo === true;
 	const playerContext = value.player ?? context.player;
 	const inventoryContext = value.inventory ?? context.inventory;
-	let record = Object.fromEntries(Object.entries(value).map(([key, entry]) => [key,
-		projectValidatedData(entry, { reduced, player: playerContext, inventory: inventoryContext }, key === 'state' && kind === 'world' ? 'world-state' : key)]));
-	// Absolute world age is not a visible clock. worldTick is reintroduced only as private-origin elapsed time.
-	for (const field of ['gameTime', 'dayTime', 'naturalRegeneration', 'worldTick']) delete record[field];
+	const entryContext = reduced === context.reduced && playerContext === context.player && inventoryContext === context.inventory
+		? context : { reduced, player: playerContext, inventory: inventoryContext };
+	// Built in key order without the hidden clock fields, which were projected and then deleted before: the same record.
+	const built = Object.create(null);
+	for (const key of Object.keys(value)) {
+		if (HIDDEN_CLOCK_FIELDS.has(key)) continue;
+		const entry = value[key];
+		built[key] = entry === null || typeof entry !== 'object' ? entry : projectValidatedData(entry, entryContext, key === 'state' && kind === 'world' ? 'world-state' : key);
+	}
+	let record = built;
 	if (kind === 'player') {
 		const original = record;
 		const { harm, ...presentation } = record;
@@ -190,11 +275,11 @@ function projectValidatedData(value, context, kind = '') {
 	}
 	if (kind === 'effect' && Number.isFinite(record.duration) && record.duration !== -1) record.duration = Math.floor(record.duration / 20) * 20;
 	if (typeof record.type === 'string' && record.type.includes(':')) for (const field of ['health', 'maxHealth']) delete record[field];
-	if (['position', 'view', 'debug', 'items', 'entities', 'blocks'].includes(kind)) {
+	if (ROUNDED_KINDS.has(kind)) {
 		for (const field of ['x', 'y', 'z', 'yaw', 'pitch']) if (Number.isFinite(record[field])) record[field] = Math.round(record[field] * 1000) / 1000;
-		if ((reduced && ['position', 'view', 'debug'].includes(kind)) || kind === 'debug' && record.reduced === true) for (const field of ['x', 'y', 'z', 'yaw', 'pitch', 'facing', 'biome', 'blockLight', 'skyLight']) delete record[field];
+		if ((reduced && REDUCED_KINDS.has(kind)) || kind === 'debug' && record.reduced === true) for (const field of ['x', 'y', 'z', 'yaw', 'pitch', 'facing', 'biome', 'blockLight', 'skyLight']) delete record[field];
 	}
-	return freezeRecord(record);
+	return record === built ? Object.freeze(record) : freezeRecord(record);
 }
 
 /** Returns true only for fact trees fully validated and frozen by this module. */
@@ -309,14 +394,61 @@ function copyRecordFields(source, label) {
 }
 
 function copyFactData(value, label, ancestors = new Set(), depth = 0) {
-	if (value === undefined || value === null || typeof value === 'string' || typeof value === 'boolean' || Number.isFinite(value)) return value;
-	if (depth > TRUST_LIMITS.depth || ancestors.has(value)) throw new TypeError(`${label} exceeds the depth limit or contains a cycle`);
+	if (isFactPrimitive(value)) return value;
+	return copyFactNode(value, { label, path: [] }, ancestors, depth);
+}
+
+function isFactPrimitive(value) {
+	return value === undefined || value === null || typeof value === 'string' || typeof value === 'boolean' || Number.isFinite(value);
+}
+
+/** The label copyFactData names a failure with: the caller's label, then each record key on the way down. */
+function factLabel(scope) {
+	if (typeof scope === 'string') return scope;
+	let text = scope.label;
+	for (const key of scope.path) text += `.${key}`;
+	return text;
+}
+
+/**
+ * One validated frozen copy of a non-primitive fact, checking in ownDataRecord's and denseDataArray's order. Labels
+ * are kept as a key path and spelled out only for an error, instead of one string per copied key.
+ */
+function copyFactNode(value, scope, ancestors, depth) {
+	if (depth > TRUST_LIMITS.depth || ancestors.has(value)) throw new TypeError(`${factLabel(scope)} exceeds the depth limit or contains a cycle`);
+	if (depth > deepestCopy) deepestCopy = depth;
 	ancestors.add(value);
 	try {
-		if (Array.isArray(value)) return Object.freeze(denseDataArray(value, label).map((entry) => copyFactData(entry, label, ancestors, depth + 1)));
-		const source = ownDataRecord(value, label);
-		return freezeRecord(Object.fromEntries(Object.entries(source).filter(([_key, entry]) => entry !== undefined)
-			.map(([key, entry]) => [key, copyFactData(entry, `${label}.${key}`, ancestors, depth + 1)])));
+		if (Array.isArray(value)) {
+			const entries = denseDataArray(value, scope);
+			for (let index = 0; index < entries.length; index += 1) {
+				if (!isFactPrimitive(entries[index])) entries[index] = copyFactNode(entries[index], scope, ancestors, depth + 1);
+			}
+			return Object.freeze(entries);
+		}
+		if (value === null || typeof value !== 'object' || nodeTypes.isProxy(value)) throw new TypeError(`${factLabel(scope)} must be a plain data record`);
+		const prototype = Object.getPrototypeOf(value);
+		if (prototype !== null && prototype !== Object.prototype) throw new TypeError(`${factLabel(scope)} must be a plain data record`);
+		const keys = Reflect.ownKeys(value);
+		const entries = new Array(keys.length);
+		for (let index = 0; index < keys.length; index += 1) {
+			const key = keys[index];
+			if (typeof key !== 'string' || FORBIDDEN_KEYS.has(key)) throw new TypeError(`${factLabel(scope)} contains an unsafe key`);
+			const descriptor = Object.getOwnPropertyDescriptor(value, key);
+			if (!descriptor || !descriptor.enumerable || !Object.hasOwn(descriptor, 'value') || descriptor.get || descriptor.set) throw new TypeError(`${factLabel(scope)}.${key} must be own data`);
+			entries[index] = descriptor.value;
+		}
+		// Own keys come back integer keys first, then strings in insertion order: the order a null-prototype copy keeps.
+		const copied = Object.create(null);
+		for (let index = 0; index < keys.length; index += 1) {
+			const entry = entries[index];
+			if (entry === undefined) continue;
+			if (isFactPrimitive(entry)) { copied[keys[index]] = entry; continue; }
+			scope.path.push(keys[index]);
+			copied[keys[index]] = copyFactNode(entry, scope, ancestors, depth + 1);
+			scope.path.pop();
+		}
+		return Object.freeze(copied);
 	} finally { ancestors.delete(value); }
 }
 
@@ -340,6 +472,7 @@ function denseDataArray(value, label) {
 }
 
 function exhaustiveDenseDataArray(value, label) {
+	label = factLabel(label);
 	if (!Array.isArray(value) || nodeTypes.isProxy(value) || Object.getPrototypeOf(value) !== Array.prototype) throw new TypeError(`${label} must be a plain array`);
 	const descriptors = Object.getOwnPropertyDescriptors(value);
 	const keys = Reflect.ownKeys(value);
@@ -380,6 +513,15 @@ function validKey(key) { return !FORBIDDEN_KEYS.has(key); }
 function observedList(values, origin = null) { const frozen = Object.freeze(values.filter((value) => value !== null)); OBSERVED_SETS.add(frozen); if (origin !== null) CANDIDATE_ORIGINS.set(frozen, origin); return frozen; }
 function freezeRecord(values) { return Object.freeze(Object.assign(Object.create(null), values)); }
 
+/**
+ * reuseEqual against the validated input the previous facts were projected from, so an unchanged domain keeps its
+ * projection, else against the previous public facts as before.
+ */
+function reuseDomain(previousPublic, previousInput, next) {
+	const reused = previousInput === undefined ? next : reuseEqual(previousInput, next);
+	return reused !== next ? reused : reuseEqual(previousPublic, next);
+}
+
 function reuseEqual(previous, next) {
 	if (previous === undefined || !sameTrustedValue(previous, next)) return next;
 	return previous;
@@ -403,6 +545,13 @@ function sameTrustedValue(left, right) {
 	return true;
 }
 
+/** Records how deep the copy just made reaches in the fact tree, given the depth its root sits at there. */
+function trackedDepth(offset, value) {
+	if (deepestCopy >= 0) deepestFact = Math.max(deepestFact, deepestCopy + offset);
+	deepestCopy = -1;
+	return value;
+}
+
 function withinInterpreterFactLimits(root) {
 	const stats = interpreterFactStats(root);
 	return stats !== null
@@ -412,31 +561,46 @@ function withinInterpreterFactLimits(root) {
 		&& stats.depth <= TRUST_LIMITS.depth;
 }
 
-function interpreterFactStats(value) {
+// The root, its world and inventory records and each fact domain are memoized: those are the subtrees later facts
+// share by identity. Nodes inside a domain are counted in place rather than each kept in the WeakMap.
+const FACT_STATS_MEMO_LEVELS = 2;
+
+function interpreterFactStats(value, level = 0) {
 	if (typeof value === 'string') {
 		const bytes = Buffer.byteLength(value, 'utf8');
 		return bytes > TRUST_LIMITS.stringBytes ? null : { nodes: 0, keys: 0, bytes, depth: -1 };
 	}
 	if (value === null || typeof value !== 'object') return EMPTY_FACT_STATS;
-	const cached = FACT_STATS.get(value);
+	const memo = level <= FACT_STATS_MEMO_LEVELS;
+	const cached = memo ? FACT_STATS.get(value) : undefined;
 	if (cached !== undefined) return cached;
 	if (Array.isArray(value) && value.length > TRUST_LIMITS.arrayLength) return null;
+	const array = Array.isArray(value);
 	const keys = Object.keys(value);
 	const stats = { nodes: 1, keys: keys.length, bytes: 0, depth: 0 };
 	for (let index = 0; index < keys.length; index += 1) {
 		const key = keys[index];
-		const keyBytes = Array.isArray(value)
+		const keyBytes = array
 			? index < 10 ? 1 : index < 100 ? 2 : index < 1_000 ? 3 : String(index).length
 			: Buffer.byteLength(key, 'utf8');
 		if (keyBytes > TRUST_LIMITS.stringBytes) return null;
-		const child = interpreterFactStats(value[key]);
+		const entry = value[key];
+		// A primitive adds its bytes at depth -1 (a string) or nothing (anything else), as its own stats would.
+		if (typeof entry === 'string') {
+			const bytes = Buffer.byteLength(entry, 'utf8');
+			if (bytes > TRUST_LIMITS.stringBytes) return null;
+			stats.bytes += keyBytes + bytes;
+			continue;
+		}
+		if (entry === null || typeof entry !== 'object') { stats.bytes += keyBytes; continue; }
+		const child = interpreterFactStats(entry, level + 1);
 		if (child === null) return null;
 		stats.nodes += child.nodes;
 		stats.keys += child.keys;
 		stats.bytes += keyBytes + child.bytes;
 		stats.depth = Math.max(stats.depth, child.depth + 1);
 	}
-	FACT_STATS.set(value, stats);
+	if (memo) FACT_STATS.set(value, stats);
 	return stats;
 }
 
