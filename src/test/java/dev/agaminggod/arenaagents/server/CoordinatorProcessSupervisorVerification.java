@@ -71,6 +71,8 @@ public final class CoordinatorProcessSupervisorVerification {
 		verifyBridgeBindFailureRecovery();
 		verifyOccupiedBridgePortRecoversAndAuthenticates();
 		verifyEightCrashesStillRecover();
+		int budgetAssertions = verifyCrashLoopSpendsRestartBudget();
+		budgetAssertions += verifyChangedRuntimeRetriesSpentBudget();
 		verifySupervisorIdentityLifecycle();
 		verifyHungAuthenticationIsReplaced();
 		verifyStaleLaunchAuthenticationIsRejected();
@@ -126,7 +128,7 @@ public final class CoordinatorProcessSupervisorVerification {
 		verifyCloseWaitsForInflightOwnedLaunchCleanup();
 		verifyCloseTerminatesChildBehindBlockedMaintenance();
 		verifyCloseIsIdempotent();
-		return isWindows() ? 481 : 471;
+		return (isWindows() ? 481 : 471) + budgetAssertions;
 	}
 
 	private static void verifyConfiguredRuntimeRootOwnsBundledRefresh() {
@@ -1629,6 +1631,98 @@ public final class CoordinatorProcessSupervisorVerification {
 		assertEquals(CoordinatorRecoveryState.HEALTHY, fixture.supervisor.snapshot().state(),
 				"eighth replacement can still become healthy");
 		fixture.supervisor.close();
+	}
+
+	/** Crashes a fresh fixture's coordinator until the restart budget is spent; returns the assertions it made. */
+	private static int spendRestartBudget(Fixture fixture) {
+		int assertions = 0;
+		fixture.startFirstProcess();
+		int budget = CoordinatorLaunchPolicy.MAX_UNEXPECTED_EXITS;
+		for (int crash = 1; crash < budget; crash++) {
+			fixture.launcher.latest().crash();
+			fixture.supervisor.tick(false, null);
+			CoordinatorRecoverySnapshot backoff = fixture.supervisor.snapshot();
+			assertEquals("COORDINATOR_EXITED", backoff.failureCode(), "crash " + crash + " of a loop reports the exit itself");
+			assertEquals(fixture.clock.now + CoordinatorLaunchPolicy.restartDelayMs(crash), backoff.nextRetryEpochMs(),
+					"crash " + crash + " of a loop keeps the capped fast delay");
+			fixture.clock.now = backoff.nextRetryEpochMs();
+			fixture.supervisor.tick(false, null);
+			assertEquals(crash + 1, fixture.launcher.launches.size(), "crash " + crash + " of a loop still restarts");
+			assertions += 3;
+		}
+		// The delays sum to 1+2+5+15+30*5 = 173 s, so the tenth exit lands well inside the 10-minute window.
+		assertTrue(fixture.clock.now - 100_000L < CoordinatorLaunchPolicy.RESTART_WINDOW_MS, "the crash loop fits inside the window");
+		fixture.launcher.latest().crash();
+		fixture.supervisor.tick(false, null);
+		return assertions + 1;
+	}
+
+	private static int verifyCrashLoopSpendsRestartBudget() {
+		Fixture fixture = Fixture.ready();
+		int assertions = spendRestartBudget(fixture);
+		int budget = CoordinatorLaunchPolicy.MAX_UNEXPECTED_EXITS;
+		CoordinatorRecoverySnapshot spent = fixture.supervisor.snapshot();
+		assertEquals(CoordinatorProcessSupervisor.RESTART_EXHAUSTED, spent.failureCode(),
+				"the tenth exit within the window spends the restart budget and says so");
+		assertTrue(spent.failureMessage().contains("failed 10 times within 10 minutes")
+				&& spent.failureMessage().contains("COORDINATOR_EXITED"), "the spent budget names the loop and its last failure: " + spent.failureMessage());
+		assertEquals(fixture.clock.now + CoordinatorLaunchPolicy.EXHAUSTED_RETRY_MS, spent.nextRetryEpochMs(),
+				"a spent budget waits the slow probe interval instead of 30 s");
+		long probeAt = spent.nextRetryEpochMs();
+		for (int wait = 0; wait < 19; wait++) {
+			fixture.clock.advance(30_000L);
+			fixture.supervisor.tick(false, null);
+		}
+		assertEquals(budget, fixture.launcher.launches.size(), "a spent budget never relaunches on the 30 s cadence");
+		assertEquals(CoordinatorProcessSupervisor.RESTART_EXHAUSTED, fixture.supervisor.failureCode(),
+				"the crash-loop status stays visible through dependency rechecks");
+		fixture.clock.now = probeAt;
+		fixture.supervisor.tick(false, null);
+		assertEquals(budget + 1, fixture.launcher.launches.size(), "one probe launches after the slow interval");
+		assertEquals(CoordinatorProcessSupervisor.RESTART_EXHAUSTED, fixture.supervisor.failureCode(),
+				"the probe keeps the crash-loop status until it authenticates");
+		fixture.launcher.latest().crash();
+		fixture.supervisor.tick(false, null);
+		assertEquals(fixture.clock.now + CoordinatorLaunchPolicy.EXHAUSTED_RETRY_MS, fixture.supervisor.snapshot().nextRetryEpochMs(),
+				"a probe that crashes again waits the slow interval again");
+		fixture.clock.now = fixture.supervisor.snapshot().nextRetryEpochMs();
+		fixture.supervisor.tick(false, null);
+		assertEquals(budget + 2, fixture.launcher.launches.size(), "the next probe launches on schedule");
+		String launchId = fixture.supervisor.snapshot().launchId();
+		fixture.supervisor.tick(true, launchId, 1L);
+		assertEquals(CoordinatorRecoveryState.HEALTHY, fixture.supervisor.snapshot().state(), "a probe that authenticates is healthy");
+		assertEquals(null, fixture.supervisor.failureCode(), "an authenticated probe clears the crash-loop status");
+		fixture.clock.advance(STABILITY_INTERVAL_MS);
+		fixture.supervisor.tick(true, launchId, 1L);
+		assertEquals(0, fixture.supervisor.snapshot().consecutiveFailures(), "a probe that stays up resets the restart budget");
+		fixture.launcher.latest().crash();
+		fixture.supervisor.tick(false, null);
+		assertEquals(fixture.clock.now + 1_000L, fixture.supervisor.snapshot().nextRetryEpochMs(),
+				"after a stable run the next crash gets the fast first delay again");
+		assertEquals("COORDINATOR_EXITED", fixture.supervisor.failureCode(), "and reports the exit itself, not the old crash loop");
+		fixture.supervisor.close();
+		return assertions + 13;
+	}
+
+	private static int verifyChangedRuntimeRetriesSpentBudget() {
+		Fixture fixture = Fixture.ready();
+		int assertions = spendRestartBudget(fixture);
+		int budget = CoordinatorLaunchPolicy.MAX_UNEXPECTED_EXITS;
+		assertEquals(CoordinatorProcessSupervisor.RESTART_EXHAUSTED, fixture.supervisor.failureCode(), "the loop spent the budget");
+		fixture.clock.advance(5_000L);
+		fixture.supervisor.tick(false, null);
+		assertEquals(budget, fixture.launcher.launches.size(), "an unchanged runtime does not retry the spent budget early");
+		fixture.dependencies.fingerprint = "operator-fixed-config";
+		fixture.supervisor.publishDependencyFingerprintChange();
+		fixture.supervisor.tick(false, null);
+		assertEquals(budget + 1, fixture.launcher.launches.size(), "a changed runtime or config retries a spent budget at once");
+		assertEquals(null, fixture.supervisor.failureCode(), "the retry clears the crash-loop status");
+		fixture.launcher.latest().crash();
+		fixture.supervisor.tick(false, null);
+		assertEquals(fixture.clock.now + 1_000L, fixture.supervisor.snapshot().nextRetryEpochMs(),
+				"the changed runtime starts with a fresh budget");
+		fixture.supervisor.close();
+		return assertions + 5;
 	}
 
 	private static void verifySupervisorIdentityLifecycle() {

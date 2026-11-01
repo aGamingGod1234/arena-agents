@@ -939,6 +939,16 @@ final class CoordinatorProcessSupervisor implements AutoCloseable {
 			return false;
 		}
 
+		if (restartBudget.exhausted() && child == null && (fingerprintChanged || launchMaterialChanged)) {
+			// The operator changed the runtime or config behind a crash loop: try it now, with a fresh budget.
+			restartBudget.resetAfterStability();
+			clearDiagnostic();
+			state = CoordinatorRecoveryState.STARTING;
+			nextRetryEpochMs = now;
+			LOGGER.info("Arena Agents coordinator runtime or config changed; restarting it with a fresh restart budget");
+			return true;
+		}
+
 		if ((fingerprintChanged || launchMaterialChanged) && previous != null && child != null) {
 			queueTermination(detachChild());
 			state = CoordinatorRecoveryState.STARTING;
@@ -1331,7 +1341,7 @@ final class CoordinatorProcessSupervisor implements AutoCloseable {
 	}
 
 	private void recordFailure(long now, String code, String message, String boundary, boolean ownedChildExited) {
-		restartBudget.recordUnexpectedExit();
+		boolean restartable = restartBudget.recordUnexpectedExit(now);
 		boolean candidateAttributable = candidateAttemptQualified && candidateRuntimeFailure(code)
 				|| ownedChildExited && "COORDINATOR_EXITED".equals(code);
 		candidateAttemptQualified = false;
@@ -1352,8 +1362,24 @@ final class CoordinatorProcessSupervisor implements AutoCloseable {
 		authenticatedSinceEpochMs = 0L;
 		coordinatorReconciled = false;
 		stabilityCredited = false;
-		setDiagnostic(code, message, boundary);
+		if (restartable) {
+			setDiagnostic(code, message, boundary);
+			return;
+		}
+		// A crash loop: stop relaunching every 30 s and say so, in place of the last failure, until a probe stays up.
+		String exhausted = String.format(java.util.Locale.ROOT,
+				"Coordinator failed %d times within %d minutes (last %s: %s); retrying every %d minutes or when its runtime or config changes",
+				CoordinatorLaunchPolicy.MAX_UNEXPECTED_EXITS, CoordinatorLaunchPolicy.RESTART_WINDOW_MS / 60_000L, code,
+				message == null ? "no message" : message, CoordinatorLaunchPolicy.EXHAUSTED_RETRY_MS / 60_000L);
+		if (!RESTART_EXHAUSTED.equals(failureCode)) {
+			LOGGER.error("Arena Agents coordinator restart budget exhausted [{}] at {}: {}", RESTART_EXHAUSTED, boundary, exhausted);
+		}
+		failureCode = RESTART_EXHAUSTED;
+		failureMessage = exhausted;
+		failingBoundary = boundary;
 	}
+
+	static final String RESTART_EXHAUSTED = "COORDINATOR_RESTART_EXHAUSTED";
 
 	static final long EXIT_CODE_WAIT_MS = 6_000L;
 
