@@ -167,6 +167,26 @@ async function runStartActionOverlap(trial) {
 	} finally { await harness.dispose(); }
 }
 
+// The same overlap without any status read: each next step names the running handle with after.
+async function runAfterOverlap(trial) {
+	const harness = createHarness('after-chain', trial);
+	const startedAt = harness.clock.now();
+	try {
+		await think(harness.clock);
+		let handle = await harness.call('startAction', ACTIONS[0]);
+		assert.equal(handle.state, 'RUNNING');
+		for (let index = 1; index < ACTIONS.length; index += 1) {
+			await think(harness.clock);
+			handle = await harness.call('startAction', { ...ACTIONS[index], after: handle.actionId });
+			assert.equal(handle.state, 'RUNNING');
+			assert.equal(handle.predecessor.state, 'SUCCEEDED');
+		}
+		await harness.clock.advanceBy(ACTIONS.at(-1).arguments.durationMs);
+		await waitForAction(harness, handle.actionId);
+		return { simulatedElapsedMs: harness.clock.now() - startedAt, actions: harness.actions };
+	} finally { await harness.dispose(); }
+}
+
 async function runProgram(strategy, trial, background) {
 	const harness = createHarness(strategy, trial);
 	const startedAt = harness.clock.now();
@@ -204,6 +224,7 @@ async function runProgram(strategy, trial, background) {
 const runners = {
 	serialActions: runSerialActions,
 	startActionOverlap: runStartActionOverlap,
+	afterOverlap: runAfterOverlap,
 	foregroundRunProgram: (trial) => runProgram('foreground-program', trial, false),
 	backgroundRunProgram: (trial) => runProgram('background-program', trial, true),
 };
@@ -268,6 +289,7 @@ const output = {
 	correctness: 'PASSED: all action type/argument sequences matched exactly; every action receipt succeeded',
 	comparisons: {
 		individualActions: pairedComparison('serialActions', 'startActionOverlap'),
+		afterChain: pairedComparison('serialActions', 'afterOverlap'),
 		identicalProgramSource: pairedComparison('foregroundRunProgram', 'backgroundRunProgram'),
 	},
 	strategies: strategyResults,

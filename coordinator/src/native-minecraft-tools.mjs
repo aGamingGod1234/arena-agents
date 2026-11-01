@@ -47,6 +47,9 @@ const NATIVE_ACTION_TYPES = Object.freeze(Object.keys(ACTION_FIELDS));
 const ACTION_TYPE_SCHEMA = Object.freeze({ type: 'string', enum: NATIVE_ACTION_TYPES });
 // Any body call may carry rules: arming them must not cost the call that answers the danger itself.
 const REFLEXES_SCHEMA = Object.freeze({ type: 'array', maxItems: MAX_REFLEXES, items: { type: 'object' }, description: 'Optional per-tick reflex rules installed before this call acts; see control topic tool:reflexes.' });
+// Overlap: the body keeps working while the model thinks (handles from startAction, chained successors, repeated legs).
+const AFTER_SCHEMA = Object.freeze({ type: 'string', minLength: 1, maxLength: 128 });
+const KEEP_GOING_SCHEMA = Object.freeze({ type: 'boolean' });
 const ACTION_SIGNATURES = NATIVE_ACTION_TYPES.map((type) => `${type}(${ACTION_FIELDS[type].map((field) => (OPTIONAL_ACTION_FIELDS[type] ?? []).includes(field) ? `${field}?` : field).join(',')})`).join(' ');
 const POST_ACTION_VIEW_TOOLS = new Set(['moveTo', 'travelTo', 'mine', 'act', 'sequence']);
 export const INSPECTION_SECTIONS = Object.freeze(['observation', 'inventory', 'menu', 'entities', 'blocks', 'landmarks', 'nearby_containers', 'item', 'block', 'events', 'recipes', 'mechanics', 'survey', 'hud']);
@@ -118,7 +121,7 @@ export const MINECRAFT_DYNAMIC_TOOLS = Object.freeze([
 		actionId: { type: 'string', minLength: 1, maxLength: 128 }, goalRevision: integerSchema(0, Number.MAX_SAFE_INTEGER),
 		actionType: ACTION_TYPE_SCHEMA, arguments: { type: 'object' },
 	}, ['actionId', 'goalRevision', 'actionType', 'arguments'])),
-	tool('startAction', objectSchema({ actionType: ACTION_TYPE_SCHEMA, arguments: { type: 'object' } }, ['actionType', 'arguments'])),
+	tool('startAction', objectSchema({ actionType: ACTION_TYPE_SCHEMA, arguments: { type: 'object' }, after: AFTER_SCHEMA, keepGoing: KEEP_GOING_SCHEMA }, ['actionType', 'arguments'])),
 	tool('notebook', objectSchema({ key: { type: 'string', minLength: 1, maxLength: 128 }, text: { type: 'string', minLength: 1, maxLength: 2048 } }, ['key', 'text'])),
 	tool('queryMemory', objectSchema({ kind: { type: 'string', enum: ['all', 'notes', 'receipts', 'unresolved'] }, text: { type: 'string', minLength: 1, maxLength: 256 }, offset: integerSchema(0, Number.MAX_SAFE_INTEGER), limit: integerSchema(1, 64) })),
 	tool('runProgram', objectSchema({ source: { type: 'string', minLength: 1, maxLength: MAX_PROGRAM_SOURCE_BYTES }, noteKey: { type: 'string', minLength: 1, maxLength: 128 }, parameters: { type: 'object', description: 'Pure JSON data, at most 4096 UTF-8 bytes, depth 16 and 256 total entries.' }, background: { type: 'boolean' }, observationIntervalMs: integerSchema(100, 5000), maxActions: integerSchema(1, MAX_PROGRAM_ACTIONS), timeoutMs: integerSchema(1, MAX_PROGRAM_TIMEOUT_MS), expectedDurationMs: integerSchema(1, MAX_PROGRAM_TIMEOUT_MS), standing: { type: 'object' }, reflexes: REFLEXES_SCHEMA })),
@@ -200,6 +203,8 @@ export const MINECRAFT_DYNAMIC_TOOLS = Object.freeze([
 		actionType: ACTION_TYPE_SCHEMA,
 		arguments: { type: 'object', description: `? optional: ${ACTION_SIGNATURES}` },
 		reflexes: REFLEXES_SCHEMA,
+		after: AFTER_SCHEMA,
+		keepGoing: KEEP_GOING_SCHEMA,
 	}, ['actionType', 'arguments'])),
 	tool('sequence', objectSchema({
 		actions: {
@@ -683,7 +688,11 @@ function normalizeMinecraftToolArguments(name, value) {
 			requireExactKeys(args, ['durationMs']);
 			return { kind: 'action', actionType: 'wait', arguments: { durationMs: integer(args.durationMs, 'durationMs', MIN_DURATION_MS, MAX_DURATION_MS) } };
 		case 'act': {
-			requireExactKeys(args, ['actionType', 'arguments', 'reflexes']);
+			requireExactKeys(args, ['actionType', 'arguments', 'reflexes', 'after', 'keepGoing']);
+			if (args.after !== undefined || args.keepGoing !== undefined) {
+				const { after, keepGoing, ...action } = args;
+				return withBodyOverlap(normalizeMinecraftToolArguments('act', action), { after, keepGoing });
+			}
 			if (args.reflexes !== undefined) {
 				const { reflexes, ...action } = args;
 				return { ...normalizeMinecraftToolArguments('act', action), reflexes: normalizeCarriedReflexes(reflexes) };
@@ -744,6 +753,24 @@ function normalizeMinecraftToolArguments(name, value) {
 		default:
 			throw codedError('UNKNOWN_MINECRAFT_TOOL', `Unknown Minecraft tool '${String(name)}'`);
 	}
+}
+
+/** Whether keepGoing can repeat this action: a leg measured from where the body stands, so the next leg is new ground. */
+export function keepGoingEligible(actionType, args = {}) {
+	if (actionType === 'travel_to') return args.yaw !== undefined && args.x === undefined && args.z === undefined;
+	if (actionType === 'dig_to') return args.pattern === 'tunnel' && args.heading !== undefined && args.x === undefined && args.z === undefined;
+	return false;
+}
+
+/**
+ * The overlap options of one body action. after names the handle this action follows: it starts when that one
+ * succeeds and not otherwise. keepGoing repeats a heading leg each time it succeeds until the model's next body call.
+ */
+function withBodyOverlap(action, { after, keepGoing }) {
+	if (action.kind !== 'action') invalid('after and keepGoing apply to one body action');
+	const repeat = optionalBoolean(keepGoing, false, 'keepGoing');
+	if (repeat && !keepGoingEligible(action.actionType, action.arguments)) invalid('keepGoing repeats only travel_to by yaw and distance or dig_to pattern:"tunnel" by heading');
+	return { ...action, ...(after === undefined ? {} : { after: boundedText(after, 'after', 128) }), ...(repeat ? { keepGoing: true } : {}) };
 }
 
 /** A survey inspection: sections to include (plus blocks:<id> searches) or exclude, and rows per section. */

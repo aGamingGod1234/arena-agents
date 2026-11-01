@@ -45,7 +45,8 @@ test('model-facing contract bytes remain within the pinned baseline budgets', ()
 	// d41-cast-barter: cast_obsidian and barter_until (actionType enums, signatures, one act sentence each): exactly +673 tool bytes.
 	// d41-fight-count: fight_target/use_ranged untilItem?/untilCount? (+roof? on fight_target, fight_until) and one act sentence: exactly +245 tool bytes.
 	// d41-blaze-survive: fight_target/use_ranged single? and the plan-count act sentence: exactly +128 tool bytes.
-	assert.ok(Buffer.byteLength(JSON.stringify(MINECRAFT_DYNAMIC_TOOLS)) <= 32_863);
+	// 2026-11-01 overlap: act/startAction after and keepGoing (schemas plus one startAction and one act sentence): exactly +545 tool bytes.
+	assert.ok(Buffer.byteLength(JSON.stringify(MINECRAFT_DYNAMIC_TOOLS)) <= 33_408);
 	assert.ok(Buffer.byteLength(NATIVE_AGENT_INSTRUCTIONS) <= 1_500);
 	// 14,586 -> 14,695: the generated player.travelTo signature.
 	// 14,813 -> 14,847: player.useItem and player.interactBlock signatures gain acceptLavaRisk? (d41-portal).

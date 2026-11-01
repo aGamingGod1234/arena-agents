@@ -214,6 +214,18 @@ Start one model-chosen action and return its handle immediately. Its result arri
 {"tool":"startAction","arguments":{"actionType":"wait","arguments":{"durationMs":500}}}
 ```
 
+Keep the body working while you decide. When the next step is already known, send it with `after` set to the running handle: it waits for that action and starts the moment it succeeds; if it ends any other way the call returns NOT_STARTED with that receipt and fresh postAction facts, and danger during the wait returns AFTER_INTERRUPTED with nothing started. startAction with after returns the new handle once it starts; act with after returns its result.
+
+```json executor-call
+{"tool":"startAction","arguments":{"actionType":"break_block","arguments":{"x":11,"y":64,"z":10,"expectedBlockId":"minecraft:oak_log","timeoutMs":15000},"after":"native:agent-a:3:7"}}
+```
+
+`keepGoing:true` repeats a travel_to by yaw and distance, or a dig_to tunnel by heading, each time a leg succeeds and moved the body, up to 8 legs. Your next body call stops the running leg (acknowledged) and then runs; cancelAction, replaceAction or after with the first handle reach whichever leg runs now. A failed, interrupted or motionless leg ends the chain and its result wakes you. With act, the first leg's result returns with `continuing` naming the leg already running.
+
+```json executor-call
+{"tool":"startAction","arguments":{"actionType":"travel_to","arguments":{"yaw":90,"distance":48},"keepGoing":true}}
+```
+
 ### notebook
 
 Save or replace one model-written note of up to 2048 characters in this agent and world. Notes are hypotheses or plans, never authoritative game evidence.
@@ -444,10 +456,14 @@ Pause briefly and wait for the body result.
 
 ### act
 
-Execute one supported advanced player action. Supply exactly the fields required by that actionType. Optional `reflexes:[...]` installs reflex rules before the action starts (control topic tool:reflexes).
+Execute one supported advanced player action. Supply exactly the fields required by that actionType. Optional `reflexes:[...]` installs reflex rules before the action starts (control topic tool:reflexes). Optional `after` and `keepGoing` work as on startAction (control topic tool:startAction); act still returns the result.
 
 ```json executor-call
 {"tool":"act","arguments":{"actionType":"wait","arguments":{"durationMs":500}}}
+```
+
+```json executor-call
+{"tool":"act","arguments":{"actionType":"dig_to","arguments":{"pattern":"tunnel","heading":"north","maxBlocks":24},"after":"native:agent-a:3:7","keepGoing":true}}
 ```
 
 ### sequence
