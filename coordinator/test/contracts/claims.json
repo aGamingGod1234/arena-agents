@@ -17620,7 +17620,7 @@
       }
     },
     {
-      "predicate": "Production outline ray finds player-reproducible visible block parts (including obscured centers/slivers), rejects hidden/unreachable parts, and eases aim; exact expected identity/reach remain authoritative.; Wrong expectedBlockId fails TARGET_CHANGED and leaves target intact; A far target is rejected before any mining; Break outcomes derive tool eligibility from the held stack's own tool component and name the held item; authored programs read those facts and null when unreported.",
+      "predicate": "break_block (the mine tool) selects MiningTools.forBreak's slot when its break starts: the fastest non-worn harvesting item in slots 0-35 (main inventory swapped into the hotbar), the held item on a tie, a held enchanted harvesting item kept, a worn tool only when nothing else harvests; exact expected identity/reach remain authoritative; break outcomes name the held item; an ore no carried tool harvests is refused NO_TOOL.",
       "checks": [
         {
           "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/BreakSightlineVerification.java",
@@ -17668,12 +17668,18 @@
           "file": "coordinator/test/native-tool-runtime.test.mjs",
           "test": "break outcome flags reach authored programs while direct results keep only the message the model reads",
           "type": "node-behavior"
+        },
+        {
+          "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/MiningToolsVerification.java",
+          "test": "verifyChoices",
+          "type": "java-behavior",
+          "entryPoint": "verifyCore"
         }
       ],
-      "id": "tool:mine:description:8a7d3e8216b31ec2",
+      "id": "tool:mine:description:3d00e9c0268987e2",
       "contract": {
-        "id": "tool:mine:description:8a7d3e8216b31ec2",
-        "claim": "Mine the chosen block with exact blockId and held item; never selects a tool.",
+        "id": "tool:mine:description:3d00e9c0268987e2",
+        "claim": "Mine the chosen block with exact blockId; holds the fastest carried tool that harvests it (a held enchanted one stays); an ore no carried tool harvests fails NO_TOOL unswung.",
         "kind": "description",
         "tool": "mine"
       },
@@ -17682,7 +17688,7 @@
         "line": 139
       },
       "status": "partial",
-      "reason": "Using the held item is witnessed by held-stack break evidence. \"Never selects a tool\" is an absence: the mine path issues no slot change, as reviewed for q2-tool-held (live mixed-slot runs), but no deterministic CI regression asserts the selected slot is unchanged after mining."
+      "reason": "The tool choice is witnessed on fixture inventories; the selection at break start and the hotbar swap have no world-level fixture."
     },
     {
       "predicate": "Production outline ray finds player-reproducible visible block parts (including obscured centers/slivers), rejects hidden/unreachable parts, and eases aim; exact expected identity/reach remain authoritative.; Mining eases from an opposite heading and nearby drops enter inventory without a pickup action",
@@ -34171,7 +34177,7 @@
       }
     },
     {
-      "predicate": "Mining retains the observed target identity and held item, prefers an exposed outline aim, and may clear only in-reach instant-break replaceable vegetation or flowers before revalidating the requested block. Clearing stops at eight owned plant removals; direct re-aims stop after two retries. Tall flowers and tall-grass/large-fern halves retain the ray-hit coordinate. Snow, saplings, sugar cane and sweet berry bushes are not implicitly cleared.",
+      "predicate": "Mining retains the observed target identity, prefers an exposed outline aim, and may clear only in-reach instant-break replaceable vegetation or flowers before revalidating the requested block. Before swinging it holds MiningTools.forBreak's choice (dig_to's fastest-harvesting rule over slots 0-35, held tool on ties, held enchanted harvesting tool kept, worn only as the last fit); an ore no carried tool harvests fails NO_TOOL unswung while other blocks still break with the missing-tool note.",
       "checks": [
         {
           "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/BreakSightlineVerification.java",
@@ -34220,12 +34226,18 @@
           "test": "verify",
           "type": "java-behavior",
           "entryPoint": "verifyCore"
+        },
+        {
+          "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/MiningToolsVerification.java",
+          "test": "verifyChoices",
+          "type": "java-behavior",
+          "entryPoint": "verifyCore"
         }
       ],
-      "id": "control:3fd30542fe3f61b1:d3336397836025b0",
+      "id": "control:3fd30542fe3f61b1:bef866233f4921ed",
       "contract": {
-        "id": "control:3fd30542fe3f61b1:d3336397836025b0",
-        "claim": "Mine one observed, in-range block coordinate with its exact current blockId. It turns to a visible part, aiming around plants where possible. Instant-break replaceable vegetation or flowers obstructing a remembered target is cleared with vanilla attacks and its removal reported; solid obstructions still fail. It never substitutes another solid target or selects a tool.",
+        "id": "control:3fd30542fe3f61b1:bef866233f4921ed",
+        "claim": "Mine one observed, in-range block coordinate with its exact current blockId. It turns to a visible part, aiming around plants where possible. Instant-break replaceable vegetation or flowers obstructing a remembered target is cleared with vanilla attacks and its removal reported; solid obstructions still fail. It never substitutes another solid target. Before swinging it holds the tool dig_to would pick: the fastest carried item that harvests the block and is not about to break (swapped in from slots 9-35 when needed; a worn one only when nothing else fits), keeping the held tool on a tie or when it is enchanted and harvests the block. An ore that no carried tool harvests fails NO_TOOL without a swing, since breaking it would drop nothing; other blocks are still broken when asked, with the missing-tool note.",
         "kind": "control-reference",
         "topic": "mine"
       },
@@ -34234,7 +34246,7 @@
         "line": 433
       },
       "status": "partial",
-      "reason": "Geometry and executor receipt/configure/retry transitions have backend witnesses, including protection denial and the cap. These do not replay full ticks with the Carpet/mixin input driver in a live world; physical bridge clearing remains unverified."
+      "reason": "The tool choice is witnessed on fixture inventories; the selection at break start and the hotbar swap have no world-level fixture."
     },
     {
       "id": "control:3fd30542fe3f61b1:dc3330a310cc4100",
@@ -43672,6 +43684,32 @@
       "status": "checked"
     },
     {
+      "predicate": "MiningTools.wastesOre is true only for an ore (an _ore block or ancient debris) whose drop no carried item harvests; break_block's admission throws NO_TOOL for it before acceptance, so nothing is swung. Plain blocks without a fitting tool are not refused.",
+      "checks": [
+        {
+          "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/MiningToolsVerification.java",
+          "test": "verifyChoices",
+          "type": "java-behavior",
+          "entryPoint": "verifyCore"
+        }
+      ],
+      "id": "tool:mine:description:3d00e9c0268987e2:result:NO_TOOL",
+      "contract": {
+        "id": "tool:mine:description:3d00e9c0268987e2:result:NO_TOOL",
+        "claim": "Mine the chosen block with exact blockId; holds the fastest carried tool that harvests it (a held enchanted one stays); an ore no carried tool harvests fails NO_TOOL unswung.",
+        "kind": "result-code",
+        "tool": "mine",
+        "code": "NO_TOOL",
+        "parent": "tool:mine:description:3d00e9c0268987e2"
+      },
+      "location": {
+        "file": "coordinator/src/tool-descriptions.json",
+        "line": 139
+      },
+      "status": "partial",
+      "reason": "The wasted-ore rule is witnessed on a fixture inventory; the executor's NO_TOOL throw before acceptance has no world-level fixture."
+    },
+    {
       "predicate": "Production combat and targeting policies remain unchanged. A missing drop UUID with an owned collection receipt returns a successful historical acknowledgement and current holdings, performs no second collection, and retires the UUID from observed memory.",
       "checks": [
         {
@@ -46496,6 +46534,32 @@
       },
       "status": "partial",
       "reason": "fightThrough and resume-after-firing are witnessed by the provider-free live fixture scripts/quality/test-travel-resume-live.mjs (3/3 cases), not by a node or verifyCore unit test; hand-back endings other than TARGET_KILLED are not forced by it."
+    },
+    {
+      "predicate": "MiningTools.wastesOre is true only for an ore whose drop no carried item harvests; break_block's admission throws NO_TOOL for it before acceptance. Stone with no pickaxe is not an ore and is still broken.",
+      "checks": [
+        {
+          "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/MiningToolsVerification.java",
+          "test": "verifyChoices",
+          "type": "java-behavior",
+          "entryPoint": "verifyCore"
+        }
+      ],
+      "id": "control:3fd30542fe3f61b1:bef866233f4921ed:result:NO_TOOL",
+      "contract": {
+        "id": "control:3fd30542fe3f61b1:bef866233f4921ed:result:NO_TOOL",
+        "claim": "Mine one observed, in-range block coordinate with its exact current blockId. It turns to a visible part, aiming around plants where possible. Instant-break replaceable vegetation or flowers obstructing a remembered target is cleared with vanilla attacks and its removal reported; solid obstructions still fail. It never substitutes another solid target. Before swinging it holds the tool dig_to would pick: the fastest carried item that harvests the block and is not about to break (swapped in from slots 9-35 when needed; a worn one only when nothing else fits), keeping the held tool on a tie or when it is enchanted and harvests the block. An ore that no carried tool harvests fails NO_TOOL without a swing, since breaking it would drop nothing; other blocks are still broken when asked, with the missing-tool note.",
+        "kind": "result-code",
+        "topic": "mine",
+        "code": "NO_TOOL",
+        "parent": "control:3fd30542fe3f61b1:bef866233f4921ed"
+      },
+      "location": {
+        "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
+        "line": 421
+      },
+      "status": "partial",
+      "reason": "The wasted-ore rule is witnessed on a fixture inventory; the executor's NO_TOOL throw before acceptance has no world-level fixture."
     },
     {
       "id": "control:bf37c7c208717d6d:a8627b1d88d68908:result:AWAITING_OPERATOR_CONFIRMATION",

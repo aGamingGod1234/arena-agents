@@ -136,7 +136,7 @@
     "mine": [
       {
         "id": "tool:mine:description",
-        "claim": "Mine the chosen block with exact blockId and held item; never selects a tool. It turns to a visible part at player speed; autoAim:true adds a separate look_at. May clear instant-break grass/flowers via vanilla attacks; reports it; solids fail. usesLeft reports wear; veins may extend unseen. Nearby drops collect. Failure chooses no substitute."
+        "claim": "Mine the chosen block with exact blockId; holds the fastest carried tool that harvests it (a held enchanted one stays); an ore no carried tool harvests fails NO_TOOL unswung. It turns to a visible part at player speed; autoAim:true adds a separate look_at. May clear instant-break grass/flowers via vanilla attacks; reports it; solids fail. usesLeft reports wear; veins may extend unseen. Nearby drops collect. Failure chooses no substitute."
       }
     ],
     "say": [

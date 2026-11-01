@@ -430,7 +430,7 @@ Stood spots and unverified seen_surface blocks with dy and heading, plus per-hea
 
 ### mine
 
-Mine one observed, in-range block coordinate with its exact current blockId. It turns to a visible part, aiming around plants where possible. Instant-break replaceable vegetation or flowers obstructing a remembered target is cleared with vanilla attacks and its removal reported; solid obstructions still fail. It never substitutes another solid target or selects a tool.
+Mine one observed, in-range block coordinate with its exact current blockId. It turns to a visible part, aiming around plants where possible. Instant-break replaceable vegetation or flowers obstructing a remembered target is cleared with vanilla attacks and its removal reported; solid obstructions still fail. It never substitutes another solid target. Before swinging it holds the tool dig_to would pick: the fastest carried item that harvests the block and is not about to break (swapped in from slots 9-35 when needed; a worn one only when nothing else fits), keeping the held tool on a tie or when it is enchanted and harvests the block. An ore that no carried tool harvests fails NO_TOOL without a swing, since breaking it would drop nothing; other blocks are still broken when asked, with the missing-tool note.
 
 timeoutMs defaults to 15000 and accepts 1..600000ms, matching act and sequence break_block. Program deadlines still apply.
 

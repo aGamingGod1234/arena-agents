@@ -975,6 +975,8 @@ public final class ServerActionExecutor {
 				}
 				String unseen = arguments.has("acceptLavaRisk") && bool(arguments, "acceptLavaRisk") ? null : unseenDropUnderFeet(player, position);
 				if (unseen != null) throw new AgentDomainException("UNSEEN_BELOW", unseen + " Not swung; acceptLavaRisk:true breaks it anyway");
+				String wasted = wastedOre(player, position);
+				if (wasted != null) throw new AgentDomainException("NO_TOOL", wasted);
 				ActiveAction action = ActiveAction.breakBlock(
 						request, player, position, integer(arguments, "timeoutMs"), target.blockId(), expectedBlockId, target.aim());
 				action.plantProtection = at -> {
@@ -985,6 +987,7 @@ public final class ServerActionExecutor {
 					}
 				};
 				action.breakNamesBlock = requestedExpectation == null || requestedExpectation.startsWith("#");
+				action.selectsBreakTool = true;
 				yield action;
 			}
 			case PLACE_BLOCK -> {
@@ -2353,6 +2356,41 @@ public final class ServerActionExecutor {
 	}
 
 	/** A break request's current block id and the point the crosshair turns to. */
+	/**
+	 * An ore whose drop needs a tier no carried item has (diamond ore with a stone pickaxe): breaking it destroys the
+	 * ore for nothing, so it is not swung. Null when a carried tool harvests it, or for any other block.
+	 */
+	static String wastedOre(ServerPlayer player, BlockPos position) {
+		if (player.isCreative()) return null;
+		BlockState state = player.level().getBlockState(position);
+		if (!dev.agaminggod.arenaagents.server.runtime.controller.MiningTools.wastesOre(player.getInventory(), state)) return null;
+		String required = BreakOutcomeEvidence.requiredTool(state);
+		return blockId(state) + " at " + coordinates(position) + " needs " + (required == null ? "a better tool" : "a " + required)
+				+ " and no carried item harvests it: breaking it would drop nothing. Not swung";
+	}
+
+	/**
+	 * Holds the carried tool dig_to would pick for this block (the fastest that harvests it; a held enchanted one stays),
+	 * swapping it from the main inventory when needed. Returns the result note, or null when the hand already fits.
+	 */
+	static String selectBreakTool(ServerPlayer player, BlockState state) {
+		if (player.isCreative()) return null;
+		net.minecraft.world.entity.player.Inventory inventory = player.getInventory();
+		var choice = dev.agaminggod.arenaagents.server.runtime.controller.MiningTools.forBreak(inventory, state);
+		if (!choice.changes(inventory)) return null;
+		String name = choice.itemName(inventory);
+		int hotbar = choice.slot();
+		if (hotbar >= 9) {
+			if (player.containerMenu != player.inventoryMenu) player.closeContainer();
+			hotbar = placementHotbarSlot(player);
+			// A refused swap keeps the hand; the speed note still names the faster tool.
+			if (AdvancedInteractionService.swapIntoHotbar(player, choice.slot(), hotbar) != null) return null;
+		}
+		inventory.setSelectedSlot(hotbar);
+		return "took " + name + (choice.slot() >= 9 ? " from inventory slot " + choice.slot() + " into hotbar " + hotbar : " (hotbar " + hotbar + ")")
+				+ (choice.worn() ? ", its last uses" : "");
+	}
+
 	private record BreakTarget(String blockId, Vec3 aim, BlockPos plant, String plantId) {
 		BreakTarget(String blockId, Vec3 aim) { this(blockId, aim, null, null); }
 	}
@@ -2973,11 +3011,14 @@ public final class ServerActionExecutor {
 		private boolean breakSneak;
 		/** Set when the inventory holds a strictly faster tool for this block; appended to the success message. */
 		private String breakSpeedNote;
+		private String breakToolNote;
 		private BreakOutcomeEvidence.Tool breakTool;
 		/** Structured break evidence for programs and scripts; the message carries the same facts for the model. */
 		private BreakOutcomeEvidence.Summary breakSummary;
 		/** The break expectation was omitted or a tag, so the result names the block that was actually broken. */
 		private boolean breakNamesBlock;
+		/** A model break_block picks its own tool; internal breaks (shelter clearing) keep the hand their caller chose. */
+		private boolean selectsBreakTool;
 		private final BreakOutcomeEvidence.Tally controlBreaks = new BreakOutcomeEvidence.Tally();
 		private BlockBreakReceipt controlReceiptSeen;
 		private boolean controlReceiptPrimed;
@@ -3298,6 +3339,7 @@ public final class ServerActionExecutor {
 					}
 					case BREAK -> {
 						configureBreakTarget(validateBreakTarget(player, block, expectedBlockId));
+						if (selectsBreakTool) breakToolNote = selectBreakTool(player, player.level().getBlockState(block));
 						breakReceiptBaseline = ((BlockBreakReceiptAccess) (Object) player.gameMode).arenaagents$getBlockBreakReceipt();
 						physicalAttempted = true;
 					}
@@ -3488,6 +3530,7 @@ public final class ServerActionExecutor {
 						tally.add(receipt.outcome());
 						breakSummary = tally.summary(BreakOutcomeEvidence.itemId(player.getMainHandItem()));
 					}
+					if (breakToolNote != null) broken += "; " + breakToolNote;
 					String opened = lavaOpened(player, block);
 					if (opened != null) broken += "; " + opened;
 					else if (dev.agaminggod.arenaagents.server.perception.HearingPerception.lavaHeardNear(player, block, 2.5D)) {
