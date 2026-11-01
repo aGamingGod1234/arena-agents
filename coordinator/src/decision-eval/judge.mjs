@@ -13,7 +13,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { terminateChildProcess } from '../child-process-lifecycle.mjs';
 import { resolveClaudeLaunch } from '../claude-service.mjs';
-import { buildCodexArgs, resolveCodexLaunch } from '../codex-app-server.mjs';
+import { buildCodexArgs, resolveCodexLaunchAsync } from '../codex-app-server.mjs';
 import { mirrorCodexExecUsage } from '../codex-usage-mirror.mjs';
 import { OPENCODE_PERMISSION, classifyOpenCodeError, httpJsonRequest, retryDelayMs } from '../opencode-service.mjs';
 import { createProviderChildEnvironment, findNpmEntrypointBesideShim } from '../provider-environment.mjs';
@@ -448,7 +448,7 @@ export async function invokeJudgeCli({ provider, model, effort, executable, time
 				'--mcp-config', '{"mcpServers":{}}', '--permission-mode', 'dontAsk', '--restricted', '--disable-slash-commands', '--no-session-persistence'];
 		} else {
 			const config = { model, reasoningEffort: effort, serviceTier: 'default' };
-			launch = resolveCodexLaunch(config);
+			launch = await resolveCodexLaunchAsync(config);
 			launch.args = launch.args.slice(0, -buildCodexArgs(config).length);
 			if (executable) {
 				launch = { command: executable, args: [], environment: createProviderChildEnvironment('codex', process.env) };

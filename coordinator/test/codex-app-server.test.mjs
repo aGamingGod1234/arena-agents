@@ -1,11 +1,12 @@
 import assert from 'node:assert/strict';
+import { execFile as nodeExecFile } from 'node:child_process';
 import { EventEmitter } from 'node:events';
 import { mkdtempSync, mkdirSync, readFileSync, rmSync, unlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
 
-import { buildCodexArgs, checkCodexModelProfile, CodexAgent, CodexProtocolError, CodexStdioTransport, listCodexModels, resolveCodexLaunch } from '../src/codex-app-server.mjs';
+import { buildCodexArgs, checkCodexModelProfile, CodexAgent, CodexProtocolError, CodexStdioTransport, listCodexModels, resolveCodexLaunch, resolveCodexLaunchAsync } from '../src/codex-app-server.mjs';
 import { finishDecisionJson } from './provider-decision-fixtures.mjs';
 
 const model = {
@@ -378,6 +379,98 @@ test('Codex catalog pagination is bounded, progressive, and cancellable', async 
 		yieldControl: async () => controller.abort(),
 	}), (error) => error?.code === 'REQUEST_ABORTED');
 	assert.equal(requests, 1, 'cancellation prevents page N+1');
+});
+
+// Stands in for powershell.exe with a real Node child that prints `location` after `delayMs`.
+function slowPackageQuery(location, delayMs, calls = []) {
+	return (command, args, options, callback) => {
+		calls.push({ command, args, options });
+		const source = `setTimeout(() => process.stdout.write(${JSON.stringify(location)}), ${delayMs})`;
+		return nodeExecFile(process.execPath, ['-e', source], options, callback);
+	};
+}
+
+async function eventLoopTicksDuring(work) {
+	let ticks = 0;
+	const timer = setInterval(() => { ticks += 1; }, 10);
+	const started = performance.now();
+	try {
+		const result = await work();
+		return { result, ticks, elapsedMs: performance.now() - started };
+	} finally {
+		clearInterval(timer);
+	}
+}
+
+test('async Codex launch resolution queries the Windows package without blocking the event loop', async (t) => {
+	const root = mkdtempSync(path.join(tmpdir(), 'arena-codex-async-appx-'));
+	try {
+		const packageRoot = path.join(root, 'OpenAI.Codex_26.818.8289.0_x64__2p2nqsd0c76g0');
+		const localAppData = path.join(root, 'Local');
+		writeDesktopRuntime(path.join(packageRoot, 'app', 'resources'), 'async-appx-codex-fixture');
+		const calls = [];
+		const { result: launch, ticks, elapsedMs } = await eventLoopTicksDuring(() => resolveCodexLaunchAsync(config, {
+			platform: 'win32',
+			env: { LOCALAPPDATA: localAppData, ProgramFiles: path.join(root, 'Program Files') },
+			execFile: slowPackageQuery(packageRoot, 400, calls),
+			spawnSync: () => { throw new Error('the async resolver must never fall back to spawnSync'); },
+		}));
+		t.diagnostic(`package query took ${Math.round(elapsedMs)} ms; ${ticks} of ${Math.floor(elapsedMs / 10)} 10 ms ticks ran`);
+		assert.ok(ticks >= 10, `expected the event loop to keep ticking, got ${ticks} ticks in ${Math.round(elapsedMs)} ms`);
+		assert.equal(calls.length, 1);
+		assert.equal(calls[0].options.timeout, 5_000);
+		assert.equal(launch.command, path.join(localAppData, 'ArenaAgents', 'codex-runtime', '26.818.8289.0', 'codex.exe'));
+		assert.deepEqual(launch.args, buildCodexArgs(config));
+	} finally {
+		rmSync(root, { recursive: true, force: true });
+	}
+});
+
+test('async Codex launch resolution skips the package query when the sync path would', async () => {
+	const root = mkdtempSync(path.join(tmpdir(), 'arena-codex-async-skip-'));
+	const execFile = () => { throw new Error('package discovery must not run'); };
+	try {
+		const localAppData = path.join(root, 'Local');
+		const cachedRuntime = path.join(localAppData, 'ArenaAgents', 'codex-runtime', '26.818.8289.0');
+		writeDesktopRuntime(cachedRuntime, 'cached-desktop-runtime');
+		const cached = await resolveCodexLaunchAsync(config, { platform: 'win32', env: { LOCALAPPDATA: localAppData }, execFile });
+		assert.equal(cached.command, path.join(cachedRuntime, 'codex.exe'));
+		const npm = await resolveCodexLaunchAsync(config, { platform: 'win32', env: { APPDATA: 'C:\\Users\\player\\AppData\\Roaming' }, execPath: 'C:\\node.exe', existsSync: () => true, execFile });
+		assert.equal(npm.command, 'C:\\node.exe');
+		const posix = await resolveCodexLaunchAsync(config, { platform: 'linux', env: {}, execFile });
+		assert.equal(posix.command, 'codex');
+	} finally {
+		rmSync(root, { recursive: true, force: true });
+	}
+});
+
+test('Codex transport start awaits the package query and a stop during it spawns nothing', async () => {
+	const root = mkdtempSync(path.join(tmpdir(), 'arena-codex-async-start-'));
+	try {
+		const packageRoot = path.join(root, 'OpenAI.Codex_26.818.8289.0_x64__2p2nqsd0c76g0');
+		const localAppData = path.join(root, 'Local');
+		writeDesktopRuntime(path.join(packageRoot, 'app', 'resources'), 'transport-appx-codex-fixture');
+		const launch = { platform: 'win32', env: { LOCALAPPDATA: localAppData, ProgramFiles: path.join(root, 'Program Files') }, execFile: slowPackageQuery(packageRoot, 50) };
+
+		const stoppedSpawns = [];
+		const stopped = new CodexStdioTransport(config, { launch, spawn: (command) => { stoppedSpawns.push(command); return new FakeStdioChild(); }, stopTimeoutMs: 1 });
+		const abandoned = stopped.start();
+		assert.throws(() => stopped.setEnvironment({}), /cannot change after startup/);
+		await stopped.stop();
+		await assert.rejects(abandoned, (error) => error?.code === 'TRANSPORT_STOPPED');
+		assert.deepEqual(stoppedSpawns, []);
+
+		const child = new FakeStdioChild();
+		const commands = [];
+		const transport = new CodexStdioTransport(config, { launch, spawn: (command) => { commands.push(command); queueMicrotask(() => child.emit('spawn')); return child; }, stopTimeoutMs: 1 });
+		const first = transport.start();
+		const second = transport.start();
+		await Promise.all([first, second]);
+		assert.deepEqual(commands, [path.join(localAppData, 'ArenaAgents', 'codex-runtime', '26.818.8289.0', 'codex.exe')]);
+		await transport.stop();
+	} finally {
+		rmSync(root, { recursive: true, force: true });
+	}
 });
 
 test('Codex desktop discovery writes a shared-sanitized bounded failure', (t) => {

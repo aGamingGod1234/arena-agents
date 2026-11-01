@@ -1,6 +1,7 @@
-import { execFile as nodeExecFile, spawnSync } from 'node:child_process';
+import { execFile as nodeExecFile, spawn as nodeSpawn } from 'node:child_process';
 
 const DEFAULT_DISCOVERY_TIMEOUT_MS = 15_000;
+const DISCOVERY_MAX_BUFFER_BYTES = 1_024 * 1_024;
 
 /**
  * Parse the human-readable `agy models` output without trusting display names
@@ -31,13 +32,12 @@ export function parseAntigravityModelsOutput(output) {
 	return [...models.values()];
 }
 
-export async function discoverAntigravityCatalog({ executable = 'agy', execFile = nodeExecFile, environment, timeoutMs = DEFAULT_DISCOVERY_TIMEOUT_MS } = {}) {
+export async function discoverAntigravityCatalog({ executable = 'agy', execFile = nodeExecFile, spawn = nodeSpawn, environment, timeoutMs = DEFAULT_DISCOVERY_TIMEOUT_MS } = {}) {
 	const childEnvironment = requireEnvironment(environment);
 	if (execFile === nodeExecFile) {
-		const result = spawnSync(executable, ['models'], { encoding: 'utf8', timeout: timeoutMs, windowsHide: true, maxBuffer: 1_024 * 1_024, env: childEnvironment });
-		if (result.error !== undefined) throw new Error(`Provider model discovery failed (${result.error.code ?? 'command_error'})`);
-		if (result.status !== 0) throw new Error(`Provider model discovery failed (exit_${result.status})`);
-		return parseAntigravityModelsOutput(result.stdout);
+		// Runs on the coordinator event loop (startup and every Rescan), so the child is awaited, never spawnSync'd.
+		const stdout = await runDiscoveryCommand(spawn, executable, ['models'], timeoutMs, childEnvironment);
+		return parseAntigravityModelsOutput(stdout);
 	}
 	const result = await runExecFile(execFile, executable, ['models'], timeoutMs, childEnvironment);
 	return parseAntigravityModelsOutput(result.stdout);
@@ -66,6 +66,57 @@ function baseModelId(wireId, effort, displayName) {
 	if (typeof wireId !== 'string' || wireId.length === 0) return slugifyModelName(displayName);
 	const suffix = `-${effort}`;
 	return wireId.endsWith(suffix) ? wireId.slice(0, -suffix.length) : wireId;
+}
+
+/**
+ * Asynchronous stand-in for the spawnSync call this replaced, with the same outcomes: the spawn error code
+ * (ENOENT, ...), ETIMEDOUT after `timeoutMs`, ENOBUFS when either stream passes the buffer cap, and
+ * `exit_<status>` (`exit_null` when a signal ended it) for any other nonzero end. Resolves with UTF-8 stdout.
+ */
+function runDiscoveryCommand(spawn, command, args, timeoutMs, environment) {
+	return new Promise((resolve, reject) => {
+		const stdout = [];
+		const streamBytes = { stdout: 0, stderr: 0 };
+		let settled = false;
+		let timer = null;
+		let child;
+		const finish = (error) => {
+			if (settled) return;
+			settled = true;
+			if (timer !== null) clearTimeout(timer);
+			if (error === null) resolve(Buffer.concat(stdout).toString('utf8'));
+			else reject(error);
+		};
+		const fail = (code) => finish(new Error(`Provider model discovery failed (${code})`));
+		const stop = (code) => {
+			if (settled) return;
+			try { child.kill('SIGTERM'); } catch { /* the child may already be gone */ }
+			fail(code);
+		};
+		try {
+			child = spawn(command, args, { stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true, env: environment });
+		} catch (error) {
+			reject(error);
+			return;
+		}
+		if (Number.isFinite(timeoutMs) && timeoutMs > 0) timer = setTimeout(() => stop('ETIMEDOUT'), timeoutMs);
+		const collect = (name) => (chunk) => {
+			if (settled) return;
+			streamBytes[name] += chunk.length;
+			if (streamBytes[name] > DISCOVERY_MAX_BUFFER_BYTES) {
+				stop('ENOBUFS');
+				return;
+			}
+			if (name === 'stdout') stdout.push(chunk);
+		};
+		child.stdout?.on('data', collect('stdout'));
+		child.stderr?.on('data', collect('stderr'));
+		child.once('error', (error) => fail(error?.code ?? 'command_error'));
+		child.once('close', (status) => {
+			if (status === 0) finish(null);
+			else fail(`exit_${status}`);
+		});
+	});
 }
 
 function runExecFile(execFile, command, args, timeoutMs, environment) {

@@ -89,6 +89,32 @@ export function resolveCodexLaunch(config, dependencies = {}) {
 	return { command: 'codex', args: buildCodexArgs(config), environment };
 }
 
+/**
+ * resolveCodexLaunch for callers on the event loop. When the launch would reach the Windows package lookup
+ * (no npm entrypoint and no complete private desktop cache), that PowerShell query runs asynchronously first
+ * and its result is passed in, so resolveCodexLaunch never falls back to spawnSync. The launch is identical.
+ */
+export async function resolveCodexLaunchAsync(config, dependencies = {}) {
+	const discovery = pendingWindowsPackageDiscovery(config, dependencies);
+	if (discovery === null) return resolveCodexLaunch(config, dependencies);
+	return resolveCodexLaunch(config, { ...dependencies, windowsPackageLocations: await discovery });
+}
+
+// The asynchronous package lookup resolveCodexLaunch would otherwise make with spawnSync, or null when it would not make one.
+function pendingWindowsPackageDiscovery(config, dependencies) {
+	if (dependencies.windowsPackageLocations !== undefined) return null;
+	const platform = dependencies.platform ?? process.platform;
+	if (platform !== 'win32') return null;
+	const environment = createProviderChildEnvironment(
+		'codex',
+		dependencies.env ?? config.environment ?? process.env,
+		config.bridgeSecretEnvironmentVariable,
+	);
+	if (codexNpmEntrypoint(environment, { platform, existsSync: dependencies.existsSync ?? existsSync }) !== null) return null;
+	if (!desktopDiscoveryQueriesPackages(environment)) return null;
+	return discoverCodexWindowsPackageLocations(environment, { execFile: dependencies.execFile ?? nodeExecFile });
+}
+
 const CODEX_NPM_ENTRYPOINT = Object.freeze(['@openai', 'codex', 'bin', 'codex.js']);
 const WINDOWS_PACKAGE_LOCATION_COMMAND = "$package = Get-AppxPackage -Name OpenAI.Codex | Sort-Object Version -Descending | Select-Object -First 1; if ($package) { [Console]::Out.Write($package.InstallLocation) }";
 const WINDOWS_PACKAGE_LOCATION_ARGS = Object.freeze(['-NoProfile', '-NonInteractive', '-Command', WINDOWS_PACKAGE_LOCATION_COMMAND]);
@@ -127,10 +153,21 @@ export function discoverCodexWindowsPackageLocations(environment, { execFile = n
 	});
 }
 
-function cacheInstalledCodexDesktopCli(environment, dependencies = {}) {
-	const programFiles = windowsEnvironmentValue(environment, 'ProgramFiles')
+function desktopProgramFiles(environment) {
+	return windowsEnvironmentValue(environment, 'ProgramFiles')
 		?? windowsEnvironmentValue(environment, 'ProgramW6432')
 		?? inferredProgramFiles(environment);
+}
+
+// Mirrors the early exits of cacheInstalledCodexDesktopCli that come before its package lookup.
+function desktopDiscoveryQueriesPackages(environment) {
+	const localAppDataRoots = candidateLocalAppDataRoots(environment);
+	if (desktopProgramFiles(environment) === null || localAppDataRoots.length === 0) return false;
+	return localAppDataRoots.every((localAppData) => findCompleteCachedDesktopCli(localAppData) === null);
+}
+
+function cacheInstalledCodexDesktopCli(environment, dependencies = {}) {
+	const programFiles = desktopProgramFiles(environment);
 	const localAppDataRoots = candidateLocalAppDataRoots(environment);
 	if (programFiles === null || localAppDataRoots.length === 0) {
 		try { console.error('[codex] Installed desktop CLI discovery skipped: Windows profile directories are unavailable'); } catch { /* discovery diagnostics are best effort */ }
@@ -281,33 +318,60 @@ export class CodexStdioTransport extends EventEmitter {
 	#timedOutRequestIds = new Set();
 	#stopTimeoutMs;
 	#usageMirror;
+	#launchDependencies;
+	#starting = null;
+	#generation = 0;
 
 	constructor(config, dependencies = {}) {
 		super();
 		this.#config = config;
 		this.#spawn = dependencies.spawn ?? spawn;
+		this.#launchDependencies = dependencies.launch ?? {};
 		this.#stopTimeoutMs = dependencies.stopTimeoutMs ?? DEFAULT_CHILD_STOP_TIMEOUT_MS;
 		this.#usageMirror = dependencies.usageMirror === undefined ? defaultCodexUsageMirror() : dependencies.usageMirror;
 	}
 
 	setEnvironment(environment) {
-		if (this.#child !== null) throw new CodexProtocolError('TRANSPORT_RUNNING', 'Codex environment cannot change after startup');
+		if (this.#child !== null || this.#starting !== null) throw new CodexProtocolError('TRANSPORT_RUNNING', 'Codex environment cannot change after startup');
 		if (environment === null || typeof environment !== 'object' || Array.isArray(environment)) throw new TypeError('Codex launch environment must be an object');
 		this.#config = { ...this.#config, environment: { ...environment } };
 	}
 
 	setWorkingDirectory(cwd) {
-		if (this.#child !== null) throw new CodexProtocolError('TRANSPORT_RUNNING', 'Codex workspace cannot change after startup');
+		if (this.#child !== null || this.#starting !== null) throw new CodexProtocolError('TRANSPORT_RUNNING', 'Codex workspace cannot change after startup');
 		if (typeof cwd !== 'string' || cwd.trim() === '') throw new TypeError('Codex workspace must be a nonblank path');
 		this.#config = { ...this.#config, cwd };
 	}
 
 	async start() {
 		if (this.#child !== null) return;
+		if (this.#starting !== null) return this.#starting;
+		// Only a Windows desktop install without a cached runtime waits here; every other launch spawns synchronously.
+		let discovery;
+		try {
+			discovery = pendingWindowsPackageDiscovery(this.#config, this.#launchDependencies);
+		} catch (error) {
+			throw new CodexProtocolError('SPAWN_FAILED', `Could not start Codex app-server: ${sanitizeDiagnosticErrorMessage(error)}`, { cause: error });
+		}
+		if (discovery === null) return this.#spawnChild(this.#launchDependencies);
+		const generation = this.#generation;
+		const starting = discovery.then((windowsPackageLocations) => {
+			if (generation !== this.#generation) throw new CodexProtocolError('TRANSPORT_STOPPED', 'Codex app-server transport stopped');
+			return this.#spawnChild({ ...this.#launchDependencies, windowsPackageLocations });
+		});
+		this.#starting = starting;
+		try {
+			await starting;
+		} finally {
+			if (this.#starting === starting) this.#starting = null;
+		}
+	}
+
+	async #spawnChild(launchDependencies) {
 		this.#decoder = new JsonlDecoder({ maxBytes: APP_SERVER_MAX_LINE_BYTES });
 		let child;
 		try {
-			const launch = resolveCodexLaunch(this.#config);
+			const launch = resolveCodexLaunch(this.#config, launchDependencies);
 			child = this.#spawn(launch.command, launch.args, {
 				cwd: this.#config.cwd,
 				env: launch.environment,
@@ -409,6 +473,8 @@ export class CodexStdioTransport extends EventEmitter {
 	}
 
 	async stop() {
+		this.#generation += 1;
+		this.#starting = null;
 		const child = this.#child;
 		if (child === null) return;
 		this.#child = null;

@@ -6,7 +6,7 @@ import { promisify } from 'node:util';
 
 import { ClaudeProviderService, resolveClaudeLaunch } from '../claude-service.mjs';
 import { ClaudeToolServer } from '../claude-tool-server.mjs';
-import { buildCodexArgs, CodexStdioTransport, resolveCodexLaunch } from '../codex-app-server.mjs';
+import { buildCodexArgs, CodexStdioTransport, resolveCodexLaunchAsync } from '../codex-app-server.mjs';
 import { CodexService } from '../codex-service.mjs';
 import { canonicalEncodedInput, evalMinecraftWorkspace, sha256 } from './render.mjs';
 import { buildContext, cannedChoice } from './match.mjs';
@@ -491,7 +491,7 @@ export function defaultRunRoot() { return path.join(os.tmpdir(), 'arena-decision
  * The provider runtime the samples ran on: the resolved CLI and the version it reports. The CLI adds its own system
  * prompt and tool handling around the rendered prefix, so a CLI upgrade can change answers with no repository change.
  */
-export async function providerRuntime(provider, { executable, model = 'gpt-6.1-sol', effort = 'low', exec = execFileAsync, resolve = provider === 'claude' ? resolveClaudeLaunch : resolveCodexLaunch } = {}) {
+export async function providerRuntime(provider, { executable, model = 'gpt-6.1-sol', effort = 'low', exec = execFileAsync, resolve = provider === 'claude' ? resolveClaudeLaunch : resolveCodexLaunchAsync } = {}) {
 	let launch;
 	try {
 		if (provider === 'opencode') launch = { command: executable ?? 'opencode', args: [], environment: process.env };
@@ -499,7 +499,7 @@ export async function providerRuntime(provider, { executable, model = 'gpt-6.1-s
 		else {
 			// The Codex launch carries the app-server arguments; only the CLI itself is asked for its version.
 			const config = { model, reasoningEffort: effort, serviceTier: 'default' };
-			launch = resolve(config);
+			launch = await resolve(config);
 			launch = { ...launch, args: launch.args.slice(0, launch.args.length - buildCodexArgs(config).length) };
 		}
 	}
