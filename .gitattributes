@@ -5,3 +5,14 @@ maps/licenses/**/*.txt text eol=lf
 *.sh text eol=lf
 *.sha256 text eol=lf
 gradlew text eol=lf
+# Text the coordinator and the model read: a CRLF checkout breaks fenced-block parsing and byte budgets in tests,
+# and ships \r into every line of the instructions and references the model reads (each costs tokens).
+*.md text eol=lf
+*.json text eol=lf
+*.jsonl text eol=lf
+*.mjs text eol=lf
+*.cjs text eol=lf
+*.txt text eol=lf
+*.py text eol=lf
+*.html text eol=lf
+*.yml text eol=lf
