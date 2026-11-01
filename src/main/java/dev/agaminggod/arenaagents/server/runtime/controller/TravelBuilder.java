@@ -207,6 +207,10 @@ final class TravelBuilder {
 	/** Whether a tunnel may mine this block: no bedrock or portal frames, nothing holding items, nothing too slow. */
 	static String unmineable(BlockState state) {
 		if (UNMINED.contains(state.getBlock())) return "it is " + net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(state.getBlock());
+		// A player opens a door or gate rather than mining through it (and through someone's house).
+		if (state.getBlock() instanceof net.minecraft.world.level.block.DoorBlock || state.getBlock() instanceof net.minecraft.world.level.block.FenceGateBlock
+				|| state.getBlock() instanceof net.minecraft.world.level.block.TrapDoorBlock)
+			return "it is a door or gate (" + net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(state.getBlock()) + "): open it rather than mine it";
 		if (state.getBlock() instanceof EntityBlock) return "it holds a block entity (" + net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(state.getBlock()) + ")";
 		if (state.getDestroySpeed(net.minecraft.world.level.EmptyBlockGetter.INSTANCE, BlockPos.ZERO) < 0) return "it is unbreakable";
 		return null;

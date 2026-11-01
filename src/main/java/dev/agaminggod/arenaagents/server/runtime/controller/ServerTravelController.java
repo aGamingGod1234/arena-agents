@@ -398,6 +398,8 @@ public final class ServerTravelController implements ServerController {
 		else releaseInput();
 		if (!player.onGround() && !player.isInWater()) return TickResult.running(progress(player));
 		MinecraftNavigationWorld world = new MinecraftNavigationWorld(player.level(), player);
+		// Legs are walked by navigation, which opens wooden doors and gates: seen ground behind one is a leg's reach.
+		MinecraftNavigationWorld legs = new MinecraftNavigationWorld(player.level(), player).opensDoors();
   // The ordinary checkpoint picker accepts a height band; it would keep choosing this shaft's own floor forever.
   if(routeLeg && Double.isFinite(targetY) && targetY>player.getY()+0.6D && Math.hypot(targetX-player.getX(),targetZ-player.getZ())<0.8D) {
    if(!build) return fail(player,"NO_ROUTE","This remembered shaft needs blocks to pillar up; build is false");
@@ -411,10 +413,10 @@ public final class ServerTravelController implements ServerController {
 		if (buildNow || onMagma(player)) checkpointSearch = null;
 		else {
 			if (checkpointSearch != null && !checkpointSearch.origin.equals(feet(player))) checkpointSearch = null;
-			if (checkpointSearch == null) checkpointSearch = TravelCheckpoints.beginWalkingPick(world, player.getX(), player.getY(), player.getZ(),
+			if (checkpointSearch == null) checkpointSearch = TravelCheckpoints.beginWalkingPick(legs, player.getX(), player.getY(), player.getZ(),
 					targetX, targetY, targetZ, LEG_REACH, this::isRefused, sightedSpots(player));
 			if (checkpointSearch != null) {
-				next = checkpointSearch.advance(world);
+				next = checkpointSearch.advance(legs);
 				if (!checkpointSearch.finished()) return TickResult.running(progress(player));
 				checkpointSearch = null;
 			}
@@ -438,7 +440,7 @@ public final class ServerTravelController implements ServerController {
 			return look(player, nowEpochMs);
 		}
 		if (!onMagma(player) && failedLegs < MAX_FAILED_LEGS && (buildRefusal != null || !build)) {
-			GridPosition detour = TravelCheckpoints.detour(world, player.getX(), player.getY(), player.getZ(), targetX, targetZ, this::isRefused);
+			GridPosition detour = TravelCheckpoints.detour(legs, player.getX(), player.getY(), player.getZ(), targetX, targetZ, this::isRefused);
 			if (detour != null) {
 				refused.add(detour);
 				legFinal = false;

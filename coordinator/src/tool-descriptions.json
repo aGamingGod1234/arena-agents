@@ -118,7 +118,7 @@
     "moveTo": [
       {
         "id": "tool:moveTo:description",
-        "claim": "Traverse acquired terrain in ~30-block legs; swims and surfaces early if breath runs short. sprint defaults true. REACHED_FRONTIER is partial; choose leg. Near stops unverified."
+        "claim": "Traverse acquired terrain in ~30-block legs; swims and surfaces early if breath runs short; opens wooden doors/gates on the route and shuts doors behind. sprint defaults true. REACHED_FRONTIER is partial; choose leg. Near stops unverified."
       }
     ],
     "travelTo": [

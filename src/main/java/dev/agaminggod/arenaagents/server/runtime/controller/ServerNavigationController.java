@@ -23,6 +23,11 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -412,6 +417,16 @@ public final class ServerNavigationController implements ServerController {
 		if (crouched && player.onGround() && (waypoint.traversal() == TraversalType.JUMP_GAP || waypoint.traversal() == TraversalType.DROP_DOWN)) {
 			return fail(player, "SNEAK_HOLDS_EDGE", "sneak:true: the route needs a " + (waypoint.traversal() == TraversalType.DROP_DOWN ? "drop" : "gap jump")
 					+ " at " + waypoint.position().x() + "," + waypoint.position().y() + "," + waypoint.position().z() + ", which a crouched body cannot take (vanilla edge back-off); the walk handed back crouched", lastProgressValue);
+		}
+		if (doorAhead(player, world, active, nowEpochMs)) {
+			if (doorFailure != null) {
+				String why = doorFailure;
+				doorFailure = null;
+				return fail(player, "PATH_BLOCKED", "The route runs through a door: " + why, lastProgressValue);
+			}
+			// Standing at the door: route progress waits for it, as it does for a planned jump.
+			progress.waypointAdvanced(player.position().distanceTo(target), nowEpochMs);
+			return TickResult.running(lastProgressValue);
 		}
 		drive(player, world, waypoint, target, steer, steerIndex == active.size() - 1, steerIndex == waypointIndex, nowEpochMs);
 		return TickResult.running(lastProgressValue);
@@ -1487,15 +1502,132 @@ public final class ServerNavigationController implements ServerController {
 		return world;
 	}
 
+	/** A crouched walker cannot open a door (a sneaking right-click uses the held item), so it plans around closed ones. */
+	private MinecraftNavigationWorld doorWorld(MinecraftNavigationWorld world) {
+		return crouched ? world : world.opensDoors();
+	}
+
+	/** How near the eye a door is opened or closed from (blocks to its centre): within vanilla's 4.5 reach. */
+	static final double DOOR_REACH = 3.0D;
+	/** Ticks to turn to a door and click it before the walk hands back that it would not open. */
+	static final int DOOR_TICKS = 30;
+	private BlockPos doorAt;
+	private String doorFailure;
+	private int doorTicks, doorClicks, doorCooldown;
+	/** Ticks after a click before another: the door's new state is read before it could be toggled back. */
+	static final int DOOR_CLICK_GAP = 5;
+	/** The door this walk opened, closed behind the body once it is through. */
+	private BlockPos openedDoor;
+
+	/**
+	 * A closed wooden door or fence gate in the next two route cells, opened as a player does: stop, look at it,
+	 * right-click once. True while the body is busy with it; a door it cannot open hands the walk back.
+	 */
+	private boolean doorAhead(ServerPlayer player, MinecraftNavigationWorld world, List<PathNode> nodes, long nowEpochMs) {
+		if (crouched || !world.planesThroughDoors()) return false;
+		BlockPos door = null;
+		for (int index = waypointIndex; index < Math.min(nodes.size(), waypointIndex + 2) && door == null; index++) {
+			GridPosition cell = nodes.get(index).position();
+			for (int dy = 0; dy <= 1 && door == null; dy++) {
+				BlockPos at = new BlockPos(cell.x(), cell.y() + dy, cell.z());
+				if (MinecraftNavigationWorld.closedHandDoor(world.stateAt(at))) door = at;
+			}
+		}
+		if (door == null) {
+			if (doorAt != null) {
+				doorAt = null;
+				doorTicks = 0;
+				doorClicks = 0;
+			}
+			return closeDoorBehind(player, world, nodes, nowEpochMs);
+		}
+		if (Vec3.atCenterOf(door).distanceTo(player.getEyePosition()) > DOOR_REACH) return false;
+		if (!door.equals(doorAt)) {
+			doorAt = door;
+			doorTicks = 0;
+			doorClicks = 0;
+		}
+		if (++doorTicks > DOOR_TICKS) {
+			doorFailure = "the " + BuiltInRegistries.BLOCK.getKey(world.stateAt(door).getBlock()) + " at " + door.getX() + "," + door.getY() + "," + door.getZ() + " would not open";
+			return true;
+		}
+		if (clickDoor(player, door, nowEpochMs)) openedDoor = door;
+		return true;
+	}
+
+	/** Once through, the door this walk opened is shut behind the body, as a player keeps mobs out of a building. */
+	private boolean closeDoorBehind(ServerPlayer player, MinecraftNavigationWorld world, List<PathNode> nodes, long nowEpochMs) {
+		if (openedDoor == null) return false;
+		BlockState state = world.stateAt(openedDoor);
+		boolean open = state != null && state.hasProperty(BlockStateProperties.OPEN) && state.getValue(BlockStateProperties.OPEN);
+		double distance = Vec3.atCenterOf(openedDoor).distanceTo(player.getEyePosition());
+		if (!open || distance > DOOR_REACH + 1.0D) {
+			openedDoor = null;
+			return false;
+		}
+		// Still in its doorway, or the route runs back through it: leave it open for now.
+		AABB doorway = new AABB(openedDoor).minmax(new AABB(openedDoor.above())).minmax(new AABB(openedDoor.below()));
+		if (player.getBoundingBox().inflate(0.1D).intersects(doorway) || distance < 1.6D || !player.onGround()) return false;
+		for (int index = waypointIndex; index < Math.min(nodes.size(), waypointIndex + 3); index++) {
+			GridPosition cell = nodes.get(index).position();
+			if (cell.x() == openedDoor.getX() && cell.z() == openedDoor.getZ() && Math.abs(cell.y() - openedDoor.getY()) <= 1) return false;
+		}
+		if (!door(state)) {
+			openedDoor = null;
+			return false;
+		}
+		if (clickDoor(player, openedDoor, nowEpochMs) || ++doorTicks > DOOR_TICKS) {
+			openedDoor = null;
+			doorTicks = 0;
+		}
+		return true;
+	}
+
+	private static boolean door(BlockState state) {
+		return state.getBlock() instanceof net.minecraft.world.level.block.DoorBlock door ? door.type().canOpenByHand()
+				: state.getBlock() instanceof net.minecraft.world.level.block.FenceGateBlock;
+	}
+
+	/** One turn step toward the door with the feet still; a right-click once the crosshair is on it. True on the click. */
+	private boolean clickDoor(ServerPlayer player, BlockPos door, long nowEpochMs) {
+		if (inputLease == null) {
+			inputController = AgentInputRuntime.controller(player);
+			inputLease = inputController.acquire(AgentInputRuntime.requireAgentId(player), InputOwner.NAVIGATION, 100);
+		}
+		if (motorState == null) motorState = AgentInputStates.MotorState.initial(player.getYRot(), player.getXRot());
+		Vec3 aim = dev.agaminggod.arenaagents.server.runtime.TargetSightline.block(player.level(),
+				net.minecraft.world.phys.shapes.CollisionContext.of(player), player.getEyePosition(), door, player.blockInteractionRange(), null);
+		if (aim == null) aim = Vec3.atCenterOf(door);
+		float[] look = TravelBuilder.lookAt(player.getEyePosition(), aim);
+		var step = AgentInputStates.stepMotor(motorState, new AgentInputStates.MotorTarget(look[0], look[1], false, false, false), nowEpochMs);
+		motorState = step.state();
+		lastSprint = false;
+		inputController.apply(inputLease, new dev.agaminggod.arenaagents.server.runtime.input.AgentInputState(
+				0.0F, 0.0F, false, false, false, false, false, step.state().yaw(), step.state().pitch(),
+				player.getInventory().getSelectedSlot(), InteractionHand.MAIN_HAND));
+		if (doorCooldown > 0) {
+			doorCooldown--;
+			return false;
+		}
+		BlockHitResult hit = TravelBuilder.crosshair(player);
+		// Only a click on the door itself: a click on the floor or wall beside it would use the held item there.
+		if (hit == null || !(hit.getBlockPos().equals(door) || hit.getBlockPos().equals(door.above()) || hit.getBlockPos().equals(door.below()))
+				|| !door(player.level().getBlockState(hit.getBlockPos()))) return false;
+		if (!player.level().mayInteract(player, hit.getBlockPos()) || doorClicks >= 3) return false;
+		doorClicks++;
+		doorCooldown = DOOR_CLICK_GAP;
+		return TravelBuilder.click(player, hit);
+	}
+
 	private MinecraftNavigationWorld navigationWorld(ServerPlayer player) {
 		var seen = dev.agaminggod.arenaagents.server.perception.SeenTerrain.of(player);
 		if (navigationWorld == null || !navigationWorld.belongsTo(player.level())
 				|| !navigationWorld.matchesMovement(player)) {
 			previousFrontiers.clear();
-			navigationWorld = new MinecraftNavigationWorld(player.level(), player);
+			navigationWorld = doorWorld(new MinecraftNavigationWorld(player.level(), player));
 		} else if (!navigationWorld.uses(seen)) {
 			if (navigationWorld == searchWorld && (search != null || preparation != null)) {
-				navigationWorld = new MinecraftNavigationWorld(player.level(), player);
+				navigationWorld = doorWorld(new MinecraftNavigationWorld(player.level(), player));
 			} else {
 				navigationWorld.nextFrame(seen);
 				gapSprintGuard.forgetSample();

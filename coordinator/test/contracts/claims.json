@@ -16200,7 +16200,7 @@
       }
     },
     {
-      "predicate": "The real native moveTo wrapper traverses64blocks over multiple bounded local legs through acquired terrain and reaches a verified standing endpoint; unsupported observed air arrival fails without a substitute; explicit/default sprint mapping remains authored. The model target and deadline stay unchanged while observed route segments advance; completed approach cells are not new frontiers, untried observed detours remain available, and three empty searches stop. Near eligibility is bounded by distance and height, rejects known obstacles/fluids/drops, and preserves unverified target facts in coordinator delivery. Underwater navigation interrupts for insufficient breath and reports an incomplete destination.",
+      "predicate": "The real native moveTo wrapper traverses64blocks over multiple bounded local legs through acquired terrain and reaches a verified standing endpoint; unsupported observed air arrival fails without a substitute; explicit/default sprint mapping remains authored. The model target and deadline stay unchanged while observed route segments advance; completed approach cells are not new frontiers, untried observed detours remain available, and three empty searches stop. Near eligibility is bounded by distance and height, rejects known obstacles/fluids/drops, and preserves unverified target facts in coordinator delivery. Underwater navigation interrupts for insufficient breath and reports an incomplete destination; a navigation world that opens doors plans through closed wooden doors and fence gates (not iron doors or trapdoors) and the walker stops within 3 blocks, turns to the door and right-clicks it once, then shuts a door behind it once through; crouched walks plan around closed doors; travel tunnels never mine doors, gates or trapdoors.",
       "checks": [
         {
           "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/SeenNavigationVerification.java",
@@ -16253,12 +16253,18 @@
           "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/NavigationBreathingVerification.java",
           "test": "verify",
           "entryPoint": "verifyCore"
+        },
+        {
+          "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/DoorNavigationVerification.java",
+          "test": "verify",
+          "type": "java-behavior",
+          "entryPoint": "verifyCore"
         }
       ],
-      "id": "tool:moveTo:description:ee1edf613ae0cfb3",
+      "id": "tool:moveTo:description:be981d89d40b8ca5",
       "contract": {
-        "id": "tool:moveTo:description:ee1edf613ae0cfb3",
-        "claim": "Traverse acquired terrain in ~30-block legs; swims and surfaces early if breath runs short. sprint defaults true.",
+        "id": "tool:moveTo:description:be981d89d40b8ca5",
+        "claim": "Traverse acquired terrain in ~30-block legs; swims and surfaces early if breath runs short; opens wooden doors/gates on the route and shuts doors behind. sprint defaults true.",
         "kind": "description",
         "tool": "moveTo"
       },
@@ -16267,7 +16273,7 @@
         "line": 121
       },
       "status": "partial",
-      "reason": "Deterministic Java navigation and continuation policy plus mock coordinator receipt delivery are verified; the changed controller has not been replayed on a live Minecraft server."
+      "reason": "Door classification, routing through a doorway and the tunnel refusal are witnessed on fixtures; the open and close clicks inside a live walk have no world-level fixture."
     },
     {
       "predicate": "The real native moveTo wrapper traverses64blocks over multiple bounded local legs through acquired terrain and reaches a verified standing endpoint; unsupported observed air arrival fails without a substitute; explicit/default sprint mapping remains authored. The model target and deadline stay unchanged while observed route segments advance; completed approach cells are not new frontiers, untried observed detours remain available, and three empty searches stop. Near eligibility is bounded by distance and height, rejects known obstacles/fluids/drops, and preserves unverified target facts in coordinator delivery.",
@@ -33760,7 +33766,7 @@
       }
     },
     {
-      "predicate": "A frontier is partial travel rather than arrival. Existing failure state prevents dependent physical steps from treating it as destination success; the receipt requests new observation or another route. The model target and deadline stay unchanged while observed route segments advance; completed approach cells are not new frontiers, untried observed detours remain available, and three empty searches stop. Near eligibility is bounded by distance and height, rejects known obstacles/fluids/drops, and preserves unverified target facts in coordinator delivery.",
+      "predicate": "A frontier is partial travel rather than arrival. Existing failure state prevents dependent physical steps from treating it as destination success; the receipt requests new observation or another route. The model target and deadline stay unchanged while observed route segments advance; completed approach cells are not new frontiers, untried observed detours remain available, and three empty searches stop. Near eligibility is bounded by distance and height, rejects known obstacles/fluids/drops, and preserves unverified target facts in coordinator delivery; a navigation world that opens doors plans through closed wooden doors and fence gates (not iron doors or trapdoors) and the walker stops within 3 blocks, turns to the door and right-clicks it once, then shuts a door behind it once through; crouched walks plan around closed doors; travel tunnels never mine doors, gates or trapdoors.",
       "checks": [
         {
           "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/SeenNavigationVerification.java",
@@ -33807,12 +33813,18 @@
           "file": "coordinator/test/tool-contract-runtime.test.mjs",
           "test": "contract: navigation keeps one model target and deadline and preserves an honest near-arrival receipt",
           "type": "node-behavior"
+        },
+        {
+          "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/DoorNavigationVerification.java",
+          "test": "verify",
+          "type": "java-behavior",
+          "entryPoint": "verifyCore"
         }
       ],
-      "id": "control:f5aeceb513b998af:2502eb0a757c9ee8",
+      "id": "control:f5aeceb513b998af:61ebbc646b254ba3",
       "contract": {
-        "id": "control:f5aeceb513b998af:2502eb0a757c9ee8",
-        "claim": "Navigate to the target you choose through acquired safe terrain in bounded ~30-block legs; when the route is observed safe, give the far target. Prefer moveTo for traversal and exploration through acquired terrain; use control for deliberate input maneuvers. At a sight boundary the body looks toward your target, replans as terrain becomes observed, and can take observed detours within your timeout. Three consecutive searches without a continuation stop with NO_SEEN_ROUTE or REACHED_FRONTIER; lack of body progress still stops the move. Unknown terrain never authorizes a step. Explicit move_to and navigate_to share this behavior.",
+        "id": "control:f5aeceb513b998af:61ebbc646b254ba3",
+        "claim": "Navigate to the target you choose through acquired safe terrain in bounded ~30-block legs; when the route is observed safe, give the far target. Prefer moveTo for traversal and exploration through acquired terrain; use control for deliberate input maneuvers. At a sight boundary the body looks toward your target, replans as terrain becomes observed, and can take observed detours within your timeout. Three consecutive searches without a continuation stop with NO_SEEN_ROUTE or REACHED_FRONTIER; lack of body progress still stops the move. A closed wooden door or fence gate on the route is opened as a player does (it stops, looks at it within 3 blocks and right-clicks it) and, once the body is through, shut behind it; iron doors and trapdoors are not opened, a crouched walk (sneak:true) plans around closed doors, and a door that will not open stops the move with PATH_BLOCKED. travelTo legs do the same, and its tunnels never mine a door, gate or trapdoor. Unknown terrain never authorizes a step. Explicit move_to and navigate_to share this behavior.",
         "kind": "control-reference",
         "topic": "moveTo"
       },
@@ -33821,7 +33833,7 @@
         "line": 387
       },
       "status": "partial",
-      "reason": "Deterministic Java navigation and continuation policy plus mock coordinator receipt delivery are verified; the changed controller has not been replayed on a live Minecraft server."
+      "reason": "Door classification, routing through a doorway and the tunnel refusal are witnessed on fixtures; the open and close clicks inside a live walk have no world-level fixture."
     },
     {
       "predicate": "Near stops are FAILED with DESTINATION_NEAR_UNVERIFIED; target feet, headroom and support are acquired and standable, the body is stable on dry collision-free footing, and geometry, distance and height bounds hold after three empty searches. Receipts retain distance/tolerance facts and success-gated scripts and sequences do not chain.",
@@ -43653,18 +43665,24 @@
       "reason": "Revising and re-verifying a routine is a model decision; only the separation of receipts from notes is executable."
     },
     {
-      "predicate": "Recorded navigation obstruction and drop geometry survive into the next encoded model wake, so the model can choose local repair instead of repeating a distant destination.",
+      "predicate": "Recorded navigation obstruction and drop geometry survive into the next encoded model wake, so the model can choose local repair instead of repeating a distant destination; navigation opens wooden doors and gates on its way (DoorNavigationVerification).",
       "checks": [
         {
           "file": "coordinator/test/continuity-header.test.mjs",
           "test": "recorded full-game route failures keep obstruction and drop evidence in the next wake",
           "type": "node-behavior"
+        },
+        {
+          "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/DoorNavigationVerification.java",
+          "test": "verify",
+          "type": "java-behavior",
+          "entryPoint": "verifyCore"
         }
       ],
-      "id": "agent:09bdccc5fb698cfb:875880eb698aa43b",
+      "id": "agent:09bdccc5fb698cfb:69a699e509e08bb5",
       "contract": {
-        "id": "agent:09bdccc5fb698cfb:875880eb698aa43b",
-        "claim": "Navigation walks seen terrain; it does not excavate or build. After a blocked ascent or descent, repair one local step with supported feet and clear headroom, then verify it before extending the route. Repeated distant waypoints or larger tolerances do not repair missing stairs. Record the workable entrance/exit and failed approach in taskMemory before leaving a cave.",
+        "id": "agent:09bdccc5fb698cfb:69a699e509e08bb5",
+        "claim": "Navigation walks seen terrain and opens wooden doors and gates on its way; it does not excavate or build. After a blocked ascent or descent, repair one local step with supported feet and clear headroom, then verify it before extending the route. Repeated distant waypoints or larger tolerances do not repair missing stairs. Record the workable entrance/exit and failed approach in taskMemory before leaving a cave.",
         "kind": "agent-reference",
         "topic": "Your role"
       },
@@ -46036,14 +46054,14 @@
           "type": "node-behavior"
         }
       ],
-      "id": "control:f5aeceb513b998af:2502eb0a757c9ee8:result:NO_SEEN_ROUTE",
+      "id": "control:f5aeceb513b998af:61ebbc646b254ba3:result:NO_SEEN_ROUTE",
       "contract": {
-        "id": "control:f5aeceb513b998af:2502eb0a757c9ee8:result:NO_SEEN_ROUTE",
-        "claim": "Navigate to the target you choose through acquired safe terrain in bounded ~30-block legs; when the route is observed safe, give the far target. Prefer moveTo for traversal and exploration through acquired terrain; use control for deliberate input maneuvers. At a sight boundary the body looks toward your target, replans as terrain becomes observed, and can take observed detours within your timeout. Three consecutive searches without a continuation stop with NO_SEEN_ROUTE or REACHED_FRONTIER; lack of body progress still stops the move. Unknown terrain never authorizes a step. Explicit move_to and navigate_to share this behavior.",
+        "id": "control:f5aeceb513b998af:61ebbc646b254ba3:result:NO_SEEN_ROUTE",
+        "claim": "Navigate to the target you choose through acquired safe terrain in bounded ~30-block legs; when the route is observed safe, give the far target. Prefer moveTo for traversal and exploration through acquired terrain; use control for deliberate input maneuvers. At a sight boundary the body looks toward your target, replans as terrain becomes observed, and can take observed detours within your timeout. Three consecutive searches without a continuation stop with NO_SEEN_ROUTE or REACHED_FRONTIER; lack of body progress still stops the move. A closed wooden door or fence gate on the route is opened as a player does (it stops, looks at it within 3 blocks and right-clicks it) and, once the body is through, shut behind it; iron doors and trapdoors are not opened, a crouched walk (sneak:true) plans around closed doors, and a door that will not open stops the move with PATH_BLOCKED. travelTo legs do the same, and its tunnels never mine a door, gate or trapdoor. Unknown terrain never authorizes a step. Explicit move_to and navigate_to share this behavior.",
         "kind": "result-code",
         "topic": "moveTo",
         "code": "NO_SEEN_ROUTE",
-        "parent": "control:f5aeceb513b998af:2502eb0a757c9ee8"
+        "parent": "control:f5aeceb513b998af:61ebbc646b254ba3"
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
@@ -46102,14 +46120,14 @@
           "type": "node-behavior"
         }
       ],
-      "id": "control:f5aeceb513b998af:2502eb0a757c9ee8:result:REACHED_FRONTIER",
+      "id": "control:f5aeceb513b998af:61ebbc646b254ba3:result:REACHED_FRONTIER",
       "contract": {
-        "id": "control:f5aeceb513b998af:2502eb0a757c9ee8:result:REACHED_FRONTIER",
-        "claim": "Navigate to the target you choose through acquired safe terrain in bounded ~30-block legs; when the route is observed safe, give the far target. Prefer moveTo for traversal and exploration through acquired terrain; use control for deliberate input maneuvers. At a sight boundary the body looks toward your target, replans as terrain becomes observed, and can take observed detours within your timeout. Three consecutive searches without a continuation stop with NO_SEEN_ROUTE or REACHED_FRONTIER; lack of body progress still stops the move. Unknown terrain never authorizes a step. Explicit move_to and navigate_to share this behavior.",
+        "id": "control:f5aeceb513b998af:61ebbc646b254ba3:result:REACHED_FRONTIER",
+        "claim": "Navigate to the target you choose through acquired safe terrain in bounded ~30-block legs; when the route is observed safe, give the far target. Prefer moveTo for traversal and exploration through acquired terrain; use control for deliberate input maneuvers. At a sight boundary the body looks toward your target, replans as terrain becomes observed, and can take observed detours within your timeout. Three consecutive searches without a continuation stop with NO_SEEN_ROUTE or REACHED_FRONTIER; lack of body progress still stops the move. A closed wooden door or fence gate on the route is opened as a player does (it stops, looks at it within 3 blocks and right-clicks it) and, once the body is through, shut behind it; iron doors and trapdoors are not opened, a crouched walk (sneak:true) plans around closed doors, and a door that will not open stops the move with PATH_BLOCKED. travelTo legs do the same, and its tunnels never mine a door, gate or trapdoor. Unknown terrain never authorizes a step. Explicit move_to and navigate_to share this behavior.",
         "kind": "result-code",
         "topic": "moveTo",
         "code": "REACHED_FRONTIER",
-        "parent": "control:f5aeceb513b998af:2502eb0a757c9ee8"
+        "parent": "control:f5aeceb513b998af:61ebbc646b254ba3"
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
@@ -46117,6 +46135,32 @@
       },
       "status": "partial",
       "reason": "Deterministic Java navigation and continuation policy plus mock coordinator receipt delivery are verified; the changed controller has not been replayed on a live Minecraft server."
+    },
+    {
+      "predicate": "A door on the route that does not open within 30 ticks of turning and clicking stops the walk with PATH_BLOCKED naming the door.",
+      "checks": [
+        {
+          "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/DoorNavigationVerification.java",
+          "test": "verify",
+          "type": "java-behavior",
+          "entryPoint": "verifyCore"
+        }
+      ],
+      "id": "control:f5aeceb513b998af:61ebbc646b254ba3:result:PATH_BLOCKED",
+      "contract": {
+        "id": "control:f5aeceb513b998af:61ebbc646b254ba3:result:PATH_BLOCKED",
+        "claim": "Navigate to the target you choose through acquired safe terrain in bounded ~30-block legs; when the route is observed safe, give the far target. Prefer moveTo for traversal and exploration through acquired terrain; use control for deliberate input maneuvers. At a sight boundary the body looks toward your target, replans as terrain becomes observed, and can take observed detours within your timeout. Three consecutive searches without a continuation stop with NO_SEEN_ROUTE or REACHED_FRONTIER; lack of body progress still stops the move. A closed wooden door or fence gate on the route is opened as a player does (it stops, looks at it within 3 blocks and right-clicks it) and, once the body is through, shut behind it; iron doors and trapdoors are not opened, a crouched walk (sneak:true) plans around closed doors, and a door that will not open stops the move with PATH_BLOCKED. travelTo legs do the same, and its tunnels never mine a door, gate or trapdoor. Unknown terrain never authorizes a step. Explicit move_to and navigate_to share this behavior.",
+        "kind": "result-code",
+        "topic": "moveTo",
+        "code": "PATH_BLOCKED",
+        "parent": "control:f5aeceb513b998af:61ebbc646b254ba3"
+      },
+      "location": {
+        "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
+        "line": 375
+      },
+      "status": "partial",
+      "reason": "Door classification, routing through a doorway and the tunnel refusal are witnessed on fixtures; the open and close clicks inside a live walk have no world-level fixture."
     },
     {
       "predicate": "Near stops are FAILED with DESTINATION_NEAR_UNVERIFIED; target feet, headroom and support are acquired and standable, the body is stable on dry collision-free footing, and geometry, distance and height bounds hold after three empty searches. Receipts retain distance/tolerance facts and success-gated scripts and sequences do not chain.",

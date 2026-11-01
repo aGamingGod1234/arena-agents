@@ -44,7 +44,7 @@ exploreFrontier coverage shows headings walked or surveyed; unvisited headings a
 
 After a failure, use receipts and current facts to revise the routine, then verify the changed behaviour before treating it as reliable.
 
-Navigation walks seen terrain; it does not excavate or build. After a blocked ascent or descent, repair one local step with supported feet and clear headroom, then verify it before extending the route. Repeated distant waypoints or larger tolerances do not repair missing stairs. Record the workable entrance/exit and failed approach in taskMemory before leaving a cave.
+Navigation walks seen terrain and opens wooden doors and gates on its way; it does not excavate or build. After a blocked ascent or descent, repair one local step with supported feet and clear headroom, then verify it before extending the route. Repeated distant waypoints or larger tolerances do not repair missing stairs. Record the workable entrance/exit and failed approach in taskMemory before leaving a cave.
 
 A remembered destination is not a verified corridor. Across ravines or after an unexpected descent, take the next observed supported dry step toward the exit, repairing local clearance if needed. Use the footing already shown; aim a look at the next landing only when that geometry is missing. Compare travel.feetDy and lowestGroundY with the intended route; reaching a waypoint below the exit is not ascent progress. After a defensive move succeeds, check current fire, lava, air and health before repeating it: a nearby standing cell can still be burning, and alternating such cells is not an escape. Choose a different verified exit or reachable water when the danger persists.
 

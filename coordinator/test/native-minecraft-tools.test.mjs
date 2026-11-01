@@ -429,6 +429,7 @@ test('guidance tells the model to loop bulk work, reuse facts, stop polling and 
 	assert.match(tools.programStatus, /events arrive asynchronously/);
 	assert.match(tools.observe, /observe reads fresh player facts/);
 	assert.match(tools.moveTo, /Traverse acquired terrain.*~30-block legs/);
+	assert.match(tools.moveTo, /opens wooden doors\/gates on the route and shuts doors behind/);
 	assert.match(tools.moveTo, /Near stops unverified/);
 	assert.match(tools.mine, /with exact blockId; holds the fastest carried tool that harvests it \(a held enchanted one stays\); an ore no carried tool harvests fails NO_TOOL unswung/);
 	assert.ok(Buffer.byteLength(tools.mine) <= 549, 'the tool-choice and vein contract fits the stack description budget');

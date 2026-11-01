@@ -98,6 +98,8 @@ public final class MinecraftNavigationWorld implements WalkabilityView {
 	private final Map<GridPosition, CellSample> cells = new HashMap<>();
 	private final Map<GridPosition, Boolean> shallowWater = new HashMap<>();
 	private boolean unknownRead;
+	/** Closed doors and gates a hand opens count as open: the walker driving this world opens them on its way. */
+	private boolean opensDoors;
 	private long cacheHits;
 	private long cacheMisses;
 
@@ -129,6 +131,30 @@ public final class MinecraftNavigationWorld implements WalkabilityView {
 	}
 
 	boolean blockedMagma() { return blockedMagma; }
+
+	/** Plans through closed wooden doors and fence gates, for a walker that opens them (navigation, travel legs). */
+	MinecraftNavigationWorld opensDoors() {
+		if (!opensDoors) {
+			opensDoors = true;
+			cells.clear();
+		}
+		return this;
+	}
+
+	boolean planesThroughDoors() {
+		return opensDoors;
+	}
+
+	/**
+	 * A closed door or fence gate a player opens by hand (not iron): a walker that right-clicks it passes. Trapdoors are
+	 * left out; one in a floor or ceiling is no doorway.
+	 */
+	static boolean closedHandDoor(BlockState state) {
+		if (state == null || !state.hasProperty(BlockStateProperties.OPEN) || state.getValue(BlockStateProperties.OPEN)) return false;
+		Block block = state.getBlock();
+		if (block instanceof net.minecraft.world.level.block.DoorBlock door) return door.type().canOpenByHand();
+		return block instanceof net.minecraft.world.level.block.FenceGateBlock;
+	}
 
 	/** Magma is safe footing for this body: Fire Resistance or Frost Walker boots. */
 	static boolean magmaProtected(ServerPlayer player) {
@@ -940,7 +966,8 @@ public final class MinecraftNavigationWorld implements WalkabilityView {
 			return Cell.UNLOADED;
 		}
 		boolean standingWater = state.is(Blocks.WATER) && isOneBlockDeepWater(blockPosition);
-		Cell cell = classifyCell(state, collision, standingWater, magmaProtected);
+		Cell cell = opensDoors && closedHandDoor(state) && state.getFluidState().isEmpty() ? Cell.CLEAR
+				: classifyCell(state, collision, standingWater, magmaProtected);
 		cacheCell(position, cell, cached);
 		shallowWater.put(position, standingWater);
 		return cell;
