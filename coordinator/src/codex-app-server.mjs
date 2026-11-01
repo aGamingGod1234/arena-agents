@@ -112,7 +112,7 @@ function pendingWindowsPackageDiscovery(config, dependencies) {
 	);
 	if (codexNpmEntrypoint(environment, { platform, existsSync: dependencies.existsSync ?? existsSync }) !== null) return null;
 	if (!desktopDiscoveryQueriesPackages(environment)) return null;
-	return discoverCodexWindowsPackageLocations(environment, { execFile: dependencies.execFile ?? nodeExecFile });
+	return discoverCodexWindowsPackageLocations(environment, { execFile: dependencies.execFile ?? nodeExecFile, signal: dependencies.signal });
 }
 
 const CODEX_NPM_ENTRYPOINT = Object.freeze(['@openai', 'codex', 'bin', 'codex.js']);
@@ -139,10 +139,12 @@ export function codexNpmEntrypoint(environment, { platform = process.platform, e
  * on the event loop (the CLI health probe) can pass the result as `windowsPackageLocations`
  * and never block on spawnSync.
  */
-export function discoverCodexWindowsPackageLocations(environment, { execFile = nodeExecFile } = {}) {
+export function discoverCodexWindowsPackageLocations(environment, { execFile = nodeExecFile, signal } = {}) {
 	return new Promise((resolve) => {
 		try {
-			execFile('powershell.exe', [...WINDOWS_PACKAGE_LOCATION_ARGS], { ...WINDOWS_PACKAGE_LOCATION_OPTIONS, env: environment }, (error, stdout) => {
+			// An aborted lookup kills PowerShell and reports no registered package, as a failed one does.
+			if (signal?.aborted) { resolve([]); return; }
+			execFile('powershell.exe', [...WINDOWS_PACKAGE_LOCATION_ARGS], { ...WINDOWS_PACKAGE_LOCATION_OPTIONS, env: environment, ...(signal === undefined ? {} : { signal }) }, (error, stdout) => {
 				if (error || typeof stdout !== 'string') { resolve([]); return; }
 				const location = stdout.trim();
 				resolve(location.length === 0 ? [] : [location]);
@@ -319,8 +321,8 @@ export class CodexStdioTransport extends EventEmitter {
 	#stopTimeoutMs;
 	#usageMirror;
 	#launchDependencies;
-	#starting = null;
-	#generation = 0;
+	#prepared = null;
+	#preparations = new Set();
 
 	constructor(config, dependencies = {}) {
 		super();
@@ -332,46 +334,60 @@ export class CodexStdioTransport extends EventEmitter {
 	}
 
 	setEnvironment(environment) {
-		if (this.#child !== null || this.#starting !== null) throw new CodexProtocolError('TRANSPORT_RUNNING', 'Codex environment cannot change after startup');
+		if (this.#child !== null) throw new CodexProtocolError('TRANSPORT_RUNNING', 'Codex environment cannot change after startup');
 		if (environment === null || typeof environment !== 'object' || Array.isArray(environment)) throw new TypeError('Codex launch environment must be an object');
 		this.#config = { ...this.#config, environment: { ...environment } };
 	}
 
 	setWorkingDirectory(cwd) {
-		if (this.#child !== null || this.#starting !== null) throw new CodexProtocolError('TRANSPORT_RUNNING', 'Codex workspace cannot change after startup');
+		if (this.#child !== null) throw new CodexProtocolError('TRANSPORT_RUNNING', 'Codex workspace cannot change after startup');
 		if (typeof cwd !== 'string' || cwd.trim() === '') throw new TypeError('Codex workspace must be a nonblank path');
 		this.#config = { ...this.#config, cwd };
 	}
 
-	async start() {
+	/**
+	 * Resolves the launch ahead of start() without blocking the event loop: on Windows without an npm entrypoint
+	 * or a cached desktop runtime, the PowerShell package lookup runs asynchronously here. The next start() for
+	 * the same configuration then spawns at once with that launch, so start() keeps spawning synchronously and
+	 * never reaches the spawnSync fallback. stop() aborts a lookup in flight and this rejects TRANSPORT_STOPPED.
+	 */
+	async prepareLaunch({ signal } = {}) {
 		if (this.#child !== null) return;
-		if (this.#starting !== null) return this.#starting;
-		// Only a Windows desktop install without a cached runtime waits here; every other launch spawns synchronously.
-		let discovery;
+		const config = this.#config;
+		const controller = new AbortController();
+		const abort = () => controller.abort();
+		if (signal?.aborted) abort();
+		else signal?.addEventListener?.('abort', abort, { once: true });
+		this.#preparations.add(controller);
 		try {
-			discovery = pendingWindowsPackageDiscovery(this.#config, this.#launchDependencies);
-		} catch (error) {
-			throw new CodexProtocolError('SPAWN_FAILED', `Could not start Codex app-server: ${sanitizeDiagnosticErrorMessage(error)}`, { cause: error });
-		}
-		if (discovery === null) return this.#spawnChild(this.#launchDependencies);
-		const generation = this.#generation;
-		const starting = discovery.then((windowsPackageLocations) => {
-			if (generation !== this.#generation) throw new CodexProtocolError('TRANSPORT_STOPPED', 'Codex app-server transport stopped');
-			return this.#spawnChild({ ...this.#launchDependencies, windowsPackageLocations });
-		});
-		this.#starting = starting;
-		try {
-			await starting;
+			let launch;
+			try {
+				launch = await resolveCodexLaunchAsync(config, { ...this.#launchDependencies, signal: controller.signal });
+			} catch (error) {
+				throw new CodexProtocolError('SPAWN_FAILED', `Could not start Codex app-server: ${sanitizeDiagnosticErrorMessage(error)}`, { cause: error });
+			}
+			if (controller.signal.aborted) throw new CodexProtocolError('TRANSPORT_STOPPED', 'Codex app-server transport stopped');
+			this.#prepared = { config, launch };
 		} finally {
-			if (this.#starting === starting) this.#starting = null;
+			this.#preparations.delete(controller);
+			signal?.removeEventListener?.('abort', abort);
 		}
 	}
 
-	async #spawnChild(launchDependencies) {
+	async start() {
+		if (this.#child !== null) return;
+		// A prepared launch is used once, and only for the configuration it was resolved for.
+		const prepared = this.#prepared?.config === this.#config ? this.#prepared.launch : null;
+		this.#prepared = null;
+		return this.#spawnChild(prepared);
+	}
+
+	async #spawnChild(prepared) {
 		this.#decoder = new JsonlDecoder({ maxBytes: APP_SERVER_MAX_LINE_BYTES });
 		let child;
 		try {
-			const launch = resolveCodexLaunch(this.#config, launchDependencies);
+			// Without a prepared launch this is the synchronous resolution start() always used.
+			const launch = prepared ?? resolveCodexLaunch(this.#config, this.#launchDependencies);
 			child = this.#spawn(launch.command, launch.args, {
 				cwd: this.#config.cwd,
 				env: launch.environment,
@@ -473,8 +489,8 @@ export class CodexStdioTransport extends EventEmitter {
 	}
 
 	async stop() {
-		this.#generation += 1;
-		this.#starting = null;
+		this.#prepared = null;
+		for (const preparation of this.#preparations) preparation.abort();
 		const child = this.#child;
 		if (child === null) return;
 		this.#child = null;
@@ -650,6 +666,7 @@ export class CodexAgent {
 
 	async start() {
 		if (this.#started) return;
+		if (typeof this.#transport.prepareLaunch === 'function') await this.#transport.prepareLaunch();
 		await this.#transport.start();
 		try {
 			await this.#transport.request('initialize', { clientInfo: CLIENT_INFO, capabilities: CLIENT_CAPABILITIES });
@@ -787,6 +804,7 @@ export class CodexAgent {
 
 export async function checkCodexModelProfile(configValue, transport = new CodexStdioTransport(configValue)) {
 	const config = validateAgentConfig(configValue);
+	if (typeof transport.prepareLaunch === 'function') await transport.prepareLaunch();
 	await transport.start();
 	try {
 		await transport.request('initialize', { clientInfo: CLIENT_INFO, capabilities: CLIENT_CAPABILITIES });

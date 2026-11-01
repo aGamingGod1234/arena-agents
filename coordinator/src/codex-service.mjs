@@ -353,6 +353,11 @@ export class CodexService {
 		const transportStart = Promise.resolve().then(async () => {
 			await this.#prepareMinecraftLaunch(attempt);
 			this.#assertStartupCurrent(attempt);
+			// Resolve the launch asynchronously (the Windows package lookup) so start() never blocks on spawnSync.
+			if (typeof this.#transport.prepareLaunch === 'function') {
+				await this.#transport.prepareLaunch({ signal: attempt.controller.signal });
+				this.#assertStartupCurrent(attempt);
+			}
 			return this.#transport.start({ signal: attempt.controller.signal });
 		});
 		try {

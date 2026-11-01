@@ -444,30 +444,154 @@ test('async Codex launch resolution skips the package query when the sync path w
 	}
 });
 
-test('Codex transport start awaits the package query and a stop during it spawns nothing', async () => {
-	const root = mkdtempSync(path.join(tmpdir(), 'arena-codex-async-start-'));
+// A Windows host with neither an npm Codex nor a cached desktop runtime: the launch needs the package lookup.
+function uncachedWindowsLaunch(root, extra = {}) {
+	return { platform: 'win32', env: { LOCALAPPDATA: path.join(root, 'Local'), ProgramFiles: path.join(root, 'Program Files') }, ...extra };
+}
+
+// The two transport contracts Windows CI caught: start() spawns before it returns, so a stop right after it
+// terminates that child, and a 'spawn' event emitted straight after start() is observed.
+async function assertSynchronousStartContracts(launch, prepare) {
+	const first = new FakeStdioChild();
+	const replacement = new FakeStdioChild();
+	let spawnCalls = 0;
+	const transport = new CodexStdioTransport(config, {
+		launch,
+		spawn: () => {
+			spawnCalls += 1;
+			if (spawnCalls === 1) return first;
+			queueMicrotask(() => replacement.emit('spawn'));
+			return replacement;
+		},
+		stopTimeoutMs: 1,
+	});
+	await prepare(transport);
+	const obsoleteStart = transport.start();
+	assert.equal(spawnCalls, 1, 'start() spawned before returning');
+	const obsoleteFailure = assert.rejects(obsoleteStart, (error) => error?.code === 'SPAWN_FAILED');
+	try {
+		await transport.stop();
+		assert.ok(first.killed, 'stop() terminated the child start() spawned');
+		await prepare(transport);
+		await transport.start();
+		first.emit('error', new Error('old child failed after replacement started'));
+		await obsoleteFailure;
+		assert.doesNotThrow(() => transport.notify('replacement/alive'));
+		assert.deepEqual(replacement.writes, [{ method: 'replacement/alive', params: {} }]);
+	} finally {
+		await transport.stop();
+	}
+
+	const child = new FakeStdioChild();
+	const diagnostics = [];
+	const sanitized = new CodexStdioTransport(config, { launch, spawn: () => child, stopTimeoutMs: 1 });
+	sanitized.on('diagnostic', (message) => diagnostics.push(message));
+	await prepare(sanitized);
+	const started = sanitized.start();
+	child.emit('spawn');
+	await started;
+	try {
+		child.stderr.emit('data', Buffer.from('Authorization: Bearer child-secret at C:\\private\\codex.log ' + 'x'.repeat(8_000)));
+		assert.equal(diagnostics.length, 1);
+		assert.doesNotMatch(diagnostics[0], /child-secret|private/);
+	} finally {
+		await sanitized.stop();
+	}
+}
+
+test('on Windows without a cached runtime, start() still spawns before it returns', async () => {
+	const root = mkdtempSync(path.join(tmpdir(), 'arena-codex-win-start-'));
+	try {
+		// A direct start() keeps the synchronous resolution it always had.
+		let syncLookups = 0;
+		await assertSynchronousStartContracts(uncachedWindowsLaunch(root, {
+			spawnSync: () => { syncLookups += 1; return { status: 0, stdout: '' }; },
+		}), async () => {});
+		assert.ok(syncLookups > 0, 'a direct start() resolved its launch synchronously');
+		// A prepared start() resolved the launch beforehand, asynchronously, and never reaches spawnSync.
+		const lookups = [];
+		await assertSynchronousStartContracts(uncachedWindowsLaunch(root, {
+			execFile: slowPackageQuery('', 30, lookups),
+			spawnSync: () => { throw new Error('a prepared start must not run the synchronous lookup'); },
+		}), (transport) => transport.prepareLaunch());
+		assert.equal(lookups.length, 3, 'each of the three prepareLaunch() calls ran one asynchronous lookup');
+	} finally {
+		rmSync(root, { recursive: true, force: true });
+	}
+});
+
+test('prepareLaunch resolves the Windows desktop launch off the event loop for the next start', async (t) => {
+	const root = mkdtempSync(path.join(tmpdir(), 'arena-codex-prepare-'));
 	try {
 		const packageRoot = path.join(root, 'OpenAI.Codex_26.818.8289.0_x64__2p2nqsd0c76g0');
-		const localAppData = path.join(root, 'Local');
-		writeDesktopRuntime(path.join(packageRoot, 'app', 'resources'), 'transport-appx-codex-fixture');
-		const launch = { platform: 'win32', env: { LOCALAPPDATA: localAppData, ProgramFiles: path.join(root, 'Program Files') }, execFile: slowPackageQuery(packageRoot, 50) };
-
-		const stoppedSpawns = [];
-		const stopped = new CodexStdioTransport(config, { launch, spawn: (command) => { stoppedSpawns.push(command); return new FakeStdioChild(); }, stopTimeoutMs: 1 });
-		const abandoned = stopped.start();
-		assert.throws(() => stopped.setEnvironment({}), /cannot change after startup/);
-		await stopped.stop();
-		await assert.rejects(abandoned, (error) => error?.code === 'TRANSPORT_STOPPED');
-		assert.deepEqual(stoppedSpawns, []);
-
-		const child = new FakeStdioChild();
+		writeDesktopRuntime(path.join(packageRoot, 'app', 'resources'), 'prepared-appx-codex-fixture');
 		const commands = [];
-		const transport = new CodexStdioTransport(config, { launch, spawn: (command) => { commands.push(command); queueMicrotask(() => child.emit('spawn')); return child; }, stopTimeoutMs: 1 });
-		const first = transport.start();
-		const second = transport.start();
-		await Promise.all([first, second]);
-		assert.deepEqual(commands, [path.join(localAppData, 'ArenaAgents', 'codex-runtime', '26.818.8289.0', 'codex.exe')]);
+		const child = new FakeStdioChild();
+		const transport = new CodexStdioTransport(config, {
+			launch: uncachedWindowsLaunch(root, {
+				execFile: slowPackageQuery(packageRoot, 400),
+				spawnSync: () => { throw new Error('a prepared start must not run the synchronous lookup'); },
+			}),
+			spawn: (command) => { commands.push(command); return child; },
+			stopTimeoutMs: 1,
+		});
+		const { ticks, elapsedMs } = await eventLoopTicksDuring(() => transport.prepareLaunch());
+		t.diagnostic(`prepareLaunch took ${Math.round(elapsedMs)} ms; ${ticks} of ${Math.floor(elapsedMs / 10)} 10 ms ticks ran`);
+		assert.ok(ticks >= 10, `expected the event loop to keep ticking, got ${ticks} ticks in ${Math.round(elapsedMs)} ms`);
+		assert.deepEqual(commands, [], 'preparing spawns nothing');
+		const started = transport.start();
+		child.emit('spawn');
+		await started;
+		assert.deepEqual(commands, [path.join(root, 'Local', 'ArenaAgents', 'codex-runtime', '26.818.8289.0', 'codex.exe')]);
 		await transport.stop();
+	} finally {
+		rmSync(root, { recursive: true, force: true });
+	}
+});
+
+test('stop() during prepareLaunch kills the lookup, and a changed configuration discards a prepared launch', async () => {
+	const root = mkdtempSync(path.join(tmpdir(), 'arena-codex-prepare-stop-'));
+	try {
+		let syncLookups = 0;
+		const lookups = [];
+		const spawned = [];
+		const transport = new CodexStdioTransport(config, {
+			launch: uncachedWindowsLaunch(root, {
+				execFile: slowPackageQuery('', 10_000, lookups),
+				spawnSync: () => { syncLookups += 1; return { status: 0, stdout: '' }; },
+			}),
+			spawn: (command) => { spawned.push(command); const child = new FakeStdioChild(); queueMicrotask(() => child.emit('spawn')); return child; },
+			stopTimeoutMs: 1,
+		});
+		const startedAt = performance.now();
+		const preparing = transport.prepareLaunch();
+		await new Promise(setImmediate);
+		await transport.stop();
+		await assert.rejects(preparing, (error) => error?.code === 'TRANSPORT_STOPPED');
+		assert.ok(performance.now() - startedAt < 5_000, 'the 10 s lookup was killed, not awaited');
+		assert.equal(lookups[0].options.signal.aborted, true, 'the PowerShell child was aborted');
+		assert.deepEqual(spawned, [], 'a stop during the lookup spawns nothing');
+
+		const controller = new AbortController();
+		const cancelled = transport.prepareLaunch({ signal: controller.signal });
+		controller.abort();
+		await assert.rejects(cancelled, (error) => error?.code === 'TRANSPORT_STOPPED');
+
+		const quick = new CodexStdioTransport(config, {
+			launch: uncachedWindowsLaunch(root, { execFile: slowPackageQuery('', 10), spawnSync: () => { syncLookups += 1; return { status: 0, stdout: '' }; } }),
+			spawn: (command) => { spawned.push(command); const child = new FakeStdioChild(); queueMicrotask(() => child.emit('spawn')); return child; },
+			stopTimeoutMs: 1,
+		});
+		await quick.prepareLaunch();
+		quick.setWorkingDirectory(path.join(root, 'other-workspace'));
+		await quick.start();
+		assert.equal(syncLookups, 1, 'a launch prepared for another configuration is not used');
+		await quick.stop();
+		await quick.prepareLaunch();
+		await quick.stop();
+		await quick.start();
+		assert.equal(syncLookups, 2, 'stop() discards a prepared launch');
+		await quick.stop();
 	} finally {
 		rmSync(root, { recursive: true, force: true });
 	}
