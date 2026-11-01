@@ -150,12 +150,21 @@ public final class RangedTargetContractVerification {
 		var obstructed = aimingController(unsafe, player, target, true, false, Vec3.ZERO);
 		check(obstructed.tick(1000L).state() == ServerTransactionAdapter.TickState.RUNNING, "the draw begins with a clear target");
 		level.obstructed = true;
+		level.clearTargetScans = 0;
 		check(obstructed.tick(1050L).state() == ServerTransactionAdapter.TickState.RUNNING,
 				"an obstruction appearing during the draw holds the drawn bow instead of ending the shot");
+		for (long now = 1100L; now <= 3000L; now += 50L) {
+			check(obstructed.tick(now).state() == ServerTransactionAdapter.TickState.RUNNING, "the blocked draw stays held before its timeout");
+		}
+		check(level.clearTargetScans == 0, "a draw held behind cover never scans 128 blocks for other clear targets while it waits: "
+				+ level.clearTargetScans);
 		var blocked = obstructed.tick(11050L);
 		check(blocked.reasonCode().equals("TARGET_OBSTRUCTED") && blocked.message().contains("minecraft:stone")
 				&& blocked.message().contains("held the draw"), "a shot still blocked at its timeout names the block and the held draw: " + blocked.message());
 		check(blocked.message().contains("nearest first: none"), "blocked draw reports the empty visible arrow-line choices");
+		check(blocked.message().indexOf("; currently visible targets") < blocked.message().indexOf("; held the draw"),
+				"the clear-target list keeps its place between the blocker and the held draw: " + blocked.message());
+		check(level.clearTargetScans == 1, "the timeout report builds the clear-target list exactly once: " + level.clearTargetScans);
 		check(obstructed.tick(11100L) == blocked, "the blocked draw cannot retry or retarget on its own");
 		var cleared = aimingController(unsafe, player, target, true, false, Vec3.ZERO);
 		check(cleared.tick(1000L).state() == ServerTransactionAdapter.TickState.RUNNING, "a second draw begins clear");
@@ -292,7 +301,12 @@ public final class RangedTargetContractVerification {
 		@Override public FluidState getFluidState(BlockPos position) { return getBlockState(position).getFluidState(); }
 		@Override public Entity getEntity(UUID identity) { return indexed != null && indexed.getUUID().equals(identity) ? indexed : null; }
 		@Override public Collection<EnderDragonPart> dragonParts() { return parts; }
-		@Override public List<Entity> getEntities(Entity except, AABB bounds, java.util.function.Predicate<? super Entity> filter) { return List.of(); }
+		/** Entity queries over the 128-block radius only the clear-target list asks for. */
+		int clearTargetScans;
+		@Override public List<Entity> getEntities(Entity except, AABB bounds, java.util.function.Predicate<? super Entity> filter) {
+			if (bounds.getXsize() >= 256D) clearTargetScans++;
+			return List.of();
+		}
 		@Override public <T extends Entity> List<T> getEntities(net.minecraft.world.level.entity.EntityTypeTest<Entity, T> type, net.minecraft.world.phys.AABB box, java.util.function.Predicate<? super T> filter) { return List.of(); }
 	}
 }
