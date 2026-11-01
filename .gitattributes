@@ -1,3 +1,7 @@
 maps/selections/**/*.json text eol=lf
 src/main/resources/data/arenaagents/arena_modules/**/*.json text eol=lf
 maps/licenses/**/*.txt text eol=lf
+# Read by Git Bash on Windows runners: a CRLF checkout puts \r into every checksum filename and script line.
+*.sh text eol=lf
+*.sha256 text eol=lf
+gradlew text eol=lf
