@@ -7913,6 +7913,22 @@ export function nativeObservationSignature(observation) {
 	return createHash('sha256').update(JSON.stringify(sortFactualValue(nativeActionableObservationProjection(observation)))).digest('hex');
 }
 
+// Beyond this range an entity's arrival or departure is a change, its wandering is not. Threats that target or
+// approach the body are tracked separately in player.threats, which keeps every signal.
+const SIGNATURE_ENTITY_DETAIL_RANGE = 16;
+
+function nativeSignatureEntity({ distance, velocity, ...entity }) {
+	if (Number.isFinite(distance) && distance > SIGNATURE_ENTITY_DETAIL_RANGE) {
+		return { stableId: entity.stableId, type: entity.type, distant: true };
+	}
+	const block = { ...entity };
+	for (const axis of ['x', 'y', 'z']) if (Number.isFinite(block[axis])) block[axis] = Math.floor(block[axis]);
+	if (block.position && typeof block.position === 'object') {
+		block.position = Object.fromEntries(Object.entries(block.position).map(([axis, value]) => [axis, Number.isFinite(value) ? Math.floor(value) : value]));
+	}
+	return block;
+}
+
 function nativeActionableObservationProjection(observation) {
 	const projection = { ...observation };
 	// Receipt/sample identity remains in raw facts, but is not a changed world fact.
@@ -7927,8 +7943,17 @@ function nativeActionableObservationProjection(observation) {
 	delete projection.failureClass;
 	delete projection.continuity;
 	delete projection.lastLiveInventory;
+	// Motion and view direction are not world facts: every heartbeat of a standing body jitters them.
+	delete projection.velocity;
+	delete projection.view;
 	if (observation.player !== undefined) {
 		projection.player = { ...observation.player };
+		// Where the body stands, by block. Sub-block drift and where it looks change nothing a player would act on.
+		for (const axis of ['x', 'y', 'z']) if (Number.isFinite(projection.player[axis])) projection.player[axis] = Math.floor(projection.player[axis]);
+		delete projection.player.yaw;
+		delete projection.player.pitch;
+		// Saturation drains on its own; hunger (foodLevel) and health carry the change that matters.
+		delete projection.player.saturation;
 		if (observation.player.effects !== undefined) {
 			projection.player.effects = observation.player.effects.map(({ duration, ...effect }) => effect);
 		}
@@ -7947,7 +7972,7 @@ function nativeActionableObservationProjection(observation) {
 		}
 	}
 	if (Array.isArray(observation.items)) projection.items = observation.items.map(({ distance, ...item }) => item);
-	if (Array.isArray(observation.entities)) projection.entities = observation.entities.map(({ distance, ...entity }) => entity);
+	if (Array.isArray(observation.entities)) projection.entities = observation.entities.map(nativeSignatureEntity);
 	if (Array.isArray(observation.furnaces)) {
 		projection.furnaces = observation.furnaces.map(({ observedAtEpochMs, estimatedReadyAtEpochMs, ...furnace }) => furnace);
 	}
