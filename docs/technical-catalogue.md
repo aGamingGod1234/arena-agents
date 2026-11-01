@@ -1504,3 +1504,25 @@ Full npm: 4,531 passed, 3 skipped, zero failed/cancelled, 109.05 s. Final Deskto
 - **Problem:** Recorded Nether deaths include a walking body stepping onto hanging vines above an unknown drop, lava escape rising in place toward a remembered cliff-top landing, and fire exits reporting success while the body still overlaps a neighbouring flame.
 - **Solution:** Check unknown drops while moving and distinguish hanging handholds from landings. Armed lava escape can retrace recently walked dry footing and swims toward shore; armed fire escape walks fully into its exit cell, checks contact again, and reports remaining burning.
 - **Result:** Build and core verification passed 2,577,419 assertions; contracts passed 639 checks. The coordinator suite has the 11 known platform-dependent failures. These are software gates, not survival measurements. Paired Minecraft replays, travel pace and four 90-minute Sol games remain unverified while awaiting Mini PC live slots. Desktop work was stopped at the orchestrator's request.
+
+## Fewer wasted model turns and a body that saves itself (claude/vigilant-mayer-hi0kh6, Nov 1)
+
+### The agent's own fight kept interrupting itself
+- **Problem:** Every hit during a fight the model had chosen cut that fight short and forced a fresh model call, every two seconds, even when the hit came from the very mob it was fighting. Each call re-read the agent's whole context.
+- **Solution:** A fight now absorbs hits from the mob it is fighting. Anything new still interrupts it: another attacker, lava or fire, an arrow, a swelling creeper, or health falling past 14, 10 or 6. The model still receives every hit with its next update.
+- **Result:** Fights cut short in a provider-free replay through the real coalescer and decision code (measured, `fight-steer-benchmark.mjs`): one zombie for 20 s, 12 -> 2 and 14 -> 3; three zombies for 30 s, 17 -> 3. A skeleton shooting into a zombie fight still interrupts every time (12 -> 12). At the 60-100k cached tokens a call re-reads in this project, that is roughly 0.6-1.4M cached input tokens saved per 20-30 s fight (estimated, not measured live).
+
+### An idle model was woken by noise
+- **Problem:** With no action running, any change at all in the heartbeat woke the model for a paid turn: a cow drifting 20 m away, the view turning, saturation draining, a tenth of a block of drift.
+- **Solution:** The "did anything change" check compares where things stand by block, ignores view direction, body velocity and saturation, and counts mobs beyond 16 blocks only when they arrive or leave. Threats keep their own full tracking.
+- **Result:** Over 120 noise heartbeats against the real coordinator with a fake planner (measured, `scripts/idle-wake-benchmark.mjs`), the model was woken 100 -> 2 times; the 2 are mobs first coming into view. Walking a block or losing hunger still wakes it on every heartbeat (20/20 before and after).
+
+### Survival reflexes for dangers faster than a model
+- **Problem:** A model decision takes 5-17 s and the measured first flee came 4.0-4.2 s after a threat, but a creeper fuse lasts 1.5 s, an arrow under a second, and a body could stand idle at low health after a fight bailed out. Only lava, fire, air and edges had a default reflex.
+- **Solution:** Six more default rules the model can switch off: sprint away from a swelling creeper (vanilla cancels the fuse past 7 blocks), dig out when suffocating, deflect a ghast fireball, raise a held shield at an incoming arrow, run at 3 hearts with a hostile in reach (this is also what takes the body when a fight bails out), and eat when hungry with no hostile within 8. Rules that need an item sleep until the body holds it, so they never fire empty-handed.
+- **Result:** Dangers with a default response: 4 -> 10 (measured, rule count). A reflex acts within one tick (50 ms) against the 4.0-4.2 s measured model response (from `docs/live-qa/2026-10-17-reflex.md`); live survival rates are not yet measured.
+
+### The eat reflex ate poison
+- **Problem:** The eat reflex took the hotbar food with the most hunger points, so rotten flesh beat a carrot, an offhand pufferfish beat steak, and golden apples were eaten as ordinary food.
+- **Solution:** Food is scored by how much of the hunger gap it fills plus its saturation, minus waste. Harmful foods are a last resort and golden apples are kept for low health.
+- **Result:** Poor picks across 8 hotbars with vanilla food values (measured, Java verification): 5 -> 0.

@@ -25,7 +25,7 @@
 		"serviceTier": "default",
 		"launchProfile": {
 			"model": "gpt-6-luna",
-			"reasoningEffort": "xhigh",
+			"reasoningEffort": "medium",
 			"serviceTier": "default"
 		}
 	},

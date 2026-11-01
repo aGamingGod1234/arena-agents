@@ -888,7 +888,7 @@ test('pearlHuntLine names the nearest walkable enderman within 16 m while pearls
 	const open = 'has:minecraft:ender_pearl|minecraft:ender_eye*12 pearls';
 	const position = { x: 0, y: 50, z: 0 };
 	const enderman = (distance, y, extra = {}) => ({ type: 'minecraft:enderman', alive: true, distance, x: distance, y, z: 0, ...extra });
-	const observation = (entities, items = [{ itemId: 'minecraft:ender_pearl', count: 1 }]) => ({ entities, inventory: { items } });
+	const observation = (entities, items = [{ itemId: 'minecraft:ender_pearl', count: 1 }, { itemId: 'minecraft:iron_sword', count: 1 }]) => ({ entities, inventory: { items } });
 	assert.equal(pearlHuntLine({ observation: observation([enderman(7, 51), enderman(12, 50)]), position, open }),
 		'enderman 7 m, 1 up, calm, 1 more within 16 m; pearls 1/12 open');
 	// The wire form nests the feet position.
@@ -904,4 +904,13 @@ test('pearlHuntLine names the nearest walkable enderman within 16 m while pearls
 	assert.equal(pearlHuntLine({ observation: observation([enderman(7, 50)]), position, open: 'has:minecraft:blaze_rod*6' }), null);
 	assert.equal(pearlHuntLine({ observation: observation([enderman(7, 50)], [{ itemId: 'minecraft:ender_pearl', count: 12 }]), position, open }), null);
 	assert.equal(pearlHuntLine({ observation: { entities: [enderman(7, 50)], inventory: { items: [] }, continuity: { rememberedSections: ['inventory'] } }, position, open }), null);
+	// Not geared: the line says so, and why. An angry one is still fought (fleeing does not work), so it adds nothing.
+	const wooden = [{ itemId: 'minecraft:ender_pearl', count: 1 }, { itemId: 'minecraft:wooden_sword', count: 1 }];
+	assert.equal(pearlHuntLine({ observation: observation([enderman(7, 50)], wooden), position, open }),
+		'enderman 7 m, level, calm; pearls 1/12 open; not geared for it (only a wooden or golden weapon): it hits for 7 and has 40 health, so leave a calm one calm and do not look at it until you are');
+	assert.match(pearlHuntLine({ observation: { ...observation([enderman(7, 50)]), player: { health: 9, armor: 0 } }, position, open }), /not geared for it \(health 9\)/);
+	const stone = [{ itemId: 'minecraft:stone_sword', count: 1 }];
+	assert.match(pearlHuntLine({ observation: { ...observation([enderman(7, 50)], stone), player: { health: 20, armor: 4 } }, position, open }), /not geared for it \(stone weapon with 4 armour\)/);
+	assert.doesNotMatch(pearlHuntLine({ observation: { ...observation([enderman(7, 50)], stone), player: { health: 20, armor: 15 } }, position, open }), /not geared/, 'stone with iron armour is enough');
+	assert.equal(pearlHuntLine({ observation: observation([{ ...enderman(5, 50), targetingAgent: true }], []), position, open }), 'enderman 5 m, level, angry at you; pearls 0/12 open');
 });
