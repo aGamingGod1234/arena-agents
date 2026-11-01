@@ -1334,8 +1334,6 @@ test('Claude can rotate again during a later long turn', async () => {
 		await agent.act('First long turn.', { goalRevision: 0, executeTool: async () => { toolExecutions += 1; return { state: 'SUCCEEDED' }; } });
 		await agent.act('Second long turn.', { goalRevision: 0, executeTool: async () => { toolExecutions += 1; return { state: 'SUCCEEDED' }; } });
 		assert.equal(toolExecutions, 2);
-		// The standby warms in the background: it writes its private MCP config before it spawns.
-		await waitFor(() => children.length >= 3, 2_000).catch(() => {});
 		assert.equal(children.length, 3, 'the second active turn is allowed its own handoff');
 	} finally { await close(); }
 });
@@ -1357,6 +1355,34 @@ const scriptedLongTurn = (scripts, { onTool = () => {} } = {}) => ({
 		}
 		child.emitLine({ type: 'result', subtype: 'success', is_error: false, result: 'done', session_id: `session-${index + 1}` });
 	},
+});
+
+test('a slow private-directory repair runs once at agent creation, never on a Claude Code start or standby warm-up', async () => {
+	// On Windows the private-artifact helper starts whoami and PowerShell twice, seconds on a CI host.
+	const prepared = [];
+	const slowWindowsAcl = async (file) => { prepared.push(file); await settle(600); };
+	let toolExecutions = 0;
+	const { service, children, close } = await harness({
+		async onUser(child, content) {
+			if (content.startsWith('Mid-turn continuation')) {
+				child.emitLine({ type: 'result', subtype: 'success', is_error: false, result: 'continued', session_id: `session-${children.indexOf(child) + 1}` });
+				return;
+			}
+			usageLine(child, `long-${children.indexOf(child)}-${child.lines.length}`, 85_000);
+			await child.rpc('tools/call', { name: 'say', arguments: { message: 'continue' }, _meta: { 'claudecode/toolUseId': `toolu_${children.indexOf(child)}` } });
+			child.emitLine({ type: 'result', subtype: 'success', is_error: false, result: 'continued', session_id: `session-${children.indexOf(child) + 1}` });
+		},
+	}, { contextRotationTokens: 80_000 }, { preparePrivateArtifact: slowWindowsAcl });
+	try {
+		const agent = await service.createAgent(profile(), { controlProtocol: 'native_tools' });
+		assert.equal(prepared.length, 1, 'the agent directory is secured before createAgent resolves');
+		await agent.act('First long turn.', { goalRevision: 0, executeTool: async () => { toolExecutions += 1; return { state: 'SUCCEEDED' }; } });
+		await agent.act('Second long turn.', { goalRevision: 0, executeTool: async () => { toolExecutions += 1; return { state: 'SUCCEEDED' }; } });
+		assert.equal(toolExecutions, 2);
+		assert.equal(children.length, 3, 'both standbys warmed inside their deadline');
+		assert.deepEqual(prepared.map((file) => path.basename(file)), ['system-prompt-1.md'], 'three process starts, one directory repair');
+		for (const child of children) assert.equal(path.dirname(child.mcpConfigFile), path.dirname(prepared[0]), 'every MCP config lands in the secured directory');
+	} finally { await close(); }
 });
 
 test('one long Claude turn repeats funded handoffs, each result reaching the model once', async () => {

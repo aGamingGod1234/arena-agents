@@ -93,6 +93,7 @@ async function harness(script = {}, overrides = {}, dependencies = {}) {
 			return child;
 		},
 		terminate: dependencies.terminate ?? (async (child) => { if (child.exitCode === null) child.exit(0); }),
+		...(dependencies.preparePrivateArtifact ? { preparePrivateArtifact: dependencies.preparePrivateArtifact } : {}),
 		toolServer,
 		minecraftWorkspace: {
 			root,

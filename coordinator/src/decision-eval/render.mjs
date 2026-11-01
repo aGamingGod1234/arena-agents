@@ -541,7 +541,9 @@ export async function renderPrefix({ provider = 'claude', model = 'claude-opus-5
 			const written = [];
 			const service = new ClaudeProviderService({ cwd: workRoot, runtimeRoot: path.join(workRoot, 'claude-agents'), models: [model], reasoningEfforts: [reasoningEffort] }, {
 				minecraftWorkspace, toolServer: { stop: async () => {} },
-				fs: { mkdir: async () => {}, writeFile: async (file, content) => { written.push({ file, content }); }, chmod: async () => {}, rm: async () => {} },
+				// Nothing reaches disk here, so there is no directory to make private either.
+				fs: { mkdir: async () => {}, writeFile: async (file, content) => { written.push({ file, content }); }, chmod: async () => {}, rm: async () => {}, lstat: async () => ({ dev: 0, ino: 0, birthtimeMs: 0 }) },
+				preparePrivateArtifact: async () => {},
 			});
 			try { await service.createAgent({ agentId: AGENT_ID, provider: 'claude', model, reasoningEffort, serviceTier: 'priority' }, { recoverySummary, controlProtocol: 'native_tools' }); }
 			finally { await service.stop(); }

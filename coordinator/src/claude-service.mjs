@@ -1,8 +1,8 @@
 import { toolErrorResult } from './failure-schema.mjs';
 import { arenaScriptDiagnosticFields, arenaScriptDiagnosticSummary } from './arena-script/errors.mjs';
 import { createHash } from 'node:crypto';
-import { existsSync } from 'node:fs';
-import { appendFile, chmod, mkdir, rm, writeFile } from 'node:fs/promises';
+import { closeSync, existsSync, openSync, rmSync, writeFileSync } from 'node:fs';
+import { chmod, lstat, mkdir, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 import { terminateChildProcess, spawnOwnedProcess as nodeSpawn } from './child-process-lifecycle.mjs';
@@ -98,13 +98,15 @@ export class ClaudeProviderService {
 	#sessionGenerations = new Map();
 	#lifecycleGeneration = 0;
 	#standbyLeases = new Set();
+	// Agent runtime directories already made owner-only, keyed by path and directory identity.
+	#privateAgentRoots = new Map();
 
 	constructor(config, dependencies = {}) {
 		this.#config = validateServiceConfig(config);
 		this.#dependencies = {
 			spawn: dependencies.spawn ?? nodeSpawn,
 			terminate: dependencies.terminate ?? terminateChildProcess,
-			fs: { mkdir, writeFile, appendFile, rm, chmod, ...(dependencies.fs ?? {}) },
+			fs: { mkdir, writeFile, rm, chmod, lstat, ...(dependencies.fs ?? {}) },
 			preparePrivateArtifact: dependencies.preparePrivateArtifact ?? preparePrivateArtifact,
 			schedule: dependencies.schedule ?? setTimeout,
 			cancelSchedule: dependencies.cancelSchedule ?? clearTimeout,
@@ -186,6 +188,24 @@ export class ClaudeProviderService {
 		}
 	}
 
+	// Each Claude Code process gets its MCP bearer token through a file in the agent's runtime directory, so that
+	// directory must be owner-only. The private-artifact helper starts whoami and Windows PowerShell for the directory
+	// and again for its anchor file, which takes seconds on a cold Windows host. It therefore runs once per agent
+	// directory, here at agent creation, and never on a process start, where standby warm-ups have a 250 ms
+	// deadline. Files created in the directory afterwards inherit its owner-only access (a protected, inheritable
+	// owner ACE on Windows, mode 0700 on POSIX). A directory recreated since is a new identity and is secured again.
+	async #privateAgentRoot(agentRoot, anchorFile) {
+		const identity = await this.#dependencies.fs.lstat(agentRoot);
+		const key = `${agentRoot}\0${identity.dev}:${identity.ino}:${identity.birthtimeMs}`;
+		let prepared = this.#privateAgentRoots.get(key);
+		if (prepared === undefined) {
+			prepared = Promise.resolve().then(() => this.#dependencies.preparePrivateArtifact(anchorFile));
+			this.#privateAgentRoots.set(key, prepared);
+			prepared.catch(() => { if (this.#privateAgentRoots.get(key) === prepared) this.#privateAgentRoots.delete(key); });
+		}
+		return prepared;
+	}
+
 	async #createAgentOnce(profile, recoverySummary, controlProtocol, lifecycleGeneration) {
 		this.catalog.assertSupported(profile.model, profile.reasoningEffort, profile.serviceTier);
 		const summary = normalizeRecoverySummary(recoverySummary);
@@ -217,6 +237,11 @@ export class ClaudeProviderService {
 		await this.#dependencies.fs.mkdir(agentRoot, { recursive: true });
 		await this.#dependencies.fs.writeFile(systemPromptFile, systemPrompt, 'utf8');
 		await this.#dependencies.fs.chmod(systemPromptFile, 0o600).catch(() => {});
+		try { await this.#privateAgentRoot(agentRoot, systemPromptFile); }
+		catch (error) {
+			await this.#dependencies.fs.rm(systemPromptFile, { force: true }).catch(() => {});
+			throw new ClaudeProviderError('PROVIDER_UNAVAILABLE', `Could not make the Claude agent runtime directory private: ${error?.message ?? String(error)}`, { cause: error });
+		}
 		const agent = new ClaudeAgent(profile, {
 			...this.#dependencies,
 			acquireStandby: () => {
@@ -339,7 +364,6 @@ class ClaudeAgent {
 	#profile;
 	#config;
 	#cwd;
-	#preparePrivateArtifact;
 	#controlProtocol;
 	#systemPromptFile;
 	#toolServer;
@@ -408,7 +432,7 @@ class ClaudeAgent {
 	#routeEpochSequence = 0;
 	#handoffPending = null;
 
-	constructor(profile, { config, cwd, controlProtocol, systemPromptFile, toolServer, spawn, terminate, fs, preparePrivateArtifact: preparePrivate, schedule, cancelSchedule, acquireStandby, sessionGeneration, resetReason, onInvalidated, observationViewSession = null }) {
+	constructor(profile, { config, cwd, controlProtocol, systemPromptFile, toolServer, spawn, terminate, fs, schedule, cancelSchedule, acquireStandby, sessionGeneration, resetReason, onInvalidated, observationViewSession = null }) {
 		this.#observationViews = new ModelObservationViews({ session: observationViewSession });
 		this.#profile = structuredClone(profile);
 		this.#config = config;
@@ -419,7 +443,6 @@ class ClaudeAgent {
 		this.#spawn = spawn;
 		this.#terminate = terminate;
 		this.#fs = fs;
-		this.#preparePrivateArtifact = preparePrivate;
 		this.#schedule = schedule;
 		this.#cancelSchedule = cancelSchedule;
 		this.#acquireStandby = acquireStandby;
@@ -769,12 +792,13 @@ ${encoded}`);
 		const routeEpoch = ++this.#routeEpochSequence;
 		// The MCP config carries this body's bearer token, the only auth on the loopback tool server. Argv is readable
 		// by any local process (/proc/<pid>/cmdline, process listings, Windows command-line auditing), so Claude Code
-		// gets a path to an owner-only file instead, removed as soon as it has connected or the process ends.
+		// gets a path to an owner-only file in the private agent directory instead, removed as soon as it has
+		// connected or the process ends.
 		const mcpConfigFile = path.join(path.dirname(this.#systemPromptFile), `mcp-config-${this.#sessionGeneration}-${routeEpoch}.json`);
-		const forgetMcpConfig = () => this.#fs.rm(mcpConfigFile, { force: true }).catch(() => {});
+		const forgetMcpConfig = () => { try { rmSync(mcpConfigFile, { force: true }); } catch { /* best effort; the token dies with its route */ } };
 		const route = await this.#toolServer.register({
 			callTool: (name, args, meta) => this.#callTool(name, args, meta, routeEpoch),
-			onToolsListed: () => { void forgetMcpConfig(); toolsListed.resolve(); },
+			onToolsListed: () => { forgetMcpConfig(); toolsListed.resolve(); },
 			onToolResponded: ({ toolUseId }) => {
 				if (toolUseId === null || this.#active === null) return;
 				providerEvent(this.#active.onVerbose, 'native_provider_tool_result_sent', { callId: toolUseId });
@@ -789,20 +813,19 @@ ${encoded}`);
 		if (standby) this.#standbyProcess = state;
 		else { this.#route = route; this.#toolsListed = toolsListed; }
 		this.#assertUsable();
-		const abandonLaunch = async () => {
+		const abandonLaunch = () => {
 			route.unregister();
-			if (standby) { if (this.#standbyProcess === state) this.#standbyProcess = null; }
-			else if (this.#route === route) this.#route = null;
-			await forgetMcpConfig();
+			if (standby) this.#standbyProcess = null;
+			else this.#route = null;
+			forgetMcpConfig();
 		};
-		try {
-			await writePrivateMcpConfig(mcpConfigFile, { mcpServers: { [MCP_SERVER_NAME]: { type: 'http', url: route.url, headers: { Authorization: `Bearer ${route.token}` } } } },
-				{ fs: this.#fs, preparePrivateArtifact: this.#preparePrivateArtifact });
-		} catch (error) {
-			await abandonLaunch();
+		// Synchronous, like the spawn after it: no await may open between registering the route and starting the
+		// process, and the start path runs no helper process.
+		try { writeMcpConfigFile(mcpConfigFile, { mcpServers: { [MCP_SERVER_NAME]: { type: 'http', url: route.url, headers: { Authorization: `Bearer ${route.token}` } } } }); }
+		catch (error) {
+			abandonLaunch();
 			throw new ClaudeProviderError('SPAWN_FAILED', `Could not write the private Claude Code MCP config: ${error.message}`, { cause: error });
 		}
-		if (state.exited || this.#disposed) { await abandonLaunch(); this.#assertUsable(); return null; }
 		const launch = buildClaudeLaunch(this.#profile, this.#config, {
 			cwd: this.#cwd,
 			systemPromptFile: this.#systemPromptFile,
@@ -812,7 +835,7 @@ ${encoded}`);
 		let child;
 		try { child = this.#spawn(launch.command, launch.args, launch.options); }
 		catch (error) {
-			await abandonLaunch();
+			abandonLaunch();
 			throw new ClaudeProviderError('SPAWN_FAILED', `Could not start Claude Code: ${error.message}`, { cause: error });
 		}
 		state.child = child;
@@ -825,8 +848,8 @@ ${encoded}`);
 			if (state.stderrBytes <= this.#config.stderrLimitBytes) state.stderr += text;
 		});
 		child.stdin?.on?.('error', () => {});
-		child.once('error', () => { void forgetMcpConfig(); });
-		child.once('close', () => { void forgetMcpConfig(); });
+		child.once('error', forgetMcpConfig);
+		child.once('close', forgetMcpConfig);
 		child.once('error', (error) => this.#onProcessExit(state, new ClaudeProviderError('SPAWN_FAILED', `Could not start Claude Code: ${error.message}`, { cause: error })));
 		child.once('close', (exitCode, signalCode) => this.#onProcessExit(state, new ClaudeProviderError('PROVIDER_UNAVAILABLE',
 			`Claude Code exited with code ${String(exitCode)} and signal ${String(signalCode)} [stderr=${excerpt(state.stderr)}]`)));
@@ -894,7 +917,7 @@ ${encoded}`);
 		state.route?.unregister();
 		try { state.child?.stdin?.end?.(); } catch { /* the process may already be gone */ }
 		await Promise.resolve(this.#terminate(state.child)).catch(() => {});
-		await state.forgetMcpConfig?.();
+		state.forgetMcpConfig?.();
 	}
 
 	#promoteStandby(state, active = null) {
@@ -1746,7 +1769,7 @@ ${encoded}`);
 		state.exited = true;
 		try { state.child.stdin?.end?.(); } catch { /* the process may already be gone */ }
 		await Promise.resolve(this.#terminate(state.child)).catch(() => {});
-		await state.forgetMcpConfig?.();
+		state.forgetMcpConfig?.();
 	}
 
 	#releaseProcessState() {
@@ -1877,13 +1900,14 @@ export function resolveClaudeLaunch(config, dependencies = {}) {
 	return { command: configured, args: [], environment, source: 'bare' };
 }
 
-// Writes the MCP config through the private-artifact helper: owner-only directory and file (a protected
-// single-owner DACL on Windows), verified before the token is written. A stale file is removed first so the
-// helper creates it fresh, and the append keeps the verified permissions in place.
-async function writePrivateMcpConfig(file, config, { fs = { rm, appendFile }, preparePrivateArtifact: prepare = preparePrivateArtifact } = {}) {
-	await fs.rm(file, { force: true });
-	await prepare(file);
-	await fs.appendFile(file, JSON.stringify(config), { encoding: 'utf8', mode: 0o600 });
+// Creates the MCP config fresh inside the agent's private runtime directory: mode 0600 on POSIX, the directory's
+// inherited owner-only ACE on Windows. The directory is never created here, so a removed directory fails the
+// launch instead of being recreated without its protection.
+function writeMcpConfigFile(file, config) {
+	rmSync(file, { force: true });
+	const descriptor = openSync(file, 'wx', 0o600);
+	try { writeFileSync(descriptor, JSON.stringify(config), 'utf8'); }
+	finally { closeSync(descriptor); }
 }
 
 export function buildClaudeLaunch(profile, config, { cwd, systemPromptFile, mcpConfigFile = null, streaming = true }) {
