@@ -85,11 +85,12 @@ class Rcon:
 
 
 class LiveServer:
-    def __init__(self, target=None, run_dir=None, extra_properties=None):
+    def __init__(self, target=None, run_dir=None, extra_properties=None, jvm_args=None):
         self.props = properties(target)
         self.target = target or self.props['mc_compat']
         self.run_dir = run_dir or os.path.join(ROOT, 'build', 'live-server', self.target)
         self.extra_properties = extra_properties or {}
+        self.jvm_args = jvm_args or []
         self.password = secrets.token_hex(16)
         self.rcon_port = free_port()
         self.process = None
@@ -136,7 +137,8 @@ class LiveServer:
         self.prepare()
         relative = os.path.relpath(self.run_dir, ROOT)
         self.log = open(self.log_path, 'w', encoding='utf-8')
-        self.process = subprocess.Popen(self._gradle(':runServer', f'-PserverRunDir={relative}', '--args=nogui'),
+        extra = [f"-PserverJvmArgs={' '.join(self.jvm_args)}"] if self.jvm_args else []
+        self.process = subprocess.Popen(self._gradle(':runServer', f'-PserverRunDir={relative}', *extra, '--args=nogui'),
                                         cwd=ROOT, stdout=self.log, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL)
         deadline = time.time() + timeout
         while time.time() < deadline:
@@ -184,10 +186,35 @@ FAILURE_PATTERNS = [r'Mixin apply failed', r'MixinTransformerError', r'Injection
 OFFLINE_NOISE = [r'Failed to request yggdrasil public key']
 
 
+def hold(target):
+    """Boot a server whose Arena Agents bridge waits for a coordinator on a local port, print how to reach it as one JSON
+    line, and stop the server when stdin closes. The coordinator is not started: the caller connects as it."""
+    bridge_port = free_port()
+    secret = secrets.token_hex(32)
+    server = LiveServer(target)
+    secret_file = os.path.join(server.run_dir + '-bridge-secret.txt')
+    os.makedirs(os.path.dirname(secret_file), exist_ok=True)
+    with open(os.open(secret_file, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600), 'w') as handle:
+        handle.write(secret)
+    server.jvm_args = [f'-Darenaagents.bridgePort={bridge_port}', '-Darenaagents.coordinatorAutoStart=false',
+                       f'-Darenaagents.bridgeSecretFile={secret_file}']
+    try:
+        server.start()
+        print(json.dumps({'target': server.target, 'minecraftVersion': server.props['minecraft_version'], 'rconPort': server.rcon_port,
+                          'rconPassword': server.password, 'bridgePort': bridge_port, 'bridgeSecret': secret, 'log': server.log_path}), flush=True)
+        sys.stdin.read()
+    finally:
+        server.stop()
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__.split('\n')[0])
     parser.add_argument('--target', help='26.1, 26.2 or 26.3 (default: gradle.properties)')
+    parser.add_argument('--hold', action='store_true', help='keep the server up for a coordinator-side client until stdin closes')
     args = parser.parse_args()
+    if args.hold:
+        hold(args.target)
+        return
     server = LiveServer(args.target)
     started = time.time()
     checks = []

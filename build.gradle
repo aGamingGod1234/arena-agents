@@ -49,8 +49,10 @@ loom {
 	runs {
 		server {
 			vmArg "-Darenaagents.bridgeSecretFile=${developmentBridgeSecret}"
-			// scripts/live-server.py boots each target's server in its own directory.
+			// scripts/live-server.py boots each target's server in its own directory, with its own JVM properties.
 			runDir = project.findProperty('serverRunDir') ?: 'run'
+			def extraServerJvmArgs = project.findProperty('serverJvmArgs')
+			if (extraServerJvmArgs) vmArgs(*extraServerJvmArgs.toString().trim().split(/\s+/))
 		}
 	}
 
