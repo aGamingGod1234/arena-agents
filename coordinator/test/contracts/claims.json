@@ -16786,7 +16786,7 @@
       "reason": "Behaviour is shown by TravelVerification (checkpoint and build choices), the tool normalization tests and provider-free live Nether courses; terrain variety beyond those courses is not exhaustively covered."
     },
     {
-      "predicate": "travel_to picks seen standing spots up to a leg ahead toward the target and sprints there through ordinary navigation, builds in a straight line where seen ground ends (bridge or fill a gap, pillar a ledge or climb over feet-level lava, tunnel a wall, put out fire) with plain hotbar blocks and the best hotbar tool, never opens a cell beside seen lava, never steps down beside lava, and stops for arrival, damage, hostiles, low health or food, missing blocks, no way on, a seen stopWhenSeen block or its timeout.",
+      "predicate": "travel_to picks seen standing spots up to a leg ahead toward the target and sprints there through ordinary navigation, builds in a straight line where seen ground ends (bridge or fill a gap, pillar a ledge or climb over feet-level lava, tunnel a wall, put out fire) with plain hotbar blocks and the best hotbar tool, never opens a cell beside seen lava, never steps down beside lava, and stops for arrival, damage, hostiles, low health or food, missing blocks, no way on, a seen stopWhenSeen block or its timeout; with nothing seen closer and a target y more than the arrival band plus a block below the feet, the trip digs a dig_to stairs_down toward the target x/z to its y (at most 3 a trip, never with build:false) and hands back with the dig's reason when it stops; LocalPathfinder takes drops of 4 to 12 blocks only into seen water at least two deep.",
       "checks": [
         {
           "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/TravelVerification.java",
@@ -16804,12 +16804,24 @@
           "test": "travel.nether-courses",
           "predicate": "Provider-free headless Nether courses from long-run save points: travel_to heads for a located structure or a heading, re-issued after each stop, and reports arrival, time, blocks per minute, builds, damage, fire and lava contact and deaths",
           "command": "slot.sh live node scripts/quality/test-travel-live.mjs scripts/quality/travel-courses.json OUT --mode travel"
+        },
+        {
+          "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/TravelVerification.java",
+          "test": "verifyDescent",
+          "type": "java-behavior",
+          "entryPoint": "verifyCore"
+        },
+        {
+          "file": "src/test/java/dev/agaminggod/arenaagents/client/navigation/LocalPathfinderVerification.java",
+          "test": "verifyDeepWaterDrop",
+          "type": "java-behavior",
+          "entryPoint": "verifyCore"
         }
       ],
-      "id": "tool:travelTo:description:2ea74a8a4c4c11cf",
+      "id": "tool:travelTo:description:6a4326782951942e",
       "contract": {
-        "id": "tool:travelTo:description:2ea74a8a4c4c11cf",
-        "claim": "The body sprints over seen ground leg by leg and, where that ends, bridges gaps/lava, pillars ledges or tunnels walls with hotbar blocks and tools (build:false never builds).",
+        "id": "tool:travelTo:description:6a4326782951942e",
+        "claim": "The body sprints over seen ground leg by leg and, where that ends, bridges gaps/lava, pillars ledges or tunnels walls with hotbar blocks and tools, and digs a dig_to staircase toward a target y over 4 below (build:false never builds); drops into water 2+ deep go to 12 blocks.",
         "kind": "description",
         "tool": "travelTo"
       },
@@ -16818,7 +16830,7 @@
         "line": 127
       },
       "status": "partial",
-      "reason": "Behaviour is shown by TravelVerification (checkpoint and build choices), the tool normalization tests and provider-free live Nether courses; terrain variety beyond those courses is not exhaustively covered."
+      "reason": "The descent decision and the deep-water drop are witnessed on fixtures; the dig-down handoff inside a live trip has no world-level fixture, and terrain variety beyond the live courses is not exhaustively covered."
     },
     {
       "predicate": "travel_to picks seen standing spots up to a leg ahead toward the target and sprints there through ordinary navigation, builds in a straight line where seen ground ends (bridge or fill a gap, pillar a ledge or climb over feet-level lava, tunnel a wall, put out fire) with plain hotbar blocks and the best hotbar tool, never opens a cell beside seen lava, never steps down beside lava, and stops for arrival, damage, hostiles, low health or food, missing blocks, no way on, a seen stopWhenSeen block or its timeout.; fightThrough:true fights a hostile within 6 or one that hits (fight_target with fleeAtHealth=minHealth) and continues, handing back on LOW_HEALTH_BAILOUT, a hazard or a second failed fight; TravelStops shrugs off terrain damage with no attacker (sweet berry bush, cactus, fall) of at most 2 a hit and 4 a trip while health stays above minHealth, and passes a new hostile beyond 6 blocks unless it targets the body and closes in by 0.25 between quarter-second samples, or is a ranged mob targeting it.",
@@ -33944,7 +33956,7 @@
       "status": "checked"
     },
     {
-      "predicate": "travel_to picks seen standing spots up to a leg ahead toward the target and sprints there through ordinary navigation, builds in a straight line where seen ground ends (bridge or fill a gap, pillar a ledge or climb over feet-level lava, tunnel a wall, put out fire) with plain carried blocks and the best carried tool, never opens a cell beside seen lava, never steps down beside lava, and stops for arrival, damage, hostiles, low health or food, missing blocks, no way on, a seen stopWhenSeen block or its timeout. Building never spends blocks lava ignites; a freshly opened tunnel cell is watched before it is entered, and lava coming at the body makes it back out along its walked trail to dry ground, normally up to eight cells first.; with a y target, height beyond the arrival band counts as distance left, so a seen standing spot below the body (a cave floor, lava seen down a cave) is a checkpoint and the descent toward it is progress Whole-inventory selection uses vanilla hotbar swaps; brief tool-free clearing allows up to 30 ticks, while tool-dependent tunnelling retains its 20-tick threshold.",
+      "predicate": "travel_to picks seen standing spots up to a leg ahead toward the target and sprints there through ordinary navigation, builds in a straight line where seen ground ends (bridge or fill a gap, pillar a ledge or climb over feet-level lava, tunnel a wall, put out fire) with plain carried blocks and the best carried tool, never opens a cell beside seen lava, never steps down beside lava, and stops for arrival, damage, hostiles, low health or food, missing blocks, no way on, a seen stopWhenSeen block or its timeout. Building never spends blocks lava ignites; a freshly opened tunnel cell is watched before it is entered, and lava coming at the body makes it back out along its walked trail to dry ground, normally up to eight cells first.; with a y target, height beyond the arrival band counts as distance left, so a seen standing spot below the body (a cave floor, lava seen down a cave) is a checkpoint and the descent toward it is progress Whole-inventory selection uses vanilla hotbar swaps; brief tool-free clearing allows up to 30 ticks, while tool-dependent tunnelling retains its 20-tick threshold; with nothing seen closer and a target y more than the arrival band plus a block below the feet, the trip digs a dig_to stairs_down toward the target x/z to its y (at most 3 a trip, never with build:false) and hands back with the dig's reason when it stops; LocalPathfinder takes drops of 4 to 12 blocks only into seen water at least two deep.",
       "checks": [
         {
           "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/TravelVerification.java",
@@ -33974,12 +33986,24 @@
           "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/TravelVerification.java",
           "test": "verifyCarriedSupplies",
           "entryPoint": "verifyCore"
+        },
+        {
+          "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/TravelVerification.java",
+          "test": "verifyDescent",
+          "type": "java-behavior",
+          "entryPoint": "verifyCore"
+        },
+        {
+          "file": "src/test/java/dev/agaminggod/arenaagents/client/navigation/LocalPathfinderVerification.java",
+          "test": "verifyDeepWaterDrop",
+          "type": "java-behavior",
+          "entryPoint": "verifyCore"
         }
       ],
-      "id": "control:e2c1a93886a46505:373b1d0c5d6dc778",
+      "id": "control:e2c1a93886a46505:2567ea2b00d5f142",
       "contract": {
-        "id": "control:e2c1a93886a46505:373b1d0c5d6dc778",
-        "claim": "One call for a long trip, the fast choice whenever the target is more than about one moveTo leg (30 blocks) away: a seen place (a structure, a far landmark, a remembered spot) as x and z (y optional), or a heading as yaw and distance. With y, height toward it counts as progress, so a cave floor or lava seen below is a target too: it walks down seen ground and drops of up to 3 blocks. The body works at its own speed until something needs your decision: it picks a standing spot it has seen up to 48 blocks ahead toward the target, sprints there through ordinary navigation (every moveTo safety rule applies), and picks the next as new terrain comes into view, looking ahead and to either side when nothing seen gets closer. Where seen ground ends it builds its way on in a straight line toward the target with carried blocks and tools: a gap or lava below the next cell is bridged (sneaking backwards to the edge and placing on the side of the block underfoot), a ledge two or three blocks up is pillared, a wall is tunnelled (never a cell beside seen lava, nothing unbreakable or holding items, nothing taking over 1 s a block with the best carried tool, or 1.5 s for brief tool-free clearing). build:false never places or mines. Plain full blocks are used (netherrack, cobblestone, dirt, stone...), never valuables, falling blocks, block entities or blocks lava sets alight (planks, logs, wool); main-inventory supplies are swapped into the selected hotbar slot as needed. A tunnel cell is looked into before it is entered, and lava coming at the body makes it back out along its walked trail to dry ground, normally up to eight cells first.",
+        "id": "control:e2c1a93886a46505:2567ea2b00d5f142",
+        "claim": "One call for a long trip, the fast choice whenever the target is more than about one moveTo leg (30 blocks) away: a seen place (a structure, a far landmark, a remembered spot) as x and z (y optional), or a heading as yaw and distance. With y, height toward it counts as progress, so a cave floor or lava seen below is a target too: it walks down seen ground, drops of up to 3 blocks, and drops of up to 12 into seen water at least 2 blocks deep (entering water ends a fall with no damage). When nothing seen gets closer and the target y is more than the arrival band plus a block below the feet, it digs down instead of building across: a dig_to stairs_down toward the target x/z to its y (every dig_to stop applies and hands the trip back with the dig's reason), then walks on from there; at most 3 staircases a trip, never with build:false. The body works at its own speed until something needs your decision: it picks a standing spot it has seen up to 48 blocks ahead toward the target, sprints there through ordinary navigation (every moveTo safety rule applies), and picks the next as new terrain comes into view, looking ahead and to either side when nothing seen gets closer. Where seen ground ends it builds its way on in a straight line toward the target with carried blocks and tools: a gap or lava below the next cell is bridged (sneaking backwards to the edge and placing on the side of the block underfoot), a ledge two or three blocks up is pillared, a wall is tunnelled (never a cell beside seen lava, nothing unbreakable or holding items, nothing taking over 1 s a block with the best carried tool, or 1.5 s for brief tool-free clearing). build:false never places or mines. Plain full blocks are used (netherrack, cobblestone, dirt, stone...), never valuables, falling blocks, block entities or blocks lava sets alight (planks, logs, wool); main-inventory supplies are swapped into the selected hotbar slot as needed. A tunnel cell is looked into before it is entered, and lava coming at the body makes it back out along its walked trail to dry ground, normally up to eight cells first.",
         "kind": "control-reference",
         "topic": "travelTo"
       },
@@ -33988,7 +34012,7 @@
         "line": 401
       },
       "status": "partial",
-      "reason": "Reviewed against the ported travel body and verifyCarriedSupplies: whole-inventory swaps, 600000 ms default, retained d35 observation window and brink guard. Terrain, hazard and timing outcomes require the fresh six-pair live course study."
+      "reason": "The descent decision and the deep-water drop are witnessed on fixtures; the dig-down handoff inside a live trip has no world-level fixture, and terrain variety beyond the live courses is not exhaustively covered."
     },
     {
       "predicate": "travel_to picks seen standing spots up to a leg ahead toward the target and sprints there through ordinary navigation, builds in a straight line where seen ground ends (bridge or fill a gap, pillar a ledge or climb over feet-level lava, tunnel a wall, put out fire) with plain carried blocks and the best carried tool, never opens a cell beside seen lava, never steps down beside lava, and stops for arrival, damage, hostiles, low health or food, missing blocks, no way on, a seen stopWhenSeen block or its timeout; TravelStops shrugs off terrain damage with no attacker (sweet berry bush, cactus, fall) of at most 2 a hit and 4 a trip while health stays above minHealth, and passes a new hostile beyond 6 blocks unless it targets the body and closes in by 0.25 between quarter-second samples, or is a ranged mob targeting it.",

@@ -865,7 +865,16 @@ public final class ServerActionExecutor {
 						nullableString(arguments, "stopWhenSeen"),
 						arguments.has("minHealth") ? (float) number(arguments, "minHealth") : null,
 						(body, cell) -> protection.mayModifyBlock(body, body.level(), cell),
-						System.currentTimeMillis()).fightThrough(arguments.has("fightThrough") && bool(arguments, "fightThrough")));
+						System.currentTimeMillis()).fightThrough(arguments.has("fightThrough") && bool(arguments, "fightThrough"))
+						.descend((y, x, z, digTimeoutMs) -> {
+							JsonObject stairs = new JsonObject();
+							stairs.addProperty("pattern", "stairs_down");
+							stairs.addProperty("y", y);
+							stairs.addProperty("x", x);
+							stairs.addProperty("z", z);
+							stairs.addProperty("timeoutMs", digTimeoutMs);
+							return digController(stairs);
+						}));
 			}
 			case DIG_TO -> ActiveAction.controller(request, player, digController(arguments));
 			case MINE_VEIN -> {
