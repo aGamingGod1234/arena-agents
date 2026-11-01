@@ -41,23 +41,10 @@ const SCENARIOS = {
 		durationMs: 8000,
 		setup: [`summon minecraft:creeper ${X + 3} ${Y} ${Z} {PersistenceRequired:1b}`],
 	},
-	low_health_zombie: {
-		about: 'The body is at 6 HP (3 hearts), with no saturation left to heal fast, beside a zombie 2.5 blocks away.',
-		durationMs: 10000,
-		// A short strong hunger burns the saturation (and some food), so neither arm out-heals the zombie for free.
-		setup: [`effect give ${AGENT} minecraft:hunger 2 250 true`, 2500, `damage ${AGENT} 14 minecraft:generic`,
-			`summon minecraft:zombie ${X + 2.5} ${Y} ${Z} {PersistenceRequired:1b}`],
-	},
 	skeleton_arrows: {
 		about: 'A skeleton 10 blocks away shoots; the body holds a shield in its offhand.',
 		durationMs: 10000,
 		setup: [`item replace entity ${AGENT} weapon.offhand with minecraft:shield`, `summon minecraft:skeleton ${X + 10} ${Y} ${Z} {PersistenceRequired:1b}`],
-	},
-	suffocation: {
-		about: 'The body is sealed in stone from feet to head (vanilla cannot push it out); it carries a stone pickaxe.',
-		durationMs: 8000,
-		setup: [`item replace entity ${AGENT} hotbar.0 with minecraft:stone_pickaxe`,
-			`fill ${Math.floor(X) - 1} ${Y} ${Math.floor(Z) - 1} ${Math.floor(X) + 1} ${Y + 2} ${Math.floor(Z) + 1} minecraft:stone`],
 	},
 	hungry: {
 		about: 'Hunger drained below 14 of 20 with cooked beef in the hotbar and no hostile near.',
@@ -66,7 +53,16 @@ const SCENARIOS = {
 		settleMs: 6500,
 		measureFood: true,
 	},
+	low_health_zombie: {
+		about: 'The body is at 6 HP (3 hearts), with no saturation left to heal fast, beside a zombie 2.5 blocks away.',
+		durationMs: 10000,
+		// A short strong hunger burns the saturation (and some food), so neither arm out-heals the zombie for free.
+		setup: [`effect give ${AGENT} minecraft:hunger 2 250 true`, 2500, `damage ${AGENT} 14 minecraft:generic`,
+			`summon minecraft:zombie ${X + 2.5} ${Y} ${Z} {PersistenceRequired:1b}`],
+	},
 };
+// Suffocation is not staged: a fake player sealed in stone took 1 HP and then no more, with or without reflexes,
+// so it measured nothing. The zombie runs last because it kills, and every trial must start from a live body.
 const chosen = options.scenarios ? options.scenarios.split(',') : Object.keys(SCENARIOS);
 
 function startServer() {
@@ -141,9 +137,14 @@ async function main() {
 		};
 		const alive = async () => { const health = number(await command(`data get entity ${AGENT} Health`)); return health !== null && health > 0; };
 		const reset = async () => {
-			if (!(await alive())) { await command(`codex respawn ${AGENT}`); await sleep(3000); }
+			if (!(await alive())) {
+				await command(`codex respawn ${AGENT}`);
+				for (let i = 0; i < 40 && !(await alive()); i++) await sleep(500);
+				await command(`gamemode survival ${AGENT}`);
+				await sleep(3500); // spawn invulnerability
+			}
 			await command(`kill @e[type=!minecraft:player,distance=..64,x=${X},y=${Y},z=${Z}]`);
-			await command(`fill ${X - 16} ${Y} ${Z - 16} ${X + 16} ${Y + 4} ${Z + 16} minecraft:air`);
+			await command(`fill ${Math.floor(X) - 16} ${Y} ${Math.floor(Z) - 16} ${Math.floor(X) + 16} ${Y + 4} ${Math.floor(Z) + 16} minecraft:air`);
 			await command(`tp ${AGENT} ${X} ${Y} ${Z} 90 0`);
 			await command(`clear ${AGENT}`);
 			await command(`effect clear ${AGENT}`);
@@ -157,6 +158,7 @@ async function main() {
 				for (const arm of trial % 2 === 0 ? ['original4', 'current10'] : ['current10', 'original4']) {
 					await reset();
 					await install(ARMS[arm]);
+					const seqBefore = Math.max(0, ...((await reflexStatus())?.events ?? []).map((event) => event.seq ?? 0));
 					await sleep(500);
 					const startHealth = number(await command(`data get entity ${AGENT} Health`));
 					for (const step of scenario.setup) await (typeof step === 'number' ? sleep(step) : command(step));
@@ -164,19 +166,20 @@ async function main() {
 					const startFood = number(await command(`data get entity ${AGENT} foodLevel`));
 					// Health once the danger is staged: the zombie scenario deals its own 14 first.
 					const stagedHealth = number(await command(`data get entity ${AGENT} Health`));
-					let minHealth = stagedHealth, died = false;
-					const deadline = Date.now() + scenario.durationMs;
+					let minHealth = stagedHealth, died = false, survivedMs = scenario.durationMs;
+					const began = Date.now(), deadline = began + scenario.durationMs;
 					while (Date.now() < deadline) {
 						await sleep(250);
 						const health = number(await command(`data get entity ${AGENT} Health`));
-						if (health === null || health <= 0) { died = true; break; }
+						if (health === null || health <= 0) { died = true; survivedMs = Date.now() - began; break; }
 						minHealth = Math.min(minHealth, health);
 					}
 					const endHealth = died ? 0 : number(await command(`data get entity ${AGENT} Health`));
 					const endFood = died ? null : number(await command(`data get entity ${AGENT} foodLevel`));
-					const row = { scenario: name, arm, trial, died, startHealth, stagedHealth, minHealth: died ? 0 : minHealth, endHealth,
+					const row = { scenario: name, arm, trial, died, survivedMs, startHealth, stagedHealth, minHealth: died ? 0 : minHealth, endHealth,
 						healthLost: Math.max(0, (stagedHealth ?? 20) - (died ? 0 : endHealth ?? 0)), ...(scenario.measureFood ? { startFood, endFood } : {}) };
-					if (scenario.measureFood || process.env.BENCH_REFLEX_STATUS) row.reflexes = await reflexStatus();
+					const status = await reflexStatus();
+					row.firings = (status?.events ?? []).filter((event) => (event.seq ?? 0) > seqBefore).map((event) => `${event.id}:${event.outcome}`);
 					results.push(row);
 					console.log(JSON.stringify(row));
 				}
@@ -194,7 +197,8 @@ async function main() {
 		const mean = (values) => values.length ? Math.round(values.reduce((a, b) => a + b, 0) / values.length * 10) / 10 : null;
 		summary[`${name}/${arm}`] = { trials: rows.length, deaths: rows.filter((row) => row.died).length, meanHealthLost: mean(rows.map((row) => row.healthLost)),
 			...(SCENARIOS[name].measureFood ? { meanEndFood: mean(rows.filter((row) => !row.died).map((row) => row.endFood)),
-				eats: rows.reduce((count, row) => count + (row.reflexes?.events ?? []).filter((event) => event.id === 'default-eat' && event.outcome === 'done').length, 0) } : {}) };
+				eats: rows.reduce((count, row) => count + row.firings.filter((firing) => firing === 'default-eat:done').length, 0) } : {}),
+			meanSurvivedS: mean(rows.map((row) => row.survivedMs / 1000)) };
 	}
 	const report = { kind: 'provider-free live body benchmark', minecraftVersion: info.minecraftVersion, target: info.target, trialsPerArm: trials,
 		arms: Object.fromEntries(Object.entries(ARMS).map(([name, rules]) => [name, rules.map((rule) => rule.id)])),
