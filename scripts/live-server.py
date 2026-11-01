@@ -191,8 +191,10 @@ FAILURE_PATTERNS = [r'Mixin apply failed', r'MixinTransformerError', r'Injection
                     r'NoSuchMethodError', r'NoSuchFieldError', r'NoClassDefFoundError', r'/ERROR\]', r'/FATAL\]']
 
 
-# Expected on an offline machine: Mojang's auth services cannot be reached.
-OFFLINE_NOISE = [r'Failed to request yggdrasil public key']
+# Mojang's services, which the server and Carpet's profile lookup call: unreachable offline, and rate limited or
+# answering with an error page on shared CI runners. Neither says anything about the mod.
+OFFLINE_NOISE = [r'Failed to request yggdrasil public key', r'error with a html body connecting to https://api\.mojang\.com/',
+                 r'Couldn.t look up profile', r'connecting to https://(api|sessionserver)\.mojang\.com/']
 
 
 def hold(target):
