@@ -2,7 +2,7 @@ plugins {
 	id 'net.fabricmc.fabric-loom' version "${loom_version}"
 }
 
-version = project.mc_compat == '26.3' ? project.mod_version : "${project.mod_version}+mc${project.minecraft_version}"
+version = project.mc_compat == '26.3' ? project.mod_version : "${project.mod_version}+mc${project.mc_compat}"
 group = project.maven_group
 
 base {

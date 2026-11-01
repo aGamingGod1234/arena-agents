@@ -283,7 +283,7 @@ public final class AgentRespawnSpawnPolicyVerification {
 				position.setAccessible(true);
 				var selected = (net.minecraft.world.phys.Vec3) position.invoke(result);
 				boolean exact = selected.equals(new net.minecraft.world.phys.Vec3(scenario.x(), scenario.y(), scenario.z()));
-				var body = net.minecraft.world.entity.EntityTypes.PLAYER.getDimensions().makeBoundingBox(selected);
+				var body = dev.agaminggod.arenaagents.compat.McEntityTypes.PLAYER.getDimensions().makeBoundingBox(selected);
 				boolean unsafe = false;
 				// Independent oracle examines all configured shapes, not the production query's sampled cells.
 				for (var entry : level.blocks.entrySet()) {
@@ -321,7 +321,7 @@ public final class AgentRespawnSpawnPolicyVerification {
 			boundary.border.setSize(20);
 			assertFalse(CodexAgentManager.recoveryBodySafe(boundary, 9.95, 70, .5), "the whole body must fit the world border");
 			assertTrue(CodexAgentManager.recoveryBodySafe(boundary, 9.5, 70, .5), "clear body inside the world border remains valid");
-			double halfWidth = net.minecraft.world.entity.EntityTypes.PLAYER.getDimensions().width() / 2.0D;
+			double halfWidth = dev.agaminggod.arenaagents.compat.McEntityTypes.PLAYER.getDimensions().width() / 2.0D;
 			assertTrue(CodexAgentManager.recoveryBodySafe(boundary, 10 - halfWidth, 70, .5),
 					"a body touching the border without crossing it remains valid");
 			assertFalse(CodexAgentManager.recoveryBodySafe(boundary, .5, 319, .5), "body cannot cross the build ceiling");
@@ -366,7 +366,7 @@ public final class AgentRespawnSpawnPolicyVerification {
 	private static final class RecoveryFixtureLevel extends net.minecraft.server.level.ServerLevel {
 		// 26.3 entities take their ID from the level, and ServerLevel asks its (absent) chunk source.
 		private int fixtureEntityIds = 100_000;
-		@Override public int getNextEntityId() { return ++fixtureEntityIds; }
+		public int getNextEntityId() { return ++fixtureEntityIds; }
 		java.util.Map<net.minecraft.core.BlockPos, net.minecraft.world.level.block.state.BlockState> blocks;
 		net.minecraft.world.level.border.WorldBorder border;
 		int unloadedChunkX;

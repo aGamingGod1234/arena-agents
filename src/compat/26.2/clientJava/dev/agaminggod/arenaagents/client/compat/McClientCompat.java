@@ -57,4 +57,54 @@ public final class McClientCompat {
 	public static GpuBuffer createReadbackBuffer(GpuDevice device, String label, long bytes) {
 		return device.createBuffer(() -> label, GpuBuffer.USAGE_MAP_READ | GpuBuffer.USAGE_COPY_DST, bytes);
 	}
+
+	// Screens and the HUD (26.2 moved the current screen and overlay onto Minecraft.gui).
+
+	public static net.minecraft.client.gui.screens.Screen screen(net.minecraft.client.Minecraft client) {
+		return client.gui.screen();
+	}
+
+	public static void setScreen(net.minecraft.client.Minecraft client, net.minecraft.client.gui.screens.Screen screen) {
+		client.gui.setScreen(screen);
+	}
+
+	public static net.minecraft.client.gui.screens.Overlay overlay(net.minecraft.client.Minecraft client) {
+		return client.gui.overlay();
+	}
+
+	/** The action-bar line above the hotbar. */
+	public static void overlayMessage(net.minecraft.client.Minecraft client, net.minecraft.network.chat.Component message, boolean animate) {
+		client.gui.hud.setOverlayMessage(message, animate);
+	}
+
+	public static net.minecraft.client.Camera mainCamera(net.minecraft.client.Minecraft client) {
+		return client.gameRenderer.mainCamera();
+	}
+
+	public static net.minecraft.client.renderer.state.GameRenderState gameRenderState(net.minecraft.client.Minecraft client) {
+		return client.gameRenderer.gameRenderState();
+	}
+
+	public static net.minecraft.client.renderer.RenderBuffers renderBuffers(net.minecraft.client.Minecraft client) {
+		return client.gameRenderer.renderBuffers();
+	}
+
+	// Plan item icons: a private feature dispatcher and atlas, so the icon pass never consumes or draws game submissions.
+
+	public static net.minecraft.client.renderer.feature.FeatureRenderDispatcher iconFeatures(net.minecraft.client.Minecraft client) {
+		return new net.minecraft.client.renderer.feature.FeatureRenderDispatcher(renderBuffers(client), client.getModelManager(),
+				client.getAtlasManager(), client.font, gameRenderState(client));
+	}
+
+	public static net.minecraft.client.gui.render.GuiItemAtlas iconAtlas(net.minecraft.client.Minecraft client,
+			net.minecraft.client.renderer.feature.FeatureRenderDispatcher features, int textureSize, int slotSize) {
+		return new net.minecraft.client.gui.render.GuiItemAtlas(features, textureSize, slotSize);
+	}
+
+	/** Map a read buffer, hand its bytes to the reader, then unmap it. */
+	public static void readMapped(GpuBuffer buffer, java.util.function.Consumer<java.nio.ByteBuffer> reader) {
+		try (var mapped = buffer.map(true, false)) {
+			reader.accept(mapped.data());
+		}
+	}
 }

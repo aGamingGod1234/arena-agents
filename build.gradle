@@ -7,7 +7,7 @@ plugins {
 
 // A non-default Minecraft target says so in its version (arena-agents-0.2.0+mc26.2.jar); 26.3 keeps its historical name.
 def defaultTarget = project.mc_compat == '26.3'
-version = defaultTarget ? project.mod_version : "${project.mod_version}+mc${project.minecraft_version}"
+version = defaultTarget ? project.mod_version : "${project.mod_version}+mc${project.mc_compat}"
 group = project.maven_group
 
 // Version-specific Minecraft API shims: one implementation per target, the same package and signatures in each.
@@ -633,6 +633,22 @@ def strategyGuide = layout.projectDirectory.file('coordinator/config/minecraft-a
 			if (jars.size() != 1) throw new GradleException('Strategy knowledge requires exactly one resolved Minecraft common jar.')
 			setArgs([jars.first().absolutePath, strategyGuide.asFile.absolutePath] + (taskName == 'exportStrategyKnowledge' ? ['--write'] : []))
 		}
+	}
+}
+
+// Static check of every mixin's targets (classes, injected methods, @At, @Accessor, @Invoker) against this target's
+// Minecraft, Carpet and Brigadier jars; catches a target that moved between 26.x drops without starting the game.
+// Needs python3, so CI runs it on Linux rather than through check.
+tasks.register('verifyMixinTargets', Exec) {
+	group = 'verification'
+	description = 'Checks every mixin target against the resolved Minecraft jars of this 26.x target.'
+	def target = project.mc_compat
+	def classpath = sourceSets.test.runtimeClasspath
+	def javap = new File(System.getProperty('java.home'), 'bin/javap').absolutePath // the JDK running Gradle (Java 25)
+	doFirst {
+		def jars = classpath.files.findAll { it.name ==~ /minecraft-(common|clientOnly)-.*\.jar/ || it.name.startsWith('fabric-carpet-') || it.name ==~ /brigadier-[0-9.]+\.jar/ }
+		if (jars.count { it.name.startsWith('minecraft-') } != 2) throw new GradleException("Expected the split Minecraft common and clientOnly jars, found ${jars*.name}")
+		commandLine(['python3', file('scripts/check-mixin-targets.py').absolutePath, target] + jars*.absolutePath + ['--javap', javap])
 	}
 }
 

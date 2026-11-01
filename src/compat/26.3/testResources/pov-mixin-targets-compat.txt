@@ -3,3 +3,5 @@
 net.minecraft.client.player.FirstPersonHandsAndItems
 net.minecraft.client.renderer.FirstPersonHandsAndItemsRenderer
 net.minecraft.client.renderer.extract.LevelExtractor: arenaagents$povAvatar, arenaagents$povViewBlockingState, arenaagents$povEyeInFluid, arenaagents$povOnFire
+net.minecraft.client.gui.Hud
+net.minecraft.client.gui.contextualbar.ExperienceBar

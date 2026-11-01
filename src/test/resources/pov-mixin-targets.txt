@@ -6,8 +6,6 @@ net.minecraft.client.Camera
 net.minecraft.client.Minecraft
 net.minecraft.client.MouseHandler
 net.minecraft.client.gui.Gui
-net.minecraft.client.gui.Hud
-net.minecraft.client.gui.contextualbar.ExperienceBar
 net.minecraft.client.gui.screens.debug.GameModeSwitcherScreen
 net.minecraft.client.gui.screens.InBedChatScreen
 net.minecraft.client.gui.screens.MenuScreens

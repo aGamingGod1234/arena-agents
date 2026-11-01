@@ -20,7 +20,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
+import dev.agaminggod.arenaagents.compat.McEntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Abilities;
 import net.minecraft.world.entity.player.Player;
@@ -45,7 +45,7 @@ public final class BurnEstimateContractVerification {
 			player.setId(1020); // 26.3 assigns entity IDs in the constructor, which Unsafe allocation skips.
 			set(player, Player.class, "abilities", new Abilities());
 			set(player, Entity.class, "level", level);
-			set(player, Entity.class, "type", EntityTypes.PLAYER);
+			set(player, Entity.class, "type", McEntityTypes.PLAYER);
 			set(player, Entity.class, "firstTick", true);
 			set(player, Entity.class, "bb", new AABB(.2D, 64D, .2D, .8D, 65.8D, .8D));
 			set(player, Entity.class, "blockPosition", new BlockPos(0, 64, 0));
@@ -113,7 +113,7 @@ public final class BurnEstimateContractVerification {
 	private static final class FixtureLevel extends ServerLevel {
 		// 26.3 entities take their ID from the level, and ServerLevel asks its (absent) chunk source.
 		private int fixtureEntityIds = 100_000;
-		@Override public int getNextEntityId() { return ++fixtureEntityIds; }
+		public int getNextEntityId() { return ++fixtureEntityIds; }
 		private FixtureLevel() { super(null, null, null, null, null, null, false, 0, List.of(), false); }
 		@Override public <T extends net.minecraft.world.entity.Entity> java.util.List<T> getEntitiesOfClass(Class<T> type, net.minecraft.world.phys.AABB area, java.util.function.Predicate<? super T> predicate) { return java.util.List.of(); }
 		@Override public long getGameTime() { return 0L; }

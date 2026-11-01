@@ -6,8 +6,12 @@
   },
   "package": "dev.agaminggod.arenaagents.client.compat.mixin",
   "client": [
+    "ExperienceBarRendererPovMixin",
+    "GuiInBedPovMixin",
     "GuiItemAtlasPlanIconsMixin",
+    "GuiPovMixin",
     "ItemInHandRendererPovMixin",
+    "LevelRendererPovMixin",
     "ScreenEffectRendererPovMixin"
   ]
 }

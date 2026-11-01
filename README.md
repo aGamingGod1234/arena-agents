@@ -1,6 +1,6 @@
 # Arena Agents: summonable AI-controlled players for Minecraft
 
-Arena Agents is a Fabric + Carpet mod pack and local coordinator for Minecraft Java 26.1.2. It adds offline fake players controlled through local provider CLIs. Codex and Claude use their existing local CLI logins (Codex CLI and Claude Code); the mod stores no provider API keys. The Gemini provider ID remains visible for saved-profile compatibility, but production planning fails closed because Antigravity CLI has no enforceable no-tool boundary.
+Arena Agents is a Fabric + Carpet mod pack and local coordinator for Minecraft Java 26.x (26.1, 26.1.1, 26.1.2, 26.2 and 26.3; 26.3 is the default build and the Windows release). It adds offline fake players controlled through local provider CLIs. Codex and Claude use their existing local CLI logins (Codex CLI and Claude Code); the mod stores no provider API keys. The Gemini provider ID remains visible for saved-profile compatibility, but production planning fails closed because Antigravity CLI has no enforceable no-tool boundary.
 
 Each agent is a real `ServerPlayer` with vanilla collision, gravity, health, hunger, inventory, and Survival/Creative/Adventure capabilities. It also has its own provider, model, thinking setting, planner session, provider-scoped working directory, goal queue, lifecycle, readable model name, and provider-themed client skin.
 
@@ -51,6 +51,23 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\run-performance-re
 ```
 
 This repeats the isolated eight-agent soak 50 times after the clean verifier. The summonable-agent path permits 16 concurrent planner turns, sends at most eight queued observations per server tick, caches expensive spatial sections for 10 ticks, and throttles action progress to a material 5% change or a one-second heartbeat. ArenaScript providers return one validated program envelope and the local interpreter schedules one authorized physical primitive at a time; Codex's native-tools path retains its own tool-session contract. Optional bounded `coordinator_status.latencies` rows expose sample count, p50, and p95 durations without prompts, observations, model output, or credentials. See [the measured headless report](docs/plans/2026-08-11-eight-agent-performance-reliability-report.md).
+
+### Building for another Minecraft 26.x version
+
+One source tree builds a separate mod JAR for each 26.x drop. The default is 26.3. Pass `-Pmc=<target>` to build for another:
+
+| Target | Runs on | Built against | Mod JAR |
+|---|---|---|---|
+| `26.1` | 26.1, 26.1.1, 26.1.2 | 26.1.2, Fabric API 0.155.3, Carpet 26.1+v260402 | `arena-agents-<version>+mc26.1.jar` |
+| `26.2` | 26.2 | 26.2, Fabric API 0.161.0, Carpet 26.2+v260616 | `arena-agents-<version>+mc26.2.jar` |
+| `26.3` (default) | 26.3 | 26.3, Fabric API 0.165.0, Carpet 26.3+v260915 | `arena-agents-<version>.jar` |
+
+```bash
+./scripts/fetch-libs.sh 26.2
+./gradlew -Pmc=26.2 check build verifyMixinTargets
+```
+
+`gradle/mc/<target>.properties` overrides `gradle.properties` for every project. The Minecraft API calls that moved between drops go through small per-target shims under `src/compat/<target>/` (`McCompat`, `McClientCompat`, `McBlocks`, `McEntityTypes`, and the test bases), along with the mixins that only one drop needs. Each target has its own dependency lockfiles under `gradle/locks/<target>/`. `verifyMixinTargets` (Python 3) checks every mixin's target class, method, `@At`, `@Accessor` and `@Invoker` against that drop's real classes. `verifyPovMixins` then applies them under Fabric. CI runs the full check for all three targets and uploads each target's mod JARs. The Windows release ZIP and the source-checkout runtime scripts stay on 26.3. The pinned map block-state catalog check runs on 26.3 only, because map modules are authored against it.
 
 ## Prepare the source-checkout runtime
 
@@ -269,7 +286,7 @@ The release gate starts a temporary offline Fabric server with the exact five JA
 
 The server-authoritative executor drives Carpet's real player action pack for movement, looking, jumping, attacking, item use, and block interaction. Observations include vanilla HUD/player state, inventory/equipment, visible nearby entities and blocks, world state, the active action, and the last result. Entity and block facts are gated by the current view and line of sight; hidden creature health and other server-only combat facts are not exposed as sight. Damage publishes a fresh factual observation without cancelling the current action or choosing fight, flight, or replanning for the model. Death is reconciled into a persistent `DEAD` lifecycle state and remains under the selected model's coordinate-free respawn primitive.
 
-Container transfers, crafting recipes, and furnace transactions use server-authoritative, fail-closed adapters with inventory-conservation checks and rollback paths. Crafting expands Minecraft's trimmed recipe remainders back into the full grid before validating ownership, including horizontally and vertically offset recipes. Forced chunk tickets remain fail-closed until their Minecraft 26.1.2 adapter is runtime-validated; unsupported operations never report false success.
+Container transfers, crafting recipes, and furnace transactions use server-authoritative, fail-closed adapters with inventory-conservation checks and rollback paths. Crafting expands Minecraft's trimmed recipe remainders back into the full grid before validating ownership, including horizontally and vertically offset recipes. Forced chunk tickets remain fail-closed until their Minecraft adapter is runtime-validated; unsupported operations never report false success.
 
 ## ArenaScript control boundary
 

@@ -95,6 +95,35 @@ public final class McCompat {
 		return success.swingSource() == InteractionResult.SwingSource.SERVER_ONLY;
 	}
 
+	public static boolean isSlimeOrMagmaCube(Entity entity) {
+		return entity instanceof net.minecraft.world.entity.monster.cubemob.AbstractCubeMob cube
+				&& (cube instanceof net.minecraft.world.entity.monster.cubemob.Slime || cube instanceof net.minecraft.world.entity.monster.cubemob.MagmaCube);
+	}
+
+	public static boolean isMagmaCube(Entity entity) {
+		return entity instanceof net.minecraft.world.entity.monster.cubemob.MagmaCube;
+	}
+
+	/** A slime or magma cube of the smallest size (no contact damage from slimes). */
+	public static boolean cubeIsTiny(Entity entity) {
+		return entity instanceof net.minecraft.world.entity.monster.cubemob.AbstractCubeMob cube && cube.isTiny();
+	}
+
+	/** A dry, downward pointed-dripstone tip, the only state that drips. */
+	public static boolean isDrippingDripstoneTip(net.minecraft.world.level.block.state.BlockState state) {
+		return state.is(net.minecraft.world.level.block.Blocks.POINTED_DRIPSTONE)
+				&& state.getValue(net.minecraft.world.level.block.SpeleothemBlock.TIP_DIRECTION) == net.minecraft.core.Direction.DOWN
+				&& state.getValue(net.minecraft.world.level.block.SpeleothemBlock.THICKNESS) == net.minecraft.world.level.block.state.properties.SpeleothemThickness.TIP
+				&& !state.getValue(net.minecraft.world.level.block.SpeleothemBlock.WATERLOGGED);
+	}
+
+	public static final net.minecraft.tags.TagKey<net.minecraft.world.level.block.Block> LOGS_THAT_BURN = net.minecraft.tags.BlockItemTags.LOGS_THAT_BURN.block();
+
+	/** The sidebar slot a team's colour shows on, or null for a team without one. */
+	public static net.minecraft.world.scores.DisplaySlot teamDisplaySlot(net.minecraft.world.scores.PlayerTeam team) {
+		return team.getColor().map(net.minecraft.world.scores.TeamColor::displaySlot).orElse(null);
+	}
+
 	// Items and inventories.
 
 	/**

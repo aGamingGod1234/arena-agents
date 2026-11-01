@@ -29,7 +29,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
+import dev.agaminggod.arenaagents.compat.McEntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -333,13 +333,13 @@ public final class ServerFightUntilController implements ServerController {
 		this.choices = CountFightChoices.from(arguments);
 		// Count mode collects by default; the model's pursue:false (fight in place) keeps the body off drop walks unless it said collect:true.
 		this.collect = arguments.has("collect") ? arguments.get("collect").getAsBoolean() : choices.collectByDefault();
-		if (weapon == Weapon.BOW && mob == EntityTypes.ENDERMAN)
+		if (weapon == Weapon.BOW && mob == McEntityTypes.ENDERMAN)
 			throw new AgentDomainException("INVALID_FIELD", "weapon bow: an enderman teleports away from arrows (vanilla)");
 		boolean anyBow = player.getOffhandItem().getItem() instanceof BowItem || hasBow(player);
 		if (weapon == Weapon.BOW && !anyBow) throw new AgentDomainException("BOW_NOT_EQUIPPED", "No bow in either hand or the hotbar");
 		if (weapon == Weapon.BOW && !bowReady(player)) throw new AgentDomainException("OUT_OF_ARROWS", "No arrow to loose");
 		this.roof = arguments.has("roof") && arguments.get("roof").getAsBoolean();
-		if (roof && mob != EntityTypes.ENDERMAN)
+		if (roof && mob != McEntityTypes.ENDERMAN)
 			throw new AgentDomainException("INVALID_FIELD", "roof: only against endermen (a 2-high space keeps out a 3-tall enderman; " + mobId + " fits)");
 		if (roof && roofing == null) throw new AgentDomainException("INVALID_FIELD", "roof: no construction available here");
 		this.elapsedTime = new ElapsedTimeAccumulator(now);
@@ -410,7 +410,7 @@ public final class ServerFightUntilController implements ServerController {
 		if (shieldHand != null) {
 			Projectile shot = ReflexSensors.blockableShot(player, GUARD_SHOT_S);
 			if (shot != null) { shotFrom = ReflexSensors.shieldFacing(shot); shotTick = gameTick; }
-			else if (mob == EntityTypes.BLAZE && CHARGE_GUARD) {
+			else if (mob == McEntityTypes.BLAZE && CHARGE_GUARD) {
 				LivingEntity due = chargedBlazeDue(player, gameTick);
 				if (due != null) { shotFrom = due.getEyePosition(); shotTick = gameTick; chargeGuards++; }
 			}
@@ -422,7 +422,7 @@ public final class ServerFightUntilController implements ServerController {
 		if ((shielding && (ledge == null || !ledge.climbing()) || fireContact) && !collecting) return guard(player, shieldHand, shielding, fireContact, elapsed);
 		releaseGuard();
 
-		if (!roof && mob == EntityTypes.BLAZE && RECOVER && choices.guardShield(true)) {
+		if (!roof && mob == McEntityTypes.BLAZE && RECOVER && choices.guardShield(true)) {
 			TickResult recovering = tickRecover(player, nowEpochMs, elapsed);
 			if (recovering != null) return recovering;
 		}
@@ -547,11 +547,11 @@ public final class ServerFightUntilController implements ServerController {
 			TickResult walking = walkTo(player, Vec3.atBottomCenterOf(roofCenter), nowEpochMs);
 			if (walking != null) return walking;
 		}
-		if (target != null && !roofed && mob == EntityTypes.ENDERMAN) {
+		if (target != null && !roofed && mob == McEntityTypes.ENDERMAN) {
 			TickResult open = tickOpenEnderman(player, target, elapsed);
 			if (open != null) return open;
 		}
-		boolean coverTick = COVER && target != null && !roofed && spot == null && mob == EntityTypes.BLAZE && choices.mayReposition();
+		boolean coverTick = COVER && target != null && !roofed && spot == null && mob == McEntityTypes.BLAZE && choices.mayReposition();
 		// A cover walk not ticked this tick is put down: its navigation lease expires after 40 idle ticks (LeasedServerInputController
 		// LEASE_TIMEOUT_TICKS) and a later tick on it threw "input lease is no longer active" (review-3 floor fixture).
 		if (!coverTick && coverGoal != null) {
@@ -848,7 +848,7 @@ public final class ServerFightUntilController implements ServerController {
 	 * blocks on the hotbar, solid footing and open cells above the head. False when it does not apply.
 	 */
 	private boolean startPerch(ServerPlayer player) {
-		if (perchTried || mob != EntityTypes.ENDERMAN || roofed || !player.onGround() || player.isInWater() || player.isInLava()) return false;
+		if (perchTried || mob != McEntityTypes.ENDERMAN || roofed || !player.onGround() || player.isInWater() || player.isInLava()) return false;
 		boolean hunted = !player.level().getEntitiesOfClass(McCompat.ENDERMAN, player.getBoundingBox().inflate(8.0D),
 				e -> e.isAlive() && e.getTarget() == player && e.getBoundingBox().maxY > player.getY()).isEmpty();
 		if (!hunted) return false;
@@ -1081,7 +1081,7 @@ public final class ServerFightUntilController implements ServerController {
 	 * continueWithAttackers, protection, no creepers), else null.
 	 */
 	private LivingEntity swordTurn(ServerPlayer player) {
-		if (current.getType() != EntityTypes.BLAZE) return null;
+		if (current.getType() != McEntityTypes.BLAZE) return null;
 		if (player.getAttackRangeWith(player.getMainHandItem()).isInRange(player, current.getBoundingBox(), 0.0D)) return null;
 		LivingEntity close = attackerInReach(player);
 		return close == current ? null : close;
@@ -1096,7 +1096,7 @@ public final class ServerFightUntilController implements ServerController {
 		}
 		current = target;
 		heldAtEngage = count(player, untilItem);
-		boolean shield = choices.meleeShield(player.getOffhandItem().getItem() instanceof ShieldItem, mob == EntityTypes.BLAZE);
+		boolean shield = choices.meleeShield(player.getOffhandItem().getItem() instanceof ShieldItem, mob == McEntityTypes.BLAZE);
 		// Roofed: swing in place from the cell (pursue:false); drops are collected by walking out after the kill.
 		long segment = heldForFloor ? FLOOR_HOLD_MS : MELEE_SEGMENT_MS;
 		heldForFloor = false;
@@ -1134,7 +1134,7 @@ public final class ServerFightUntilController implements ServerController {
 	}
 
 	private boolean useBow(ServerPlayer player, LivingEntity target) {
-		if (weapon == Weapon.SWORD || mob == EntityTypes.ENDERMAN || bowSpent || !bowReady(player)) return false;
+		if (weapon == Weapon.SWORD || mob == McEntityTypes.ENDERMAN || bowSpent || !bowReady(player)) return false;
 		if (weapon == Weapon.BOW) return true;
 		// auto: a bow when the target is past melee reach and in clear sight, else the sword. Shield-first melee on
 		// blazes was tried and dropped: fixture blaze3 reached 3 rods in 1/5 with 3 kills, against 2/5 and 19 kills here.
@@ -1497,7 +1497,7 @@ public final class ServerFightUntilController implements ServerController {
 		LivingEntity due = null;
 		java.util.Set<UUID> charged = new java.util.HashSet<>();
 		for (LivingEntity blaze : player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(CHARGE_RANGE),
-				e -> e.getType() == EntityTypes.BLAZE && e.isAlive() && !e.isDeadOrDying() && e.isOnFire())) {
+				e -> e.getType() == McEntityTypes.BLAZE && e.isAlive() && !e.isDeadOrDying() && e.isOnFire())) {
 			if (!ObservationVisibility.canSeeEntity(player, blaze)) continue;
 			charged.add(blaze.getUUID());
 			long since = chargedSince.computeIfAbsent(blaze.getUUID(), id -> gameTick);
@@ -1765,7 +1765,7 @@ public final class ServerFightUntilController implements ServerController {
 				"; drops: %d bow shot%s held for a target over unwalkable ground, %d kill%s over unwalkable ground (drop lost)",
 				bowSkipsOverDrop, bowSkipsOverDrop == 1 ? "" : "s", killsOverDrop, killsOverDrop == 1 ? "" : "s"));
 		if (!hurts.isEmpty()) text.append("; hurt by (kind while doing): ").append(hurts);
-		if (mob == EntityTypes.ENDERMAN && !roofed && stares + holds + attackerSoftEnds > 0)
+		if (mob == McEntityTypes.ENDERMAN && !roofed && stares + holds + attackerSoftEnds > 0)
 			text.append(String.format(Locale.ROOT, "; endermen: stared at %d calm (%d provoked), waited %d time%s for an angry one to come, kept on %d that left reach still hunting you",
 					stares, staresProvoked, holds, holds == 1 ? "" : "s", attackerSoftEnds));
 		if (!endings.isEmpty()) text.append("; endings: ").append(endings);

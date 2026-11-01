@@ -257,7 +257,7 @@ public final class NavigationContinuationVerification {
 	private static final class FixtureLevel extends ServerLevel {
 		// 26.3 entities take their ID from the level, and ServerLevel asks its (absent) chunk source.
 		private int fixtureEntityIds = 100_000;
-		@Override public int getNextEntityId() { return ++fixtureEntityIds; }
+		public int getNextEntityId() { return ++fixtureEntityIds; }
 		boolean collision;
 		FixtureLevel() { super(null, null, null, null, null, null, false, 0L, List.of(), false); }
 		@Override public ResourceKey<Level> dimension() { return Level.OVERWORLD; }

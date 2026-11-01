@@ -2,3 +2,6 @@
 # qualified name per line, then optionally ": handler, handler" for injected handlers that must be present.
 net.minecraft.client.renderer.ItemInHandRenderer: arenaagents$povArm, arenaagents$povArmSkin, arenaagents$povMapSkin
 net.minecraft.client.renderer.ScreenEffectRenderer: arenaagents$povViewBlockingState, arenaagents$povSpectator, arenaagents$povEyeInFluid, arenaagents$povOnFire
+net.minecraft.client.gui.Hud
+net.minecraft.client.gui.contextualbar.ExperienceBar
+net.minecraft.client.renderer.extract.LevelExtractor

@@ -79,4 +79,16 @@ public final class TestCompat {
 		field.setAccessible(true);
 		field.set(entity, net.minecraft.world.entity.InterpolationHandler.NO_OP);
 	}
+
+	/** A downward pointed dripstone: its tip, or the base segment above a tip. */
+	public static net.minecraft.world.level.block.state.BlockState dripstone(boolean tip) {
+		return net.minecraft.world.level.block.Blocks.POINTED_DRIPSTONE.defaultBlockState()
+				.setValue(net.minecraft.world.level.block.PointedDripstoneBlock.TIP_DIRECTION, net.minecraft.core.Direction.DOWN)
+				.setValue(net.minecraft.world.level.block.PointedDripstoneBlock.THICKNESS, tip
+						? net.minecraft.world.level.block.state.properties.SpeleothemThickness.TIP
+						: net.minecraft.world.level.block.state.properties.SpeleothemThickness.BASE);
+	}
+
+	/** The HUD locator bar class (LocatorBarRenderer before 26.2). */
+	public static final String LOCATOR_BAR_CLASS = "net.minecraft.client.gui.contextualbar.LocatorBar";
 }

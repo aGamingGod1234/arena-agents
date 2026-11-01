@@ -1,4 +1,4 @@
-package dev.agaminggod.arenaagents.client.mixin;
+package dev.agaminggod.arenaagents.client.compat.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;

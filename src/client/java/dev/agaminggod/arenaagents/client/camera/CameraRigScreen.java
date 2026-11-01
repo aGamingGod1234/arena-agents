@@ -33,7 +33,7 @@ public final class CameraRigScreen extends Screen {
             y += 28;
             record = button("Record shot", x, y, half, () -> {
                 CameraDirectorClient.recordCamera(camera, shot);
-                minecraft.gui.setScreen(this);
+                dev.agaminggod.arenaagents.client.compat.McClientCompat.setScreen(minecraft, this);
                 if (CameraDirectorClient.isRecording()) feedback = "Recording. Position controls move the camera.";
             });
             save = button("Stop and save", x + half + 8, y, half, () -> { CameraDirectorClient.rigCommand(camera, "stop", 0); CameraDirectorClient.stopRecordingFromGui(); rebuildWidgets(); });

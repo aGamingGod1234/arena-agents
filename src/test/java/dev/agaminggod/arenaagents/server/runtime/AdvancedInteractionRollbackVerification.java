@@ -802,9 +802,9 @@ public final class AdvancedInteractionRollbackVerification {
 	}
 
 	/** Allocated without running a server constructor or starting any threads. */
-	private static final class FixtureServer extends net.minecraft.server.dedicated.DedicatedServer {
+	private static final class FixtureServer extends dev.agaminggod.arenaagents.compat.TestDedicatedServerBase {
 		private RecipeManager recipes;
-		private FixtureServer() { super(null, null, null, null, java.util.Optional.empty(), null, null, null, null, null); }
+		private FixtureServer() { }
 		@Override public RecipeManager getRecipeManager() { return recipes; }
 	}
 
@@ -1653,7 +1653,7 @@ public final class AdvancedInteractionRollbackVerification {
 	private static final class MenuFixtureLevel extends dev.agaminggod.arenaagents.compat.TestServerLevelBase {
 		// 26.3 entities take their ID from the level, and ServerLevel asks its (absent) chunk source.
 		private int fixtureEntityIds = 100_000;
-		@Override public int getNextEntityId() { return ++fixtureEntityIds; }
+		public int getNextEntityId() { return ++fixtureEntityIds; }
 		private RecipeManager recipes;
 		private boolean furnaceChunkUnloaded = false;
 		private long furnaceTick;

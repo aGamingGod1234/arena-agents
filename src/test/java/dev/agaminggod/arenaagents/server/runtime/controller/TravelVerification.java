@@ -356,7 +356,7 @@ public final class TravelVerification {
 		check(TravelBuilder.buildingBlock(Blocks.COBBLESTONE), "cobblestone builds a bridge");
 		check(TravelBuilder.buildingBlock(Blocks.NETHERRACK), "netherrack builds a bridge");
 		check(!TravelBuilder.buildingBlock(Blocks.OAK_PLANKS), "planks never: lava sets them alight");
-		check(!TravelBuilder.buildingBlock(Blocks.WOOL.white()), "wool never: lava sets it alight");
+		check(!TravelBuilder.buildingBlock(dev.agaminggod.arenaagents.compat.McBlocks.WHITE_WOOL), "wool never: lava sets it alight");
 		check(!TravelBuilder.buildingBlock(Blocks.GRAVEL), "gravel never: it falls");
 		check(!TravelBuilder.buildingBlock(Blocks.OBSIDIAN), "obsidian is kept for portals");
 	}

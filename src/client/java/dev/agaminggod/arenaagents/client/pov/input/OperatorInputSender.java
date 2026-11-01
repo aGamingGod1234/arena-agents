@@ -114,7 +114,7 @@ public final class OperatorInputSender {
 		}
 		// The body's chunk can be unloaded client-side while viewing the agent, which stops KeyboardInput.tick.
 		if (!CAPTURE.movementCaptured()) pollMovement(client);
-		boolean free = client.gui.screen() == null;
+		boolean free = dev.agaminggod.arenaagents.client.compat.McClientCompat.screen(client) == null;
 		CAPTURE.recordHeld(free && client.options.keyAttack.isDown(), free && client.options.keyUse.isDown());
 		if (!CAPTURE.slotKnown()) {
 			// Never guess the agent's hotbar slot; the first state payload supplies it.

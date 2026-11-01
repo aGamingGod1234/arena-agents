@@ -332,7 +332,7 @@ public final class ScenarioRuntimeVerification {
 	static final class FakeLevel extends ServerLevel {
 		// 26.3 entities take their ID from the level, and ServerLevel asks its (absent) chunk source.
 		private int fixtureEntityIds = 100_000;
-		@Override public int getNextEntityId() { return ++fixtureEntityIds; }
+		public int getNextEntityId() { return ++fixtureEntityIds; }
 		private FakeLevel() { super(null, null, null, null, null, null, false, 0, List.of(), false); }
 		@Override public MinecraftServer getServer() { return null; }
 	}

@@ -54,6 +54,43 @@ jobs:
         if: runner.os == 'Linux'
         run: ./gradlew verifyCore --no-daemon --console=plain
 
+  java-targets:
+    name: Mod on Minecraft ${{ matrix.mc }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        mc: ['26.1', '26.2', '26.3']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: gradle
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: coordinator/package-lock.json
+      - name: Install locked coordinator dependencies
+        working-directory: coordinator
+        run: npm ci --ignore-scripts --omit=dev
+      - name: Fetch third-party mod JARs for ${{ matrix.mc }}
+        run: ./scripts/fetch-libs.sh ${{ matrix.mc }}
+      - name: Check, build and check mixin targets for ${{ matrix.mc }}
+        run: ./gradlew -Pmc=${{ matrix.mc }} check build verifyMixinTargets --no-daemon --console=plain
+      - name: Upload the ${{ matrix.mc }} mod JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: arena-agents-mc${{ matrix.mc }}
+          path: |
+            build/libs/arena-agents-*.jar
+            !build/libs/*-sources.jar
+            voice-addon/build/libs/*.jar
+            !voice-addon/build/libs/*-sources.jar
+          if-no-files-found: error
+
   java-and-package:
     name: Java and package (Windows)
     runs-on: windows-latest

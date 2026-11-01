@@ -553,7 +553,7 @@ public final class FarSight {
 		Block block = state.getBlock();
 		if (NATURAL_LOOKALIKES.contains(block)) return false;
 		if (dimensionClass == 0 && NOT_OVERWORLD.contains(block)) return true;
-		if (dimensionClass != 0 && (NOT_NETHER_OR_END.contains(block) || state.is(net.minecraft.tags.BlockItemTags.LOGS_THAT_BURN.block())
+		if (dimensionClass != 0 && (NOT_NETHER_OR_END.contains(block) || state.is(dev.agaminggod.arenaagents.compat.McCompat.LOGS_THAT_BURN)
 				|| state.is(BlockTags.LEAVES))) return true;
 		return SightedFeatures.built(state, null) && !SightedFeatures.natural(state);
 	}

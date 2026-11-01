@@ -85,7 +85,7 @@ public final class SkitPresentationVerification {
 	private static final class PresentationLevel extends net.minecraft.server.level.ServerLevel {
 		// 26.3 entities take their ID from the level, and ServerLevel asks its (absent) chunk source.
 		private int fixtureEntityIds = 100_000;
-		@Override public int getNextEntityId() { return ++fixtureEntityIds; }
+		public int getNextEntityId() { return ++fixtureEntityIds; }
 		private PresentationWaypoints manager;
 		private PresentationLevel() { super(null, null, null, null, null, null, false, 0, null, false); }
 		@Override public net.minecraft.server.waypoints.ServerWaypointManager getWaypointManager() { return manager; }

@@ -16,7 +16,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityEquipment;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
+import dev.agaminggod.arenaagents.compat.McEntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Abilities;
 import net.minecraft.world.entity.player.Inventory;
@@ -218,7 +218,7 @@ public final class TargetSightlineVerification {
 			set(player, LivingEntity.class, "equipment", equipment);
 			set(player, Player.class, "inventory", new Inventory(player, equipment));
 			set(player, Player.class, "abilities", new Abilities());
-			set(player, Entity.class, "type", EntityTypes.PLAYER);
+			set(player, Entity.class, "type", McEntityTypes.PLAYER);
 			set(player, Entity.class, "position", eye.subtract(0D, 1.62D, 0D));
 			set(player, Entity.class, "eyeHeight", 1.62F);
 			set(player, Entity.class, "bb", new AABB(eye.x - .3D, 0D, .2D, eye.x + .3D, 1.8D, .8D));
@@ -362,7 +362,7 @@ public final class TargetSightlineVerification {
 	private static final class EntityWorld extends ServerLevel {
 		// 26.3 entities take their ID from the level, and ServerLevel asks its (absent) chunk source.
 		private int fixtureEntityIds = 100_000;
-		@Override public int getNextEntityId() { return ++fixtureEntityIds; }
+		public int getNextEntityId() { return ++fixtureEntityIds; }
 		Map<BlockPos, BlockState> states;
 		private EntityWorld() { super(null, null, null, null, null, null, false, 0, List.of(), false); }
 		@Override public BlockState getBlockState(BlockPos position) { return states.getOrDefault(position, Blocks.AIR.defaultBlockState()); }

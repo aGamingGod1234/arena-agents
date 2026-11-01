@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.scenario;
 
+import dev.agaminggod.arenaagents.compat.McBlocks;
+
 import dev.agaminggod.arenaagents.agent.AgentGameMode;
 import dev.agaminggod.arenaagents.agent.AgentLifecycleState;
 import dev.agaminggod.arenaagents.scenario.runtime.ScenarioLoadoutPlan;
@@ -857,9 +859,9 @@ public final class ScenarioCoreVerification {
 			assertTrue(palette.size() >= 10, preset.id() + " uses a varied, textured material palette");
 			List<net.minecraft.world.level.block.Block> signatureColors = switch (preset.category()) {
 				case SURVIVAL -> List.of(Blocks.MOSS_BLOCK, Blocks.PODZOL, Blocks.WATER, Blocks.OAK_PLANKS);
-				case BUILDING -> List.of(Blocks.CALCITE, Blocks.TUFF_BRICKS, Blocks.CUT_COPPER.weathering().unaffected(), Blocks.GOLD_BLOCK);
+				case BUILDING -> List.of(Blocks.CALCITE, Blocks.TUFF_BRICKS, McBlocks.CUT_COPPER, Blocks.GOLD_BLOCK);
 				case PVP -> List.of(Blocks.CRACKED_STONE_BRICKS, Blocks.MOSSY_STONE_BRICKS,
-						Blocks.POLISHED_BASALT, Blocks.CONCRETE.red(), Blocks.CONCRETE.blue());
+						Blocks.POLISHED_BASALT, McBlocks.RED_CONCRETE, McBlocks.BLUE_CONCRETE);
 				case PARKOUR -> List.of(Blocks.LAVA, Blocks.SMOOTH_QUARTZ,
 						Blocks.PRISMARINE_BRICKS, Blocks.PURPUR_BLOCK, Blocks.RED_NETHER_BRICKS,
 						Blocks.GOLD_BLOCK, Blocks.EMERALD_BLOCK);

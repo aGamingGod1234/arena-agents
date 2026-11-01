@@ -13,3 +13,7 @@ We are building a catalogue of the hard technical problems in this project and h
 Keep entries short and video-ready, without code-level detail. Skip routine fixes and anything without a real result to report.
 
 Also append each entry to `docs/technical-catalogue.md` under a heading for that pull request, so the whole project's catalogue lives in one place.
+
+## Minecraft 26.x targets
+
+The mod builds for 26.1.x, 26.2 and 26.3 from one tree (`-Pmc=<target>`; the default is 26.3; see the README). A Minecraft API that differs between drops goes through the per-target shims in `src/compat/<target>/` (`McCompat`, `McClientCompat`, `McBlocks`, `McEntityTypes`, `TestCompat` and the test bases). Add the same method to every target, never call the moved API directly from shared code. A mixin whose target differs goes in each target's compat mixin config. Before pushing a change that touches Minecraft APIs or mixins, compile all three targets and run `verifyMixinTargets` for each.

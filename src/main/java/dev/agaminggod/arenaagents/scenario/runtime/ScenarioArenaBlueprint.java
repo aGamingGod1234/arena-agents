@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.scenario.runtime;
 
+import dev.agaminggod.arenaagents.compat.McBlocks;
+
 import dev.agaminggod.arenaagents.scenario.ScenarioCategory;
 import dev.agaminggod.arenaagents.scenario.ScenarioPreset;
 import dev.agaminggod.arenaagents.scenario.ScenarioSpawnLayout;
@@ -127,7 +129,7 @@ public final class ScenarioArenaBlueprint {
 		b.fill(-48, 48, 0, 0, -48, 48, Blocks.SMOOTH_STONE);
 		b.patch(-28, -28, 13, 13, 0, Blocks.CALCITE);
 		b.patch(28, 28, 13, 13, 0, Blocks.TUFF_BRICKS);
-		b.patch(-28, 28, 13, 13, 0, Blocks.CUT_COPPER.weathering().unaffected());
+		b.patch(-28, 28, 13, 13, 0, McBlocks.CUT_COPPER);
 		b.patch(28, -28, 13, 13, 0, Blocks.POLISHED_ANDESITE);
 		b.wall(-48, 48, -48, 48, 1, 4, Blocks.QUARTZ_BRICKS);
 		for (ScenarioSpawnLayout.Slot slot : profile.spawnSlots()) {
@@ -168,7 +170,7 @@ public final class ScenarioArenaBlueprint {
 		// Cornucopia: open center with sixteen visible loot points and defensible tiers.
 		b.annulus(0, 0, 10, 15, 1, Blocks.SMOOTH_STONE);
 		b.ring(0, 0, 15, 1, Blocks.POLISHED_BLACKSTONE_BRICKS);
-		b.fill(-7, 7, 1, 1, -7, 7, Blocks.CUT_COPPER.weathering().unaffected());
+		b.fill(-7, 7, 1, 1, -7, 7, McBlocks.CUT_COPPER);
 		b.patch(0, 0, 6, 6, 1, Blocks.GOLD_BLOCK);
 		b.fill(-5, 5, 2, 2, -2, 2, Blocks.QUARTZ_BRICKS);
 		b.fill(-2, 2, 2, 2, -5, 5, Blocks.QUARTZ_BRICKS);
@@ -221,7 +223,7 @@ public final class ScenarioArenaBlueprint {
 					int centerX = platform.x() + 1;
 					b.ring(centerX, platform.z(), 1, platform.y(), Blocks.POLISHED_BLACKSTONE_BRICKS);
 					b.set(centerX, platform.y(), platform.z(),
-							index == 0 ? Blocks.SEA_LANTERN : Blocks.GLAZED_TERRACOTTA.yellow());
+							index == 0 ? Blocks.SEA_LANTERN : McBlocks.YELLOW_GLAZED_TERRACOTTA);
 					b.pillar(centerX, platform.z(), 1, platform.y() - 1, Blocks.SEA_LANTERN);
 				} else {
 					Block block = parkourPlatformBlock(platform.stage(), index, lane.index());
@@ -249,7 +251,7 @@ public final class ScenarioArenaBlueprint {
 			case MEDIUM -> switch (variant) {
 				case 0 -> Blocks.PRISMARINE_BRICKS;
 				case 1 -> Blocks.DARK_PRISMARINE;
-				default -> Blocks.CONCRETE.cyan();
+				default -> McBlocks.CYAN_CONCRETE;
 			};
 			case HARD -> switch (variant) {
 				case 0 -> Blocks.PURPUR_BLOCK;
@@ -259,7 +261,7 @@ public final class ScenarioArenaBlueprint {
 			case EXTREME -> switch (variant) {
 				case 0 -> Blocks.RED_NETHER_BRICKS;
 				case 1 -> Blocks.POLISHED_BLACKSTONE;
-				default -> Blocks.CONCRETE.magenta();
+				default -> McBlocks.MAGENTA_CONCRETE;
 			};
 		};
 	}
@@ -398,9 +400,9 @@ public final class ScenarioArenaBlueprint {
 			for (ScenarioSpawnLayout.Slot slot : slots) {
 				Block pad = switch (category) {
 					case SURVIVAL -> (slot.index() & 1) == 0 ? Blocks.SPRUCE_PLANKS : Blocks.MUD_BRICKS;
-					case BUILDING -> (slot.index() & 1) == 0 ? Blocks.CUT_COPPER.weathering().unaffected() : Blocks.QUARTZ_BRICKS;
-					case PVP -> (slot.index() & 1) == 0 ? Blocks.CONCRETE.red() : Blocks.CONCRETE.blue();
-					case PARKOUR -> (slot.index() & 1) == 0 ? Blocks.CONCRETE.cyan() : Blocks.CONCRETE.magenta();
+					case BUILDING -> (slot.index() & 1) == 0 ? McBlocks.CUT_COPPER : Blocks.QUARTZ_BRICKS;
+					case PVP -> (slot.index() & 1) == 0 ? McBlocks.RED_CONCRETE : McBlocks.BLUE_CONCRETE;
+					case PARKOUR -> (slot.index() & 1) == 0 ? McBlocks.CYAN_CONCRETE : McBlocks.MAGENTA_CONCRETE;
 				};
 				int radius = category == ScenarioCategory.PARKOUR ? 1 : 2;
 				fill(slot.x() - radius, slot.x() + radius, slot.floorY(), slot.floorY(),
@@ -553,8 +555,8 @@ public final class ScenarioArenaBlueprint {
 
 		private void plot(int centerX, int centerZ, int size) {
 			int half = size / 2;
-			fill(centerX - half, centerX + half, 0, 0, centerZ - half, centerZ + half, Blocks.CONCRETE.white());
-			ring(centerX, centerZ, half + 1, 0, Blocks.CONCRETE.lightGray());
+			fill(centerX - half, centerX + half, 0, 0, centerZ - half, centerZ + half, McBlocks.WHITE_CONCRETE);
+			ring(centerX, centerZ, half + 1, 0, McBlocks.LIGHT_GRAY_CONCRETE);
 			set(centerX, 0, centerZ, Blocks.SEA_LANTERN);
 		}
 
@@ -567,24 +569,24 @@ public final class ScenarioArenaBlueprint {
 
 		private void spectatorDeck() {
 			fill(-3, 3, 14, 14, 31, 66, Blocks.POLISHED_BLACKSTONE_BRICKS);
-			lineZ(31, 66, 14, 0, Blocks.CUT_COPPER.weathering().unaffected());
-			lineZ(31, 66, 15, -3, Blocks.STAINED_GLASS.cyan());
-			lineZ(31, 66, 15, 3, Blocks.STAINED_GLASS.cyan());
+			lineZ(31, 66, 14, 0, McBlocks.CUT_COPPER);
+			lineZ(31, 66, 15, -3, McBlocks.CYAN_STAINED_GLASS);
+			lineZ(31, 66, 15, 3, McBlocks.CYAN_STAINED_GLASS);
 			for (int z = 34; z <= 64; z += 6) {
 				set(-2, 14, z, Blocks.SEA_LANTERN);
 				set(2, 14, z, Blocks.SEA_LANTERN);
 			}
 			fill(-7, 7, 14, 14, 66, 74, Blocks.POLISHED_BLACKSTONE_BRICKS);
 			fill(-5, 5, 14, 14, 67, 73, Blocks.SMOOTH_QUARTZ);
-			lineX(-7, 7, 14, 66, Blocks.CUT_COPPER.weathering().unaffected());
-			lineX(-7, 7, 14, 74, Blocks.CUT_COPPER.weathering().unaffected());
+			lineX(-7, 7, 14, 66, McBlocks.CUT_COPPER);
+			lineX(-7, 7, 14, 74, McBlocks.CUT_COPPER);
 			for (int x = -7; x <= 7; x++) {
-				set(x, 15, 66, Blocks.STAINED_GLASS.cyan());
-				set(x, 15, 74, Blocks.STAINED_GLASS.cyan());
+				set(x, 15, 66, McBlocks.CYAN_STAINED_GLASS);
+				set(x, 15, 74, McBlocks.CYAN_STAINED_GLASS);
 			}
 			for (int z = 67; z < 74; z++) {
-				set(-7, 15, z, Blocks.STAINED_GLASS.cyan());
-				set(7, 15, z, Blocks.STAINED_GLASS.cyan());
+				set(-7, 15, z, McBlocks.CYAN_STAINED_GLASS);
+				set(7, 15, z, McBlocks.CYAN_STAINED_GLASS);
 			}
 			fill(-1, 1, 14, 14, 69, 71, Blocks.SEA_LANTERN);
 		}

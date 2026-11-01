@@ -155,7 +155,7 @@ public final class ThreatAttentionVerification {
 	private static void verifyAimingRules() {
 		check(FallDanger.landingDamage(14, 3, 1, net.minecraft.world.level.block.Blocks.HAY_BLOCK.defaultBlockState(), false, 0) == 2,
 				"hay landing reduces fall damage before rounding");
-		check(FallDanger.landingDamage(14, 3, 1, net.minecraft.world.level.block.Blocks.BED.red().defaultBlockState(), false, 0) == 5,
+		check(FallDanger.landingDamage(14, 3, 1, dev.agaminggod.arenaagents.compat.McBlocks.RED_BED.defaultBlockState(), false, 0) == 5,
 				"bed landing halves fall damage before rounding");
 		check(FallDanger.landingDamage(14, 3, 1, net.minecraft.world.level.block.Blocks.SLIME_BLOCK.defaultBlockState(), false, 0) == 0,
 				"slime landing bounces without damage");
@@ -386,7 +386,7 @@ public final class ThreatAttentionVerification {
 
 	private static final class WeaponPiglin extends net.minecraft.world.entity.monster.piglin.Piglin {
 		private net.minecraft.world.item.ItemStack held;
-		private WeaponPiglin() { super(net.minecraft.world.entity.EntityTypes.PIGLIN, null); }
+		private WeaponPiglin() { super(dev.agaminggod.arenaagents.compat.McEntityTypes.PIGLIN, null); }
 		@Override public net.minecraft.world.item.ItemStack getMainHandItem() { return held; }
 	}
 

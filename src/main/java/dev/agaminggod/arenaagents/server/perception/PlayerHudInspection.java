@@ -101,7 +101,7 @@ public final class PlayerHudInspection {
 		var objective = scoreboard.getDisplayObjective(net.minecraft.world.scores.DisplaySlot.SIDEBAR);
 		var team = player.getTeam();
 		if (team != null) {
-			var slot = team.getColor().map(net.minecraft.world.scores.TeamColor::displaySlot).orElse(null);
+			var slot = dev.agaminggod.arenaagents.compat.McCompat.teamDisplaySlot(team);
 			if (slot != null && scoreboard.getDisplayObjective(slot) != null) objective = scoreboard.getDisplayObjective(slot);
 		}
 		JsonObject result = new JsonObject();

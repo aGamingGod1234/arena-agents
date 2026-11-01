@@ -213,7 +213,7 @@ public final class CarpetInputStateVerification {
 	private static int verifyAuthoredWaterRise() throws ReflectiveOperationException {
 		FixturePlayer player = player();
 		player.water = true;
-		field(Entity.class, "type").set(player, net.minecraft.world.entity.EntityTypes.PLAYER);
+		field(Entity.class, "type").set(player, dev.agaminggod.arenaagents.compat.McEntityTypes.PLAYER);
 		field(net.minecraft.world.entity.LivingEntity.class, "equipment").set(player, new net.minecraft.world.entity.EntityEquipment());
 		dev.agaminggod.arenaagents.compat.TestCompat.prepareAllocatedEntity(player); // 26.3 aiStep asks the interpolation handler every tick.
 		player.setDeltaMovement(Vec3.ZERO);

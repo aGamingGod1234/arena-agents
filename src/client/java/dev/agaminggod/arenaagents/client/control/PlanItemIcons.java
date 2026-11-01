@@ -125,7 +125,7 @@ public final class PlanItemIcons {
    if (renderer != null) renderer.close();
    renderer = null; rendererGeneration = generation;
   }
-  if (client.level == null || !LiveAgentWindows.planEnabled() || client.gui.overlay() != null) return;
+  if (client.level == null || !LiveAgentWindows.planEnabled() || McClientCompat.overlay(client) != null) return;
   // One cache miss per frame avoids a burst of icon work when opening a large plan.
   Request request = QUEUE.poll();
   if (request == null || !activeRequest(request)) return;
@@ -176,10 +176,9 @@ public final class PlanItemIcons {
   Renderer(Minecraft client) {
    // 26.3: the atlas keeps its own submit storage and render pass, so the icon pass cannot consume or draw game
    // submissions; a private dispatcher only prepares this atlas's frames.
-   features = new FeatureRenderDispatcher(client.gameRenderer.renderBuffers(), client.getModelManager(), client.getAtlasManager(),
-    client.font, client.gameRenderer.gameRenderState());
+   features = McClientCompat.iconFeatures(client);
    allocatingIconAtlas = true;
-   try { atlas = new GuiItemAtlas(features, 256, SIZE); }
+   try { atlas = McClientCompat.iconAtlas(client, features, 256, SIZE); }
    finally { allocatingIconAtlas = false; }
   }
 
@@ -208,7 +207,7 @@ public final class PlanItemIcons {
     var commands = device.createCommandEncoder();
     try {
      commands.copyTextureToBuffer(texture, buffer, 0, () -> {
-      try (buffer; var mapped = buffer.map(true, false)) { publish(request, rgbaImage(mapped.data(), SIZE, SIZE)); }
+      try (buffer) { McClientCompat.readMapped(buffer, data -> publish(request, rgbaImage(data, SIZE, SIZE))); }
       catch (RuntimeException exception) { failed(request); LOGGER.warn("Could not read a Minecraft plan item icon: {}", request.itemId, exception); }
      }, 0, x, y, SIZE, SIZE);
     } catch (RuntimeException exception) { buffer.close(); throw exception; }

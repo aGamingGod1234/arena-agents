@@ -187,7 +187,7 @@ public final class GoalVerificationRuntimeVerification {
 	private static final class AdapterLevel extends net.minecraft.server.level.ServerLevel {
 		// 26.3 entities take their ID from the level, and ServerLevel asks its (absent) chunk source.
 		private int fixtureEntityIds = 100_000;
-		@Override public int getNextEntityId() { return ++fixtureEntityIds; }
+		public int getNextEntityId() { return ++fixtureEntityIds; }
 		AdapterChunks chunks;
 		private AdapterLevel() { super(null, null, null, null, null, null, false, 0L, List.of(), false); }
 		@Override public net.minecraft.server.level.ServerChunkCache getChunkSource() { return chunks; }

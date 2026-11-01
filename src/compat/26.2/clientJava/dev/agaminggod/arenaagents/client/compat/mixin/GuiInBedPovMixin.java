@@ -1,4 +1,4 @@
-package dev.agaminggod.arenaagents.client.mixin;
+package dev.agaminggod.arenaagents.client.compat.mixin;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 /**
  * Vanilla opens the in-bed screen (chat plus Leave Bed) while the local player sleeps and closes it on waking
- * (Gui.tick since 26.3, Minecraft.tick before). In a takeover the body that sleeps is the agent, so both checks
+ * (Gui.tick since 26.2, Minecraft.tick on 26.1). In a takeover the body that sleeps is the agent, so both checks
  * read it; Leave Bed is relayed by InBedChatScreenPovMixin.
  */
 @Mixin(Gui.class)

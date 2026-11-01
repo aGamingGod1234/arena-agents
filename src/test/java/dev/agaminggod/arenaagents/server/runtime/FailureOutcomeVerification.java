@@ -243,7 +243,7 @@ public final class FailureOutcomeVerification {
 	private static final class ReceiptWorld extends net.minecraft.server.level.ServerLevel {
 		// 26.3 entities take their ID from the level, and ServerLevel asks its (absent) chunk source.
 		private int fixtureEntityIds = 100_000;
-		@Override public int getNextEntityId() { return ++fixtureEntityIds; }
+		public int getNextEntityId() { return ++fixtureEntityIds; }
 		private ReceiptWorld() { super(null, null, null, null, null, null, false, 0, List.of(), false); }
 		@Override public net.minecraft.world.entity.Entity getEntity(java.util.UUID id) { return null; }
 	}

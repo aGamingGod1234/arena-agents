@@ -40,7 +40,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
+import dev.agaminggod.arenaagents.compat.McEntityTypes;
 import net.minecraft.world.entity.Marker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,7 +75,7 @@ public final class CameraDirectorClient {
             if (!PATHS.containsKey(name) && PATHS.size() >= MAX_PATHS) throw new IllegalArgumentException("Camera path library is full.");
             armedDollyName = name; armedDollyReplace = replace;
             if (dolly != null) beginDollyCapture(client);
-            if (client.gui.screen() != null) client.gui.setScreen(null);
+            if (McClientCompat.screen(client) != null) McClientCompat.setScreen(client, null);
             guiFeedback(dollyRecording ? "Recording camera. Use its Position tab to move; Stop and save finishes the shot." : "Right-click your camera to record. Its own controls can position and save the shot.", false);
         } catch (IllegalArgumentException error) { guiFeedback(error.getMessage(), true); }
     }
@@ -134,7 +134,7 @@ public final class CameraDirectorClient {
         if (recording != null && dolly != rig) { guiFeedback("Save the current recording before switching cameras.", true); return; }
         if (dolly != rig) enterDolly(client, rig);
         if (client.player != null) { client.player.setYRot(rig.getYRot()); client.player.setXRot(rig.getXRot()); }
-        client.gui.setScreen(null);
+        McClientCompat.setScreen(client, null);
     }
     public static void recordCamera(dev.agaminggod.arenaagents.camera.CameraRig rig, String name) {
         if (dolly != rig) enterDolly(Minecraft.getInstance(), rig);
@@ -150,7 +150,7 @@ public final class CameraDirectorClient {
             if (dollyRecording && recording != null) stopRecordingFromGui();
             stopPlayback(client); return;
         }
-        if (dolly instanceof dev.agaminggod.arenaagents.camera.CameraRig rig && client.gui.screen() == null && client.level.getGameTime() % 4 == 0) {
+        if (dolly instanceof dev.agaminggod.arenaagents.camera.CameraRig rig && McClientCompat.screen(client) == null && client.level.getGameTime() % 4 == 0) {
             rigCommand(rig, "yaw", net.minecraft.util.Mth.wrapDegrees(client.player.getYRot()));
             rigCommand(rig, "pitch", client.player.getXRot());
         }
@@ -198,7 +198,7 @@ public final class CameraDirectorClient {
 			}
 		}
 		scheduledTake = value; takeLevel = client.level;
-		if (client.gui.screen() != null) client.gui.setScreen(null);
+		if (McClientCompat.screen(client) != null) McClientCompat.setScreen(client, null);
 		guiFeedback(value.message(), false);
 	}
 
@@ -215,7 +215,7 @@ public final class CameraDirectorClient {
             if (player.isShiftKeyDown()) return net.minecraft.world.InteractionResult.SUCCESS;
             if (entity instanceof dev.agaminggod.arenaagents.camera.CameraRig rig) {
                 if (armedDollyName != null) enterDolly(Minecraft.getInstance(), rig);
-                Minecraft.getInstance().gui.setScreen(new CameraRigScreen(rig));
+                McClientCompat.setScreen(Minecraft.getInstance(), new CameraRigScreen(rig));
             }
             else enterDolly(Minecraft.getInstance(), entity);
             return net.minecraft.world.InteractionResult.SUCCESS;
@@ -289,7 +289,7 @@ public final class CameraDirectorClient {
 		previousCameraType = client.options.getCameraType();
 		playback = new Playback(path, client.level, client.player, client.level.getGameTime(), loop);
 		apply(client, path.sample(0.0D));
-		if (client.gui.screen() != null) client.gui.setScreen(null);
+		if (McClientCompat.screen(client) != null) McClientCompat.setScreen(client, null);
 		guiFeedback("Playing camera path '" + path.name() + "'" + (loop ? " on loop." : "."), false);
 	}
 
@@ -308,9 +308,9 @@ public final class CameraDirectorClient {
 
 	private static void guiFeedback(String message, boolean error) {
 		Minecraft client = Minecraft.getInstance();
-		if (client.gui.screen() instanceof dev.agaminggod.arenaagents.client.gui.SkitDirectorScreen screen) screen.acceptLocalFeedback(message, error);
-        if (client.gui.screen() instanceof CameraRigScreen screen) screen.feedback(message);
-		if (client.gui != null) client.gui.hud.setOverlayMessage(Component.literal(message), true);
+		if (McClientCompat.screen(client) instanceof dev.agaminggod.arenaagents.client.gui.SkitDirectorScreen screen) screen.acceptLocalFeedback(message, error);
+        if (McClientCompat.screen(client) instanceof CameraRigScreen screen) screen.feedback(message);
+		if (client.gui != null) McClientCompat.overlayMessage(client, Component.literal(message), true);
 	}
 
 	private static com.mojang.brigadier.builder.LiteralArgumentBuilder<FabricClientCommandSource> commands() {
@@ -486,7 +486,7 @@ public final class CameraDirectorClient {
 	}
 
 	private static void tick(Minecraft client) {
-        while (CAMERA_CONTROLS.consumeClick()) if (dolly instanceof dev.agaminggod.arenaagents.camera.CameraRig rig && client.gui.screen() == null) client.gui.setScreen(new CameraRigScreen(rig));
+        while (CAMERA_CONTROLS.consumeClick()) if (dolly instanceof dev.agaminggod.arenaagents.camera.CameraRig rig && McClientCompat.screen(client) == null) McClientCompat.setScreen(client, new CameraRigScreen(rig));
         tickDolly(client);
 		if (scheduledTake != null) {
 			if (client.level != takeLevel || client.player == null) { scheduledTake = null; takeLevel = null; }
@@ -523,7 +523,7 @@ public final class CameraDirectorClient {
 		boolean created = cameraAnchor == null || cameraAnchor.level() != client.level || cameraAnchor.isRemoved();
 		if (created) {
 			if (cameraAnchor != null) cameraAnchor.remove(Entity.RemovalReason.DISCARDED);
-			cameraAnchor = EntityTypes.MARKER.create(client.level, EntitySpawnReason.COMMAND);
+			cameraAnchor = McEntityTypes.MARKER.create(client.level, EntitySpawnReason.COMMAND);
 			if (cameraAnchor == null) return;
 		}
 		if (!created) cameraAnchor.setOldPosAndRot();
@@ -540,7 +540,7 @@ public final class CameraDirectorClient {
 
 	private static void setCamera(Minecraft client, Entity entity) {
 		client.setCameraEntity(entity);
-		CameraEyeHeightAccessor camera = (CameraEyeHeightAccessor) client.gameRenderer.mainCamera();
+		CameraEyeHeightAccessor camera = (CameraEyeHeightAccessor) McClientCompat.mainCamera(client);
 		float height = entity == null ? 0.0F : entity.getEyeHeight();
 		camera.arenaagents$setEyeHeight(height);
 		camera.arenaagents$setEyeHeightOld(height);

@@ -29,7 +29,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityEquipment;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
+import dev.agaminggod.arenaagents.compat.McEntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragonPart;
@@ -66,7 +66,7 @@ public final class RangedTargetContractVerification {
 			set(player, Player.class, "inventory", new Inventory(player, equipment));
 			set(player, LivingEntity.class, "equipment", equipment);
 			set(player, Entity.class, "uuid", UUID.randomUUID());
-			set(player, Entity.class, "type", EntityTypes.PLAYER);
+			set(player, Entity.class, "type", McEntityTypes.PLAYER);
 			set(player, Entity.class, "eyeHeight", 1.62F);
 			position(player, new Vec3(.5D, 64D, .5D), new AABB(.2D, 64D, .2D, .8D, 65.8D, .8D), level);
 			set(player, fakeType, "pack", new EntityPlayerActionPack(player) { @Override public void setSlot(int slot) { } });
@@ -74,7 +74,7 @@ public final class RangedTargetContractVerification {
 			dragon.setId(1017); // 26.3 assigns entity IDs in the constructor, which Unsafe allocation skips.
 			dragon.alive = true;
 			set(dragon, Entity.class, "uuid", UUID.randomUUID());
-			set(dragon, Entity.class, "type", EntityTypes.ENDER_DRAGON);
+			set(dragon, Entity.class, "type", McEntityTypes.ENDER_DRAGON);
 			position(dragon, new Vec3(.5D, 64D, 8.5D), new AABB(.2D, 64D, 8.2D, .8D, 65.8D, 8.8D), level);
 			verifyCurrentBodyAim(unsafe, player, dragon);
 			verifyInterruptedAndBlockedDraw(unsafe, player, dragon, level, fakeType);
@@ -265,7 +265,7 @@ public final class RangedTargetContractVerification {
 	}
 	private static final class FixtureDragon extends EnderDragon {
 		boolean alive;
-		private FixtureDragon() { super(EntityTypes.ENDER_DRAGON, null); }
+		private FixtureDragon() { super(McEntityTypes.ENDER_DRAGON, null); }
 		@Override public boolean isAlive() { return alive; }
 		@Override public boolean isInvisibleTo(Player observer) { return false; }
 	}
@@ -277,7 +277,7 @@ public final class RangedTargetContractVerification {
 	private static final class FixtureLevel extends ServerLevel {
 		// 26.3 entities take their ID from the level, and ServerLevel asks its (absent) chunk source.
 		private int fixtureEntityIds = 100_000;
-		@Override public int getNextEntityId() { return ++fixtureEntityIds; }
+		public int getNextEntityId() { return ++fixtureEntityIds; }
 		Collection<EnderDragonPart> parts;
 		Entity indexed;
 		boolean obstructed;
