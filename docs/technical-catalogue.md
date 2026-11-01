@@ -1531,3 +1531,59 @@ Full npm: 4,531 passed, 3 skipped, zero failed/cancelled, 109.05 s. Final Deskto
 - **Problem:** The mod only ran on Minecraft 26.3, one of the five 26.x releases (26.1, 26.1.1, 26.1.2, 26.2, 26.3). Each drop renamed or moved APIs the mod leans on: entity types, coloured and copper blocks, the GUI's screen and HUD classes, the item-icon atlas, sign text, swing timing and fuel. Each one also needed a different Fabric API, Carpet and Voice Chat build. A mixin aimed at a renamed method still compiles, then crashes the game when it loads.
 - **Solution:** One source tree and one build flag (`-Pmc=26.1|26.2|26.3`). Every API that moved goes through a small per-version shim layer, and the mixins that only one drop needs live beside it. A static checker reads each mixin's targets against that drop's real classes before the game starts. CI then builds and fully tests all three targets and uploads a JAR for each.
 - **Result:** Versions the mod runs on: 1 -> 5 of 5 released (measured). Fabric loaded each version and the full suites ran against it: 26.1, 26.1.1, 26.1.2, 26.2 and 26.3 each passed all 2,577,629 core assertions, the camera checks (20) and the POV mixins (46-47 classes). The first 26.1 compile had 135 errors across 39 server files (measured, javac), and the finished port has 0. The shim layer is about 1,100 lines per version against 124,431 shared lines (under 1%, measured). The static checker caught 15 of 313 mixin targets that would have crashed 26.1 at startup, before any game launch (measured). One more, the in-bed screen moving from the HUD to the main client class, only showed when the mixins were really applied under Fabric. On 26.2, the agent's strategy data (pickaxe table, barter odds, cookable foods) came out identical to 26.3's. The 26.3 map block catalogue has 3,357 states 26.2 lacks (measured), and no shipped map uses them.
+
+### Secrets on command lines
+- **Problem:** On Windows, every provider launch packed all API keys and OAuth tokens into the PowerShell wrapper's command line, which Windows auditing and security tools log. Claude Code's tool-server password was on its command line too, where any local program could read it and take control of the agent's body.
+- **Solution:** No secret goes on a command line now. The wrapper gets the environment through its own environment and deletes it before starting anything. Claude Code reads its config from an owner-only file in a directory secured once per agent.
+- **Result:** Secrets in a spawned command line went from yes to no for both the keys and the tool token (measured by tests that decode every argument). The Windows wrapper's command line got about 30% shorter, 331 to 234 characters (measured). A first version secured the file on every launch and cost about 2.5 s each on Windows, breaking standby handoffs. Windows CI caught it, and securing the directory once fixed it.
+
+### One slow command froze every agent
+- **Problem:** Listing a provider's models ran a command that blocked the coordinator, and with it the game bridge, tools, voice and all agents, for up to 15 s at startup and on every rescan.
+- **Solution:** The command, and the matching Windows Codex lookup, run in the background with the same timeouts and errors.
+- **Result:** With a fake 1 s command, timer ticks that ran went from 0 of about 100 to 97 of 101, worst gap 17 ms (measured).
+
+### Agents that eventually could not act
+- **Problem:** Every cancelled or unsent action was kept as an "unknown outcome" forever. After 1,024 of them, the agent's memory refused every new action.
+- **Solution:** Actions that provably never left the coordinator are recorded as settled. Past the limit, the oldest stale unknowns are forgotten and counted instead of blocking.
+- **Result:** Before, the agent was blocked at cancellation 1,025. After 5,000 cancellations, 0 entries are unresolved (measured).
+
+### Scripts that crashed on quiet moments
+- **Problem:** Optional facts like "standing in lava" only exist while they are true, so a guard script that checked them crashed on every quiet moment. `"health " + 20` was also a crash, and the model was only told "execution failed".
+- **Solution:** A missing fact reads as null, strings join with numbers, and every runtime error names its code, line and cause.
+- **Result:** On 513 recorded game moments, 10 common guard checks errored on 87% of evaluations (4,461 of 5,130) before. After, none of their reads error (measured).
+
+### Copying every game sample three times
+- **Problem:** Each game sample was copied, validated and frozen two or three times before scripts could read it. With 8 agents that was about a third of the coordinator's CPU.
+- **Solution:** Copy each sample once, trust our own validated copy, and reuse the parts that did not change.
+- **Result:** A fact build went from 5-6.6 ms to 1.7 ms. With 8 agents the median program-step handoff went from 126 to 73 ms and observation ingest from 11.9 to 6.1 ms, with byte-identical results (measured).
+
+### A bow that scanned 128 blocks every tick
+- **Problem:** While an agent held a drawn bow waiting for a target to leave cover, every tick it scanned every entity within 128 blocks and solved an arrow arc to each one. That built a hint shown only if the wait timed out.
+- **Solution:** The hold remembers that a hint is owed and builds it once, at the timeout.
+- **Result:** With 16 nearby mobs, a held tick fell from about 680 µs and 480 KB allocated to 20-45 µs and about 22 KB (measured, 100k ticks).
+
+### The body stood still while the model thought
+- **Problem:** Every action ended with the body standing still for the 3-17 s the model needed to decide its next step. A start-and-return mode existed, but the model had no way to queue the next step, so it saved nothing.
+- **Solution:** The model can send its next step while the current one runs, and it starts the instant the current one succeeds. Exploring and tunnelling legs can also repeat until the model replies.
+- **Result:** In a deterministic replay on the real runtime at 4 s per decision, a 6-step chain went from 98.5 to 81 s (-18%) and a 6-leg tunnel from 96 to 76 s (-21%). The body's idle share fell from about 25% to 5-8% (measured, no provider).
+
+### Danger alerts padded with trivia
+- **Problem:** At 9 HP against a zombie, the model's 17 KB alert spent a quarter of its bytes on block trivia like "sniffer_diggable_block", far snow blocks, footstep sounds and 16-decimal coordinates. The danger summary sat behind 14 KB of world facts.
+- **Solution:** Danger wakes lead with the danger, the threats and the current intent. They keep only the facts a fight-or-flee decision uses and say what was left out.
+- **Result:** Over 59 recorded danger wakes, total bytes fell 16%. The zombie bail-out went from 17.2 to 11.9 KB, about 4,290 to 2,970 tokens at bytes/4, with no threat, block, item or result fact lost (measured).
+
+### A real server found a crash the tests could not
+- **Problem:** The headless suites call Minecraft's code directly, but never run a server with Carpet fake players ticking in a world.
+- **Solution:** A live check boots the real dedicated server for each 26.x version, with the full mod set. It spawns fake players, drops one 10 blocks, and stops the server cleanly. CI runs it for every version.
+- **Result:** On 26.1 the server died with a StackOverflowError the moment a fake player's fall was checked: Carpet 26.1's fall override and our fall-damage fix kept calling each other. After the fix, all three versions pass, with 16 of 20 health after the drop (measured live).
+
+### Measuring the reflexes in a live world, with no model
+- **Problem:** The new default reflexes had only been checked in unit tests. Nobody knew how they changed survival in a real world.
+- **Solution:** A benchmark connects to a real server as the coordinator, summons a body and stages dangers with server commands. Trials alternate the 4 original default reflexes with the 10 current ones.
+- **Result:** Measured live on 26.3, 6 trials per arm, mixed:
+  - **Hunger:** the eat reflex fired 6 times against 0, and final food was 10.8 against 2.3 of 20.
+  - **3 hearts beside a zombie:** retreating kept the body alive 6.1 s against 3.5 s, though with no healing it still died.
+  - **Creeper:** damage was 0 when the sprint finished, but the sprint often timed out.
+  - **Shield:** the shield reflex never fired against a skeleton.
+
+  The last two are body bugs the benchmark surfaced, logged as follow-ups rather than claimed as wins.
