@@ -27,6 +27,12 @@ function record(overrides = {}) {
 
 const testRegistry = { get: (agentId) => record({ agentId }) };
 
+// In production the bridge socket keeps the event loop alive while a body tool waits; these tests have no socket, and
+// their guard timers are unref'd so a passing test exits at once. Without one ref'd handle the loop drained mid-test
+// ("Promise resolution is still pending but the event loop has already resolved") and cancelled the rest of this file.
+const keepAlive = setInterval(() => {}, 1_000);
+test.after(() => clearInterval(keepAlive));
+
 function checkedActionDuration(result) {
  const { durationMs, ...facts } = result;
  assert.ok(Number.isSafeInteger(durationMs) && durationMs >= 0, 'measured action duration is nonnegative milliseconds');

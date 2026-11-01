@@ -451,6 +451,8 @@ test('a placed bell stays the agent\'s own after a restart', async () => {
 		memory.ingest(record.agentId, seen, { snapshot: false });
 		await second.observe(record, seen);
 		assert.match(second.continuity(record).options, /^iron: seen none remembered;/);
+		// Its observation persists asynchronously; removing the directory under that write raced (ENOTEMPTY) under load.
+		await second.flush();
 	} finally { await rm(directory, { recursive: true, force: true }); }
 });
 
