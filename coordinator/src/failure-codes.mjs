@@ -57,7 +57,7 @@ export const FAILURE_CODES = Object.freeze({
 	AIM_NOT_REACHED: ['sight', null],
 	LOOK_NOT_SETTLED: ['sight', null],
 	TARGET_NOT_VISIBLE: ['sight', null],
-	TARGET_OBSTRUCTED: ['sight', 'a reachable aim ray first hits the target or face', ['scoop == null', 'ObservedEntityTarget.matchesHit(target, entityHit)', 'hit.getDirection() != face', 'outline.isEmpty()', 'entityHit.getEntity() != target', 'point == null', 'TargetSightline.rangedEntity(player, target)', 'named == null', 'arcBlock != null', 'block != null']],
+	TARGET_OBSTRUCTED: ['sight', 'a reachable aim ray first hits the target or face', ['scoop == null', 'ObservedEntityTarget.matchesHit(target, entityHit)', 'hit.getDirection() != face', 'outline.isEmpty()', 'entityHit.getEntity() != target', 'point == null', 'TargetSightline.rangedEntity(player, target)', 'named == null', 'arcBlock != null', 'block != null', 'rangedPoint(player, target)']],
 	// reach
 	APPROACH_BLOCKED: ['reach', null],
 	ITEM_PICKUP_TIMED_OUT: ['reach', null],
@@ -498,6 +498,7 @@ export const FAILURE_CODES = Object.freeze({
 	COORDINATOR_NOT_RECONCILED: ['internal', 'scenario preflight plumbing'],
 	COORDINATOR_ORPHAN_CLEANUP_FAILED: ['internal', 'coordinator process cleanup fault'],
 	COORDINATOR_RECONNECT_TIMEOUT: ['internal', 'coordinator process lifecycle'],
+	COORDINATOR_RESTART_EXHAUSTED: ['internal', 'coordinator crash loop spent its restart budget'],
 	COORDINATOR_RUNTIME_INVALID: ['internal', 'coordinator runtime setup fault'],
 	COORDINATOR_STARTUP_INVALID: ['internal', 'coordinator startup dependency fault'],
 	COORDINATOR_START_FAILED: ['internal', 'coordinator process start fault'],
