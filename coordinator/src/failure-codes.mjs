@@ -348,7 +348,10 @@ export const FAILURE_CODES = Object.freeze({
 	PROGRAM_BUSY: ['handle', null],
 	REQUESTER_MISMATCH: ['handle', null],
 	RESOURCE_BUSY: ['handle', null],
-	STALE_ACTION: ['handle', 'actionId/revision match this goal\'s active action', ['matchesCancellation', 'tool.goalRevision !== goalRevision', 'action?.goalRevision !== tool.goalRevision', 'action.actionId !== tool.actionId']],
+	STALE_ACTION: ['handle', 'the id names this goal\'s live or last body action', ['matchesCancellation', 'tool.goalRevision !== goalRevision', 'action?.goalRevision !== tool.goalRevision', 'action.actionId !== tool.actionId', 'active.engineActionId !== undefined', 'receipt === null']],
+	// act/startAction after:<actionId>: the queued step starts only once that action succeeds.
+	AFTER_INTERRUPTED: ['threat', null],
+	PREDECESSOR_NOT_SUCCEEDED: ['handle', 'the after: action ended SUCCEEDED', ["predecessor.state === 'SUCCEEDED'"]],
 	STALE_FACTS: ['handle', null],
 	STALE_PROGRAM: ['handle', null],
 	STALE_PROGRAM_DECISION: ['handle', null],

@@ -17,8 +17,8 @@ const goalSpec = { originalRequest: 'beat the game', predicate: { type: 'entity_
 const record = () => ({ agentId: 'agent-r7', currentGoal: 'beat the game', currentGoalSpec: goalSpec, goalRevision: 1 });
 const intent = { step: 'rods', why: 'eyes of ender need blaze powder', via: 'fortress seen at 74,68,71', until: 'has 7 blaze rods', unless: 'gear lost or health under 8', next: 'check rods held after the fight' };
 const operate = (views, r, value) => views.operate(r, normalizeMinecraftToolCall('taskPlan', value));
-const wake = (r, views, model, observation) => {
-	const encoded = encodeNativeEventInput(buildNativeEventInput(r, { event: 'observation', trigger: 'damage', observation, continuity: views.continuity(r) }), model);
+const wake = (r, views, model, observation, trigger = 'damage') => {
+	const encoded = encodeNativeEventInput(buildNativeEventInput(r, { event: 'observation', trigger, observation, continuity: views.continuity(r) }), model);
 	return decodeModelFacts(JSON.parse(encoded.slice(encoded.indexOf('\n') + 1)));
 };
 
@@ -118,9 +118,12 @@ test('rotation: a fresh context gets the whole header; within a context only cha
 	const views = new LiveTaskViews(), r = record(), model = new ModelObservationViews();
 	await views.observe(r, respawn);
 	await operate(views, r, { operation: 'intent', intent: { step: 'tools', why: 'gear was lost in lava', next: 'craft a table from these logs' } });
+	// An ordinary wake leads with the HUD observation; a danger wake (this damage trigger) leads with the working intent.
+	const ordinary = wake(r, views, new ModelObservationViews(), respawn, 'attention');
+	assert.deepEqual(Object.keys(ordinary).slice(0, 3), ['observation', 'observationView', 'event'], 'HUD observations lead ownership and working intent');
+	assert.ok(Object.keys(ordinary).indexOf('now') > Object.keys(ordinary).indexOf('observation'));
 	const first = wake(r, views, model, respawn);
-	assert.deepEqual(Object.keys(first).slice(0, 3), ['observation', 'observationView', 'event'], 'HUD observations lead ownership and working intent');
-	assert.ok(Object.keys(first).indexOf('now') > Object.keys(first).indexOf('observation'));
+	assert.deepEqual(Object.keys(first).slice(0, 3), ['now', 'situation', 'observation'], 'a danger wake leads with its working intent and situation');
 	assert.equal(first.goalSpec.fingerprint, undefined);
 	assert.equal(first.goalSpec.originalRequest, undefined, 'the request text is already the goal');
 	await views.observe(r, failA);

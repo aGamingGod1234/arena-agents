@@ -58,7 +58,7 @@ test('survival template normalizes to one bounded standing guard with optional p
 	assert.ok(Buffer.byteLength(ARENA_SCRIPT_API_REFERENCE) <= 15_406); // +178: absent facts read null, string + number, located runtime errors; +18: fightTarget/useRanged single? (d41-blaze-survive); +64: fightTarget/useRanged untilItem?/untilCount?, roof? (d41-fight-count); +48: useRanged untilDead?/fleeAtHealth?/collect?, fightTarget collect? (d41-ranged-loop); +15: travelTo fightThrough? (d41-resume); +118: player.fightUntil (d41-fight-until); +118: castObsidian/barterUntil (d41-cast-barter)
 	// +36 B: the stage check terms in the taskPlan check description; +11 B: spawn:bed; +282 B: the dig_to action; +1,509 B: the travel_to action.
 	// +32 B: acceptLavaRisk on use_item and interact_block (d41-portal).
-	assert.ok(Buffer.byteLength(JSON.stringify(MINECRAFT_DYNAMIC_TOOLS)) <= 32_863) // +128 B: d41-blaze-survive single? and the plan-count act sentence; +44 B: d41-ranged-loop use_ranged/fight_target options; +226 B: d41-resume travelTo fightThrough; +153 B: d41-fight-until fight_until; +673 B: d41-cast-barter cast_obsidian/barter_until
+	assert.ok(Buffer.byteLength(JSON.stringify(MINECRAFT_DYNAMIC_TOOLS)) <= 33_408) // +545 B: 2026-11-01 overlap act/startAction after and keepGoing; +128 B: d41-blaze-survive single? and the plan-count act sentence; +44 B: d41-ranged-loop use_ranged/fight_target options; +226 B: d41-resume travelTo fightThrough; +153 B: d41-fight-until fight_until; +673 B: d41-cast-barter cast_obsidian/barter_until
 });
 
 test('background is ignored for templates, authored guards, legacy orders and deletion', () => {
