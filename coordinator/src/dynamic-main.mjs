@@ -6591,18 +6591,23 @@ export function buildNativeEventInput(record, { event, trigger, programId, statu
 	const landmarkSource = Array.isArray(observation.landmarks) ? observation.landmarks : null;
 	const nearbyContainerSource = Array.isArray(observation.nearbyContainers) ? observation.nearbyContainers : null;
 	const optionSource = Array.isArray(observation.options) ? observation.options : null;
-	const inventoryRows = boundedEventArray(inventorySource, 32);
-	const itemRows = boundedEventArray(itemSource, 16);
+	const dangerTrigger = normalizedEvent === 'program_attention' ? status?.decision?.trigger ?? trigger : trigger;
+	// A danger wake is read for one decision (fight, flee, cover, eat): it carries the facts for that decision and leaves
+	// world detail (tag lists, distant landmarks, routine sounds, hit boxes) to observe/inspect (audit 2026-11-01 #9).
+	const leanDanger = normalizedEvent !== 'program_planning_due' && isLeanDangerWake({ trigger: dangerTrigger, status, observation, conversationOnly, dangerWake });
+	const inventoryRows = boundedEventArray(leanDanger ? inventorySource.map(leanDangerItemTags) : inventorySource, 32);
+	const itemRows = boundedEventArray(leanDanger ? itemSource.map(leanDangerItemTags) : itemSource, 16);
 	// Hostile or hunting mobs (including ones only heard behind the agent) survive the nearest-16 cut.
-	const entityRows = boundedEventArray(entitySource, 16, isHazardousEventFact);
+	const entityRows = boundedEventArray(leanDanger ? entitySource.map(leanDangerEntity) : entitySource, 16, isHazardousEventFact);
 	// Pay for landing/burn danger facts with terrain detail. The full observation stays
 	// queryable; coverage below names the omitted rows, and threat/inventory detail keeps its existing budget.
-	const dangerTrigger = normalizedEvent === 'program_attention' ? status?.decision?.trigger ?? trigger : trigger;
 	const burningOrContact = (DANGER_DECISION_TRIGGERS.has(dangerTrigger) || dangerTrigger === 'low_health')
 		&& (inHazardContact(observation.player) || burnFacts(observation.player) !== null);
-	const blockRows = boundedEventArray(blockSource, burningOrContact ? 12 : 32,
+	const blockRows = boundedEventArray(leanDanger ? blockSource.map(leanDangerBlockTags) : blockSource, burningOrContact ? 12 : 32,
 		burningOrContact ? row => isHazardousEventFact(row) || row?.blockId === 'minecraft:water' : isHazardousEventFact);
-	const landmarkRows = landmarkSource === null ? null : boundedEventArray(landmarkSource, 32);
+	// Danger keeps the landmarks that change an escape (lava, fire, water); the rest are coverage-counted as omitted.
+	const landmarkRows = landmarkSource === null ? null : boundedEventArray(leanDanger
+		? landmarkSource.filter((row) => isHazardousEventFact(row) || LEAN_DANGER_LANDMARK_BLOCKS.has(row?.blockId)).map(leanDangerBlockTags) : landmarkSource, 32);
 	const nearbyContainerRows = nearbyContainerSource === null ? null : boundedEventArray(nearbyContainerSource, 16);
 	const optionRows = optionSource === null ? null : boundedEventArray(optionSource, 4);
 	const compactObservation = {
@@ -6614,12 +6619,12 @@ export function buildNativeEventInput(record, { event, trigger, programId, statu
 		...(observation.ready === undefined ? {} : { ready: observation.ready }),
 		...(observation.status === undefined ? {} : { status: observation.status }),
 		...(observation.velocity === undefined ? {} : { velocity: observation.velocity }),
-		player: visibleObservation(observation).player ?? {},
+		player: leanDanger ? leanDangerPlayer(visibleObservation(observation).player ?? {}) : visibleObservation(observation).player ?? {},
 		inventory: {
 			items: inventoryRows.values,
 			...(observation.inventory?.selectedSlot === undefined ? {} : { selectedSlot: observation.inventory.selectedSlot }),
 			...(observation.inventory?.selectedItem === undefined ? {} : { selectedItem: observation.inventory.selectedItem }),
-			...(observation.inventory?.tagCounts === undefined ? {} : { tagCounts: observation.inventory.tagCounts }),
+			...(observation.inventory?.tagCounts === undefined ? {} : { tagCounts: leanDanger ? leanDangerTagCounts(observation.inventory.tagCounts) : observation.inventory.tagCounts }),
 		},
 		items: itemRows.values,
 		entities: entityRows.values,
@@ -6650,6 +6655,7 @@ export function buildNativeEventInput(record, { event, trigger, programId, statu
 			...(nearbyContainerRows === null ? {} : { nearbyContainers: eventArrayCoverage(nearbyContainerSource, nearbyContainerRows.values) }),
 			...(optionRows === null ? {} : { options: eventArrayCoverage(optionSource, optionRows.values) }),
 		},
+		...(leanDanger ? { omittedForDanger: LEAN_DANGER_NOTE } : {}),
 	};
 	const conversationEntries = Array.isArray(conversation) ? conversation : (Array.isArray(conversation?.entries) ? conversation.entries : []);
 	// recipientId is always this agent and goalRevision is bookkeeping; the sender's name and operator flag stay.
@@ -7828,6 +7834,66 @@ function compactEventRows(value) {
 		const omittedFields = [...new Set([...(entry.omittedFields ?? []), ...Object.keys(entry).filter((field) => field !== 'omittedFields' && !COMPACT_EVENT_ROW_FIELDS.includes(field))])];
 		return omittedFields.length === 0 ? compact : { ...compact, omittedFields };
 	});
+}
+
+/**
+ * The wakes read for one survival decision: a danger trigger, low health, hazard contact or burning, a program's urgent
+ * danger decision, a fight that bailed out on low health, and the no-task danger wake.
+ */
+export function isLeanDangerWake({ trigger, status, observation = {}, conversationOnly = false, dangerWake = false } = {}) {
+	if (conversationOnly === true) return dangerWake === true;
+	if (DANGER_DECISION_TRIGGERS.has(trigger) || trigger === 'low_health') return true;
+	if (status?.decision?.priority === 'urgent' && DANGER_DECISION_TRIGGERS.has(status.decision.trigger)) return true;
+	if (inHazardContact(observation.player) || observation.player?.onFire === true || burnFacts(observation.player) !== null) return true;
+	return observation.currentAction?.active !== true && observation.lastResult?.reasonCode === 'LOW_HEALTH_BAILOUT';
+}
+
+export const LEAN_DANGER_NOTE = 'Danger wake: block and item tags other than mining, tool, weapon, food and armour tags, landmarks other than hazards and water, routine sound rows and entity bounds are left out; coordinates are rounded to 0.1. observe or inspect returns them.';
+// Tags a defence or escape can turn on: what digs or places where, and what is a weapon, tool, food or armour.
+const LEAN_DANGER_BLOCK_TAG = /^#minecraft:(mineable\/|needs_|logs$|logs_that_burn$|planks$|replaceable$|climbable$|fire$|campfires$|leaves$|dirt$|sand$)/;
+const LEAN_DANGER_ITEM_TAG = /^#c:(foods|tools|armors|shields)(\/|$)|^#minecraft:(swords|axes|pickaxes|shovels|hoes|planks|logs|arrows|head_armor|chest_armor|leg_armor|foot_armor|meat|fishes)$/;
+const LEAN_DANGER_LANDMARK_BLOCKS = new Set(['minecraft:water', 'minecraft:lava', 'minecraft:fire', 'minecraft:soul_fire', 'minecraft:magma_block', 'minecraft:powder_snow']);
+// Sounds of the fight itself and of footsteps: the threat rows already carry the mobs that made them.
+const LEAN_DANGER_ROUTINE_SOUND = /^entity\.[a-z_]+\.(hurt|step|death|ambient|attack|swim|splash|eat|burp)(\.|$)|^entity\.player\.|^block\.[a-z_]+\.(step|break|place|hit|fall)$/;
+
+function leanDangerBlockTags(row) {
+	if (row === null || typeof row !== 'object' || !Array.isArray(row.tags)) return row;
+	return { ...row, tags: row.tags.filter((tag) => typeof tag !== 'string' || LEAN_DANGER_BLOCK_TAG.test(tag)) };
+}
+
+function leanDangerItemTags(row) {
+	if (row === null || typeof row !== 'object' || !Array.isArray(row.tags)) return row;
+	return { ...row, tags: row.tags.filter((tag) => typeof tag !== 'string' || LEAN_DANGER_ITEM_TAG.test(tag)) };
+}
+
+function leanDangerTagCounts(tagCounts) {
+	if (tagCounts === null || typeof tagCounts !== 'object' || Array.isArray(tagCounts)) return tagCounts;
+	return Object.fromEntries(Object.entries(tagCounts).filter(([tag]) => LEAN_DANGER_ITEM_TAG.test(tag)));
+}
+
+const roundTenth = (value) => typeof value === 'number' && Number.isFinite(value) ? Math.round(value * 10) / 10 : value;
+const roundHundredth = (value) => typeof value === 'number' && Number.isFinite(value) ? Math.round(value * 100) / 100 : value;
+
+function leanDangerEntity(row) {
+	if (row === null || typeof row !== 'object' || Array.isArray(row)) return row;
+	const { bounds: _bounds, ...lean } = row;
+	for (const axis of ['x', 'y', 'z']) if (axis in lean) lean[axis] = roundTenth(lean[axis]);
+	if (lean.velocity !== null && typeof lean.velocity === 'object' && !Array.isArray(lean.velocity)) {
+		lean.velocity = Object.fromEntries(Object.entries(lean.velocity).map(([axis, value]) => [axis, roundHundredth(value)]));
+	}
+	return lean;
+}
+
+function leanDangerPlayer(player) {
+	if (player === null || typeof player !== 'object') return player;
+	const lean = { ...player };
+	for (const axis of ['x', 'y', 'z']) if (axis in lean) lean[axis] = roundTenth(lean[axis]);
+	if (Array.isArray(lean.heard)) {
+		const heard = lean.heard.filter((row) => typeof row?.sound !== 'string' || !LEAN_DANGER_ROUTINE_SOUND.test(row.sound));
+		if (heard.length === 0) delete lean.heard;
+		else lean.heard = heard;
+	}
+	return lean;
 }
 
 function isHazardousEventFact(value) {

@@ -13,6 +13,8 @@ const RETAINABLE_METADATA = ['taskMemory', 'goal', 'goalSpec', 'executionSetting
 // Event fields that rarely change between wakes; repeating them unchanged in every event only grows the context.
 const EVENT_METADATA = ['now', 'situation', 'combat', 'progress', 'goal', 'goalSpec', 'taskMemory', 'program', 'conversation'];
 const MIN_RETAINED_EVENT_FIELD_BYTES = 64;
+// What a danger wake states before its observation, in this order (see encodeNativeEventInput).
+const DANGER_LEAD_FIELDS = ['dangerSinceLastUpdate', 'healing', 'threatOutlook', 'noRuleFor', 'contexts', 'program', 'now', 'situation', 'combat', 'arrival'];
 // Default action/sequence changes views in a row before the next one is a full snapshot again.
 const MAX_DEFAULT_CHANGES_CHAIN = 8;
 const MARKERS = new Set(['$ref', '$rows', '$object']);
@@ -479,7 +481,17 @@ export function encodeNativeEventInput(input, views = null) {
   // Both fresh facts and changed sections must lead work and menu details, not merely the unencoded input.
   const { observation, observationView, goalNow, skillFits, danger, ...metadata } = eventView;
   // The goal counts and the danger glance are the wake's first lines, ahead of the fresh facts they summarise.
-  const presented = projectedHud ? {
+  // A danger wake (dynamic-main omittedForDanger) puts the decision summary ahead of the facts: the danger line, then the
+  // threat, healing and intent lines, then the observation; goal counts and bookkeeping follow.
+  const presented = typeof observation?.omittedForDanger === 'string' ? {
+   ...(danger === undefined ? {} : { danger }),
+   ...Object.fromEntries(DANGER_LEAD_FIELDS.filter(key => Object.hasOwn(metadata, key)).map(key => [key, metadata[key]])),
+   ...(goalNow === undefined ? {} : { goalNow }),
+   ...(skillFits === undefined ? {} : { skillFits }),
+   ...(observation === undefined ? {} : { observation }),
+   ...(observationView === undefined ? {} : { observationView }),
+   ...Object.fromEntries(Object.entries(metadata).filter(([key]) => !DANGER_LEAD_FIELDS.includes(key))),
+  } : projectedHud ? {
    ...(goalNow === undefined ? {} : { goalNow }),
    ...(skillFits === undefined ? {} : { skillFits }),
    ...(danger === undefined ? {} : { danger }),
