@@ -108,6 +108,11 @@ try {
 	}
 
 	$readme = Read-ZipText $archive 'README.md'
+	# The guide must name the versions this package was built for, never a stale or unfilled one.
+	if ($readme -match '@[A-Z_]+@') { throw 'Distribution README still contains an unfilled version placeholder.' }
+	foreach ($expected in @("Minecraft $($properties.minecraft_version) once", "Fabric Loader $($properties.loader_version) for Minecraft $($properties.minecraft_version)")) {
+		if (-not $readme.Contains($expected)) { throw "Distribution README does not say '$expected' (distribution.properties)." }
+	}
 	$scriptReferences = @([regex]::Matches($readme, '(?i)\.\\scripts\\(?<Name>[A-Za-z0-9._-]+\.ps1)') |
 		ForEach-Object { "scripts/$($_.Groups['Name'].Value)" } | Sort-Object -Unique)
 	if ($scriptReferences.Count -eq 0) { throw 'Distribution README does not contain an installation command.' }

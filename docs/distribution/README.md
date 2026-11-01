@@ -1,14 +1,16 @@
 # Arena Agents Windows package
 
+<!-- Packaging fills in the @...@ versions from the build (gradle.properties or gradle/mc/<target>.properties). -->
+
 This ZIP contains the Arena Agents mod pack, its local coordinator, and a pinned
 Node.js runtime. It does not contain a Minecraft account, Java, the Minecraft
 launcher, provider logins, worlds, logs, or credentials.
 
 ## Before installation
 
-- Install the official Minecraft Launcher and start Minecraft 26.1.2 once.
+- Install the official Minecraft Launcher and start Minecraft @MINECRAFT_VERSION@ once.
 - Install Java 25 and set `JAVA_HOME`, or pass its `javaw.exe` path to the installer.
-- Install Fabric Loader 0.19.3 for Minecraft 26.1.2 in the normal launcher directory.
+- Install Fabric Loader @LOADER_VERSION@ for Minecraft @MINECRAFT_VERSION@ in the normal launcher directory.
 - Close Minecraft and the launcher.
 - Sign in to each supported local provider CLI that you plan to use. Provider credentials stay outside this package.
 

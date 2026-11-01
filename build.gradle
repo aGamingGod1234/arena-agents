@@ -364,7 +364,13 @@ tasks.register('stageWindowsDistribution', Sync) {
 		include 'distribution-runtime.ps1', 'install-distribution.ps1', 'verify-startup-packaging.ps1'
 	}
 	from(distributionMetadata)
-	from('docs/distribution/README.md') { rename { 'README.md' } }
+	from('docs/distribution/README.md') {
+		rename { 'README.md' }
+		// The install guide names the exact Minecraft and Fabric Loader this package was built for.
+		def guideVersions = ['@MINECRAFT_VERSION@': project.minecraft_version, '@LOADER_VERSION@': project.loader_version]
+		inputs.property 'distributionGuideVersions', guideVersions
+		filter { String line -> guideVersions.inject(line) { text, token, value -> text.replace(token, value) } }
+	}
 	from('LICENSE', 'NOTICE-FONTS.md')
 }
 
