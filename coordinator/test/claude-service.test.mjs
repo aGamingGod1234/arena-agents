@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { parseArenaScript } from '../src/arena-script/parser.mjs';
 import { decodeModelFacts } from '../src/model-fact-encoding.mjs';
-import { readFile } from 'node:fs/promises';
+import { readFile, readdir, stat } from 'node:fs/promises';
 import path from 'node:path';
 import test from 'node:test';
 
@@ -61,6 +61,53 @@ test('Claude launches in the shared Minecraft workspace with the same instructio
 		assert.equal(agent.executionSettings.effective.model, 'claude-sonnet-5-5');
 		assert.equal(agent.executionSettings.evidence.model, 'provider_reported');
 	} finally { await close(); }
+});
+
+test('the MCP bearer token reaches Claude Code through an owner-only file, never argv, and the file is removed once connected', async () => {
+	let whileConnecting = null;
+	const { service, children, root, close } = await harness({
+		async beforeToolsListed(child) {
+			const file = await stat(child.mcpConfigFile);
+			const directory = await stat(path.dirname(child.mcpConfigFile));
+			whileConnecting = { fileMode: file.mode & 0o777, directoryMode: directory.mode & 0o777 };
+		},
+	});
+	try {
+		const agent = await service.createAgent(profile(), { controlProtocol: 'native_tools' });
+		await agent.prewarm();
+		const [child] = children;
+		const token = child.mcp.headers.Authorization.replace(/^Bearer /, '');
+		assert.match(token, /^[0-9a-f]{32,}$/, 'the fake read a real route token from the config file');
+		const argv = [child.command, ...child.args].join('\n');
+		assert.equal(argv.includes(token), false, 'the bearer token appeared in the Claude Code argv');
+		assert.equal(/Bearer|Authorization/i.test(argv), false);
+		assert.equal(child.args[child.args.indexOf('--mcp-config') + 1], child.mcpConfigFile);
+		assert.equal(path.dirname(child.mcpConfigFile).startsWith(path.join(root, 'claude')), true, 'config lives in the Claude runtime directory');
+		if (process.platform !== 'win32') assert.deepEqual(whileConnecting, { fileMode: 0o600, directoryMode: 0o700 });
+		const deadline = performance.now() + 2_000;
+		while (performance.now() < deadline && (await readdir(path.dirname(child.mcpConfigFile))).some((name) => name.startsWith('mcp-config-'))) await new Promise((resolve) => setTimeout(resolve, 10));
+		assert.deepEqual((await readdir(path.dirname(child.mcpConfigFile))).filter((name) => name.startsWith('mcp-config-')), [], 'the config file is deleted after Claude Code connected');
+	} finally { await close(); }
+});
+
+test('a Claude Code launch that fails to spawn leaves no MCP config file behind', async () => {
+	const { root, close } = await harness();
+	const runtimeRoot = path.join(root, 'claude-spawn-failure');
+	const toolServer = new ClaudeToolServer();
+	const service = new ClaudeProviderService({ provider: 'claude', cwd: root, runtimeRoot, environment: { PATH: 'test' } }, {
+		spawn() { throw new Error('spawn refused'); },
+		toolServer,
+	});
+	try {
+		const agent = await service.createAgent(profile(), { controlProtocol: 'native_tools' });
+		await assert.rejects(agent.prewarm(), (error) => error.code === 'SPAWN_FAILED');
+		const files = (await readdir(runtimeRoot, { recursive: true })).filter((name) => path.basename(name).startsWith('mcp-config-'));
+		assert.deepEqual(files, []);
+	} finally {
+		await service.stop();
+		await toolServer.stop();
+		await close();
+	}
 });
 
 test('a Claude process that confirms a different model is rejected before any Minecraft tool runs', async () => {
@@ -469,7 +516,7 @@ test('Claude goal translation is a one-shot JSON decision without tools', async 
 
 test('buildClaudeLaunch keeps the bridge secret out of the child and disables auto-memory', () => {
 	const launch = buildClaudeLaunch(profile(), { executable: 'claude', environment: { PATH: 'p', CUSTOM_SECRET: 'x', ANTHROPIC_BASE_URL: 'https://example.invalid' }, bridgeSecretEnvironmentVariable: 'CUSTOM_SECRET' }, {
-		cwd: 'C:\\workspace', systemPromptFile: 'C:\\prompt.md', mcpConfig: null, streaming: false,
+		cwd: 'C:\\workspace', systemPromptFile: 'C:\\prompt.md', mcpConfigFile: null, streaming: false,
 	});
 	assert.equal(launch.options.env.CUSTOM_SECRET, undefined);
 	assert.equal(launch.options.env.ANTHROPIC_BASE_URL, 'https://example.invalid');
@@ -479,7 +526,7 @@ test('buildClaudeLaunch keeps the bridge secret out of the child and disables au
 
 test('buildClaudeLaunch requests Claude fast mode only for the priority tier when the config opts in', () => {
 	const settingsOf = (config, overrides) => {
-		const { args } = buildClaudeLaunch(profile(overrides), { executable: 'claude', ...config }, { cwd: 'C:\\workspace', systemPromptFile: 'C:\\prompt.md', mcpConfig: null, streaming: true });
+		const { args } = buildClaudeLaunch(profile(overrides), { executable: 'claude', ...config }, { cwd: 'C:\\workspace', systemPromptFile: 'C:\\prompt.md', mcpConfigFile: null, streaming: true });
 		return args.includes('--settings') ? args[args.indexOf('--settings') + 1] : null;
 	};
 	assert.equal(settingsOf({ fastMode: true }), '{"fastMode":true}');
@@ -1258,6 +1305,8 @@ test('Claude can rotate again during a later long turn', async () => {
 		await agent.act('First long turn.', { goalRevision: 0, executeTool: async () => { toolExecutions += 1; return { state: 'SUCCEEDED' }; } });
 		await agent.act('Second long turn.', { goalRevision: 0, executeTool: async () => { toolExecutions += 1; return { state: 'SUCCEEDED' }; } });
 		assert.equal(toolExecutions, 2);
+		// The standby warms in the background: it writes its private MCP config before it spawns.
+		await waitFor(() => children.length >= 3, 2_000).catch(() => {});
 		assert.equal(children.length, 3, 'the second active turn is allowed its own handoff');
 	} finally { await close(); }
 });
