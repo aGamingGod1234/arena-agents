@@ -16821,7 +16821,7 @@
       "reason": "Behaviour is shown by TravelVerification (checkpoint and build choices), the tool normalization tests and provider-free live Nether courses; terrain variety beyond those courses is not exhaustively covered."
     },
     {
-      "predicate": "travel_to picks seen standing spots up to a leg ahead toward the target and sprints there through ordinary navigation, builds in a straight line where seen ground ends (bridge or fill a gap, pillar a ledge or climb over feet-level lava, tunnel a wall, put out fire) with plain hotbar blocks and the best hotbar tool, never opens a cell beside seen lava, never steps down beside lava, and stops for arrival, damage, hostiles, low health or food, missing blocks, no way on, a seen stopWhenSeen block or its timeout.; fightThrough:true fights a hostile within 6 or one that hits (fight_target with fleeAtHealth=minHealth) and continues, handing back on LOW_HEALTH_BAILOUT, a hazard or a second failed fight.",
+      "predicate": "travel_to picks seen standing spots up to a leg ahead toward the target and sprints there through ordinary navigation, builds in a straight line where seen ground ends (bridge or fill a gap, pillar a ledge or climb over feet-level lava, tunnel a wall, put out fire) with plain hotbar blocks and the best hotbar tool, never opens a cell beside seen lava, never steps down beside lava, and stops for arrival, damage, hostiles, low health or food, missing blocks, no way on, a seen stopWhenSeen block or its timeout.; fightThrough:true fights a hostile within 6 or one that hits (fight_target with fleeAtHealth=minHealth) and continues, handing back on LOW_HEALTH_BAILOUT, a hazard or a second failed fight; TravelStops shrugs off terrain damage with no attacker (sweet berry bush, cactus, fall) of at most 2 a hit and 4 a trip while health stays above minHealth, and passes a new hostile beyond 6 blocks unless it targets the body and closes in by 0.25 between quarter-second samples, or is a ranged mob targeting it.",
       "checks": [
         {
           "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/TravelVerification.java",
@@ -16845,12 +16845,18 @@
           "test": "test-travel-resume-live",
           "command": "headless Minecraft production bridge fixture: scripts/quality/test-travel-resume-live.mjs (zombieStop, zombieFight, reflexResume)",
           "predicate": "Without fightThrough a zombie on the route stops travel_to with HOSTILE_NEAR; with fightThrough:true the body kills it and arrives (fought through zombie ... TARGET_KILLED)."
+        },
+        {
+          "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/TravelStopsVerification.java",
+          "test": "verifyHostiles + verifyDamage + verifyNightTrip",
+          "type": "java-behavior",
+          "entryPoint": "verifyCore"
         }
       ],
-      "id": "tool:travelTo:description:27c0ae461e8d178f",
+      "id": "tool:travelTo:description:85660426f1971be2",
       "contract": {
-        "id": "tool:travelTo:description:27c0ae461e8d178f",
-        "claim": "Stops with where and why on arrival (tolerance, default 3), damage, a new hostile in 16 or any within 6, health at minHealth (default 8), food 6, no blocks for a needed bridge, no way on, stopWhenSeen block id in view, or timeoutMs (default 300000). fightThrough:true fights a hostile within 6 or one that hits you (fight_target rules, fleeAtHealth=minHealth), then goes on; stops on low health, a hazard or a 2nd failed fight.",
+        "id": "tool:travelTo:description:85660426f1971be2",
+        "claim": "Stops with where and why on arrival (tolerance, default 3), damage (not a bush, cactus or short-fall scratch: 2 a hit, 4 a trip), any hostile within 6 or a new one in 16 coming for you (targeting and closing; ranged when targeting), health at minHealth (default 8), food 6, no blocks for a needed bridge, no way on, stopWhenSeen block id in view, or timeoutMs (default 300000). fightThrough:true fights a hostile within 6 or one that hits you (fight_target rules, fleeAtHealth=minHealth), then goes on; stops on low health, a hazard or a 2nd failed fight.",
         "kind": "description",
         "tool": "travelTo"
       },
@@ -33985,7 +33991,7 @@
       "reason": "Reviewed against the ported travel body and verifyCarriedSupplies: whole-inventory swaps, 600000 ms default, retained d35 observation window and brink guard. Terrain, hazard and timing outcomes require the fresh six-pair live course study."
     },
     {
-      "predicate": "travel_to picks seen standing spots up to a leg ahead toward the target and sprints there through ordinary navigation, builds in a straight line where seen ground ends (bridge or fill a gap, pillar a ledge or climb over feet-level lava, tunnel a wall, put out fire) with plain carried blocks and the best carried tool, never opens a cell beside seen lava, never steps down beside lava, and stops for arrival, damage, hostiles, low health or food, missing blocks, no way on, a seen stopWhenSeen block or its timeout.",
+      "predicate": "travel_to picks seen standing spots up to a leg ahead toward the target and sprints there through ordinary navigation, builds in a straight line where seen ground ends (bridge or fill a gap, pillar a ledge or climb over feet-level lava, tunnel a wall, put out fire) with plain carried blocks and the best carried tool, never opens a cell beside seen lava, never steps down beside lava, and stops for arrival, damage, hostiles, low health or food, missing blocks, no way on, a seen stopWhenSeen block or its timeout; TravelStops shrugs off terrain damage with no attacker (sweet berry bush, cactus, fall) of at most 2 a hit and 4 a trip while health stays above minHealth, and passes a new hostile beyond 6 blocks unless it targets the body and closes in by 0.25 between quarter-second samples, or is a ranged mob targeting it.",
       "checks": [
         {
           "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/TravelVerification.java",
@@ -34009,12 +34015,18 @@
           "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/TravelVerification.java",
           "test": "verifyCarriedSupplies",
           "entryPoint": "verifyCore"
+        },
+        {
+          "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/TravelStopsVerification.java",
+          "test": "verifyHostiles + verifyDamage + verifyNightTrip",
+          "type": "java-behavior",
+          "entryPoint": "verifyCore"
         }
       ],
-      "id": "control:e2c1a93886a46505:172597db60667992",
+      "id": "control:e2c1a93886a46505:e4771ca35638f7d7",
       "contract": {
-        "id": "control:e2c1a93886a46505:172597db60667992",
-        "claim": "It stops and returns where it is, how far is left, blocks per minute and what it built, with one reason: ARRIVED (within tolerance blocks horizontally, default 3; and within max(3, tolerance) of y when given), TARGET_SEEN (the stopWhenSeen block id came into view, for example minecraft:nether_bricks), TRAVEL_DAMAGED (any health loss, with the cause), HOSTILE_NEAR (a visible hostile not in range at the start came within 16 blocks, any hostile within 6, or a mob targeting you within 48), LOW_HEALTH (health fell to minHealth, default 8), LOW_FOOD (food fell to 6, where sprinting stops), OUT_OF_BLOCKS (a bridge or pillar is needed and no plain block is carried), NO_ROUTE (nothing seen gets closer and building cannot continue, with why; or no closer for 60 s), BUILD_FAILED, TUNNEL_FLOODED (lava or water flowed into a tunnel cell, not entered), LAVA_INCOMING (seen lava was about to flow into the body's cell; it stepped out of the way first), ON_FIRE or IN_LAVA, or TRAVEL_TIMEOUT (timeoutMs, default and maximum 600000). Re-issue it to continue after a stop you have dealt with.",
+        "id": "control:e2c1a93886a46505:e4771ca35638f7d7",
+        "claim": "It stops and returns where it is, how far is left, blocks per minute and what it built, with one reason: ARRIVED (within tolerance blocks horizontally, default 3; and within max(3, tolerance) of y when given), TARGET_SEEN (the stopWhenSeen block id came into view, for example minecraft:nether_bricks), TRAVEL_DAMAGED (health loss with the cause; a scratch from the terrain itself with no attacker, a sweet berry bush, a cactus or a fall, of at most 2 a hit and 4 over the trip while health stays above minHealth, is shrugged off and listed instead), HOSTILE_NEAR (any hostile within 6, or one not in range at the start that is coming for you: within 16 blocks, or targeting you within 48, and either targeting you and closing in or a ranged mob such as a skeleton, blaze or ghast targeting you; one that is not after you, or falls behind while you sprint on, is passed and counted in the result), LOW_HEALTH (health fell to minHealth, default 8), LOW_FOOD (food fell to 6, where sprinting stops), OUT_OF_BLOCKS (a bridge or pillar is needed and no plain block is carried), NO_ROUTE (nothing seen gets closer and building cannot continue, with why; or no closer for 60 s), BUILD_FAILED, TUNNEL_FLOODED (lava or water flowed into a tunnel cell, not entered), LAVA_INCOMING (seen lava was about to flow into the body's cell; it stepped out of the way first), ON_FIRE or IN_LAVA, or TRAVEL_TIMEOUT (timeoutMs, default and maximum 600000). Re-issue it to continue after a stop you have dealt with.",
         "kind": "control-reference",
         "topic": "travelTo"
       },
@@ -46314,14 +46326,14 @@
           "command": "slot.sh live node scripts/quality/test-travel-live.mjs scripts/quality/travel-courses.json OUT --mode travel"
         }
       ],
-      "id": "control:e2c1a93886a46505:172597db60667992:result:ARRIVED",
+      "id": "control:e2c1a93886a46505:e4771ca35638f7d7:result:ARRIVED",
       "contract": {
-        "id": "control:e2c1a93886a46505:172597db60667992:result:ARRIVED",
-        "claim": "It stops and returns where it is, how far is left, blocks per minute and what it built, with one reason: ARRIVED (within tolerance blocks horizontally, default 3; and within max(3, tolerance) of y when given), TARGET_SEEN (the stopWhenSeen block id came into view, for example minecraft:nether_bricks), TRAVEL_DAMAGED (any health loss, with the cause), HOSTILE_NEAR (a visible hostile not in range at the start came within 16 blocks, any hostile within 6, or a mob targeting you within 48), LOW_HEALTH (health fell to minHealth, default 8), LOW_FOOD (food fell to 6, where sprinting stops), OUT_OF_BLOCKS (a bridge or pillar is needed and no plain block is carried), NO_ROUTE (nothing seen gets closer and building cannot continue, with why; or no closer for 60 s), BUILD_FAILED, TUNNEL_FLOODED (lava or water flowed into a tunnel cell, not entered), LAVA_INCOMING (seen lava was about to flow into the body's cell; it stepped out of the way first), ON_FIRE or IN_LAVA, or TRAVEL_TIMEOUT (timeoutMs, default and maximum 600000). Re-issue it to continue after a stop you have dealt with.",
+        "id": "control:e2c1a93886a46505:e4771ca35638f7d7:result:ARRIVED",
+        "claim": "It stops and returns where it is, how far is left, blocks per minute and what it built, with one reason: ARRIVED (within tolerance blocks horizontally, default 3; and within max(3, tolerance) of y when given), TARGET_SEEN (the stopWhenSeen block id came into view, for example minecraft:nether_bricks), TRAVEL_DAMAGED (health loss with the cause; a scratch from the terrain itself with no attacker, a sweet berry bush, a cactus or a fall, of at most 2 a hit and 4 over the trip while health stays above minHealth, is shrugged off and listed instead), HOSTILE_NEAR (any hostile within 6, or one not in range at the start that is coming for you: within 16 blocks, or targeting you within 48, and either targeting you and closing in or a ranged mob such as a skeleton, blaze or ghast targeting you; one that is not after you, or falls behind while you sprint on, is passed and counted in the result), LOW_HEALTH (health fell to minHealth, default 8), LOW_FOOD (food fell to 6, where sprinting stops), OUT_OF_BLOCKS (a bridge or pillar is needed and no plain block is carried), NO_ROUTE (nothing seen gets closer and building cannot continue, with why; or no closer for 60 s), BUILD_FAILED, TUNNEL_FLOODED (lava or water flowed into a tunnel cell, not entered), LAVA_INCOMING (seen lava was about to flow into the body's cell; it stepped out of the way first), ON_FIRE or IN_LAVA, or TRAVEL_TIMEOUT (timeoutMs, default and maximum 600000). Re-issue it to continue after a stop you have dealt with.",
         "kind": "result-code",
         "topic": "travelTo",
         "code": "ARRIVED",
-        "parent": "control:e2c1a93886a46505:172597db60667992"
+        "parent": "control:e2c1a93886a46505:e4771ca35638f7d7"
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
@@ -46346,14 +46358,14 @@
           "command": "slot.sh live node scripts/quality/test-travel-live.mjs scripts/quality/travel-courses.json OUT --mode travel"
         }
       ],
-      "id": "control:e2c1a93886a46505:172597db60667992:result:TARGET_SEEN",
+      "id": "control:e2c1a93886a46505:e4771ca35638f7d7:result:TARGET_SEEN",
       "contract": {
-        "id": "control:e2c1a93886a46505:172597db60667992:result:TARGET_SEEN",
-        "claim": "It stops and returns where it is, how far is left, blocks per minute and what it built, with one reason: ARRIVED (within tolerance blocks horizontally, default 3; and within max(3, tolerance) of y when given), TARGET_SEEN (the stopWhenSeen block id came into view, for example minecraft:nether_bricks), TRAVEL_DAMAGED (any health loss, with the cause), HOSTILE_NEAR (a visible hostile not in range at the start came within 16 blocks, any hostile within 6, or a mob targeting you within 48), LOW_HEALTH (health fell to minHealth, default 8), LOW_FOOD (food fell to 6, where sprinting stops), OUT_OF_BLOCKS (a bridge or pillar is needed and no plain block is carried), NO_ROUTE (nothing seen gets closer and building cannot continue, with why; or no closer for 60 s), BUILD_FAILED, TUNNEL_FLOODED (lava or water flowed into a tunnel cell, not entered), LAVA_INCOMING (seen lava was about to flow into the body's cell; it stepped out of the way first), ON_FIRE or IN_LAVA, or TRAVEL_TIMEOUT (timeoutMs, default and maximum 600000). Re-issue it to continue after a stop you have dealt with.",
+        "id": "control:e2c1a93886a46505:e4771ca35638f7d7:result:TARGET_SEEN",
+        "claim": "It stops and returns where it is, how far is left, blocks per minute and what it built, with one reason: ARRIVED (within tolerance blocks horizontally, default 3; and within max(3, tolerance) of y when given), TARGET_SEEN (the stopWhenSeen block id came into view, for example minecraft:nether_bricks), TRAVEL_DAMAGED (health loss with the cause; a scratch from the terrain itself with no attacker, a sweet berry bush, a cactus or a fall, of at most 2 a hit and 4 over the trip while health stays above minHealth, is shrugged off and listed instead), HOSTILE_NEAR (any hostile within 6, or one not in range at the start that is coming for you: within 16 blocks, or targeting you within 48, and either targeting you and closing in or a ranged mob such as a skeleton, blaze or ghast targeting you; one that is not after you, or falls behind while you sprint on, is passed and counted in the result), LOW_HEALTH (health fell to minHealth, default 8), LOW_FOOD (food fell to 6, where sprinting stops), OUT_OF_BLOCKS (a bridge or pillar is needed and no plain block is carried), NO_ROUTE (nothing seen gets closer and building cannot continue, with why; or no closer for 60 s), BUILD_FAILED, TUNNEL_FLOODED (lava or water flowed into a tunnel cell, not entered), LAVA_INCOMING (seen lava was about to flow into the body's cell; it stepped out of the way first), ON_FIRE or IN_LAVA, or TRAVEL_TIMEOUT (timeoutMs, default and maximum 600000). Re-issue it to continue after a stop you have dealt with.",
         "kind": "result-code",
         "topic": "travelTo",
         "code": "TARGET_SEEN",
-        "parent": "control:e2c1a93886a46505:172597db60667992"
+        "parent": "control:e2c1a93886a46505:e4771ca35638f7d7"
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
@@ -46363,7 +46375,7 @@
       "reason": "Reviewed against the ported travel body and verifyCarriedSupplies: whole-inventory swaps, 600000 ms default, retained d35 observation window and brink guard. Terrain, hazard and timing outcomes require the fresh six-pair live course study."
     },
     {
-      "predicate": "travel_to stop reason: any health loss ends the trip as TRAVEL_DAMAGED with the amount and damage source; the result names the stop position, distance left, blocks per minute and what was built.",
+      "predicate": "travel_to stop reason: any health loss ends the trip as TRAVEL_DAMAGED with the amount and damage source; the result names the stop position, distance left, blocks per minute and what was built; every hit from a mob, fire, lava, drowning or an unknown source, a terrain hit over 2, or more than 4 over the trip still ends the trip with TRAVEL_DAMAGED.",
       "checks": [
         {
           "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/TravelVerification.java",
@@ -46376,16 +46388,22 @@
           "test": "travel.nether-courses",
           "predicate": "Provider-free headless Nether courses from long-run save points: travel_to heads for a located structure or a heading, re-issued after each stop, and reports arrival, time, blocks per minute, builds, damage, fire and lava contact and deaths",
           "command": "slot.sh live node scripts/quality/test-travel-live.mjs scripts/quality/travel-courses.json OUT --mode travel"
+        },
+        {
+          "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/TravelStopsVerification.java",
+          "test": "verifyHostiles + verifyDamage + verifyNightTrip",
+          "type": "java-behavior",
+          "entryPoint": "verifyCore"
         }
       ],
-      "id": "control:e2c1a93886a46505:172597db60667992:result:TRAVEL_DAMAGED",
+      "id": "control:e2c1a93886a46505:e4771ca35638f7d7:result:TRAVEL_DAMAGED",
       "contract": {
-        "id": "control:e2c1a93886a46505:172597db60667992:result:TRAVEL_DAMAGED",
-        "claim": "It stops and returns where it is, how far is left, blocks per minute and what it built, with one reason: ARRIVED (within tolerance blocks horizontally, default 3; and within max(3, tolerance) of y when given), TARGET_SEEN (the stopWhenSeen block id came into view, for example minecraft:nether_bricks), TRAVEL_DAMAGED (any health loss, with the cause), HOSTILE_NEAR (a visible hostile not in range at the start came within 16 blocks, any hostile within 6, or a mob targeting you within 48), LOW_HEALTH (health fell to minHealth, default 8), LOW_FOOD (food fell to 6, where sprinting stops), OUT_OF_BLOCKS (a bridge or pillar is needed and no plain block is carried), NO_ROUTE (nothing seen gets closer and building cannot continue, with why; or no closer for 60 s), BUILD_FAILED, TUNNEL_FLOODED (lava or water flowed into a tunnel cell, not entered), LAVA_INCOMING (seen lava was about to flow into the body's cell; it stepped out of the way first), ON_FIRE or IN_LAVA, or TRAVEL_TIMEOUT (timeoutMs, default and maximum 600000). Re-issue it to continue after a stop you have dealt with.",
+        "id": "control:e2c1a93886a46505:e4771ca35638f7d7:result:TRAVEL_DAMAGED",
+        "claim": "It stops and returns where it is, how far is left, blocks per minute and what it built, with one reason: ARRIVED (within tolerance blocks horizontally, default 3; and within max(3, tolerance) of y when given), TARGET_SEEN (the stopWhenSeen block id came into view, for example minecraft:nether_bricks), TRAVEL_DAMAGED (health loss with the cause; a scratch from the terrain itself with no attacker, a sweet berry bush, a cactus or a fall, of at most 2 a hit and 4 over the trip while health stays above minHealth, is shrugged off and listed instead), HOSTILE_NEAR (any hostile within 6, or one not in range at the start that is coming for you: within 16 blocks, or targeting you within 48, and either targeting you and closing in or a ranged mob such as a skeleton, blaze or ghast targeting you; one that is not after you, or falls behind while you sprint on, is passed and counted in the result), LOW_HEALTH (health fell to minHealth, default 8), LOW_FOOD (food fell to 6, where sprinting stops), OUT_OF_BLOCKS (a bridge or pillar is needed and no plain block is carried), NO_ROUTE (nothing seen gets closer and building cannot continue, with why; or no closer for 60 s), BUILD_FAILED, TUNNEL_FLOODED (lava or water flowed into a tunnel cell, not entered), LAVA_INCOMING (seen lava was about to flow into the body's cell; it stepped out of the way first), ON_FIRE or IN_LAVA, or TRAVEL_TIMEOUT (timeoutMs, default and maximum 600000). Re-issue it to continue after a stop you have dealt with.",
         "kind": "result-code",
         "topic": "travelTo",
         "code": "TRAVEL_DAMAGED",
-        "parent": "control:e2c1a93886a46505:172597db60667992"
+        "parent": "control:e2c1a93886a46505:e4771ca35638f7d7"
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
@@ -46395,7 +46413,7 @@
       "reason": "Reviewed against the ported travel body and verifyCarriedSupplies: whole-inventory swaps, 600000 ms default, retained d35 observation window and brink guard. Terrain, hazard and timing outcomes require the fresh six-pair live course study."
     },
     {
-      "predicate": "travel_to stop reason: a visible hostile not in range at the start within 16, any within 6, or a mob targeting the body within 48 ends the trip as HOSTILE_NEAR naming it; the result names the stop position, distance left, blocks per minute and what was built.",
+      "predicate": "travel_to stop reason: a visible hostile not in range at the start within 16, any within 6, or a mob targeting the body within 48 ends the trip as HOSTILE_NEAR naming it; the result names the stop position, distance left, blocks per minute and what was built; a hostile within 6, a new targeting one closing in or a targeting ranged mob ends it with HOSTILE_NEAR; one not after the body or falling behind is passed and counted.",
       "checks": [
         {
           "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/TravelVerification.java",
@@ -46408,16 +46426,22 @@
           "test": "travel.nether-courses",
           "predicate": "Provider-free headless Nether courses from long-run save points: travel_to heads for a located structure or a heading, re-issued after each stop, and reports arrival, time, blocks per minute, builds, damage, fire and lava contact and deaths",
           "command": "slot.sh live node scripts/quality/test-travel-live.mjs scripts/quality/travel-courses.json OUT --mode travel"
+        },
+        {
+          "file": "src/test/java/dev/agaminggod/arenaagents/server/runtime/controller/TravelStopsVerification.java",
+          "test": "verifyHostiles + verifyDamage + verifyNightTrip",
+          "type": "java-behavior",
+          "entryPoint": "verifyCore"
         }
       ],
-      "id": "control:e2c1a93886a46505:172597db60667992:result:HOSTILE_NEAR",
+      "id": "control:e2c1a93886a46505:e4771ca35638f7d7:result:HOSTILE_NEAR",
       "contract": {
-        "id": "control:e2c1a93886a46505:172597db60667992:result:HOSTILE_NEAR",
-        "claim": "It stops and returns where it is, how far is left, blocks per minute and what it built, with one reason: ARRIVED (within tolerance blocks horizontally, default 3; and within max(3, tolerance) of y when given), TARGET_SEEN (the stopWhenSeen block id came into view, for example minecraft:nether_bricks), TRAVEL_DAMAGED (any health loss, with the cause), HOSTILE_NEAR (a visible hostile not in range at the start came within 16 blocks, any hostile within 6, or a mob targeting you within 48), LOW_HEALTH (health fell to minHealth, default 8), LOW_FOOD (food fell to 6, where sprinting stops), OUT_OF_BLOCKS (a bridge or pillar is needed and no plain block is carried), NO_ROUTE (nothing seen gets closer and building cannot continue, with why; or no closer for 60 s), BUILD_FAILED, TUNNEL_FLOODED (lava or water flowed into a tunnel cell, not entered), LAVA_INCOMING (seen lava was about to flow into the body's cell; it stepped out of the way first), ON_FIRE or IN_LAVA, or TRAVEL_TIMEOUT (timeoutMs, default and maximum 600000). Re-issue it to continue after a stop you have dealt with.",
+        "id": "control:e2c1a93886a46505:e4771ca35638f7d7:result:HOSTILE_NEAR",
+        "claim": "It stops and returns where it is, how far is left, blocks per minute and what it built, with one reason: ARRIVED (within tolerance blocks horizontally, default 3; and within max(3, tolerance) of y when given), TARGET_SEEN (the stopWhenSeen block id came into view, for example minecraft:nether_bricks), TRAVEL_DAMAGED (health loss with the cause; a scratch from the terrain itself with no attacker, a sweet berry bush, a cactus or a fall, of at most 2 a hit and 4 over the trip while health stays above minHealth, is shrugged off and listed instead), HOSTILE_NEAR (any hostile within 6, or one not in range at the start that is coming for you: within 16 blocks, or targeting you within 48, and either targeting you and closing in or a ranged mob such as a skeleton, blaze or ghast targeting you; one that is not after you, or falls behind while you sprint on, is passed and counted in the result), LOW_HEALTH (health fell to minHealth, default 8), LOW_FOOD (food fell to 6, where sprinting stops), OUT_OF_BLOCKS (a bridge or pillar is needed and no plain block is carried), NO_ROUTE (nothing seen gets closer and building cannot continue, with why; or no closer for 60 s), BUILD_FAILED, TUNNEL_FLOODED (lava or water flowed into a tunnel cell, not entered), LAVA_INCOMING (seen lava was about to flow into the body's cell; it stepped out of the way first), ON_FIRE or IN_LAVA, or TRAVEL_TIMEOUT (timeoutMs, default and maximum 600000). Re-issue it to continue after a stop you have dealt with.",
         "kind": "result-code",
         "topic": "travelTo",
         "code": "HOSTILE_NEAR",
-        "parent": "control:e2c1a93886a46505:172597db60667992"
+        "parent": "control:e2c1a93886a46505:e4771ca35638f7d7"
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
@@ -46442,14 +46466,14 @@
           "command": "slot.sh live node scripts/quality/test-travel-live.mjs scripts/quality/travel-courses.json OUT --mode travel"
         }
       ],
-      "id": "control:e2c1a93886a46505:172597db60667992:result:LOW_HEALTH",
+      "id": "control:e2c1a93886a46505:e4771ca35638f7d7:result:LOW_HEALTH",
       "contract": {
-        "id": "control:e2c1a93886a46505:172597db60667992:result:LOW_HEALTH",
-        "claim": "It stops and returns where it is, how far is left, blocks per minute and what it built, with one reason: ARRIVED (within tolerance blocks horizontally, default 3; and within max(3, tolerance) of y when given), TARGET_SEEN (the stopWhenSeen block id came into view, for example minecraft:nether_bricks), TRAVEL_DAMAGED (any health loss, with the cause), HOSTILE_NEAR (a visible hostile not in range at the start came within 16 blocks, any hostile within 6, or a mob targeting you within 48), LOW_HEALTH (health fell to minHealth, default 8), LOW_FOOD (food fell to 6, where sprinting stops), OUT_OF_BLOCKS (a bridge or pillar is needed and no plain block is carried), NO_ROUTE (nothing seen gets closer and building cannot continue, with why; or no closer for 60 s), BUILD_FAILED, TUNNEL_FLOODED (lava or water flowed into a tunnel cell, not entered), LAVA_INCOMING (seen lava was about to flow into the body's cell; it stepped out of the way first), ON_FIRE or IN_LAVA, or TRAVEL_TIMEOUT (timeoutMs, default and maximum 600000). Re-issue it to continue after a stop you have dealt with.",
+        "id": "control:e2c1a93886a46505:e4771ca35638f7d7:result:LOW_HEALTH",
+        "claim": "It stops and returns where it is, how far is left, blocks per minute and what it built, with one reason: ARRIVED (within tolerance blocks horizontally, default 3; and within max(3, tolerance) of y when given), TARGET_SEEN (the stopWhenSeen block id came into view, for example minecraft:nether_bricks), TRAVEL_DAMAGED (health loss with the cause; a scratch from the terrain itself with no attacker, a sweet berry bush, a cactus or a fall, of at most 2 a hit and 4 over the trip while health stays above minHealth, is shrugged off and listed instead), HOSTILE_NEAR (any hostile within 6, or one not in range at the start that is coming for you: within 16 blocks, or targeting you within 48, and either targeting you and closing in or a ranged mob such as a skeleton, blaze or ghast targeting you; one that is not after you, or falls behind while you sprint on, is passed and counted in the result), LOW_HEALTH (health fell to minHealth, default 8), LOW_FOOD (food fell to 6, where sprinting stops), OUT_OF_BLOCKS (a bridge or pillar is needed and no plain block is carried), NO_ROUTE (nothing seen gets closer and building cannot continue, with why; or no closer for 60 s), BUILD_FAILED, TUNNEL_FLOODED (lava or water flowed into a tunnel cell, not entered), LAVA_INCOMING (seen lava was about to flow into the body's cell; it stepped out of the way first), ON_FIRE or IN_LAVA, or TRAVEL_TIMEOUT (timeoutMs, default and maximum 600000). Re-issue it to continue after a stop you have dealt with.",
         "kind": "result-code",
         "topic": "travelTo",
         "code": "LOW_HEALTH",
-        "parent": "control:e2c1a93886a46505:172597db60667992"
+        "parent": "control:e2c1a93886a46505:e4771ca35638f7d7"
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
@@ -46474,14 +46498,14 @@
           "command": "slot.sh live node scripts/quality/test-travel-live.mjs scripts/quality/travel-courses.json OUT --mode travel"
         }
       ],
-      "id": "control:e2c1a93886a46505:172597db60667992:result:LOW_FOOD",
+      "id": "control:e2c1a93886a46505:e4771ca35638f7d7:result:LOW_FOOD",
       "contract": {
-        "id": "control:e2c1a93886a46505:172597db60667992:result:LOW_FOOD",
-        "claim": "It stops and returns where it is, how far is left, blocks per minute and what it built, with one reason: ARRIVED (within tolerance blocks horizontally, default 3; and within max(3, tolerance) of y when given), TARGET_SEEN (the stopWhenSeen block id came into view, for example minecraft:nether_bricks), TRAVEL_DAMAGED (any health loss, with the cause), HOSTILE_NEAR (a visible hostile not in range at the start came within 16 blocks, any hostile within 6, or a mob targeting you within 48), LOW_HEALTH (health fell to minHealth, default 8), LOW_FOOD (food fell to 6, where sprinting stops), OUT_OF_BLOCKS (a bridge or pillar is needed and no plain block is carried), NO_ROUTE (nothing seen gets closer and building cannot continue, with why; or no closer for 60 s), BUILD_FAILED, TUNNEL_FLOODED (lava or water flowed into a tunnel cell, not entered), LAVA_INCOMING (seen lava was about to flow into the body's cell; it stepped out of the way first), ON_FIRE or IN_LAVA, or TRAVEL_TIMEOUT (timeoutMs, default and maximum 600000). Re-issue it to continue after a stop you have dealt with.",
+        "id": "control:e2c1a93886a46505:e4771ca35638f7d7:result:LOW_FOOD",
+        "claim": "It stops and returns where it is, how far is left, blocks per minute and what it built, with one reason: ARRIVED (within tolerance blocks horizontally, default 3; and within max(3, tolerance) of y when given), TARGET_SEEN (the stopWhenSeen block id came into view, for example minecraft:nether_bricks), TRAVEL_DAMAGED (health loss with the cause; a scratch from the terrain itself with no attacker, a sweet berry bush, a cactus or a fall, of at most 2 a hit and 4 over the trip while health stays above minHealth, is shrugged off and listed instead), HOSTILE_NEAR (any hostile within 6, or one not in range at the start that is coming for you: within 16 blocks, or targeting you within 48, and either targeting you and closing in or a ranged mob such as a skeleton, blaze or ghast targeting you; one that is not after you, or falls behind while you sprint on, is passed and counted in the result), LOW_HEALTH (health fell to minHealth, default 8), LOW_FOOD (food fell to 6, where sprinting stops), OUT_OF_BLOCKS (a bridge or pillar is needed and no plain block is carried), NO_ROUTE (nothing seen gets closer and building cannot continue, with why; or no closer for 60 s), BUILD_FAILED, TUNNEL_FLOODED (lava or water flowed into a tunnel cell, not entered), LAVA_INCOMING (seen lava was about to flow into the body's cell; it stepped out of the way first), ON_FIRE or IN_LAVA, or TRAVEL_TIMEOUT (timeoutMs, default and maximum 600000). Re-issue it to continue after a stop you have dealt with.",
         "kind": "result-code",
         "topic": "travelTo",
         "code": "LOW_FOOD",
-        "parent": "control:e2c1a93886a46505:172597db60667992"
+        "parent": "control:e2c1a93886a46505:e4771ca35638f7d7"
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
@@ -46506,14 +46530,14 @@
           "command": "slot.sh live node scripts/quality/test-travel-live.mjs scripts/quality/travel-courses.json OUT --mode travel"
         }
       ],
-      "id": "control:e2c1a93886a46505:172597db60667992:result:OUT_OF_BLOCKS",
+      "id": "control:e2c1a93886a46505:e4771ca35638f7d7:result:OUT_OF_BLOCKS",
       "contract": {
-        "id": "control:e2c1a93886a46505:172597db60667992:result:OUT_OF_BLOCKS",
-        "claim": "It stops and returns where it is, how far is left, blocks per minute and what it built, with one reason: ARRIVED (within tolerance blocks horizontally, default 3; and within max(3, tolerance) of y when given), TARGET_SEEN (the stopWhenSeen block id came into view, for example minecraft:nether_bricks), TRAVEL_DAMAGED (any health loss, with the cause), HOSTILE_NEAR (a visible hostile not in range at the start came within 16 blocks, any hostile within 6, or a mob targeting you within 48), LOW_HEALTH (health fell to minHealth, default 8), LOW_FOOD (food fell to 6, where sprinting stops), OUT_OF_BLOCKS (a bridge or pillar is needed and no plain block is carried), NO_ROUTE (nothing seen gets closer and building cannot continue, with why; or no closer for 60 s), BUILD_FAILED, TUNNEL_FLOODED (lava or water flowed into a tunnel cell, not entered), LAVA_INCOMING (seen lava was about to flow into the body's cell; it stepped out of the way first), ON_FIRE or IN_LAVA, or TRAVEL_TIMEOUT (timeoutMs, default and maximum 600000). Re-issue it to continue after a stop you have dealt with.",
+        "id": "control:e2c1a93886a46505:e4771ca35638f7d7:result:OUT_OF_BLOCKS",
+        "claim": "It stops and returns where it is, how far is left, blocks per minute and what it built, with one reason: ARRIVED (within tolerance blocks horizontally, default 3; and within max(3, tolerance) of y when given), TARGET_SEEN (the stopWhenSeen block id came into view, for example minecraft:nether_bricks), TRAVEL_DAMAGED (health loss with the cause; a scratch from the terrain itself with no attacker, a sweet berry bush, a cactus or a fall, of at most 2 a hit and 4 over the trip while health stays above minHealth, is shrugged off and listed instead), HOSTILE_NEAR (any hostile within 6, or one not in range at the start that is coming for you: within 16 blocks, or targeting you within 48, and either targeting you and closing in or a ranged mob such as a skeleton, blaze or ghast targeting you; one that is not after you, or falls behind while you sprint on, is passed and counted in the result), LOW_HEALTH (health fell to minHealth, default 8), LOW_FOOD (food fell to 6, where sprinting stops), OUT_OF_BLOCKS (a bridge or pillar is needed and no plain block is carried), NO_ROUTE (nothing seen gets closer and building cannot continue, with why; or no closer for 60 s), BUILD_FAILED, TUNNEL_FLOODED (lava or water flowed into a tunnel cell, not entered), LAVA_INCOMING (seen lava was about to flow into the body's cell; it stepped out of the way first), ON_FIRE or IN_LAVA, or TRAVEL_TIMEOUT (timeoutMs, default and maximum 600000). Re-issue it to continue after a stop you have dealt with.",
         "kind": "result-code",
         "topic": "travelTo",
         "code": "OUT_OF_BLOCKS",
-        "parent": "control:e2c1a93886a46505:172597db60667992"
+        "parent": "control:e2c1a93886a46505:e4771ca35638f7d7"
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
@@ -46538,14 +46562,14 @@
           "command": "slot.sh live node scripts/quality/test-travel-live.mjs scripts/quality/travel-courses.json OUT --mode travel"
         }
       ],
-      "id": "control:e2c1a93886a46505:172597db60667992:result:NO_ROUTE",
+      "id": "control:e2c1a93886a46505:e4771ca35638f7d7:result:NO_ROUTE",
       "contract": {
-        "id": "control:e2c1a93886a46505:172597db60667992:result:NO_ROUTE",
-        "claim": "It stops and returns where it is, how far is left, blocks per minute and what it built, with one reason: ARRIVED (within tolerance blocks horizontally, default 3; and within max(3, tolerance) of y when given), TARGET_SEEN (the stopWhenSeen block id came into view, for example minecraft:nether_bricks), TRAVEL_DAMAGED (any health loss, with the cause), HOSTILE_NEAR (a visible hostile not in range at the start came within 16 blocks, any hostile within 6, or a mob targeting you within 48), LOW_HEALTH (health fell to minHealth, default 8), LOW_FOOD (food fell to 6, where sprinting stops), OUT_OF_BLOCKS (a bridge or pillar is needed and no plain block is carried), NO_ROUTE (nothing seen gets closer and building cannot continue, with why; or no closer for 60 s), BUILD_FAILED, TUNNEL_FLOODED (lava or water flowed into a tunnel cell, not entered), LAVA_INCOMING (seen lava was about to flow into the body's cell; it stepped out of the way first), ON_FIRE or IN_LAVA, or TRAVEL_TIMEOUT (timeoutMs, default and maximum 600000). Re-issue it to continue after a stop you have dealt with.",
+        "id": "control:e2c1a93886a46505:e4771ca35638f7d7:result:NO_ROUTE",
+        "claim": "It stops and returns where it is, how far is left, blocks per minute and what it built, with one reason: ARRIVED (within tolerance blocks horizontally, default 3; and within max(3, tolerance) of y when given), TARGET_SEEN (the stopWhenSeen block id came into view, for example minecraft:nether_bricks), TRAVEL_DAMAGED (health loss with the cause; a scratch from the terrain itself with no attacker, a sweet berry bush, a cactus or a fall, of at most 2 a hit and 4 over the trip while health stays above minHealth, is shrugged off and listed instead), HOSTILE_NEAR (any hostile within 6, or one not in range at the start that is coming for you: within 16 blocks, or targeting you within 48, and either targeting you and closing in or a ranged mob such as a skeleton, blaze or ghast targeting you; one that is not after you, or falls behind while you sprint on, is passed and counted in the result), LOW_HEALTH (health fell to minHealth, default 8), LOW_FOOD (food fell to 6, where sprinting stops), OUT_OF_BLOCKS (a bridge or pillar is needed and no plain block is carried), NO_ROUTE (nothing seen gets closer and building cannot continue, with why; or no closer for 60 s), BUILD_FAILED, TUNNEL_FLOODED (lava or water flowed into a tunnel cell, not entered), LAVA_INCOMING (seen lava was about to flow into the body's cell; it stepped out of the way first), ON_FIRE or IN_LAVA, or TRAVEL_TIMEOUT (timeoutMs, default and maximum 600000). Re-issue it to continue after a stop you have dealt with.",
         "kind": "result-code",
         "topic": "travelTo",
         "code": "NO_ROUTE",
-        "parent": "control:e2c1a93886a46505:172597db60667992"
+        "parent": "control:e2c1a93886a46505:e4771ca35638f7d7"
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
@@ -46570,14 +46594,14 @@
           "command": "slot.sh live node scripts/quality/test-travel-live.mjs scripts/quality/travel-courses.json OUT --mode travel"
         }
       ],
-      "id": "control:e2c1a93886a46505:172597db60667992:result:BUILD_FAILED",
+      "id": "control:e2c1a93886a46505:e4771ca35638f7d7:result:BUILD_FAILED",
       "contract": {
-        "id": "control:e2c1a93886a46505:172597db60667992:result:BUILD_FAILED",
-        "claim": "It stops and returns where it is, how far is left, blocks per minute and what it built, with one reason: ARRIVED (within tolerance blocks horizontally, default 3; and within max(3, tolerance) of y when given), TARGET_SEEN (the stopWhenSeen block id came into view, for example minecraft:nether_bricks), TRAVEL_DAMAGED (any health loss, with the cause), HOSTILE_NEAR (a visible hostile not in range at the start came within 16 blocks, any hostile within 6, or a mob targeting you within 48), LOW_HEALTH (health fell to minHealth, default 8), LOW_FOOD (food fell to 6, where sprinting stops), OUT_OF_BLOCKS (a bridge or pillar is needed and no plain block is carried), NO_ROUTE (nothing seen gets closer and building cannot continue, with why; or no closer for 60 s), BUILD_FAILED, TUNNEL_FLOODED (lava or water flowed into a tunnel cell, not entered), LAVA_INCOMING (seen lava was about to flow into the body's cell; it stepped out of the way first), ON_FIRE or IN_LAVA, or TRAVEL_TIMEOUT (timeoutMs, default and maximum 600000). Re-issue it to continue after a stop you have dealt with.",
+        "id": "control:e2c1a93886a46505:e4771ca35638f7d7:result:BUILD_FAILED",
+        "claim": "It stops and returns where it is, how far is left, blocks per minute and what it built, with one reason: ARRIVED (within tolerance blocks horizontally, default 3; and within max(3, tolerance) of y when given), TARGET_SEEN (the stopWhenSeen block id came into view, for example minecraft:nether_bricks), TRAVEL_DAMAGED (health loss with the cause; a scratch from the terrain itself with no attacker, a sweet berry bush, a cactus or a fall, of at most 2 a hit and 4 over the trip while health stays above minHealth, is shrugged off and listed instead), HOSTILE_NEAR (any hostile within 6, or one not in range at the start that is coming for you: within 16 blocks, or targeting you within 48, and either targeting you and closing in or a ranged mob such as a skeleton, blaze or ghast targeting you; one that is not after you, or falls behind while you sprint on, is passed and counted in the result), LOW_HEALTH (health fell to minHealth, default 8), LOW_FOOD (food fell to 6, where sprinting stops), OUT_OF_BLOCKS (a bridge or pillar is needed and no plain block is carried), NO_ROUTE (nothing seen gets closer and building cannot continue, with why; or no closer for 60 s), BUILD_FAILED, TUNNEL_FLOODED (lava or water flowed into a tunnel cell, not entered), LAVA_INCOMING (seen lava was about to flow into the body's cell; it stepped out of the way first), ON_FIRE or IN_LAVA, or TRAVEL_TIMEOUT (timeoutMs, default and maximum 600000). Re-issue it to continue after a stop you have dealt with.",
         "kind": "result-code",
         "topic": "travelTo",
         "code": "BUILD_FAILED",
-        "parent": "control:e2c1a93886a46505:172597db60667992"
+        "parent": "control:e2c1a93886a46505:e4771ca35638f7d7"
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
@@ -46602,14 +46626,14 @@
           "command": "slot.sh live node scripts/quality/test-travel-live.mjs scripts/quality/travel-courses.json OUT --mode travel"
         }
       ],
-      "id": "control:e2c1a93886a46505:172597db60667992:result:TUNNEL_FLOODED",
+      "id": "control:e2c1a93886a46505:e4771ca35638f7d7:result:TUNNEL_FLOODED",
       "contract": {
-        "id": "control:e2c1a93886a46505:172597db60667992:result:TUNNEL_FLOODED",
-        "claim": "It stops and returns where it is, how far is left, blocks per minute and what it built, with one reason: ARRIVED (within tolerance blocks horizontally, default 3; and within max(3, tolerance) of y when given), TARGET_SEEN (the stopWhenSeen block id came into view, for example minecraft:nether_bricks), TRAVEL_DAMAGED (any health loss, with the cause), HOSTILE_NEAR (a visible hostile not in range at the start came within 16 blocks, any hostile within 6, or a mob targeting you within 48), LOW_HEALTH (health fell to minHealth, default 8), LOW_FOOD (food fell to 6, where sprinting stops), OUT_OF_BLOCKS (a bridge or pillar is needed and no plain block is carried), NO_ROUTE (nothing seen gets closer and building cannot continue, with why; or no closer for 60 s), BUILD_FAILED, TUNNEL_FLOODED (lava or water flowed into a tunnel cell, not entered), LAVA_INCOMING (seen lava was about to flow into the body's cell; it stepped out of the way first), ON_FIRE or IN_LAVA, or TRAVEL_TIMEOUT (timeoutMs, default and maximum 600000). Re-issue it to continue after a stop you have dealt with.",
+        "id": "control:e2c1a93886a46505:e4771ca35638f7d7:result:TUNNEL_FLOODED",
+        "claim": "It stops and returns where it is, how far is left, blocks per minute and what it built, with one reason: ARRIVED (within tolerance blocks horizontally, default 3; and within max(3, tolerance) of y when given), TARGET_SEEN (the stopWhenSeen block id came into view, for example minecraft:nether_bricks), TRAVEL_DAMAGED (health loss with the cause; a scratch from the terrain itself with no attacker, a sweet berry bush, a cactus or a fall, of at most 2 a hit and 4 over the trip while health stays above minHealth, is shrugged off and listed instead), HOSTILE_NEAR (any hostile within 6, or one not in range at the start that is coming for you: within 16 blocks, or targeting you within 48, and either targeting you and closing in or a ranged mob such as a skeleton, blaze or ghast targeting you; one that is not after you, or falls behind while you sprint on, is passed and counted in the result), LOW_HEALTH (health fell to minHealth, default 8), LOW_FOOD (food fell to 6, where sprinting stops), OUT_OF_BLOCKS (a bridge or pillar is needed and no plain block is carried), NO_ROUTE (nothing seen gets closer and building cannot continue, with why; or no closer for 60 s), BUILD_FAILED, TUNNEL_FLOODED (lava or water flowed into a tunnel cell, not entered), LAVA_INCOMING (seen lava was about to flow into the body's cell; it stepped out of the way first), ON_FIRE or IN_LAVA, or TRAVEL_TIMEOUT (timeoutMs, default and maximum 600000). Re-issue it to continue after a stop you have dealt with.",
         "kind": "result-code",
         "topic": "travelTo",
         "code": "TUNNEL_FLOODED",
-        "parent": "control:e2c1a93886a46505:172597db60667992"
+        "parent": "control:e2c1a93886a46505:e4771ca35638f7d7"
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
@@ -46639,14 +46663,14 @@
           "command": "slot.sh live node scripts/quality/test-travel-live.mjs scripts/quality/travel-courses.json OUT --mode travel"
         }
       ],
-      "id": "control:e2c1a93886a46505:172597db60667992:result:LAVA_INCOMING",
+      "id": "control:e2c1a93886a46505:e4771ca35638f7d7:result:LAVA_INCOMING",
       "contract": {
-        "id": "control:e2c1a93886a46505:172597db60667992:result:LAVA_INCOMING",
-        "claim": "It stops and returns where it is, how far is left, blocks per minute and what it built, with one reason: ARRIVED (within tolerance blocks horizontally, default 3; and within max(3, tolerance) of y when given), TARGET_SEEN (the stopWhenSeen block id came into view, for example minecraft:nether_bricks), TRAVEL_DAMAGED (any health loss, with the cause), HOSTILE_NEAR (a visible hostile not in range at the start came within 16 blocks, any hostile within 6, or a mob targeting you within 48), LOW_HEALTH (health fell to minHealth, default 8), LOW_FOOD (food fell to 6, where sprinting stops), OUT_OF_BLOCKS (a bridge or pillar is needed and no plain block is carried), NO_ROUTE (nothing seen gets closer and building cannot continue, with why; or no closer for 60 s), BUILD_FAILED, TUNNEL_FLOODED (lava or water flowed into a tunnel cell, not entered), LAVA_INCOMING (seen lava was about to flow into the body's cell; it stepped out of the way first), ON_FIRE or IN_LAVA, or TRAVEL_TIMEOUT (timeoutMs, default and maximum 600000). Re-issue it to continue after a stop you have dealt with.",
+        "id": "control:e2c1a93886a46505:e4771ca35638f7d7:result:LAVA_INCOMING",
+        "claim": "It stops and returns where it is, how far is left, blocks per minute and what it built, with one reason: ARRIVED (within tolerance blocks horizontally, default 3; and within max(3, tolerance) of y when given), TARGET_SEEN (the stopWhenSeen block id came into view, for example minecraft:nether_bricks), TRAVEL_DAMAGED (health loss with the cause; a scratch from the terrain itself with no attacker, a sweet berry bush, a cactus or a fall, of at most 2 a hit and 4 over the trip while health stays above minHealth, is shrugged off and listed instead), HOSTILE_NEAR (any hostile within 6, or one not in range at the start that is coming for you: within 16 blocks, or targeting you within 48, and either targeting you and closing in or a ranged mob such as a skeleton, blaze or ghast targeting you; one that is not after you, or falls behind while you sprint on, is passed and counted in the result), LOW_HEALTH (health fell to minHealth, default 8), LOW_FOOD (food fell to 6, where sprinting stops), OUT_OF_BLOCKS (a bridge or pillar is needed and no plain block is carried), NO_ROUTE (nothing seen gets closer and building cannot continue, with why; or no closer for 60 s), BUILD_FAILED, TUNNEL_FLOODED (lava or water flowed into a tunnel cell, not entered), LAVA_INCOMING (seen lava was about to flow into the body's cell; it stepped out of the way first), ON_FIRE or IN_LAVA, or TRAVEL_TIMEOUT (timeoutMs, default and maximum 600000). Re-issue it to continue after a stop you have dealt with.",
         "kind": "result-code",
         "topic": "travelTo",
         "code": "LAVA_INCOMING",
-        "parent": "control:e2c1a93886a46505:172597db60667992"
+        "parent": "control:e2c1a93886a46505:e4771ca35638f7d7"
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
@@ -46671,14 +46695,14 @@
           "command": "slot.sh live node scripts/quality/test-travel-live.mjs scripts/quality/travel-courses.json OUT --mode travel"
         }
       ],
-      "id": "control:e2c1a93886a46505:172597db60667992:result:ON_FIRE",
+      "id": "control:e2c1a93886a46505:e4771ca35638f7d7:result:ON_FIRE",
       "contract": {
-        "id": "control:e2c1a93886a46505:172597db60667992:result:ON_FIRE",
-        "claim": "It stops and returns where it is, how far is left, blocks per minute and what it built, with one reason: ARRIVED (within tolerance blocks horizontally, default 3; and within max(3, tolerance) of y when given), TARGET_SEEN (the stopWhenSeen block id came into view, for example minecraft:nether_bricks), TRAVEL_DAMAGED (any health loss, with the cause), HOSTILE_NEAR (a visible hostile not in range at the start came within 16 blocks, any hostile within 6, or a mob targeting you within 48), LOW_HEALTH (health fell to minHealth, default 8), LOW_FOOD (food fell to 6, where sprinting stops), OUT_OF_BLOCKS (a bridge or pillar is needed and no plain block is carried), NO_ROUTE (nothing seen gets closer and building cannot continue, with why; or no closer for 60 s), BUILD_FAILED, TUNNEL_FLOODED (lava or water flowed into a tunnel cell, not entered), LAVA_INCOMING (seen lava was about to flow into the body's cell; it stepped out of the way first), ON_FIRE or IN_LAVA, or TRAVEL_TIMEOUT (timeoutMs, default and maximum 600000). Re-issue it to continue after a stop you have dealt with.",
+        "id": "control:e2c1a93886a46505:e4771ca35638f7d7:result:ON_FIRE",
+        "claim": "It stops and returns where it is, how far is left, blocks per minute and what it built, with one reason: ARRIVED (within tolerance blocks horizontally, default 3; and within max(3, tolerance) of y when given), TARGET_SEEN (the stopWhenSeen block id came into view, for example minecraft:nether_bricks), TRAVEL_DAMAGED (health loss with the cause; a scratch from the terrain itself with no attacker, a sweet berry bush, a cactus or a fall, of at most 2 a hit and 4 over the trip while health stays above minHealth, is shrugged off and listed instead), HOSTILE_NEAR (any hostile within 6, or one not in range at the start that is coming for you: within 16 blocks, or targeting you within 48, and either targeting you and closing in or a ranged mob such as a skeleton, blaze or ghast targeting you; one that is not after you, or falls behind while you sprint on, is passed and counted in the result), LOW_HEALTH (health fell to minHealth, default 8), LOW_FOOD (food fell to 6, where sprinting stops), OUT_OF_BLOCKS (a bridge or pillar is needed and no plain block is carried), NO_ROUTE (nothing seen gets closer and building cannot continue, with why; or no closer for 60 s), BUILD_FAILED, TUNNEL_FLOODED (lava or water flowed into a tunnel cell, not entered), LAVA_INCOMING (seen lava was about to flow into the body's cell; it stepped out of the way first), ON_FIRE or IN_LAVA, or TRAVEL_TIMEOUT (timeoutMs, default and maximum 600000). Re-issue it to continue after a stop you have dealt with.",
         "kind": "result-code",
         "topic": "travelTo",
         "code": "ON_FIRE",
-        "parent": "control:e2c1a93886a46505:172597db60667992"
+        "parent": "control:e2c1a93886a46505:e4771ca35638f7d7"
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
@@ -46703,14 +46727,14 @@
           "command": "slot.sh live node scripts/quality/test-travel-live.mjs scripts/quality/travel-courses.json OUT --mode travel"
         }
       ],
-      "id": "control:e2c1a93886a46505:172597db60667992:result:IN_LAVA",
+      "id": "control:e2c1a93886a46505:e4771ca35638f7d7:result:IN_LAVA",
       "contract": {
-        "id": "control:e2c1a93886a46505:172597db60667992:result:IN_LAVA",
-        "claim": "It stops and returns where it is, how far is left, blocks per minute and what it built, with one reason: ARRIVED (within tolerance blocks horizontally, default 3; and within max(3, tolerance) of y when given), TARGET_SEEN (the stopWhenSeen block id came into view, for example minecraft:nether_bricks), TRAVEL_DAMAGED (any health loss, with the cause), HOSTILE_NEAR (a visible hostile not in range at the start came within 16 blocks, any hostile within 6, or a mob targeting you within 48), LOW_HEALTH (health fell to minHealth, default 8), LOW_FOOD (food fell to 6, where sprinting stops), OUT_OF_BLOCKS (a bridge or pillar is needed and no plain block is carried), NO_ROUTE (nothing seen gets closer and building cannot continue, with why; or no closer for 60 s), BUILD_FAILED, TUNNEL_FLOODED (lava or water flowed into a tunnel cell, not entered), LAVA_INCOMING (seen lava was about to flow into the body's cell; it stepped out of the way first), ON_FIRE or IN_LAVA, or TRAVEL_TIMEOUT (timeoutMs, default and maximum 600000). Re-issue it to continue after a stop you have dealt with.",
+        "id": "control:e2c1a93886a46505:e4771ca35638f7d7:result:IN_LAVA",
+        "claim": "It stops and returns where it is, how far is left, blocks per minute and what it built, with one reason: ARRIVED (within tolerance blocks horizontally, default 3; and within max(3, tolerance) of y when given), TARGET_SEEN (the stopWhenSeen block id came into view, for example minecraft:nether_bricks), TRAVEL_DAMAGED (health loss with the cause; a scratch from the terrain itself with no attacker, a sweet berry bush, a cactus or a fall, of at most 2 a hit and 4 over the trip while health stays above minHealth, is shrugged off and listed instead), HOSTILE_NEAR (any hostile within 6, or one not in range at the start that is coming for you: within 16 blocks, or targeting you within 48, and either targeting you and closing in or a ranged mob such as a skeleton, blaze or ghast targeting you; one that is not after you, or falls behind while you sprint on, is passed and counted in the result), LOW_HEALTH (health fell to minHealth, default 8), LOW_FOOD (food fell to 6, where sprinting stops), OUT_OF_BLOCKS (a bridge or pillar is needed and no plain block is carried), NO_ROUTE (nothing seen gets closer and building cannot continue, with why; or no closer for 60 s), BUILD_FAILED, TUNNEL_FLOODED (lava or water flowed into a tunnel cell, not entered), LAVA_INCOMING (seen lava was about to flow into the body's cell; it stepped out of the way first), ON_FIRE or IN_LAVA, or TRAVEL_TIMEOUT (timeoutMs, default and maximum 600000). Re-issue it to continue after a stop you have dealt with.",
         "kind": "result-code",
         "topic": "travelTo",
         "code": "IN_LAVA",
-        "parent": "control:e2c1a93886a46505:172597db60667992"
+        "parent": "control:e2c1a93886a46505:e4771ca35638f7d7"
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
@@ -46735,14 +46759,14 @@
           "command": "slot.sh live node scripts/quality/test-travel-live.mjs scripts/quality/travel-courses.json OUT --mode travel"
         }
       ],
-      "id": "control:e2c1a93886a46505:172597db60667992:result:TRAVEL_TIMEOUT",
+      "id": "control:e2c1a93886a46505:e4771ca35638f7d7:result:TRAVEL_TIMEOUT",
       "contract": {
-        "id": "control:e2c1a93886a46505:172597db60667992:result:TRAVEL_TIMEOUT",
-        "claim": "It stops and returns where it is, how far is left, blocks per minute and what it built, with one reason: ARRIVED (within tolerance blocks horizontally, default 3; and within max(3, tolerance) of y when given), TARGET_SEEN (the stopWhenSeen block id came into view, for example minecraft:nether_bricks), TRAVEL_DAMAGED (any health loss, with the cause), HOSTILE_NEAR (a visible hostile not in range at the start came within 16 blocks, any hostile within 6, or a mob targeting you within 48), LOW_HEALTH (health fell to minHealth, default 8), LOW_FOOD (food fell to 6, where sprinting stops), OUT_OF_BLOCKS (a bridge or pillar is needed and no plain block is carried), NO_ROUTE (nothing seen gets closer and building cannot continue, with why; or no closer for 60 s), BUILD_FAILED, TUNNEL_FLOODED (lava or water flowed into a tunnel cell, not entered), LAVA_INCOMING (seen lava was about to flow into the body's cell; it stepped out of the way first), ON_FIRE or IN_LAVA, or TRAVEL_TIMEOUT (timeoutMs, default and maximum 600000). Re-issue it to continue after a stop you have dealt with.",
+        "id": "control:e2c1a93886a46505:e4771ca35638f7d7:result:TRAVEL_TIMEOUT",
+        "claim": "It stops and returns where it is, how far is left, blocks per minute and what it built, with one reason: ARRIVED (within tolerance blocks horizontally, default 3; and within max(3, tolerance) of y when given), TARGET_SEEN (the stopWhenSeen block id came into view, for example minecraft:nether_bricks), TRAVEL_DAMAGED (health loss with the cause; a scratch from the terrain itself with no attacker, a sweet berry bush, a cactus or a fall, of at most 2 a hit and 4 over the trip while health stays above minHealth, is shrugged off and listed instead), HOSTILE_NEAR (any hostile within 6, or one not in range at the start that is coming for you: within 16 blocks, or targeting you within 48, and either targeting you and closing in or a ranged mob such as a skeleton, blaze or ghast targeting you; one that is not after you, or falls behind while you sprint on, is passed and counted in the result), LOW_HEALTH (health fell to minHealth, default 8), LOW_FOOD (food fell to 6, where sprinting stops), OUT_OF_BLOCKS (a bridge or pillar is needed and no plain block is carried), NO_ROUTE (nothing seen gets closer and building cannot continue, with why; or no closer for 60 s), BUILD_FAILED, TUNNEL_FLOODED (lava or water flowed into a tunnel cell, not entered), LAVA_INCOMING (seen lava was about to flow into the body's cell; it stepped out of the way first), ON_FIRE or IN_LAVA, or TRAVEL_TIMEOUT (timeoutMs, default and maximum 600000). Re-issue it to continue after a stop you have dealt with.",
         "kind": "result-code",
         "topic": "travelTo",
         "code": "TRAVEL_TIMEOUT",
-        "parent": "control:e2c1a93886a46505:172597db60667992"
+        "parent": "control:e2c1a93886a46505:e4771ca35638f7d7"
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",

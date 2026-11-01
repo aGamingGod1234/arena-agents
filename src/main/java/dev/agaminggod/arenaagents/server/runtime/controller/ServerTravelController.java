@@ -114,6 +114,13 @@ public final class ServerTravelController implements ServerController {
 	private float lastHealth, startHealth;
 	private int startFood;
 	private final Set<UUID> knownHostiles = new HashSet<>();
+	/** Each hostile's distance at its last sample, to tell one closing in from one falling behind. */
+	private final java.util.Map<UUID, Double> hostileDistances = new java.util.HashMap<>();
+	/** Hostiles in range that were passed because they were neither close nor coming for the body. */
+	private final Set<UUID> passedHostiles = new HashSet<>();
+	/** Terrain damage shrugged off on this trip (a berry bush, a cactus, a short drop), and how. */
+	private float shrugged;
+	private final java.util.List<String> shrugNotes = new java.util.ArrayList<>();
 	private final Set<GridPosition> refused = new HashSet<>();
 	private ServerNavigationController leg;
 	private TravelCheckpoints.WalkingSearch checkpointSearch;
@@ -263,7 +270,12 @@ public final class ServerTravelController implements ServerController {
 					&& attacker.distanceTo(player) <= HOSTILE_RANGE) {
 				return engage(player, attacker, String.format(Locale.ROOT, "hit you for %.1f (%s)", lastHealth - health, cause), nowEpochMs);
 			}
-			return fail(player, "TRAVEL_DAMAGED", String.format(Locale.ROOT, "Took %.1f damage (%s); health %.1f", lastHealth - health, cause, health));
+			float lost = lastHealth - health;
+			if (!TravelStops.shrugsOff(source == null ? null : source.getMsgId(), source != null && source.getEntity() != null, lost, shrugged, health, minHealth))
+				return fail(player, "TRAVEL_DAMAGED", String.format(Locale.ROOT, "Took %.1f damage (%s); health %.1f", lost, cause, health));
+			// A scratch from the terrain itself: a player keeps going.
+			shrugged += lost;
+			shrugNotes.add(String.format(Locale.ROOT, "%.1f (%s)", lost, cause));
 		}
 		lastHealth = health;
 		if (health <= minHealth && startHealth > minHealth) return fail(player, "LOW_HEALTH", "Health fell to " + format(health) + " (minHealth " + format(minHealth) + ")");
@@ -274,8 +286,16 @@ public final class ServerTravelController implements ServerController {
 				double distance = mob.distanceTo(player);
 				boolean targeting = mob.getTarget() == player;
 				boolean known = knownHostiles.contains(mob.getUUID());
+				Double previous = hostileDistances.put(mob.getUUID(), distance);
 				// One the model already had in view when it chose to travel stops the trip only up close (or by a hit).
 				if (known && distance > HOSTILE_CLOSE) continue;
+				// A new one stops it only when it is coming for the body: close, targeting and closing in, or a ranged
+				// mob targeting it. One that is not after the body, or falls behind the sprint, is passed.
+				if (!fightThrough && !TravelStops.stopsFor(false, distance, previous, targeting,
+						BuiltInRegistries.ENTITY_TYPE.getKey(mob.getType()).toString())) {
+					passedHostiles.add(mob.getUUID());
+					continue;
+				}
 				if (fightThrough) {
 					// Fought once it closes in or hits; until then it is only in view, as for one seen at the start.
 					if (distance > HOSTILE_CLOSE) { knownHostiles.add(mob.getUUID()); continue; }
@@ -1318,7 +1338,9 @@ public final class ServerTravelController implements ServerController {
 				at.x, at.y, at.z, left(at), bearing, Double.isFinite(targetY) ? String.format(Locale.ROOT, ", %.0f above", targetY - at.y) : "",
 				gained, seconds, gained / seconds * 60.0D, travelled, legs, bridged, pillared, tunnelled, TravelBuilder.blocksOnHotbar(player) + TravelBuilder.blocksOffHotbar(player))
 				+ (fightLog.isEmpty() ? "" : "; fought through " + String.join(", ", fightLog))
-				+ (reflexResumes == 0 ? "" : "; replanned after " + reflexResumes + " reflex firing(s)");
+				+ (reflexResumes == 0 ? "" : "; replanned after " + reflexResumes + " reflex firing(s)")
+				+ (passedHostiles.isEmpty() ? "" : "; passed " + passedHostiles.size() + " hostile(s) not coming for you")
+				+ (shrugNotes.isEmpty() ? "" : "; shrugged off " + String.join(", ", shrugNotes) + " damage");
 	}
 
 	private String lastFailureText() {
