@@ -410,6 +410,7 @@ export class DynamicCoordinator extends EventEmitter {
 			// dispatch and unknown-receipt durability still use the real notebook.
 			notebook: {
 				...Object.fromEntries(['writeNote', 'query', 'listUnresolved', 'recordDispatch', 'recordUnknown', 'findReceipt'].map((method) => [method, this.#playerMemory.notebook[method].bind(this.#playerMemory.notebook)])),
+				...(typeof this.#playerMemory.notebook.recordNotSent === 'function' ? { recordNotSent: this.#playerMemory.notebook.recordNotSent.bind(this.#playerMemory.notebook) } : {}),
 				recordReceipt: async () => {},
 			},
 			memoryOperation: (record, operation) => this.#playerMemory.execute(record, operation),

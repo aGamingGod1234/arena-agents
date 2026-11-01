@@ -1906,6 +1906,12 @@ export class NativeToolRuntime {
 		return this.#notebook[method](agentId, { worldId: active.worldId, actionId: active.actionId, goalRevision: active.goalRevision, actionType: active.actionType, ...(active.dimension == null ? {} : { dimension: active.dimension }), ...details }, options);
 	}
 
+	// An action that never reached the bridge is settled history, not an unknown outcome to reconcile.
+	// Notebook adapters without recordNotSent keep the older unknown record.
+	#journalUnsent(agentId, active, reasonCode) {
+		return this.#journal(typeof this.#notebook?.recordNotSent === 'function' ? 'recordNotSent' : 'recordUnknown', agentId, active, { reasonCode });
+	}
+
 	#actionCancellationEpoch(record, active) {
 		const epoch = this.#executionEpoch(record.agentId);
 		const run = this.#programRuns.get(record.agentId);
@@ -1937,7 +1943,7 @@ export class NativeToolRuntime {
 			const result = { state: 'CANCELLED', reasonCode: 'CANCELLED_BEFORE_DISPATCH', executionStarted: false, physicalAttempted: false, source: 'coordinator_before_dispatch' };
 			this.#retainReceipt(record, active, result);
 			active.resolve(result);
-			await this.#journal('recordUnknown', record.agentId, active, { reasonCode: 'CANCELLED_BEFORE_DISPATCH' });
+			await this.#journalUnsent(record.agentId, active, 'CANCELLED_BEFORE_DISPATCH');
 			return result;
 		}
 		let publication;
@@ -2244,7 +2250,7 @@ export class NativeToolRuntime {
 			if (completed !== undefined) return;
 			const reasonCode = active.dispatched ? 'DISPATCH_RESULT_UNKNOWN' : 'DISPATCH_NOT_SENT';
 			this.#retainReceipt(record, active, { state: 'UNKNOWN', reasonCode, source: 'coordinator_uncertain', worldId: active.worldId });
-			try { await this.#journal('recordUnknown', record.agentId, active, { reasonCode }); }
+			try { await (active.dispatched ? this.#journal('recordUnknown', record.agentId, active, { reasonCode }) : this.#journalUnsent(record.agentId, active, reasonCode)); }
 			catch (journalError) { this.#trace('native_receipt_persistence_failed', { agentId: record.agentId, actionId, reasonCode: journalError?.code ?? 'MEMORY_WRITE_FAILED' }); }
 			Object.assign(error, { actionId, goalRevision: record.goalRevision });
 			active.publicationError = error;
@@ -2553,7 +2559,7 @@ export class NativeToolRuntime {
 				try { await this.#bridge.send('action_cancel', agentId, { goalRevision: running.goalRevision, actionId: running.actionId }); }
 				catch {}
 			}
-			try { await this.#journal('recordUnknown', agentId, running, { reasonCode: running.dispatched ? 'LIFECYCLE_ENDED_BEFORE_RESULT' : 'CANCELLED_BEFORE_DISPATCH' }); }
+			try { await (running.dispatched ? this.#journal('recordUnknown', agentId, running, { reasonCode: 'LIFECYCLE_ENDED_BEFORE_RESULT' }) : this.#journalUnsent(agentId, running, 'CANCELLED_BEFORE_DISPATCH')); }
 			catch (error) { this.#trace('native_receipt_persistence_failed', { agentId, actionId: running.actionId, reasonCode: error?.code ?? 'MEMORY_WRITE_FAILED' }); }
 		}
 		try { await this.#flushSpatial(agentId); }

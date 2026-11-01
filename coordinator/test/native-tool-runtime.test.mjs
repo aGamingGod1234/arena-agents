@@ -1676,6 +1676,38 @@ test('durable preparation fences dispatch and exact cancellation prevents a late
 	assert.deepEqual(entries[0].arguments, { durationMs: 100 });
 });
 
+test('actions that never reached the bridge are journaled as settled, not as unknown outcomes', async () => {
+	const real = new ModelNotebook();
+	let gate;
+	const notebook = Object.fromEntries(['writeNote', 'query', 'recordReceipt', 'recordUnknown', 'recordNotSent', 'listUnresolved', 'findReceipt'].map((method) => [method, real[method].bind(real)]));
+	// The write-ahead record is queued at once, as in production; only its completion (no early onWritten) waits on the gate.
+	notebook.recordDispatch = (agentId, entry) => { const written = real.recordDispatch(agentId, entry); gate = Promise.withResolvers(); return written.then(() => gate.promise); };
+	const sent = [];
+	const runtime = new NativeToolRuntime({ notebook, bridge: { send: async (...args) => sent.push(args) } });
+	runtime.updateObservation(record(), { world: { worldId: 'world-a' } }, { eventSequence: 1 });
+
+	const cancelledRun = runtime.execute(nativeCall({ kind: 'start_action', actionType: 'wait', arguments: { durationMs: 100 } }), record());
+	await new Promise(setImmediate);
+	const handle = await runtime.execute(nativeCall({ kind: 'action_status' }), record());
+	await runtime.execute(nativeCall({ kind: 'cancel_action', actionId: handle.actionId, goalRevision: 3 }), record());
+	gate.resolve();
+	assert.equal((await cancelledRun).reasonCode, 'CANCELLED_BEFORE_DISPATCH');
+	const cancelled = await real.findReceipt('agent-a', { actionId: handle.actionId });
+	assert.deepEqual([cancelled.source, cancelled.state, cancelled.reasonCode], ['coordinator_not_sent', 'CANCELLED', 'CANCELLED_BEFORE_DISPATCH']);
+
+	let unsentId;
+	const unsentRun = runtime.execute(nativeCall({ kind: 'start_action', actionType: 'wait', arguments: { durationMs: 100 } }), record());
+	await new Promise(setImmediate);
+	gate.reject(Object.assign(new Error('disk full'), { code: 'MEMORY_WRITE_FAILED' }));
+	await assert.rejects(unsentRun, (error) => { unsentId = error.actionId; return error.message === 'disk full'; });
+	const unsent = await real.findReceipt('agent-a', { actionId: unsentId });
+	assert.deepEqual([unsent.source, unsent.state, unsent.reasonCode], ['coordinator_not_sent', 'FAILED', 'DISPATCH_NOT_SENT']);
+
+	assert.equal(sent.length, 0);
+	assert.equal((await real.listUnresolved('agent-a', { worldId: 'world-a' })).total, 0);
+	assert.equal((await runtime.execute(nativeCall({ kind: 'capabilities' }), record())).unresolvedActions.total, 0);
+});
+
 test('unknown delivery is inspectable and late terminal evidence cannot cancel a newer action', async () => {
 	const notebook = new ModelNotebook();
 	let fail = true;

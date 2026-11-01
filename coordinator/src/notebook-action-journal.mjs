@@ -140,7 +140,8 @@ function persistentSnapshot(state) {
 	return { ...state, ...Object.fromEntries(COLLECTIONS.map(key => [key, state[key].filter(persistent)])) };
 }
 function delta(previous, state) {
-	const event = { version: 1, revision: state.revision, evictedReceipts: state.evictedReceipts, evictedNotes: state.evictedNotes };
+	const event = { version: 1, revision: state.revision, evictedReceipts: state.evictedReceipts, evictedNotes: state.evictedNotes,
+		...(state.evictedUnresolved > 0 ? { evictedUnresolved: state.evictedUnresolved } : {}) };
 	for (const key of COLLECTIONS) {
 		const before = new Set(previous[key].map(entry => entry.revision));
 		const after = new Set(state[key].map(entry => entry.revision));
@@ -151,6 +152,8 @@ function delta(previous, state) {
 }
 function applyDelta(state, event) {
 	const next = { ...state, revision: event.revision, evictedReceipts: event.evictedReceipts, evictedNotes: event.evictedNotes };
+	// Absent in events from before stale unknowns could be evicted; the count never decreases.
+	if (Number.isSafeInteger(event.evictedUnresolved)) next.evictedUnresolved = event.evictedUnresolved;
 	for (const key of COLLECTIONS) {
 		const patch = event[key];
 		if (!patch || !Array.isArray(patch.remove) || !Array.isArray(patch.put)) throw new Error('INVALID_ACTION_JOURNAL');
