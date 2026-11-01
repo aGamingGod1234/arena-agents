@@ -9674,7 +9674,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 117
+        "line": 120
       },
       "status": "checked"
     },
@@ -11055,7 +11055,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 121
+        "line": 124
       },
       "status": "checked"
     },
@@ -18214,7 +18214,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 182
+        "line": 185
       },
       "status": "checked"
     },
@@ -18242,7 +18242,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 182
+        "line": 185
       },
       "status": "checked"
     },
@@ -18460,7 +18460,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 194
+        "line": 196
       }
     },
     {
@@ -18488,7 +18488,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 194
+        "line": 196
       }
     },
     {
@@ -18514,7 +18514,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 194
+        "line": 196
       }
     },
     {
@@ -18538,7 +18538,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 194
+        "line": 196
       }
     },
     {
@@ -18562,7 +18562,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 194
+        "line": 196
       }
     },
     {
@@ -18586,7 +18586,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 194
+        "line": 196
       }
     },
     {
@@ -18615,7 +18615,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 194
+        "line": 196
       }
     },
     {
@@ -18673,7 +18673,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 199
+        "line": 201
       }
     },
     {
@@ -18701,7 +18701,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 199
+        "line": 201
       }
     },
     {
@@ -19336,7 +19336,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       }
     },
     {
@@ -19362,7 +19362,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       }
     },
     {
@@ -19385,7 +19385,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -19409,7 +19409,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -19433,7 +19433,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -19457,7 +19457,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -19481,7 +19481,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -19505,7 +19505,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -19529,7 +19529,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -19553,7 +19553,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -19577,7 +19577,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -19601,7 +19601,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -19625,7 +19625,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -19649,7 +19649,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -19673,7 +19673,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -19697,7 +19697,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -19721,7 +19721,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -19745,7 +19745,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -19769,7 +19769,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -19793,7 +19793,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -19817,7 +19817,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -19841,7 +19841,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -19865,7 +19865,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 201
+        "line": 204
       },
       "status": "checked"
     },
@@ -19889,7 +19889,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -19913,7 +19913,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -19937,7 +19937,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -19961,7 +19961,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -19985,7 +19985,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -20009,7 +20009,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -20033,7 +20033,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -20057,7 +20057,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -20081,7 +20081,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -20105,7 +20105,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -20129,7 +20129,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -20153,7 +20153,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -20177,7 +20177,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -20201,7 +20201,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -20225,7 +20225,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -20249,7 +20249,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -20273,7 +20273,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -20297,7 +20297,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -20321,7 +20321,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -20345,7 +20345,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -20369,7 +20369,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -20393,7 +20393,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -20417,7 +20417,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -20441,7 +20441,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -20465,7 +20465,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -20489,7 +20489,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -20516,7 +20516,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       }
     },
     {
@@ -20615,14 +20615,14 @@
       "id": "tool:act:parameter:arguments",
       "contract": {
         "id": "tool:act:parameter:arguments",
-        "claim": "? optional: move_to(x,y,z,tolerance,sprint?) control(forward,strafe,jump,sneak,sprint,attack,use,yaw,pitch,selectedSlot,hand,ticks,instantLook?) control_sequence(frames,maxTicks) look_at(x,y,z) attack(targetId,timeoutMs) fight_target(targetId,desiredRange?,fleeAtHealth?,continueWithAttackers?,targetPolicy?,includePlayers?,pursue?,sneak?,shield?,collect?,untilItem?,untilCount?,roof?,single?,timeoutMs) fight_until(mob,untilItem,untilCount,weapon?,collect?,fleeAtHealth?,x?,y?,z?,radius?,roof?,timeoutMs?) flee_from(targetId,distance,timeoutMs) select_item(itemId) use_item(durationMs,hand?,expectedItemId?,mode?,aimX?,aimY?,aimZ?,acceptLavaRisk?) break_block(x,y,z,expectedBlockId?,timeoutMs,acceptLavaRisk?) pick_up_item(targetSelector) place_block(x,y,z,face,itemId,desiredState?,faceMode?) chat(message,audience?,recipientId?) wait(durationMs) set_door(x,y,z,open) drop_item(slot,count) navigate_to(x,y,z,tolerance,sprint,timeoutMs) build_shelter(x,y,z,opening,itemId,roof?,timeoutMs) dig_to(pattern?,y?,x?,z?,heading?,maxBlocks?,throughCaves?,maxShaftY?,stopWhenSeen?,timeoutMs) cast_obsidian(x,y,z,axis?,frame?,count?,timeoutMs) barter_until(itemId,count,timeoutMs) travel_to(x?,y?,z?,yaw?,distance?,tolerance?,build?,retrace?,dimension?,stopWhenSeen?,minHealth?,fightThrough?,timeoutMs?) transfer_container(x,y,z,sourceKind,sourceSlot,destinationKind,destinationSlot,count,expectedItemId,timeoutMs) craft_inventory(recipeId,count,timeoutMs) craft_table(recipeId,x,y,z,count,timeoutMs) furnace_transaction(x,y,z,operation,inventorySlot?,count?,expectedItemId?,fuelSlot?,fuelCount?,expectedFuelItemId?,timeoutMs) equip_item(sourceSlot,targetSlot,expectedItemId) select_tool(sourceSlot,hotbarSlot,expectedItemId,minRemainingDurability) block_with_shield(durationMs) use_ranged(targetId,drawDurationMs,timeoutMs?,aimX?,aimY?,aimZ?,trackTarget?,untilDead?,fleeAtHealth?,collect?,untilItem?,untilCount?,single?) interact_block(x,y,z,face,hand,expectedItemId,hitX?,hitY?,hitZ?,acceptLavaRisk?) interact_entity(targetId,hand,expectedItemId,hitX?,hitY?,hitZ?) dismount() start_fall_flying() wake_up() set_flight(enabled) write_sign(x,y,z,front,lines,expectedLines) edit_book(slot,pages,title?,expectedFingerprint) menu_click(menuId,containerId,stateId,slot,button,clickType,expectedItemId,expectedCount,expectedFingerprint?) menu_close(menuId,containerId,stateId) beacon_effects(menuId,containerId,stateId,primaryEffectId,secondaryEffectId) menu_transfer(menuId,sourceSlot,destinationSlot,count,expectedItemId,timeoutMs,containerId?,stateId?) menu_button(menuId,buttonId,timeoutMs,containerId?,stateId?) anvil_rename(menuId,name,timeoutMs,containerId?,stateId?) respawn()",
+        "claim": "? optional: move_to(x,y,z,tolerance,sprint?) control(forward,strafe,jump,sneak,sprint,attack,use,yaw,pitch,selectedSlot,hand,ticks,instantLook?) control_sequence(frames,maxTicks) look_at(x,y,z) attack(targetId,timeoutMs) fight_target(targetId,desiredRange?,fleeAtHealth?,continueWithAttackers?,targetPolicy?,includePlayers?,pursue?,sneak?,shield?,collect?,untilItem?,untilCount?,roof?,single?,timeoutMs) fight_until(mob,untilItem,untilCount,weapon?,collect?,fleeAtHealth?,x?,y?,z?,radius?,roof?,timeoutMs?) flee_from(targetId,distance,timeoutMs) select_item(itemId) use_item(durationMs,hand?,expectedItemId?,mode?,aimX?,aimY?,aimZ?,acceptLavaRisk?) break_block(x,y,z,expectedBlockId?,timeoutMs,acceptLavaRisk?) pick_up_item(targetSelector) place_block(x,y,z,face,itemId,desiredState?,faceMode?) chat(message,audience?,recipientId?) wait(durationMs) set_door(x,y,z,open) drop_item(slot,count) navigate_to(x,y,z,tolerance,sprint,timeoutMs) build_shelter(x,y,z,opening,itemId,roof?,timeoutMs) dig_to(pattern?,y?,x?,z?,heading?,maxBlocks?,throughCaves?,maxShaftY?,stopWhenSeen?,timeoutMs) mine_vein(x,y,z,maxBlocks?,timeoutMs) cast_obsidian(x,y,z,axis?,frame?,count?,timeoutMs) barter_until(itemId,count,timeoutMs) travel_to(x?,y?,z?,yaw?,distance?,tolerance?,build?,retrace?,dimension?,stopWhenSeen?,minHealth?,fightThrough?,timeoutMs?) transfer_container(x,y,z,sourceKind,sourceSlot,destinationKind,destinationSlot,count,expectedItemId,timeoutMs) craft_inventory(recipeId,count,timeoutMs) craft_table(recipeId,x,y,z,count,timeoutMs) furnace_transaction(x,y,z,operation,inventorySlot?,count?,expectedItemId?,fuelSlot?,fuelCount?,expectedFuelItemId?,timeoutMs) equip_item(sourceSlot,targetSlot,expectedItemId) select_tool(sourceSlot,hotbarSlot,expectedItemId,minRemainingDurability) block_with_shield(durationMs) use_ranged(targetId,drawDurationMs,timeoutMs?,aimX?,aimY?,aimZ?,trackTarget?,untilDead?,fleeAtHealth?,collect?,untilItem?,untilCount?,single?) interact_block(x,y,z,face,hand,expectedItemId,hitX?,hitY?,hitZ?,acceptLavaRisk?) interact_entity(targetId,hand,expectedItemId,hitX?,hitY?,hitZ?) dismount() start_fall_flying() wake_up() set_flight(enabled) write_sign(x,y,z,front,lines,expectedLines) edit_book(slot,pages,title?,expectedFingerprint) menu_click(menuId,containerId,stateId,slot,button,clickType,expectedItemId,expectedCount,expectedFingerprint?) menu_close(menuId,containerId,stateId) beacon_effects(menuId,containerId,stateId,primaryEffectId,secondaryEffectId) menu_transfer(menuId,sourceSlot,destinationSlot,count,expectedItemId,timeoutMs,containerId?,stateId?) menu_button(menuId,buttonId,timeoutMs,containerId?,stateId?) anvil_rename(menuId,name,timeoutMs,containerId?,stateId?) respawn()",
         "kind": "parameter",
         "tool": "act",
         "path": "arguments"
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -20654,7 +20654,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -20682,7 +20682,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -20713,7 +20713,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -20741,7 +20741,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -20767,7 +20767,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -20794,7 +20794,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       }
     },
     {
@@ -20818,7 +20818,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       }
     },
     {
@@ -20842,7 +20842,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       }
     },
     {
@@ -20870,7 +20870,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       }
     },
     {
@@ -20895,7 +20895,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 202
+        "line": 204
       },
       "status": "checked"
     },
@@ -21037,7 +21037,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       }
     },
     {
@@ -21065,7 +21065,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       }
     },
     {
@@ -21096,7 +21096,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       }
     },
     {
@@ -21122,7 +21122,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       }
     },
     {
@@ -21145,7 +21145,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -21169,7 +21169,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -21193,7 +21193,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -21217,7 +21217,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -21241,7 +21241,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -21265,7 +21265,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -21289,7 +21289,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -21313,7 +21313,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -21337,7 +21337,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -21361,7 +21361,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -21385,7 +21385,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -21409,7 +21409,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -21433,7 +21433,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -21457,7 +21457,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -21481,7 +21481,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -21505,7 +21505,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -21529,7 +21529,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -21553,7 +21553,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -21577,7 +21577,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -21601,7 +21601,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -21625,7 +21625,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 206
+        "line": 211
       },
       "status": "checked"
     },
@@ -21649,7 +21649,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -21673,7 +21673,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -21697,7 +21697,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -21721,7 +21721,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -21745,7 +21745,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -21769,7 +21769,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -21793,7 +21793,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -21817,7 +21817,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -21841,7 +21841,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -21865,7 +21865,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -21889,7 +21889,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -21913,7 +21913,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -21937,7 +21937,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -21961,7 +21961,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -21985,7 +21985,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -22009,7 +22009,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -22033,7 +22033,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -22057,7 +22057,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -22081,7 +22081,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -22105,7 +22105,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -22129,7 +22129,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -22153,7 +22153,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -22177,7 +22177,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -22201,7 +22201,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -22225,7 +22225,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -22249,7 +22249,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -22276,7 +22276,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       }
     },
     {
@@ -22306,7 +22306,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       }
     },
     {
@@ -22334,7 +22334,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       }
     },
     {
@@ -22365,7 +22365,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -22393,7 +22393,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -22424,7 +22424,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -22451,7 +22451,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       }
     },
     {
@@ -22475,7 +22475,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       }
     },
     {
@@ -22499,7 +22499,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       }
     },
     {
@@ -22527,7 +22527,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       }
     },
     {
@@ -22552,7 +22552,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 209
+        "line": 211
       },
       "status": "checked"
     },
@@ -22693,7 +22693,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       }
     },
     {
@@ -22719,7 +22719,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       }
     },
     {
@@ -22743,7 +22743,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       }
     },
     {
@@ -22767,7 +22767,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       }
     },
     {
@@ -22790,7 +22790,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       },
       "status": "checked"
     },
@@ -22821,7 +22821,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       }
     },
     {
@@ -22848,7 +22848,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       }
     },
     {
@@ -22884,7 +22884,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       }
     },
     {
@@ -22911,7 +22911,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       }
     },
     {
@@ -22944,7 +22944,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       }
     },
     {
@@ -22970,7 +22970,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       }
     },
     {
@@ -22994,7 +22994,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       }
     },
     {
@@ -23018,7 +23018,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       }
     },
     {
@@ -23042,7 +23042,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       }
     },
     {
@@ -23066,7 +23066,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       }
     },
     {
@@ -23092,7 +23092,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       }
     },
     {
@@ -23116,7 +23116,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       }
     },
     {
@@ -23140,7 +23140,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       }
     },
     {
@@ -23164,7 +23164,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       }
     },
     {
@@ -23188,7 +23188,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       }
     },
     {
@@ -23215,7 +23215,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       }
     },
     {
@@ -23247,7 +23247,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       }
     },
     {
@@ -23279,7 +23279,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       }
     },
     {
@@ -23315,7 +23315,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       }
     },
     {
@@ -23373,7 +23373,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       }
     },
     {
@@ -23412,7 +23412,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       }
     },
     {
@@ -23439,7 +23439,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       }
     },
     {
@@ -23471,7 +23471,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       }
     },
     {
@@ -23499,7 +23499,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       }
     },
     {
@@ -23534,7 +23534,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       }
     },
     {
@@ -23563,7 +23563,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       }
     },
     {
@@ -23592,7 +23592,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       }
     },
     {
@@ -23621,7 +23621,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       }
     },
     {
@@ -23656,7 +23656,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       }
     },
     {
@@ -23686,7 +23686,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       },
       "status": "checked"
     },
@@ -23713,7 +23713,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       },
       "status": "checked"
     },
@@ -23740,7 +23740,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       },
       "status": "checked"
     },
@@ -23767,7 +23767,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       },
       "status": "checked"
     },
@@ -23794,7 +23794,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       },
       "status": "checked"
     },
@@ -23821,7 +23821,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       },
       "status": "checked"
     },
@@ -23848,7 +23848,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 217
+        "line": 219
       },
       "status": "checked"
     },
@@ -23960,7 +23960,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 219
+        "line": 221
       }
     },
     {
@@ -23988,7 +23988,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 219
+        "line": 221
       }
     },
     {
@@ -24014,7 +24014,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 219
+        "line": 221
       }
     },
     {
@@ -24043,7 +24043,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 219
+        "line": 221
       }
     },
     {
@@ -24202,7 +24202,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 224
+        "line": 226
       }
     },
     {
@@ -24230,7 +24230,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 224
+        "line": 226
       }
     },
     {
@@ -27637,7 +27637,7 @@
       },
       "location": {
         "file": "coordinator/src/native-minecraft-tools.mjs",
-        "line": 74
+        "line": 77
       },
       "status": "checked"
     },
@@ -34550,7 +34550,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 425
+        "line": 437
       },
       "status": "checked"
     },
@@ -34573,7 +34573,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 437
+        "line": 439
       }
     },
     {
@@ -34594,7 +34594,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 431
+        "line": 443
       },
       "status": "checked"
     },
@@ -34651,7 +34651,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 443
+        "line": 449
       }
     },
     {
@@ -34673,7 +34673,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 445
+        "line": 451
       }
     },
     {
@@ -34701,7 +34701,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 451
+        "line": 457
       }
     },
     {
@@ -34723,7 +34723,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 453
+        "line": 459
       }
     },
     {
@@ -34769,7 +34769,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 459
+        "line": 465
       },
       "status": "checked"
     },
@@ -34792,7 +34792,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 461
+        "line": 467
       }
     },
     {
@@ -34813,7 +34813,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 465
+        "line": 471
       },
       "status": "checked"
     },
@@ -34860,7 +34860,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 471
+        "line": 477
       },
       "status": "checked"
     },
@@ -34883,7 +34883,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 473
+        "line": 479
       }
     },
     {
@@ -34920,7 +34920,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 477
+        "line": 483
       }
     },
     {
@@ -34942,7 +34942,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 479
+        "line": 485
       }
     },
     {
@@ -34979,7 +34979,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 485
+        "line": 491
       }
     },
     {
@@ -35001,7 +35001,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 487
+        "line": 493
       }
     },
     {
@@ -35023,7 +35023,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 491
+        "line": 497
       }
     },
     {
@@ -35055,7 +35055,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 497
+        "line": 503
       }
     },
     {
@@ -35077,7 +35077,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 499
+        "line": 505
       }
     },
     {
@@ -35104,7 +35104,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 505
+        "line": 511
       }
     },
     {
@@ -35140,7 +35140,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 509
+        "line": 515
       },
       "status": "checked",
       "documentationChecks": [
@@ -35181,7 +35181,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 511
+        "line": 517
       },
       "status": "checked"
     },
@@ -35204,7 +35204,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 513
+        "line": 519
       }
     },
     {
@@ -35235,7 +35235,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 519
+        "line": 525
       },
       "status": "checked",
       "documentationChecks": [
@@ -35284,7 +35284,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 521
+        "line": 527
       },
       "status": "checked"
     },
@@ -35307,7 +35307,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 523
+        "line": 529
       }
     },
     {
@@ -35339,7 +35339,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 529
+        "line": 535
       }
     },
     {
@@ -35361,7 +35361,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 531
+        "line": 537
       }
     },
     {
@@ -35393,7 +35393,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 537
+        "line": 543
       }
     },
     {
@@ -35422,7 +35422,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 539
+        "line": 545
       },
       "status": "checked"
     },
@@ -35445,7 +35445,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 541
+        "line": 547
       }
     },
     {
@@ -35477,7 +35477,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 547
+        "line": 553
       }
     },
     {
@@ -35499,7 +35499,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 549
+        "line": 555
       }
     },
     {
@@ -35547,7 +35547,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 553
+        "line": 559
       },
       "status": "partial",
       "reason": "fight_target part striking and the perched-arrow bounce are exercised live by scripts/quality/test-dragon-live.mjs (provider-free); no offline executor fixture constructs fight_target. attack reports a landed swing rather than damage (source-read)."
@@ -35593,7 +35593,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 555
+        "line": 561
       },
       "status": "partial",
       "reason": "Cloud sampling, serialization, arming appearance, damage attribution, sight/contact edge latching and projectile/shield rules execute in Java fixtures. Sheep colour and radius contraction remain direct vanilla getter reads; exit routes and live combat outcomes remain unverified. Cloud growing/reachesYouInS fields lack a dedicated witness."
@@ -35654,7 +35654,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 559
+        "line": 565
       },
       "status": "partial",
       "reason": "Unit tests cover the plan-count default and schema; the in-world fire, shield and cover behaviour is witnessed only by the model-free blaze fixture named here (no live game yet)."
@@ -35677,7 +35677,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 561
+        "line": 567
       },
       "status": "checked"
     },
@@ -35699,7 +35699,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 565
+        "line": 571
       },
       "status": "partial",
       "reason": "Runtime paths implement protected waiting and witnessed drop memory; live spawner trials have exposed an idle-stance deck fall, so end-to-end footing and rod bar remain unproven."
@@ -35819,7 +35819,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 567
+        "line": 573
       },
       "status": "checked"
     },
@@ -35842,7 +35842,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 569
+        "line": 575
       }
     },
     {
@@ -35875,7 +35875,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 575
+        "line": 581
       },
       "status": "checked"
     },
@@ -35921,7 +35921,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 577
+        "line": 583
       },
       "status": "partial",
       "reason": "Unit tests cover the plan-count default and schema; the in-world fire, shield and cover behaviour is witnessed only by the model-free blaze fixture named here (no live game yet)."
@@ -35954,7 +35954,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 579
+        "line": 585
       },
       "status": "checked"
     },
@@ -35982,7 +35982,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 581
+        "line": 587
       },
       "status": "partial",
       "reason": "Schema and protocol validation are unit-tested; the in-world behaviour is witnessed only by the model-free fixtures named here (no live game yet)."
@@ -36005,7 +36005,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 583
+        "line": 589
       },
       "status": "checked"
     },
@@ -36028,7 +36028,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 589
+        "line": 595
       },
       "status": "partial",
       "reason": "Java terminal controller cases verify idle wording and existing outcomes. Choosing and completing the next defense in arbitrary live terrain remains model-authored guidance.",
@@ -36097,7 +36097,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 591
+        "line": 597
       },
       "status": "partial",
       "reason": "Current controller receipts and pure traversal rules exercise vanished targets, observed shores, all headings, step-up and stalled exclusions. Full moving-body physics for every retry path is not exercised; tactical destination choice remains model guidance."
@@ -36121,7 +36121,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 593
+        "line": 599
       }
     },
     {
@@ -36153,7 +36153,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 599
+        "line": 605
       }
     },
     {
@@ -36192,7 +36192,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 601
+        "line": 607
       },
       "status": "checked"
     },
@@ -36215,7 +36215,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 603
+        "line": 609
       }
     },
     {
@@ -36292,7 +36292,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 609
+        "line": 615
       },
       "status": "checked"
     },
@@ -36345,7 +36345,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 611
+        "line": 617
       },
       "status": "partial",
       "reason": "The crosshair-block-first then item order and bucket rays are witnessed for snowballs and buckets; pearls, eyes and flint and steel through use_item are named from vanilla, not separately run here."
@@ -36398,7 +36398,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 613
+        "line": 619
       },
       "status": "partial",
       "reason": "Java trajectory geometry and Node dispatch are verified. A live Minecraft throw/inspect rerun has not been performed; spread and entity collisions are explicitly unmodeled."
@@ -36415,7 +36415,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 615
+        "line": 621
       },
       "status": "advisory",
       "reason": "Contextual vanilla world-generation, loot, recipes, physiology or tactical comparisons, not an Arena tool behavior claim. Such world mechanics can be sampled, but are not inherently untestable; variable outcomes and chosen strategies are not universal tool guarantees.",
@@ -36513,7 +36513,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 617
+        "line": 623
       }
     },
     {
@@ -36535,7 +36535,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 619
+        "line": 625
       }
     },
     {
@@ -36576,7 +36576,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 625
+        "line": 631
       },
       "status": "checked"
     },
@@ -36623,7 +36623,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 627
+        "line": 633
       },
       "status": "partial",
       "reason": "The Nether UNSEEN_BELOW sentence is witnessed by the h-sol9-dig model-free replay only."
@@ -36647,7 +36647,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 629
+        "line": 635
       }
     },
     {
@@ -36679,7 +36679,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 635
+        "line": 641
       }
     },
     {
@@ -36701,7 +36701,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 637
+        "line": 643
       }
     },
     {
@@ -36738,7 +36738,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 643
+        "line": 649
       }
     },
     {
@@ -36792,7 +36792,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 645
+        "line": 651
       },
       "status": "partial",
       "reason": "Java verification exercises real vanilla geometry and placement contexts in a fixture, plus coordinator receipt delivery. No live-server end-to-end inventory mutation or arbitrary modded-block coverage is claimed."
@@ -36816,7 +36816,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 647
+        "line": 653
       },
       "status": "partial",
       "reason": "Perception and placement are checked against each other for 1, 2 and 8 snow layers, grass, bottom and top slabs, a fence, a crafting table and a hidden face; the coverage.sections.blocks fields naming the judged item are written by the full observation collector, which the headless check does not run."
@@ -36840,7 +36840,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 649
+        "line": 655
       }
     },
     {
@@ -36872,7 +36872,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 655
+        "line": 661
       }
     },
     {
@@ -36894,7 +36894,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 657
+        "line": 663
       }
     },
     {
@@ -36926,7 +36926,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 663
+        "line": 669
       }
     },
     {
@@ -36948,7 +36948,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 665
+        "line": 671
       }
     },
     {
@@ -36980,7 +36980,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 671
+        "line": 677
       }
     },
     {
@@ -37002,7 +37002,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 673
+        "line": 679
       }
     },
     {
@@ -37034,7 +37034,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 679
+        "line": 685
       }
     },
     {
@@ -37056,7 +37056,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 681
+        "line": 687
       }
     },
     {
@@ -37088,7 +37088,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 687
+        "line": 693
       }
     },
     {
@@ -37110,7 +37110,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 689
+        "line": 695
       }
     },
     {
@@ -37136,7 +37136,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 695
+        "line": 701
       },
       "status": "checked"
     },
@@ -37163,7 +37163,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 697
+        "line": 703
       },
       "status": "partial",
       "reason": "Schema and enclosure geometry are executable gates; the guarded Desktop construction cases additionally cover fire and a fence, separate from the real-spawner acceptance bar."
@@ -37186,7 +37186,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 699
+        "line": 705
       },
       "status": "checked"
     },
@@ -37208,7 +37208,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 705
+        "line": 711
       },
       "status": "checked"
     },
@@ -37236,7 +37236,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 707
+        "line": 713
       },
       "status": "partial",
       "reason": "Stops the live runs did not reach (LOW_HEALTH, UNBREAKABLE, DIG_LIMIT_REACHED) are verified only by code review and step planning."
@@ -37277,7 +37277,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 709
+        "line": 715
       },
       "status": "partial",
       "reason": "The Nether UNSEEN_BELOW sentence is witnessed by the c64 model-free replay only."
@@ -37307,7 +37307,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 711
+        "line": 717
       },
       "status": "partial",
       "reason": "Measured on 12 spots and 5 fixtures with a stand-in for the model; times exclude model turns, and which way is faster is the model's judgement."
@@ -37330,7 +37330,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 713
+        "line": 719
       },
       "status": "checked"
     },
@@ -37352,7 +37352,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 717
+        "line": 723
       },
       "status": "checked"
     },
@@ -37380,7 +37380,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 713
+        "line": 729
       },
       "status": "checked"
     },
@@ -37409,7 +37409,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 715
+        "line": 731
       },
       "status": "partial",
       "reason": "The planning rules are witnessed on fixtures; the controller that drives the breaks in a live world has no world-level fixture."
@@ -37432,7 +37432,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 717
+        "line": 733
       },
       "status": "checked"
     },
@@ -37461,7 +37461,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 723
+        "line": 739
       },
       "status": "partial",
       "reason": "Save-point runs cover count and frame success; the danger, hostile, refusal, blocked-cell and walking stops are implemented in ServerCastObsidianController but have no dedicated fixture."
@@ -37484,7 +37484,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 725
+        "line": 741
       },
       "status": "checked"
     },
@@ -37513,7 +37513,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 727
+        "line": 743
       },
       "status": "partial",
       "reason": "Save-point runs cover count and frame success; the danger, hostile, refusal, blocked-cell and walking stops are implemented in ServerCastObsidianController but have no dedicated fixture."
@@ -37543,7 +37543,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 729
+        "line": 745
       },
       "status": "partial",
       "reason": "Save-point runs cover count and frame success; the danger, hostile, refusal, blocked-cell and walking stops are implemented in ServerCastObsidianController but have no dedicated fixture."
@@ -37573,7 +37573,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 731
+        "line": 747
       },
       "status": "partial",
       "reason": "Save-point runs cover count and frame success; the danger, hostile, refusal, blocked-cell and walking stops are implemented in ServerCastObsidianController but have no dedicated fixture."
@@ -37603,7 +37603,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 733
+        "line": 749
       },
       "status": "partial",
       "reason": "Save-point runs cover count and frame success; the danger, hostile, refusal, blocked-cell and walking stops are implemented in ServerCastObsidianController but have no dedicated fixture."
@@ -37639,7 +37639,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 735
+        "line": 751
       },
       "status": "partial",
       "reason": "Save-point runs cover count and frame success; the danger, hostile, refusal, blocked-cell and walking stops are implemented in ServerCastObsidianController but have no dedicated fixture."
@@ -37662,7 +37662,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 737
+        "line": 753
       },
       "status": "checked"
     },
@@ -37685,7 +37685,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 743
+        "line": 759
       },
       "status": "partial",
       "reason": "Piglin-room runs cover bartering, collection and the count; the anger, armour, hostile and danger stops are implemented in ServerBarterController but have no dedicated fixture."
@@ -37708,7 +37708,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 745
+        "line": 761
       },
       "status": "checked"
     },
@@ -37731,7 +37731,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 747
+        "line": 763
       },
       "status": "partial",
       "reason": "Piglin-room runs cover bartering, collection and the count; the anger, armour, hostile and danger stops are implemented in ServerBarterController but have no dedicated fixture."
@@ -37761,7 +37761,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 749
+        "line": 765
       },
       "status": "partial",
       "reason": "Piglin-room runs cover bartering, collection and the count; the anger, armour, hostile and danger stops are implemented in ServerBarterController but have no dedicated fixture."
@@ -37784,7 +37784,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 751
+        "line": 767
       },
       "status": "checked"
     },
@@ -37812,7 +37812,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 757
+        "line": 773
       },
       "status": "checked"
     },
@@ -37834,7 +37834,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 759
+        "line": 775
       },
       "status": "checked"
     },
@@ -37867,7 +37867,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 765
+        "line": 781
       }
     },
     {
@@ -37889,7 +37889,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 767
+        "line": 783
       }
     },
     {
@@ -37921,7 +37921,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 773
+        "line": 789
       }
     },
     {
@@ -37943,7 +37943,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 775
+        "line": 791
       }
     },
     {
@@ -37975,7 +37975,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 781
+        "line": 797
       }
     },
     {
@@ -37997,7 +37997,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 783
+        "line": 799
       }
     },
     {
@@ -38049,7 +38049,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 789
+        "line": 805
       },
       "status": "checked"
     },
@@ -38087,7 +38087,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 791
+        "line": 807
       },
       "status": "checked"
     },
@@ -38136,7 +38136,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 793
+        "line": 809
       },
       "status": "checked"
     },
@@ -38174,7 +38174,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 795
+        "line": 811
       },
       "status": "checked"
     },
@@ -38212,7 +38212,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 799
+        "line": 815
       },
       "status": "checked"
     },
@@ -38245,7 +38245,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 805
+        "line": 821
       }
     },
     {
@@ -38267,7 +38267,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 807
+        "line": 823
       }
     },
     {
@@ -38299,7 +38299,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 813
+        "line": 829
       }
     },
     {
@@ -38326,7 +38326,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 815
+        "line": 831
       },
       "status": "checked"
     },
@@ -38349,7 +38349,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 817
+        "line": 833
       }
     },
     {
@@ -38381,7 +38381,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 823
+        "line": 839
       }
     },
     {
@@ -38403,7 +38403,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 825
+        "line": 841
       }
     },
     {
@@ -38445,7 +38445,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 831
+        "line": 847
       },
       "status": "partial",
       "reason": "Unit tests cover the plan-count default and schema; the in-world fire, shield and cover behaviour is witnessed only by the model-free blaze fixture named here (no live game yet)."
@@ -38510,7 +38510,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 833
+        "line": 849
       },
       "status": "checked"
     },
@@ -38590,7 +38590,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 835
+        "line": 851
       },
       "status": "checked"
     },
@@ -38613,7 +38613,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 837
+        "line": 853
       }
     },
     {
@@ -38634,7 +38634,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 841
+        "line": 857
       },
       "status": "checked"
     },
@@ -38674,7 +38674,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 845
+        "line": 861
       },
       "status": "checked"
     },
@@ -38696,7 +38696,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 847
+        "line": 863
       },
       "status": "checked"
     },
@@ -38734,7 +38734,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 853
+        "line": 869
       },
       "status": "checked"
     },
@@ -38823,7 +38823,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 855
+        "line": 871
       },
       "status": "partial",
       "reason": "Buckets, flint and steel, chests and beds are witnessed live; buttons and cauldrons are named from vanilla block use; an entity standing in the crosshair is not modelled by this click."
@@ -38846,7 +38846,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 857
+        "line": 873
       },
       "status": "checked"
     },
@@ -38868,7 +38868,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 861
+        "line": 877
       },
       "status": "checked"
     },
@@ -38901,7 +38901,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 867
+        "line": 883
       }
     },
     {
@@ -38935,7 +38935,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 869
+        "line": 885
       },
       "status": "partial",
       "reason": "Mounting and the piglin gold handoff are witnessed live; feeding, breeding, milking, shearing and trading are named from vanilla entity use."
@@ -38959,7 +38959,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 871
+        "line": 887
       }
     },
     {
@@ -38991,7 +38991,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 877
+        "line": 893
       }
     },
     {
@@ -39013,7 +39013,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 879
+        "line": 895
       }
     },
     {
@@ -39045,7 +39045,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 885
+        "line": 901
       }
     },
     {
@@ -39067,7 +39067,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 887
+        "line": 903
       }
     },
     {
@@ -39099,7 +39099,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 893
+        "line": 909
       }
     },
     {
@@ -39121,7 +39121,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 895
+        "line": 911
       }
     },
     {
@@ -39153,7 +39153,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 901
+        "line": 917
       }
     },
     {
@@ -39175,7 +39175,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 903
+        "line": 919
       }
     },
     {
@@ -39207,7 +39207,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 909
+        "line": 925
       }
     },
     {
@@ -39229,7 +39229,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 911
+        "line": 927
       }
     },
     {
@@ -39261,7 +39261,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 917
+        "line": 933
       }
     },
     {
@@ -39283,7 +39283,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 919
+        "line": 935
       }
     },
     {
@@ -39315,7 +39315,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 925
+        "line": 941
       }
     },
     {
@@ -39337,7 +39337,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 927
+        "line": 943
       }
     },
     {
@@ -39369,7 +39369,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 933
+        "line": 949
       }
     },
     {
@@ -39391,7 +39391,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 935
+        "line": 951
       }
     },
     {
@@ -39423,7 +39423,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 941
+        "line": 957
       }
     },
     {
@@ -39445,7 +39445,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 943
+        "line": 959
       }
     },
     {
@@ -39477,7 +39477,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 949
+        "line": 965
       }
     },
     {
@@ -39499,7 +39499,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 951
+        "line": 967
       }
     },
     {
@@ -39531,7 +39531,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 957
+        "line": 973
       }
     },
     {
@@ -39553,7 +39553,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 959
+        "line": 975
       }
     },
     {
@@ -39585,7 +39585,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 965
+        "line": 981
       }
     },
     {
@@ -39607,7 +39607,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 967
+        "line": 983
       }
     },
     {
@@ -39639,7 +39639,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 973
+        "line": 989
       }
     },
     {
@@ -39661,7 +39661,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 975
+        "line": 991
       }
     },
     {
@@ -39678,7 +39678,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 981
+        "line": 997
       }
     },
     {
@@ -39700,7 +39700,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 983
+        "line": 999
       }
     },
     {
@@ -39728,7 +39728,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 987
+        "line": 1003
       }
     },
     {
@@ -39750,7 +39750,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 989
+        "line": 1005
       }
     },
     {
@@ -39895,7 +39895,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 993
+        "line": 1009
       }
     },
     {
@@ -39917,7 +39917,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 995
+        "line": 1011
       }
     },
     {
@@ -39939,7 +39939,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 999
+        "line": 1015
       }
     },
     {
@@ -39961,7 +39961,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 1003
+        "line": 1019
       }
     },
     {
@@ -39982,7 +39982,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 1007
+        "line": 1023
       },
       "status": "checked"
     },
@@ -40005,7 +40005,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 1011
+        "line": 1027
       }
     },
     {
@@ -40027,7 +40027,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 1015
+        "line": 1031
       }
     },
     {
@@ -40048,7 +40048,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 1019
+        "line": 1035
       },
       "status": "checked"
     },
@@ -40071,7 +40071,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 1023
+        "line": 1039
       }
     },
     {
@@ -40093,7 +40093,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 1027
+        "line": 1043
       }
     },
     {
@@ -40115,7 +40115,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 1031
+        "line": 1047
       }
     },
     {
@@ -40137,7 +40137,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 1035
+        "line": 1051
       }
     },
     {
@@ -40159,7 +40159,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 1039
+        "line": 1055
       }
     },
     {
@@ -40181,7 +40181,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 1043
+        "line": 1059
       }
     },
     {
@@ -40203,7 +40203,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 1047
+        "line": 1063
       }
     },
     {
@@ -46157,7 +46157,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 375
+        "line": 387
       },
       "status": "partial",
       "reason": "Door classification, routing through a doorway and the tunnel refusal are witnessed on fixtures; the open and close clicks inside a live walk have no world-level fixture."
@@ -46994,7 +46994,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 421
+        "line": 433
       },
       "status": "partial",
       "reason": "The wasted-ore rule is witnessed on a fixture inventory; the executor's NO_TOOL throw before acceptance has no world-level fixture."
@@ -47048,7 +47048,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 477
+        "line": 483
       }
     },
     {
@@ -47090,7 +47090,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 485
+        "line": 491
       }
     },
     {
@@ -47120,7 +47120,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 511
+        "line": 517
       },
       "status": "checked"
     },
@@ -47138,7 +47138,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 553
+        "line": 559
       },
       "status": "advisory",
       "reason": "ServerActionExecutor.attack checks vanilla isWithinAttackRange before aiming; no offline fixture executes the attack reach refusal."
@@ -47165,7 +47165,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 553
+        "line": 559
       },
       "status": "partial",
       "reason": "The ray identity predicate is executed; the attack wrapper that maps a mismatch to TARGET_OBSTRUCTED is source-read."
@@ -47184,7 +47184,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 553
+        "line": 559
       },
       "status": "advisory",
       "reason": "ServerActionExecutor.combatTarget maps EnderDragonPart to parentMob and throws TARGET_NOT_LIVING for other non-LivingEntity targets; exercised live by scripts/quality/test-dragon-live.mjs, no offline executor fixture."
@@ -47210,7 +47210,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 567
+        "line": 573
       },
       "status": "checked"
     },
@@ -47235,7 +47235,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 567
+        "line": 573
       },
       "status": "checked"
     },
@@ -47260,7 +47260,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 567
+        "line": 573
       },
       "status": "checked"
     },
@@ -47285,7 +47285,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 567
+        "line": 573
       },
       "status": "checked"
     },
@@ -47310,7 +47310,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 567
+        "line": 573
       },
       "status": "checked"
     },
@@ -47335,7 +47335,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 567
+        "line": 573
       },
       "status": "checked"
     },
@@ -47360,7 +47360,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 567
+        "line": 573
       },
       "status": "checked"
     },
@@ -47385,7 +47385,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 567
+        "line": 573
       },
       "status": "checked"
     },
@@ -47415,7 +47415,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 577
+        "line": 583
       },
       "status": "checked",
       "reason": "Contract changed or added; inspect behavior and update its predicate and witnesses before approving."
@@ -47446,7 +47446,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 577
+        "line": 583
       },
       "status": "checked",
       "reason": "Contract changed or added; inspect behavior and update its predicate and witnesses before approving."
@@ -47477,7 +47477,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 577
+        "line": 583
       },
       "status": "checked",
       "reason": "Contract changed or added; inspect behavior and update its predicate and witnesses before approving."
@@ -47514,7 +47514,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 577
+        "line": 583
       },
       "status": "checked",
       "reason": "Contract changed or added; inspect behavior and update its predicate and witnesses before approving."
@@ -47545,7 +47545,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 577
+        "line": 583
       },
       "status": "checked",
       "reason": "Contract changed or added; inspect behavior and update its predicate and witnesses before approving."
@@ -47576,7 +47576,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 577
+        "line": 583
       },
       "status": "checked",
       "reason": "Contract changed or added; inspect behavior and update its predicate and witnesses before approving."
@@ -47607,7 +47607,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 577
+        "line": 583
       },
       "status": "checked",
       "reason": "Contract changed or added; inspect behavior and update its predicate and witnesses before approving."
@@ -47638,7 +47638,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 577
+        "line": 583
       },
       "status": "checked",
       "reason": "Contract changed or added; inspect behavior and update its predicate and witnesses before approving."
@@ -47669,7 +47669,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 577
+        "line": 583
       },
       "status": "checked",
       "reason": "Contract changed or added; inspect behavior and update its predicate and witnesses before approving."
@@ -47700,7 +47700,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 577
+        "line": 583
       },
       "status": "checked",
       "reason": "Contract changed or added; inspect behavior and update its predicate and witnesses before approving."
@@ -47731,7 +47731,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 581
+        "line": 587
       },
       "status": "partial",
       "reason": "Schema and protocol validation are unit-tested; the in-world behaviour is witnessed only by the model-free fixtures named here (no live game yet)."
@@ -47762,7 +47762,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 581
+        "line": 587
       },
       "status": "partial",
       "reason": "Schema and protocol validation are unit-tested; the in-world behaviour is witnessed only by the model-free fixtures named here (no live game yet)."
@@ -47788,7 +47788,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 591
+        "line": 597
       },
       "status": "checked"
     },
@@ -47813,7 +47813,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 591
+        "line": 597
       },
       "status": "checked"
     },
@@ -47838,7 +47838,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 591
+        "line": 597
       },
       "status": "checked"
     },
@@ -47869,7 +47869,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 591
+        "line": 597
       },
       "status": "partial",
       "reason": "Pure heading/step-up/exclusion tests and the real blocked receipt run; the full live moving-body stall-to-detour sequence is not exercised."
@@ -47895,7 +47895,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 591
+        "line": 597
       },
       "status": "checked"
     },
@@ -47931,7 +47931,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 601
+        "line": 607
       },
       "status": "checked"
     },
@@ -47961,7 +47961,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 601
+        "line": 607
       },
       "status": "checked"
     },
@@ -47991,7 +47991,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 601
+        "line": 607
       },
       "status": "checked"
     },
@@ -48021,7 +48021,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 611
+        "line": 617
       },
       "status": "partial",
       "reason": "Pure landing-cell geometry is verified in verifyCore from the c1-1 and base-3 deaths; the live refusal path is exercised by the d41-portal model-free replays (evals/d41-portal/c2), not by a committed fixture."
@@ -48047,7 +48047,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 627
+        "line": 633
       },
       "status": "checked",
       "reason": "Contract changed or added; inspect behavior and update its predicate and witnesses before approving."
@@ -48073,7 +48073,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 627
+        "line": 633
       },
       "status": "partial",
       "reason": "Witnessed by a model-free replay only; no unit test."
@@ -48131,7 +48131,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 645
+        "line": 651
       },
       "status": "partial",
       "reason": "Java verification exercises real vanilla geometry and placement contexts in a fixture, plus coordinator receipt delivery. No live-server end-to-end inventory mutation or arbitrary modded-block coverage is claimed."
@@ -48189,7 +48189,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 645
+        "line": 651
       },
       "status": "partial",
       "reason": "Java verification exercises real vanilla geometry and placement contexts in a fixture, plus coordinator receipt delivery. No live-server end-to-end inventory mutation or arbitrary modded-block coverage is claimed."
@@ -48247,7 +48247,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 645
+        "line": 651
       },
       "status": "partial",
       "reason": "Java verification exercises real vanilla geometry and placement contexts in a fixture, plus coordinator receipt delivery. No live-server end-to-end inventory mutation or arbitrary modded-block coverage is claimed."
@@ -48305,7 +48305,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 645
+        "line": 651
       },
       "status": "partial",
       "reason": "Java verification exercises real vanilla geometry and placement contexts in a fixture, plus coordinator receipt delivery. No live-server end-to-end inventory mutation or arbitrary modded-block coverage is claimed."
@@ -48363,7 +48363,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 645
+        "line": 651
       },
       "status": "partial",
       "reason": "Java verification exercises real vanilla geometry and placement contexts in a fixture, plus coordinator receipt delivery. No live-server end-to-end inventory mutation or arbitrary modded-block coverage is claimed."
@@ -48421,7 +48421,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 645
+        "line": 651
       },
       "status": "partial",
       "reason": "Java verification exercises real vanilla geometry and placement contexts in a fixture, plus coordinator receipt delivery. No live-server end-to-end inventory mutation or arbitrary modded-block coverage is claimed."
@@ -48479,7 +48479,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 645
+        "line": 651
       },
       "status": "partial",
       "reason": "Java verification exercises real vanilla geometry and placement contexts in a fixture, plus coordinator receipt delivery. No live-server end-to-end inventory mutation or arbitrary modded-block coverage is claimed."
@@ -48537,7 +48537,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 645
+        "line": 651
       },
       "status": "partial",
       "reason": "Java verification exercises real vanilla geometry and placement contexts in a fixture, plus coordinator receipt delivery. No live-server end-to-end inventory mutation or arbitrary modded-block coverage is claimed."
@@ -48563,7 +48563,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 707
+        "line": 713
       },
       "status": "checked",
       "reason": "Stops the live runs did not reach (LOW_HEALTH, UNBREAKABLE, DIG_LIMIT_REACHED) are verified only by code review and step planning."
@@ -48588,7 +48588,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 707
+        "line": 713
       },
       "status": "partial",
       "reason": "Stops the live runs did not reach (LOW_HEALTH, UNBREAKABLE, DIG_LIMIT_REACHED) are verified only by code review and step planning."
@@ -48614,7 +48614,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 707
+        "line": 713
       },
       "status": "checked",
       "reason": "Stops the live runs did not reach (LOW_HEALTH, UNBREAKABLE, DIG_LIMIT_REACHED) are verified only by code review and step planning."
@@ -48640,7 +48640,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 707
+        "line": 713
       },
       "status": "checked",
       "reason": "Stops the live runs did not reach (LOW_HEALTH, UNBREAKABLE, DIG_LIMIT_REACHED) are verified only by code review and step planning."
@@ -48666,7 +48666,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 707
+        "line": 713
       },
       "status": "checked",
       "reason": "Stops the live runs did not reach (LOW_HEALTH, UNBREAKABLE, DIG_LIMIT_REACHED) are verified only by code review and step planning."
@@ -48691,7 +48691,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 707
+        "line": 713
       },
       "status": "partial",
       "reason": "Stops the live runs did not reach (LOW_HEALTH, UNBREAKABLE, DIG_LIMIT_REACHED) are verified only by code review and step planning."
@@ -48717,7 +48717,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 707
+        "line": 713
       },
       "status": "checked",
       "reason": "Stops the live runs did not reach (LOW_HEALTH, UNBREAKABLE, DIG_LIMIT_REACHED) are verified only by code review and step planning."
@@ -48743,7 +48743,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 707
+        "line": 713
       },
       "status": "checked",
       "reason": "Stops the live runs did not reach (LOW_HEALTH, UNBREAKABLE, DIG_LIMIT_REACHED) are verified only by code review and step planning."
@@ -48768,7 +48768,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 707
+        "line": 713
       },
       "status": "partial",
       "reason": "Stops the live runs did not reach (LOW_HEALTH, UNBREAKABLE, DIG_LIMIT_REACHED) are verified only by code review and step planning."
@@ -48793,7 +48793,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 707
+        "line": 713
       },
       "status": "partial",
       "reason": "Stops the live runs did not reach (LOW_HEALTH, UNBREAKABLE, DIG_LIMIT_REACHED) are verified only by code review and step planning."
@@ -48818,7 +48818,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 707
+        "line": 713
       },
       "status": "partial",
       "reason": "Stops the live runs did not reach (LOW_HEALTH, UNBREAKABLE, DIG_LIMIT_REACHED) are verified only by code review and step planning."
@@ -48844,7 +48844,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 707
+        "line": 713
       },
       "status": "checked",
       "reason": "Stops the live runs did not reach (LOW_HEALTH, UNBREAKABLE, DIG_LIMIT_REACHED) are verified only by code review and step planning."
@@ -48869,7 +48869,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 707
+        "line": 713
       },
       "status": "partial",
       "reason": "Stops the live runs did not reach (LOW_HEALTH, UNBREAKABLE, DIG_LIMIT_REACHED) are verified only by code review and step planning."
@@ -48894,7 +48894,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 707
+        "line": 713
       },
       "status": "partial",
       "reason": "Stops the live runs did not reach (LOW_HEALTH, UNBREAKABLE, DIG_LIMIT_REACHED) are verified only by code review and step planning."
@@ -48920,7 +48920,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 707
+        "line": 713
       },
       "status": "checked",
       "reason": "Stops the live runs did not reach (LOW_HEALTH, UNBREAKABLE, DIG_LIMIT_REACHED) are verified only by code review and step planning."
@@ -48946,7 +48946,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 707
+        "line": 713
       },
       "status": "checked",
       "reason": "Stops the live runs did not reach (LOW_HEALTH, UNBREAKABLE, DIG_LIMIT_REACHED) are verified only by code review and step planning."
@@ -48972,7 +48972,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 709
+        "line": 715
       },
       "status": "checked",
       "reason": "Contract changed or added; inspect behavior and update its predicate and witnesses before approving."
@@ -48998,7 +48998,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 709
+        "line": 715
       },
       "status": "checked",
       "reason": "Contract changed or added; inspect behavior and update its predicate and witnesses before approving."
@@ -49024,7 +49024,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 709
+        "line": 715
       },
       "status": "partial",
       "reason": "Witnessed by a model-free replay only; no unit test."
@@ -49056,7 +49056,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 709
+        "line": 715
       },
       "status": "checked",
       "reason": "Contract changed or added; inspect behavior and update its predicate and witnesses before approving."
@@ -49088,7 +49088,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 709
+        "line": 715
       },
       "status": "checked",
       "reason": "Contract changed or added; inspect behavior and update its predicate and witnesses before approving."
@@ -49114,7 +49114,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 709
+        "line": 715
       },
       "status": "checked",
       "reason": "Contract changed or added; inspect behavior and update its predicate and witnesses before approving."
@@ -49140,7 +49140,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 711
+        "line": 717
       },
       "status": "checked"
     },
@@ -49165,7 +49165,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 715
+        "line": 731
       },
       "status": "partial",
       "reason": "The planning rules are witnessed on fixtures; the controller that drives the breaks in a live world has no world-level fixture."
@@ -49191,7 +49191,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 715
+        "line": 731
       },
       "status": "partial",
       "reason": "The planning rules are witnessed on fixtures; the controller that drives the breaks in a live world has no world-level fixture."
@@ -49217,7 +49217,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 715
+        "line": 731
       },
       "status": "partial",
       "reason": "The planning rules are witnessed on fixtures; the controller that drives the breaks in a live world has no world-level fixture."
@@ -49243,7 +49243,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 715
+        "line": 731
       },
       "status": "partial",
       "reason": "The planning rules are witnessed on fixtures; the controller that drives the breaks in a live world has no world-level fixture."
@@ -49269,7 +49269,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 715
+        "line": 731
       },
       "status": "partial",
       "reason": "The planning rules are witnessed on fixtures; the controller that drives the breaks in a live world has no world-level fixture."
@@ -49295,7 +49295,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 715
+        "line": 731
       },
       "status": "partial",
       "reason": "The planning rules are witnessed on fixtures; the controller that drives the breaks in a live world has no world-level fixture."
@@ -49321,7 +49321,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 715
+        "line": 731
       },
       "status": "partial",
       "reason": "The planning rules are witnessed on fixtures; the controller that drives the breaks in a live world has no world-level fixture."
@@ -49347,7 +49347,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 715
+        "line": 731
       },
       "status": "partial",
       "reason": "The planning rules are witnessed on fixtures; the controller that drives the breaks in a live world has no world-level fixture."
@@ -49373,7 +49373,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 715
+        "line": 731
       },
       "status": "partial",
       "reason": "The planning rules are witnessed on fixtures; the controller that drives the breaks in a live world has no world-level fixture."
@@ -49399,7 +49399,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 715
+        "line": 731
       },
       "status": "partial",
       "reason": "The planning rules are witnessed on fixtures; the controller that drives the breaks in a live world has no world-level fixture."
@@ -49425,7 +49425,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 715
+        "line": 731
       },
       "status": "partial",
       "reason": "The planning rules are witnessed on fixtures; the controller that drives the breaks in a live world has no world-level fixture."
@@ -49451,7 +49451,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 715
+        "line": 731
       },
       "status": "partial",
       "reason": "The planning rules are witnessed on fixtures; the controller that drives the breaks in a live world has no world-level fixture."
@@ -49477,7 +49477,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 715
+        "line": 731
       },
       "status": "partial",
       "reason": "The planning rules are witnessed on fixtures; the controller that drives the breaks in a live world has no world-level fixture."
@@ -49503,7 +49503,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 715
+        "line": 731
       },
       "status": "partial",
       "reason": "The planning rules are witnessed on fixtures; the controller that drives the breaks in a live world has no world-level fixture."
@@ -49529,7 +49529,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 715
+        "line": 731
       },
       "status": "partial",
       "reason": "The planning rules are witnessed on fixtures; the controller that drives the breaks in a live world has no world-level fixture."
@@ -49561,7 +49561,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 733
+        "line": 749
       },
       "status": "partial",
       "reason": "Save-point runs cover count and frame success; the danger, hostile, refusal, blocked-cell and walking stops are implemented in ServerCastObsidianController but have no dedicated fixture."
@@ -49599,7 +49599,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 735
+        "line": 751
       },
       "status": "partial",
       "reason": "Save-point runs cover count and frame success; the danger, hostile, refusal, blocked-cell and walking stops are implemented in ServerCastObsidianController but have no dedicated fixture."
@@ -49637,7 +49637,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 735
+        "line": 751
       },
       "status": "partial",
       "reason": "Save-point runs cover count and frame success; the danger, hostile, refusal, blocked-cell and walking stops are implemented in ServerCastObsidianController but have no dedicated fixture."
@@ -49675,7 +49675,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 735
+        "line": 751
       },
       "status": "partial",
       "reason": "Save-point runs cover count and frame success; the danger, hostile, refusal, blocked-cell and walking stops are implemented in ServerCastObsidianController but have no dedicated fixture."
@@ -49713,7 +49713,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 735
+        "line": 751
       },
       "status": "partial",
       "reason": "Save-point runs cover count and frame success; the danger, hostile, refusal, blocked-cell and walking stops are implemented in ServerCastObsidianController but have no dedicated fixture."
@@ -49751,7 +49751,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 735
+        "line": 751
       },
       "status": "partial",
       "reason": "Save-point runs cover count and frame success; the danger, hostile, refusal, blocked-cell and walking stops are implemented in ServerCastObsidianController but have no dedicated fixture."
@@ -49789,7 +49789,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 735
+        "line": 751
       },
       "status": "partial",
       "reason": "Save-point runs cover count and frame success; the danger, hostile, refusal, blocked-cell and walking stops are implemented in ServerCastObsidianController but have no dedicated fixture."
@@ -49827,7 +49827,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 735
+        "line": 751
       },
       "status": "partial",
       "reason": "Save-point runs cover count and frame success; the danger, hostile, refusal, blocked-cell and walking stops are implemented in ServerCastObsidianController but have no dedicated fixture."
@@ -49865,7 +49865,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 735
+        "line": 751
       },
       "status": "partial",
       "reason": "Save-point runs cover count and frame success; the danger, hostile, refusal, blocked-cell and walking stops are implemented in ServerCastObsidianController but have no dedicated fixture."
@@ -49903,7 +49903,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 735
+        "line": 751
       },
       "status": "partial",
       "reason": "Save-point runs cover count and frame success; the danger, hostile, refusal, blocked-cell and walking stops are implemented in ServerCastObsidianController but have no dedicated fixture."
@@ -49941,7 +49941,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 735
+        "line": 751
       },
       "status": "partial",
       "reason": "Save-point runs cover count and frame success; the danger, hostile, refusal, blocked-cell and walking stops are implemented in ServerCastObsidianController but have no dedicated fixture."
@@ -49979,7 +49979,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 735
+        "line": 751
       },
       "status": "partial",
       "reason": "Save-point runs cover count and frame success; the danger, hostile, refusal, blocked-cell and walking stops are implemented in ServerCastObsidianController but have no dedicated fixture."
@@ -50017,7 +50017,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 735
+        "line": 751
       },
       "status": "partial",
       "reason": "Save-point runs cover count and frame success; the danger, hostile, refusal, blocked-cell and walking stops are implemented in ServerCastObsidianController but have no dedicated fixture."
@@ -50055,7 +50055,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 735
+        "line": 751
       },
       "status": "partial",
       "reason": "Save-point runs cover count and frame success; the danger, hostile, refusal, blocked-cell and walking stops are implemented in ServerCastObsidianController but have no dedicated fixture."
@@ -50093,7 +50093,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 735
+        "line": 751
       },
       "status": "partial",
       "reason": "Save-point runs cover count and frame success; the danger, hostile, refusal, blocked-cell and walking stops are implemented in ServerCastObsidianController but have no dedicated fixture."
@@ -50131,7 +50131,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 735
+        "line": 751
       },
       "status": "partial",
       "reason": "Save-point runs cover count and frame success; the danger, hostile, refusal, blocked-cell and walking stops are implemented in ServerCastObsidianController but have no dedicated fixture."
@@ -50169,7 +50169,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 735
+        "line": 751
       },
       "status": "partial",
       "reason": "Save-point runs cover count and frame success; the danger, hostile, refusal, blocked-cell and walking stops are implemented in ServerCastObsidianController but have no dedicated fixture."
@@ -50195,7 +50195,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 747
+        "line": 763
       },
       "status": "partial",
       "reason": "Piglin-room runs cover bartering, collection and the count; the anger, armour, hostile and danger stops are implemented in ServerBarterController but have no dedicated fixture."
@@ -50227,7 +50227,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 749
+        "line": 765
       },
       "status": "partial",
       "reason": "Piglin-room runs cover bartering, collection and the count; the anger, armour, hostile and danger stops are implemented in ServerBarterController but have no dedicated fixture."
@@ -50259,7 +50259,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 749
+        "line": 765
       },
       "status": "partial",
       "reason": "Piglin-room runs cover bartering, collection and the count; the anger, armour, hostile and danger stops are implemented in ServerBarterController but have no dedicated fixture."
@@ -50291,7 +50291,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 749
+        "line": 765
       },
       "status": "partial",
       "reason": "Piglin-room runs cover bartering, collection and the count; the anger, armour, hostile and danger stops are implemented in ServerBarterController but have no dedicated fixture."
@@ -50323,7 +50323,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 749
+        "line": 765
       },
       "status": "partial",
       "reason": "Piglin-room runs cover bartering, collection and the count; the anger, armour, hostile and danger stops are implemented in ServerBarterController but have no dedicated fixture."
@@ -50355,7 +50355,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 749
+        "line": 765
       },
       "status": "partial",
       "reason": "Piglin-room runs cover bartering, collection and the count; the anger, armour, hostile and danger stops are implemented in ServerBarterController but have no dedicated fixture."
@@ -50387,7 +50387,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 749
+        "line": 765
       },
       "status": "partial",
       "reason": "Piglin-room runs cover bartering, collection and the count; the anger, armour, hostile and danger stops are implemented in ServerBarterController but have no dedicated fixture."
@@ -50419,7 +50419,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 749
+        "line": 765
       },
       "status": "partial",
       "reason": "Piglin-room runs cover bartering, collection and the count; the anger, armour, hostile and danger stops are implemented in ServerBarterController but have no dedicated fixture."
@@ -50451,7 +50451,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 749
+        "line": 765
       },
       "status": "partial",
       "reason": "Piglin-room runs cover bartering, collection and the count; the anger, armour, hostile and danger stops are implemented in ServerBarterController but have no dedicated fixture."
@@ -50483,7 +50483,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 749
+        "line": 765
       },
       "status": "partial",
       "reason": "Piglin-room runs cover bartering, collection and the count; the anger, armour, hostile and danger stops are implemented in ServerBarterController but have no dedicated fixture."
@@ -50515,7 +50515,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 749
+        "line": 765
       },
       "status": "partial",
       "reason": "Piglin-room runs cover bartering, collection and the count; the anger, armour, hostile and danger stops are implemented in ServerBarterController but have no dedicated fixture."
@@ -50547,7 +50547,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 749
+        "line": 765
       },
       "status": "partial",
       "reason": "Piglin-room runs cover bartering, collection and the count; the anger, armour, hostile and danger stops are implemented in ServerBarterController but have no dedicated fixture."
@@ -50573,7 +50573,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 835
+        "line": 851
       },
       "status": "checked"
     },
@@ -50598,7 +50598,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 835
+        "line": 851
       },
       "status": "partial",
       "reason": "Witnessed by the provider-free bow live check, not by a CI witness."
@@ -50630,7 +50630,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 845
+        "line": 861
       },
       "status": "checked"
     },
@@ -50660,7 +50660,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 845
+        "line": 861
       },
       "status": "partial",
       "reason": "Only argument validation is witnessed; no fixture yet drives a volley into this stop (d41-ranged-loop open item)."
@@ -50686,7 +50686,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 845
+        "line": 861
       },
       "status": "checked"
     },
@@ -50710,7 +50710,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 845
+        "line": 861
       },
       "status": "partial",
       "reason": "Only argument validation is witnessed; no fixture yet drives a volley into this stop (d41-ranged-loop open item)."
@@ -50735,7 +50735,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 845
+        "line": 861
       },
       "status": "partial",
       "reason": "Only argument validation is witnessed; no fixture yet drives a volley into this stop (d41-ranged-loop open item)."
@@ -50760,7 +50760,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 845
+        "line": 861
       },
       "status": "partial",
       "reason": "Only argument validation is witnessed; no fixture yet drives a volley into this stop (d41-ranged-loop open item)."
@@ -50785,7 +50785,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 845
+        "line": 861
       },
       "status": "partial",
       "reason": "Only argument validation is witnessed; no fixture yet drives a volley into this stop (d41-ranged-loop open item)."
@@ -50816,7 +50816,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 853
+        "line": 869
       },
       "status": "partial",
       "reason": "Pure landing-cell geometry is verified in verifyCore from the c1-1 and base-3 deaths; the live refusal path is exercised by the d41-portal model-free replays (evals/d41-portal/c2), not by a committed fixture."
@@ -50842,7 +50842,7 @@
       },
       "location": {
         "file": "coordinator/config/minecraft-agent/.codex/skills/minecraft-control/references/control-reference.md",
-        "line": 855
+        "line": 871
       },
       "status": "checked"
     },

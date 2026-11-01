@@ -40,7 +40,8 @@ test('a representative program wake stays inside its byte budget for every provi
 	// 31,950 -> 32,195 bytes: fight_target/use_ranged count mode and fight_until roof (d41-fight-count, +245 B).
 	// 32,195 -> 32,323 bytes: fight_target/use_ranged single and the plan-count act sentence (d41-blaze-survive, +128 B).
 	// 32,323 -> 32,868 bytes: act/startAction after and keepGoing (2026-11-01 overlap, +545 B).
-	assert.ok(sizes.toolSchemaBytes <= 32_868, `tool schemas ${sizes.toolSchemaBytes} bytes`);
+	// 32,868 -> 33,533 bytes: 2026-11-01 body skills (mine tool choice +97, mine_vein +276, travel stops +128, travel descent +102, doors +62).
+	assert.ok(sizes.toolSchemaBytes <= 33_533, `tool schemas ${sizes.toolSchemaBytes} bytes`);
 });
 
 test('unchanged goal, goalSpec and taskMemory are named instead of repeated within one provider context', () => {
