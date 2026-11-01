@@ -80,6 +80,8 @@ jobs:
         run: ./scripts/fetch-libs.sh ${{ matrix.mc }}
       - name: Check, build and check mixin targets for ${{ matrix.mc }}
         run: ./gradlew -Pmc=${{ matrix.mc }} check build verifyMixinTargets --no-daemon --console=plain
+      - name: Boot a live ${{ matrix.mc }} server with the mod set
+        run: python3 scripts/live-server.py --target ${{ matrix.mc }}
       - name: Upload the ${{ matrix.mc }} mod JAR
         uses: actions/upload-artifact@v4
         with:
