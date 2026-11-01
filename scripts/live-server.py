@@ -158,6 +158,15 @@ class LiveServer:
     def command(self, text):
         return self.rcon.command(text)
 
+    def wait_for_player(self, name, timeout=30):
+        """Whether the player is in the world within timeout s (Carpet's profile lookup can take seconds online)."""
+        deadline = time.time() + timeout
+        while time.time() < deadline:
+            if re.search(rf'\b{re.escape(name)}\b', self.command('list')):
+                return True
+            time.sleep(0.5)
+        return False
+
     def stop(self, timeout=180):
         if self.rcon is not None:
             try:
@@ -230,14 +239,12 @@ def main():
         status = server.command('agent status')
         checks.append(('/agent command answers', bool(status.strip()) and 'Unknown or incomplete command' not in status))
         server.command('player LiveCheck spawn at 0 -60 0')
-        time.sleep(3)
-        listed = server.command('list')
-        checks.append(('Carpet fake player joins', 'LiveCheck' in listed))
+        checks.append(('Carpet fake player joins', server.wait_for_player('LiveCheck')))
         # A 10-block drop: the body must land alive and hurt (vanilla takes 7 of 20), the server must not crash.
         # Spawned players are invulnerable for their first 60 ticks, so wait that out on the ground, then drop.
         # Carpet spawns console-summoned bodies in creative, so switch to survival like an agent body.
         server.command('player LiveFall spawn at 3 -60 3')
-        time.sleep(2)  # Carpet adds the body to the world a moment after the command returns
+        server.wait_for_player('LiveFall')  # Carpet adds the body a moment (online: seconds) after the command returns
         server.command('gamemode survival LiveFall')
         time.sleep(3)
         server.command('tp LiveFall 3 -50 3')
