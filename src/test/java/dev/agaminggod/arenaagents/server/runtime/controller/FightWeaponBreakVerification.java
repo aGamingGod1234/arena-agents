@@ -438,7 +438,7 @@ public final class FightWeaponBreakVerification {
 		}
 	}
 
-	private static final class FightPlayer extends ServerPlayer {
+	private static final class FightPlayer extends dev.agaminggod.arenaagents.compat.TestServerPlayerBase {
 		private FightLevel fixtureLevel;
 		private float charge;
 		private long lastTickTime;
@@ -463,7 +463,7 @@ public final class FightWeaponBreakVerification {
 		@Override public int getAirSupply() { return 300; }
 		@Override public float getAttackStrengthScale(float partialTick) { return charge; }
 		@Override public double entityInteractionRange() { return 3.0D; }
-		@Override public boolean swing(net.minecraft.world.InteractionHand hand, net.minecraft.world.item.component.SwingAnimation animation, boolean toSelf) { return true; }
+		@Override protected boolean testSwing(net.minecraft.world.InteractionHand hand, boolean toSelf) { return true; }
 
 		@Override
 		public void attack(Entity target) {

@@ -341,7 +341,7 @@ public final class ScenarioRuntimeVerification {
 		private FakePlayer() { super(null, null, null, null); }
 		@Override public ServerLevel level() { return fixtureLevel; }
 		@Override public CommandSourceStack createCommandSourceStack() {
-			return new CommandSourceStack(null, Vec3.ZERO, Vec2.ZERO, fixtureLevel, LevelBasedPermissionSet.OWNER, Component.literal("fixture"), null);
+			return dev.agaminggod.arenaagents.compat.TestCompat.commandSource(null, Vec3.ZERO, Vec2.ZERO, fixtureLevel, LevelBasedPermissionSet.OWNER, Component.literal("fixture"));
 		}
 	}
 }

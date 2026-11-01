@@ -68,7 +68,8 @@ public final class StrategyKnowledgeVerification {
 			Path foodFile = guide.resolveSibling("cookable-foods.json");
 			String foodData = verification.cookableFoods(version);
 			if (args.length == 3) Files.writeString(foodFile, foodData, StandardCharsets.UTF_8);
-			else if (!Files.readString(foodFile).replace("\r\n", "\n").equals(foodData)) throw new IllegalStateException("Cookable food index differs from resolved game recipes; run exportStrategyKnowledge");
+			// The pinned index names the version it was exported from; another 26.x target passes when its foods match.
+			else if (!foodItems(Files.readString(foodFile)).equals(foodItems(foodData))) throw new IllegalStateException("Cookable food index differs from resolved game recipes; run exportStrategyKnowledge");
 			System.out.println("Verified Minecraft " + version + " pickaxe eligibility and loot candidates: " + verification.blocks().size() + " blocks x " + MATERIALS.size() + " materials.");
 			System.out.println("Verified " + barter.strip());
 		}
@@ -97,12 +98,16 @@ public final class StrategyKnowledgeVerification {
 		return String.format(Locale.ROOT, "Pearl barter weight %d of %d (about %.2f%%).\n", pearls, total, 100.0 * pearls / total);
 	}
 
+	private static JsonElement foodItems(String data) {
+		return com.google.gson.JsonParser.parseString(data).getAsJsonObject().get("items");
+	}
+
 	@SuppressWarnings("unchecked")
 	private String cookableFoods(String version) throws IOException {
 		Set<String> edible = new TreeSet<>();
 		// Bootstrap does not bind item components in 26.1; the vanilla initializer
 		// exposes them without mutating global holders or starting a world.
-		for (var pending : BuiltInRegistries.DATA_COMPONENT_INITIALIZERS.build(net.minecraft.data.registries.VanillaRegistries.createReloadableLookup(net.minecraft.data.registries.VanillaRegistries.createWorldLookup()))) {
+		for (var pending : BuiltInRegistries.DATA_COMPONENT_INITIALIZERS.build(dev.agaminggod.arenaagents.compat.TestCompat.vanillaDatapackLookup())) {
 			if (!pending.key().equals(Registries.ITEM)) continue;
 			((DataComponentInitializers.PendingComponents<Item>) pending).forEach((holder, components) -> {
 				if (components.get(DataComponents.FOOD) != null) edible.add(BuiltInRegistries.ITEM.getKey(holder.value()).toString());

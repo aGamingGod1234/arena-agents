@@ -16,11 +16,12 @@ import net.fabricmc.loader.impl.launch.knot.Knot;
  */
 public final class PovMixinVerification {
 	private static final String TARGETS_RESOURCE = "pov-mixin-targets.txt";
-	/** Handlers whose absence would silently fall back to the operator's own state. */
-	private static final java.util.Map<String, List<String>> REQUIRED_HANDLERS = java.util.Map.of(
-			"net.minecraft.client.renderer.extract.LevelExtractor", List.of(
-					"arenaagents$povAvatar", "arenaagents$povViewBlockingState",
-					"arenaagents$povEyeInFluid", "arenaagents$povOnFire"));
+	private static final String COMPAT_TARGETS_RESOURCE = "pov-mixin-targets-compat.txt";
+	/**
+	 * Handlers whose absence would silently fall back to the operator's own state, listed per target in the compat
+	 * resource as "class: handler, handler".
+	 */
+	private static final java.util.Map<String, List<String>> REQUIRED_HANDLERS = new java.util.HashMap<>();
 
 	private PovMixinVerification() {
 	}
@@ -41,7 +42,10 @@ public final class PovMixinVerification {
 					}
 				}
 			} catch (Throwable error) {
-				failures.add(name + ": " + error);
+				StringBuilder chain = new StringBuilder(name).append(": ").append(error);
+				// Mixin's own reason (a missing target, a bad descriptor) is in the cause chain, not the wrapper.
+				for (Throwable cause = error.getCause(); cause != null && cause != cause.getCause(); cause = cause.getCause()) chain.append("\n    caused by ").append(cause);
+				failures.add(chain.toString());
 			}
 		}
 		if (!failures.isEmpty()) {
@@ -53,16 +57,26 @@ public final class PovMixinVerification {
 
 	private static List<String> readTargets() throws Exception {
 		List<String> targets = new ArrayList<>();
-		try (InputStream stream = PovMixinVerification.class.getClassLoader().getResourceAsStream(TARGETS_RESOURCE)) {
-			if (stream == null) throw new AssertionError("Missing test resource " + TARGETS_RESOURCE);
+		readTargets(TARGETS_RESOURCE, targets);
+		// The classes only one Minecraft target has (src/compat/<target>/testResources).
+		readTargets(COMPAT_TARGETS_RESOURCE, targets);
+		return targets;
+	}
+
+	private static void readTargets(String resource, List<String> targets) throws Exception {
+		try (InputStream stream = PovMixinVerification.class.getClassLoader().getResourceAsStream(resource)) {
+			if (stream == null) throw new AssertionError("Missing test resource " + resource);
 			try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))) {
 				String line;
 				while ((line = reader.readLine()) != null) {
 					String trimmed = line.trim();
-					if (!trimmed.isEmpty() && !trimmed.startsWith("#")) targets.add(trimmed);
+					if (trimmed.isEmpty() || trimmed.startsWith("#")) continue;
+					int colon = trimmed.indexOf(':');
+					String name = colon < 0 ? trimmed : trimmed.substring(0, colon).trim();
+					if (colon >= 0) REQUIRED_HANDLERS.put(name, java.util.Arrays.stream(trimmed.substring(colon + 1).split(",")).map(String::trim).toList());
+					targets.add(name);
 				}
 			}
 		}
-		return targets;
 	}
 }

@@ -399,10 +399,10 @@ public final class AgentRespawnSpawnPolicyVerification {
 		@Override public int getMaxY() { return 320; }
 	}
 
-	private static final class RecoveryFixtureChunks extends net.minecraft.server.level.ServerChunkCache {
+	private static final class RecoveryFixtureChunks extends dev.agaminggod.arenaagents.compat.TestChunkCacheBase {
 		RecoveryFixtureLevel level;
 		net.minecraft.world.level.chunk.LevelChunk resident;
-		private RecoveryFixtureChunks() { super(null, null, null, null, null, null, 0, 0, false, null); }
+		private RecoveryFixtureChunks() { super(); }
 		@Override public net.minecraft.world.level.chunk.LevelChunk getChunkNow(int x, int z) {
 			return x == level.unloadedChunkX ? null : resident;
 		}

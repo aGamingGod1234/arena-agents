@@ -70,7 +70,7 @@ public final class DirectorCommandsVerification {
 	}
 
 	private static CommandSourceStack source(PermissionSet permissions) {
-		return new CommandSourceStack(CommandSource.NULL, Vec3.ZERO, Vec2.ZERO, null, permissions, Component.literal("Audit"), null);
+		return dev.agaminggod.arenaagents.compat.TestCompat.commandSource(CommandSource.NULL, Vec3.ZERO, Vec2.ZERO, null, permissions, Component.literal("Audit"));
 	}
 	private static void check(boolean condition, String message) { if (!condition) throw new AssertionError(message); }
 }

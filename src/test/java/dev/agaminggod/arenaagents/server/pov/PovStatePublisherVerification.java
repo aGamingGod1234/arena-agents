@@ -181,7 +181,7 @@ public final class PovStatePublisherVerification {
 		assertTrue(Objects.equals(prototype, wire.get(DataComponents.CONTAINER)), "wire copy drops container contents");
 		assertTrue(!Objects.equals(prototype, shulker.get(DataComponents.CONTAINER)), "source stack keeps its contents");
 		assertTrue(wire.is(Items.SHULKER_BOX) && wire.getCount() == 1, "wire copy keeps item and count");
-		BundleContents.Mutable filling = BundleContents.EMPTY.asMutable();
+		BundleContents.Mutable filling = dev.agaminggod.arenaagents.compat.McCompat.mutableBundle(BundleContents.EMPTY);
 		filling.tryInsert(new ItemStack(Items.DIAMOND, 5));
 		filling.tryInsert(new ItemStack(Items.BUNDLE));
 		filling.tryInsert(new ItemStack(Items.OAK_LOG, 3));
@@ -200,15 +200,15 @@ public final class PovStatePublisherVerification {
 		book.set(DataComponents.WRITTEN_BOOK_CONTENT, new net.minecraft.world.item.component.WrittenBookContent(
 				net.minecraft.server.network.Filterable.passThrough("Log"), "agent", 0,
 				List.of(net.minecraft.server.network.Filterable.passThrough(net.minecraft.network.chat.Component.literal("x".repeat(1024)))), true));
-		BundleContents.Mutable heavy = BundleContents.EMPTY.asMutable();
+		BundleContents.Mutable heavy = dev.agaminggod.arenaagents.compat.McCompat.mutableBundle(BundleContents.EMPTY);
 		heavy.tryInsert(new ItemStack(Items.DIAMOND, 2));
 		heavy.tryInsert(book);
 		heavy.toggleSelectedItem(0);
 		ItemStack heavyBundle = new ItemStack(Items.BUNDLE);
 		heavyBundle.set(DataComponents.BUNDLE_CONTENTS, heavy.toImmutable());
 		BundleContents wireHeavy = PovAgentSnapshot.wireStack(heavyBundle).get(DataComponents.BUNDLE_CONTENTS);
-		List<ItemStack> wireEntries = wireHeavy.itemCopies().toList();
-		List<ItemStack> sourceEntries = heavyBundle.get(DataComponents.BUNDLE_CONTENTS).itemCopies().toList();
+		List<ItemStack> wireEntries = dev.agaminggod.arenaagents.compat.McCompat.bundleItemCopies(wireHeavy).toList();
+		List<ItemStack> sourceEntries = dev.agaminggod.arenaagents.compat.McCompat.bundleItemCopies(heavyBundle.get(DataComponents.BUNDLE_CONTENTS)).toList();
 		assertTrue(wireEntries.size() == sourceEntries.size(), "bundle keeps every entry");
 		for (int index = 0; index < sourceEntries.size(); index++) {
 			assertTrue(wireEntries.get(index).getItem() == sourceEntries.get(index).getItem()
@@ -227,7 +227,7 @@ public final class PovStatePublisherVerification {
 		assertEquals(wireHeavy.getSelectedItemIndex(), kept.get(DataComponents.BUNDLE_CONTENTS).getSelectedItemIndex(),
 				"a refresh of the same bundle keeps the mirror's local selection");
 		ItemStack changed = new ItemStack(Items.BUNDLE);
-		BundleContents.Mutable other = BundleContents.EMPTY.asMutable();
+		BundleContents.Mutable other = dev.agaminggod.arenaagents.compat.McCompat.mutableBundle(BundleContents.EMPTY);
 		other.tryInsert(new ItemStack(Items.OAK_LOG, 1));
 		changed.set(DataComponents.BUNDLE_CONTENTS, other.toImmutable());
 		assertEquals(-1, dev.agaminggod.arenaagents.pov.PovBundleSelection.keep(PovAgentSnapshot.wireStack(heavyBundle), changed)

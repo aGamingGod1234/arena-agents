@@ -510,9 +510,9 @@ public final class SightedFeaturesVerification {
 		}
 	}
 
-	private static final class StructureBoundaryChunks extends net.minecraft.server.level.ServerChunkCache {
+	private static final class StructureBoundaryChunks extends dev.agaminggod.arenaagents.compat.TestChunkCacheBase {
 		StructureBoundaryLevel level;
-		private StructureBoundaryChunks() { super(null, null, null, null, null, null, 0, 0, false, null); }
+		private StructureBoundaryChunks() { super(); }
 		@Override public net.minecraft.world.level.chunk.LevelChunk getChunkNow(int x, int z) {
 			if (level.unloaded) return null;
 			StructureBoundaryChunk chunk = allocate(StructureBoundaryChunk.class);
@@ -825,9 +825,9 @@ public final class SightedFeaturesVerification {
 		@Override public long getGameTime() { return tick; }
 	}
 
-	private static final class ScanChunks extends net.minecraft.server.level.ServerChunkCache {
+	private static final class ScanChunks extends dev.agaminggod.arenaagents.compat.TestChunkCacheBase {
 		Map<Long, ScanChunk> loaded;
-		private ScanChunks() { super(null, null, null, null, null, null, 0, 0, false, null); }
+		private ScanChunks() { super(); }
 		@Override public net.minecraft.world.level.chunk.LevelChunk getChunkNow(int x, int z) { return loaded.get(net.minecraft.world.level.ChunkPos.pack(x, z)); }
 	}
 

@@ -215,7 +215,7 @@ public final class CarpetInputStateVerification {
 		player.water = true;
 		field(Entity.class, "type").set(player, net.minecraft.world.entity.EntityTypes.PLAYER);
 		field(net.minecraft.world.entity.LivingEntity.class, "equipment").set(player, new net.minecraft.world.entity.EntityEquipment());
-		field(Entity.class, "interpolationHandler").set(player, net.minecraft.world.entity.InterpolationHandler.NO_OP); // 26.3 aiStep asks it every tick.
+		dev.agaminggod.arenaagents.compat.TestCompat.prepareAllocatedEntity(player); // 26.3 aiStep asks the interpolation handler every tick.
 		player.setDeltaMovement(Vec3.ZERO);
 		AgentInputState held = new AgentInputState(0, 0, true, false, false, false, false, 0, 0, 0, InteractionHand.MAIN_HAND);
 		CarpetInputStateSink.applyMovement(player.pack, player, held);
@@ -269,7 +269,7 @@ public final class CarpetInputStateVerification {
 		return player;
 	}
 
-	private static final class FixturePlayer extends ServerPlayer implements ServerPlayerInterface {
+	private static final class FixturePlayer extends dev.agaminggod.arenaagents.compat.TestServerPlayerBase implements ServerPlayerInterface {
 		private EntityPlayerActionPack pack;
 		private boolean sneaking;
 		private boolean jumping;
@@ -283,7 +283,7 @@ public final class CarpetInputStateVerification {
 		@Override public void setLastClientInput(Input value) { input = value; }
 		@Override public void setJumping(boolean value) { super.setJumping(value); jumping = value; }
 		// Unsafe allocation leaves the interpolation handler null; 26.3 made both getters final, so only the type is overridden.
-		@Override public net.minecraft.world.entity.MoveSimulationType getMoveSimulationType() { return net.minecraft.world.entity.MoveSimulationType.SERVER_AND_CLIENT; }
+		@Override protected boolean testSimulatesClientMovement() { return true; }
 		@Override protected void applyInput() { }
 		@Override protected boolean isImmobile() { return false; }
 		@Override public boolean isEffectiveAi() { return false; }
@@ -298,7 +298,7 @@ public final class CarpetInputStateVerification {
 		@Override public boolean isSpectator() { return spectator; }
 		@Override public boolean isWithinEntityInteractionRange(Entity entity, double padding) { return inRange; }
 		@Override public void attack(Entity entity) { hits++; }
-		@Override public boolean swing(InteractionHand hand, net.minecraft.world.item.component.SwingAnimation animation, boolean toSelf) { swings++; return true; }
+		@Override protected boolean testSwing(InteractionHand hand, boolean toSelf) { swings++; return true; }
 		@Override public net.minecraft.world.item.ItemStack getItemInHand(InteractionHand hand) { return net.minecraft.world.item.ItemStack.EMPTY; }
 		@Override public void resetAttackStrengthTicker() { strengthResets++; }
 		@Override public void resetLastActionTime() { }

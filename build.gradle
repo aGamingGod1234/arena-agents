@@ -6,13 +6,18 @@ plugins {
 }
 
 // A non-default Minecraft target says so in its version (arena-agents-0.2.0+mc26.2.jar); 26.3 keeps its historical name.
-version = project.mc_compat == '26.3' ? project.mod_version : "${project.mod_version}+mc${project.minecraft_version}"
+def defaultTarget = project.mc_compat == '26.3'
+version = defaultTarget ? project.mod_version : "${project.mod_version}+mc${project.minecraft_version}"
 group = project.maven_group
 
 // Version-specific Minecraft API shims: one implementation per target, the same package and signatures in each.
 sourceSets.main.java.srcDir "src/compat/${project.mc_compat}/java"
 sourceSets.main.resources.srcDir "src/compat/${project.mc_compat}/resources"
 sourceSets.test.java.srcDir "src/compat/${project.mc_compat}/testJava"
+sourceSets.test.resources.srcDir "src/compat/${project.mc_compat}/testResources"
+// The how-to index exporter reads the default target's game data (its output, coordinator/config/howto-index.json, is
+// generated from that one version), so other targets do not build it.
+if (!defaultTarget) sourceSets.test.java.exclude '**/howto/HowtoIndexExporter.java'
 
 allprojects {
 	dependencyLocking {
@@ -633,7 +638,10 @@ def strategyGuide = layout.projectDirectory.file('coordinator/config/minecraft-a
 
 tasks.named('check') {
 	dependsOn tasks.named('verifyStrategyKnowledge')
-	dependsOn tasks.named('verifyCore'), tasks.named('verifyCameraMixin'), tasks.named('verifyPovMixins'), tasks.named('verifyEntrypoints'), tasks.named('verifyMapBlockStateCatalog'), tasks.named('verifyMapStructureDataFixer'), ':voice-addon:check'
+	dependsOn tasks.named('verifyCore'), tasks.named('verifyCameraMixin'), tasks.named('verifyPovMixins'), tasks.named('verifyEntrypoints'), tasks.named('verifyMapStructureDataFixer'), ':voice-addon:check'
+	// Map modules are authored against the pinned 26.3 block-state catalog; older drops lack some of its states
+	// (26.2 lacks 3,357, all from blocks added in 26.3), so the byte-for-byte catalog check runs on 26.3 only.
+	if (defaultTarget) dependsOn tasks.named('verifyMapBlockStateCatalog')
 	dependsOn tasks.named('verifyClientAwtTrue'), tasks.named('verifyClientAwtFalse'), tasks.named('verifyClientAwtAuto')
 }
 

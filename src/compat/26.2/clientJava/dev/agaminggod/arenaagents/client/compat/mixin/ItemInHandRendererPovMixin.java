@@ -141,7 +141,8 @@ abstract class ItemInHandRendererPovMixin {
 		return agent == null ? original.call(player, part) : agent.isModelPartShown(part);
 	}
 
-	// Hand selection (bow, crossbow, charged crossbow, item in use) keeps vanilla's logic on the agent's items.
+	// Hand selection (bow, crossbow, charged crossbow, item in use) keeps vanilla's logic on the agent's items; before 26.3
+	// the item-in-use part of it is its own method.
 	@WrapOperation(method = {"evaluateWhichHandsToRender", "tick"}, at = @At(value = "INVOKE",
 			target = "Lnet/minecraft/client/player/LocalPlayer;getMainHandItem()Lnet/minecraft/world/item/ItemStack;"))
 	private static ItemStack arenaagents$povMainHandItem(LocalPlayer player, Operation<ItemStack> original) {
@@ -149,7 +150,7 @@ abstract class ItemInHandRendererPovMixin {
 		return source == null ? original.call(player) : source.getMainHandItem();
 	}
 
-	@WrapOperation(method = {"evaluateWhichHandsToRender", "tick"}, at = @At(value = "INVOKE",
+	@WrapOperation(method = {"evaluateWhichHandsToRender", "selectionUsingItemWhileHoldingBowLike", "tick"}, at = @At(value = "INVOKE",
 			target = "Lnet/minecraft/client/player/LocalPlayer;getOffhandItem()Lnet/minecraft/world/item/ItemStack;"))
 	private static ItemStack arenaagents$povOffhandItem(LocalPlayer player, Operation<ItemStack> original) {
 		Player source = arenaagents$heldItemSource();
@@ -162,14 +163,14 @@ abstract class ItemInHandRendererPovMixin {
 		return source == null ? original.call(player) : source.isUsingItem();
 	}
 
-	@WrapOperation(method = "evaluateWhichHandsToRender", at = @At(value = "INVOKE",
+	@WrapOperation(method = "selectionUsingItemWhileHoldingBowLike", at = @At(value = "INVOKE",
 			target = "Lnet/minecraft/client/player/LocalPlayer;getUseItem()Lnet/minecraft/world/item/ItemStack;"))
 	private static ItemStack arenaagents$povUseItem(LocalPlayer player, Operation<ItemStack> original) {
 		Player source = arenaagents$heldItemSource();
 		return source == null ? original.call(player) : source.getUseItem();
 	}
 
-	@WrapOperation(method = "evaluateWhichHandsToRender", at = @At(value = "INVOKE",
+	@WrapOperation(method = "selectionUsingItemWhileHoldingBowLike", at = @At(value = "INVOKE",
 			target = "Lnet/minecraft/client/player/LocalPlayer;getUsedItemHand()Lnet/minecraft/world/InteractionHand;"))
 	private static InteractionHand arenaagents$povUsedItemHand(LocalPlayer player, Operation<InteractionHand> original) {
 		Player source = arenaagents$heldItemSource();

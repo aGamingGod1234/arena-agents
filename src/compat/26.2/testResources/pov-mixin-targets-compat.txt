@@ -1,0 +1,4 @@
+# Classes targeted by POV mixins that only Minecraft 26.2 has, or whose required handlers are 26.2's; one fully
+# qualified name per line, then optionally ": handler, handler" for injected handlers that must be present.
+net.minecraft.client.renderer.ItemInHandRenderer: arenaagents$povArm, arenaagents$povArmSkin, arenaagents$povMapSkin
+net.minecraft.client.renderer.ScreenEffectRenderer: arenaagents$povViewBlockingState, arenaagents$povSpectator, arenaagents$povEyeInFluid, arenaagents$povOnFire

@@ -196,10 +196,10 @@ public final class GoalVerificationRuntimeVerification {
 		}
 	}
 
-	private static final class AdapterChunks extends net.minecraft.server.level.ServerChunkCache {
+	private static final class AdapterChunks extends dev.agaminggod.arenaagents.compat.TestChunkCacheBase {
 		AdapterChunk loaded;
 		int reads, x, z;
-		private AdapterChunks() { super(null, null, null, null, null, null, 0, 0, false, null); }
+		private AdapterChunks() { super(); }
 		@Override public net.minecraft.world.level.chunk.LevelChunk getChunkNow(int x, int z) { reads++; this.x = x; this.z = z; return loaded; }
 		@Override public net.minecraft.world.level.chunk.ChunkAccess getChunk(int x, int z, net.minecraft.world.level.chunk.status.ChunkStatus status, boolean load) {
 			throw new AssertionError("passive adapter requested a loading chunk API");

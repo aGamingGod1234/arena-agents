@@ -39,7 +39,7 @@ public final class PlayerKnowledgeInspectionVerification {
 				Items.FURNACE, Items.COAL, Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE,
 				Items.DIAMOND_CHESTPLATE, Items.NETHERITE_INGOT, Items.NETHERITE_CHESTPLATE,
 				Items.SMITHING_TABLE, Items.POTION)) {
-			ContextMap context = ContextMap.builder().buildAndValidate(SlotDisplayContext.CONTEXT);
+			ContextMap context = dev.agaminggod.arenaagents.compat.TestCompat.slotDisplayContext();
 			return verifyShaped(context) + verifyShapeless(context) + verifyFurnace()
 					+ verifySmithing(context) + verifyBoundsAndUnresolved(context);
 		}
@@ -94,7 +94,7 @@ public final class PlayerKnowledgeInspectionVerification {
 
 	private static int verifyFurnace() {
 		// 26.3 lists fuels from the item registry's cooking_fuel components, which a bootstrap-only check cannot scan.
-		ContextMap context = ContextMap.builder().buildAndValidate(SlotDisplayContext.CONTEXT);
+		ContextMap context = dev.agaminggod.arenaagents.compat.TestCompat.slotDisplayContext();
 		var display = new FurnaceRecipeDisplay(item(Items.IRON_ORE), SlotDisplay.AnyFuel.INSTANCE,
 				item(Items.IRON_INGOT), item(Items.FURNACE), 200, 0.7f);
 		JsonObject result = PlayerKnowledgeInspection.display(display, context);
@@ -140,7 +140,7 @@ public final class PlayerKnowledgeInspectionVerification {
 		JsonObject empty = PlayerKnowledgeInspection.slot(SlotDisplay.Empty.INSTANCE, context);
 		assertEquals(true, empty.get("empty").getAsBoolean(), "empty grid cells are explicit");
 		assertEquals(0, empty.getAsJsonArray("alternatives").size(), "empty cells have no alternatives");
-		var tag = new SlotDisplay.TagSlotDisplay(unboundTag(TagKey.create(Registries.ITEM, Identifier.parse("test:unresolved"))));
+		var tag = dev.agaminggod.arenaagents.compat.TestCompat.unboundTagDisplay(TagKey.create(Registries.ITEM, Identifier.parse("test:unresolved")));
 		JsonObject unresolved = PlayerKnowledgeInspection.slot(tag, context);
 		assertEquals(false, unresolved.get("empty").getAsBoolean(), "unresolved tag is not an empty requirement");
 		assertEquals("no_display_examples", unresolved.get("resolution").getAsString(), "missing tag context is reported as unresolved");
@@ -157,21 +157,6 @@ public final class PlayerKnowledgeInspectionVerification {
 		return new SlotDisplay.ItemSlotDisplay(item);
 	}
 
-	/** A named item tag with no members: 26.3 slot displays carry the tag's holder set, not just its key. */
-	@SuppressWarnings("unchecked")
-	private static net.minecraft.core.HolderSet<Item> unboundTag(TagKey<Item> key) {
-		try {
-			var constructor = net.minecraft.core.HolderSet.Named.class.getDeclaredConstructor(net.minecraft.core.HolderOwner.class, TagKey.class);
-			constructor.setAccessible(true);
-			var named = (net.minecraft.core.HolderSet.Named<Item>) constructor.newInstance(BuiltInRegistries.ITEM, key);
-			var bind = net.minecraft.core.HolderSet.Named.class.getDeclaredMethod("bind", List.class);
-			bind.setAccessible(true);
-			bind.invoke(named, List.of());
-			return named;
-		} catch (ReflectiveOperationException exception) {
-			throw new AssertionError("could not build an empty item tag", exception);
-		}
-	}
 
 	private static String firstItem(JsonObject slot) {
 		return slot.getAsJsonArray("alternatives").get(0).getAsJsonObject().get("itemId").getAsString();

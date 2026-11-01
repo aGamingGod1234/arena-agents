@@ -33,7 +33,7 @@ public final class InterventionAuditVerification {
 		net.minecraft.SharedConstants.tryDetectVersion();
 		net.minecraft.server.Bootstrap.bootStrap();
 		// Built-in registries (items, attributes, entity types) are what command arguments parse against.
-		net.minecraft.core.HolderLookup.Provider datapack = net.minecraft.data.registries.VanillaRegistries.createReloadableLookup(net.minecraft.data.registries.VanillaRegistries.createWorldLookup());
+		net.minecraft.core.HolderLookup.Provider datapack = dev.agaminggod.arenaagents.compat.TestCompat.vanillaDatapackLookup();
 		java.util.Set<Object> datapackKeys = new java.util.HashSet<>(datapack.listRegistryKeys().toList());
 		net.minecraft.core.HolderLookup.Provider lookup = net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.concat(
 				net.minecraft.core.registries.BuiltInRegistries.REGISTRY.stream().filter(registry -> !datapackKeys.contains(registry.key()))
@@ -64,20 +64,20 @@ public final class InterventionAuditVerification {
 	}
 
 	private static List<String> path(CommandDispatcher<CommandSourceStack> dispatcher, String command) {
-		var parse = dispatcher.parse(command, new CommandSourceStack(CommandSource.NULL, Vec3.ZERO, Vec2.ZERO, null,
-				PermissionSet.ALL_PERMISSIONS, Component.literal("Rcon"), null));
+		var parse = dispatcher.parse(command, dev.agaminggod.arenaagents.compat.TestCompat.commandSource(CommandSource.NULL, Vec3.ZERO, Vec2.ZERO, null,
+				PermissionSet.ALL_PERMISSIONS, Component.literal("Rcon")));
 		return InterventionAuditHook.nodePath(parse, command);
 	}
 
 	private static String diagnose(CommandDispatcher<CommandSourceStack> dispatcher, String command) {
-		var parse = dispatcher.parse(command, new CommandSourceStack(CommandSource.NULL, Vec3.ZERO, Vec2.ZERO, null,
-				PermissionSet.ALL_PERMISSIONS, Component.literal("Rcon"), null));
+		var parse = dispatcher.parse(command, dev.agaminggod.arenaagents.compat.TestCompat.commandSource(CommandSource.NULL, Vec3.ZERO, Vec2.ZERO, null,
+				PermissionSet.ALL_PERMISSIONS, Component.literal("Rcon")));
 		return "cursor=" + parse.getReader().getCursor() + " exceptions=" + parse.getExceptions().values();
 	}
 
 	private static Verdict verdict(CommandDispatcher<CommandSourceStack> dispatcher, String command) {
-		var parse = dispatcher.parse(command, new CommandSourceStack(CommandSource.NULL, Vec3.ZERO, Vec2.ZERO, null,
-				PermissionSet.ALL_PERMISSIONS, Component.literal("Rcon"), null));
+		var parse = dispatcher.parse(command, dev.agaminggod.arenaagents.compat.TestCompat.commandSource(CommandSource.NULL, Vec3.ZERO, Vec2.ZERO, null,
+				PermissionSet.ALL_PERMISSIONS, Component.literal("Rcon")));
 		return InterventionAllowlist.classify(InterventionAuditHook.nodePath(parse, command));
 	}
 
