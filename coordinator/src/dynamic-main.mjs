@@ -2389,7 +2389,7 @@ export class DynamicCoordinator extends EventEmitter {
 	#deliverNativeSteer(work, request, { toolBoundary = false } = {}) {
 		if (this.#reissueMidCallTurnForHazard(work, request, toolBoundary) || this.#reissueUnawareSurvivalTurn(work, request, toolBoundary)) return;
 		work.steerQueued = mergePlannerRequest(work.steerQueued, request);
-		const interruption = nativeSteerInterruption(request);
+		const interruption = this.#steerInterruptionFor(work, request);
 		if (work.steerPromise !== null) {
 			if (interruption) this.#interruptForSteer(work);
 			return;
@@ -2471,7 +2471,7 @@ export class DynamicCoordinator extends EventEmitter {
 			work.steerQueued = null;
 			work.steerRequest = request;
 			const steerStartedAt = performance.now();
-			const interruption = nativeSteerInterruption(request);
+			const interruption = this.#steerInterruptionFor(work, request);
 			let deliveryRequest = request;
 			try {
 				const record = this.#registry.get(work.agentId);
@@ -2556,7 +2556,20 @@ export class DynamicCoordinator extends EventEmitter {
 	 * a tool boundary, so while its call is still generating, the blocking tool it issues next was chosen without the
 	 * danger: that tool starts already interrupted (its action keeps running, the model decides what follows).
 	 */
+	/** nativeSteerInterruption, except that hits from the mob a running fight is fighting do not cut that fight short. */
+	#steerInterruptionFor(work, request) {
+		const record = this.#registry.get(work.agentId);
+		const authored = record === null ? null : this.#nativeRuntime.runningAction?.(record) ?? null;
+		const running = authored === null ? null : { ...authored, startHealth: this.#runningActions.get(work.agentId)?.health ?? null };
+		const decision = fightSteerDecision(request, running, work.fightSteerState ?? null);
+		work.fightSteerCut = decision.cut;
+		if (decision.absorbed) this.#writeTrace('native_steer_absorbed_by_fight', { agentId: work.agentId, goalRevision: work.goalRevision, traceId: work.traceId, actionType: running.actionType });
+		return decision.interruption;
+	}
+
 	#interruptForSteer(work) {
+		// The band reference moves only when a fight is really cut short.
+		if (work.fightSteerCut != null) work.fightSteerState = work.fightSteerCut;
 		const armNext = TOOL_BOUNDARY_STEER_PROVIDERS.includes(this.#registry.get(work.agentId)?.provider);
 		return this.#nativeRuntime.interruptBlockingTool(work.agentId, armNext ? { armNext } : undefined);
 	}
@@ -6417,14 +6430,16 @@ export function lavaFlowLine(observation) {
 		+ `Before then: ${step}, dam its inflow ${inflow.join()} with a block, or arm lava_flowing -> leave_lava/place_block, faster than a reply.`;
 }
 
-export function nativeSteerInterruption(request) {
+export function nativeSteerInterruption(request) { return steerInterruption(request, true); }
+
+function steerInterruption(request, countHits) {
 	const event = request?.nativeEvent;
 	// Undelivered danger keeps its original facts even if the newest observation no longer shows it.
-	if (event?.mergedEvents?.some(nativeEvent => nativeSteerInterruption({ nativeEvent }) === 'danger')) return 'danger';
+	if (event?.mergedEvents?.some(nativeEvent => steerInterruption({ nativeEvent }, countHits) === 'danger')) return 'danger';
 	const trigger = event?.event === 'program_attention'
 		? event.status?.decision?.trigger ?? event.trigger ?? request?.trigger
 		: event?.trigger ?? request?.trigger;
-	if (trigger === 'damage' || request?.dangerSummary?.hitsSinceLastUpdate > 0) return 'danger';
+	if (countHits && (trigger === 'damage' || request?.dangerSummary?.hitsSinceLastUpdate > 0)) return 'danger';
 	if (['lava', LAVA_FLOW_TRIGGER, 'fire', 'drowning', 'suffocation', 'fall', 'cloud'].includes(trigger)) return 'danger';
 	const observation = event?.observation ?? request?.observation ?? {};
 	const flights = observation?.player?.incomingProjectiles ?? observation?.incomingProjectiles ?? [];
@@ -6439,6 +6454,72 @@ export function nativeSteerInterruption(request) {
 		return signals.includes('imminent') || trigger === 'threat' && signals.includes('ranged_aiming')
 			|| creeper && (threat.swelling === true || signals.includes('swelling') || signals.includes('creeper_close'));
 	}) ? 'danger' : null;
+}
+
+const FIGHT_ACTION_TYPES = new Set(['fight_target', 'fight_until']);
+// The same bands the danger coalescer reports at: crossing one changes what a sensible choice is.
+const FIGHT_STEER_HEALTH_BANDS = Object.freeze([14, 10, 6]);
+
+function steerAttackerTypes(request) {
+	const types = new Set();
+	const add = (event) => {
+		const type = (event?.observation ?? {})?.player?.lastAttacker?.type;
+		if (typeof type === 'string') types.add(type);
+	};
+	add(request?.nativeEvent ?? request);
+	for (const merged of request?.nativeEvent?.mergedEvents ?? []) add(merged);
+	for (const type of request?.dangerSummary?.attackers ?? []) if (typeof type === 'string') types.add(type);
+	return types;
+}
+
+function steerHealth(request) {
+	const summary = request?.dangerSummary?.healthNow;
+	if (Number.isFinite(summary)) return summary;
+	const health = (request?.nativeEvent?.observation ?? request?.observation)?.player?.health;
+	return Number.isFinite(health) ? health : null;
+}
+
+function fightTargetTypes(running, request) {
+	const args = running?.arguments ?? {};
+	if (running?.actionType === 'fight_until') return typeof args.mob === 'string' ? new Set([args.mob]) : null;
+	// fight_target names a uuid; its kind comes from the threat rows that carry it.
+	const observation = request?.nativeEvent?.observation ?? request?.observation ?? {};
+	const rows = [...(observation?.player?.threats ?? []), ...(observation?.threats?.entries ?? []), ...(observation?.entities ?? [])];
+	const row = rows.find(entry => entry?.uuid != null && entry.uuid === args.targetId);
+	return typeof row?.type === 'string' ? new Set([row.type]) : null;
+}
+
+/**
+ * Whether a danger steer should cut the agent's running fight short. A fight the model chose already answers hits
+ * from the mob it is fighting, so those hits reach the model with the next steer instead of interrupting the fight
+ * every two seconds. Anything new still interrupts: hazards, projectiles, escalating threats, an attacker outside the
+ * fight, an unknown attacker, or health falling into a lower band (14, 10, 6) since the fight started or last cut.
+ * Pure: returns { interruption, absorbed, cut }. The caller stores `cut` as the new reference only when it actually
+ * interrupts, so evaluating the same steer twice gives the same answer.
+ */
+export function fightSteerDecision(request, running, state = null) {
+	const interruption = nativeSteerInterruption(request);
+	if (interruption !== 'danger' || !FIGHT_ACTION_TYPES.has(running?.actionType)) return { interruption, absorbed: false, cut: null };
+	const health = steerHealth(request);
+	const reference = state?.actionId === running.actionId ? state.health : running.startHealth ?? health;
+	const cut = { interruption, absorbed: false, cut: { actionId: running.actionId, health } };
+	if (steerInterruption(request, false) === 'danger') return cut;
+	// Standing in lava or fire, or burning, is never the fight's business, whatever trigger carried it.
+	const player = (request?.nativeEvent?.observation ?? request?.observation)?.player ?? {};
+	if (player.inLava === true || player.onFire === true || player.hazard != null) return cut;
+	const band = (value) => FIGHT_STEER_HEALTH_BANDS.filter(threshold => value <= threshold).length;
+	if (health === null || reference == null || band(health) > band(reference)) return cut;
+	const attackers = steerAttackerTypes(request);
+	if (attackers.size === 0) return cut;
+	const args = running.arguments ?? {};
+	// A fight that follows through on attackers handles any hostile mob attacker itself; players stay the model's call.
+	const takesAttackers = running.actionType === 'fight_target' && (args.continueWithAttackers === true
+		|| ['nearest_attacker', 'highest_risk'].includes(args.targetPolicy));
+	const scope = fightTargetTypes(running, request);
+	const named = (type) => scope !== null && (scope.has(type) || scope.has(type.replace(/^minecraft:/, '')));
+	const covered = [...attackers].every(type => type !== 'minecraft:player' && (named(type) || takesAttackers));
+	if (!covered) return cut;
+	return { interruption: null, absorbed: true, cut: null };
 }
 
 function finiteCount(value) { return Number.isSafeInteger(value) && value >= 0 ? value : null; }
