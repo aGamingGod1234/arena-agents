@@ -156,6 +156,17 @@ jobs:
             -PackageRoot (Join-Path $env:RUNNER_TEMP 'arena-agents-standalone') `
             -ServerTemplate .\runtime\server-template `
             -JavaPath (Join-Path $env:JAVA_HOME 'bin\java.exe')
+      - name: Package and verify the 26.1 and 26.2 Windows ZIPs
+        shell: powershell
+        run: |
+          foreach ($target in @('26.1', '26.2')) {
+            & bash ./scripts/fetch-libs.sh $target
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+            .\gradlew.bat "-Pmc=$target" packageWindowsDistribution --no-daemon --console=plain
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+            $version = "$env:MOD_VERSION+mc$target"
+            .\scripts\verify-windows-distribution.ps1 -ArchivePath ".\build\distributions\arena-agents-modpack-$version.zip" -BuiltJarPath ".\build\libs\arena-agents-$version.jar"
+          }
       - name: Upload verified standalone distribution
         uses: actions/upload-artifact@v4
         with:
