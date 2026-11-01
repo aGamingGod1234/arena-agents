@@ -2,8 +2,8 @@
   "version": 2,
   "atomicPredicates": [
     {
-      "id": "program-reference:fcfedacf3350f1f6:program-predicate:0",
-      "parent": "program-reference:fcfedacf3350f1f6",
+      "id": "program-reference:500f98fdc8ab09de:program-predicate:0",
+      "parent": "program-reference:500f98fdc8ab09de",
       "claim": "Documented player.* source requires exactly one valid top-level attention policy; legacy bare action aliases have an existing safe default policy",
       "predicate": "Documented player.* source requires exactly one valid top-level attention policy; legacy bare action aliases have an existing safe default policy",
       "checks": [
@@ -40,8 +40,8 @@
       }
     },
     {
-      "id": "program-reference:fcfedacf3350f1f6:program-predicate:1",
-      "parent": "program-reference:fcfedacf3350f1f6",
+      "id": "program-reference:500f98fdc8ab09de:program-predicate:1",
+      "parent": "program-reference:500f98fdc8ab09de",
       "claim": "player.state returns current immutable player facts",
       "predicate": "player.state returns current immutable player facts",
       "checks": [
@@ -78,8 +78,8 @@
       }
     },
     {
-      "id": "program-reference:fcfedacf3350f1f6:program-predicate:2",
-      "parent": "program-reference:fcfedacf3350f1f6",
+      "id": "program-reference:500f98fdc8ab09de:program-predicate:2",
+      "parent": "program-reference:500f98fdc8ab09de",
       "claim": "inventory.count sums matching observed item rows",
       "predicate": "inventory.count sums matching observed item rows",
       "checks": [
@@ -116,8 +116,8 @@
       }
     },
     {
-      "id": "program-reference:fcfedacf3350f1f6:program-predicate:3",
-      "parent": "program-reference:fcfedacf3350f1f6",
+      "id": "program-reference:500f98fdc8ab09de:program-predicate:3",
+      "parent": "program-reference:500f98fdc8ab09de",
       "claim": "inventory.countTag returns observed tag count or zero",
       "predicate": "inventory.countTag returns observed tag count or zero",
       "checks": [
@@ -154,8 +154,8 @@
       }
     },
     {
-      "id": "program-reference:fcfedacf3350f1f6:program-predicate:4",
-      "parent": "program-reference:fcfedacf3350f1f6",
+      "id": "program-reference:500f98fdc8ab09de:program-predicate:4",
+      "parent": "program-reference:500f98fdc8ab09de",
       "claim": "inventory.slots filters observed inventory rows",
       "predicate": "inventory.slots filters observed inventory rows",
       "checks": [
@@ -192,8 +192,8 @@
       }
     },
     {
-      "id": "program-reference:fcfedacf3350f1f6:program-predicate:5",
-      "parent": "program-reference:fcfedacf3350f1f6",
+      "id": "program-reference:500f98fdc8ab09de:program-predicate:5",
+      "parent": "program-reference:500f98fdc8ab09de",
       "claim": "inventory.state returns current inventory metadata",
       "predicate": "inventory.state returns current inventory metadata",
       "checks": [
@@ -230,8 +230,8 @@
       }
     },
     {
-      "id": "program-reference:fcfedacf3350f1f6:program-predicate:6",
-      "parent": "program-reference:fcfedacf3350f1f6",
+      "id": "program-reference:500f98fdc8ab09de:program-predicate:6",
+      "parent": "program-reference:500f98fdc8ab09de",
       "claim": "world.items filters current observed item candidates",
       "predicate": "world.items filters current observed item candidates",
       "checks": [
@@ -268,8 +268,8 @@
       }
     },
     {
-      "id": "program-reference:fcfedacf3350f1f6:program-predicate:7",
-      "parent": "program-reference:fcfedacf3350f1f6",
+      "id": "program-reference:500f98fdc8ab09de:program-predicate:7",
+      "parent": "program-reference:500f98fdc8ab09de",
       "claim": "world.entities filters current observed entity candidates",
       "predicate": "world.entities filters current observed entity candidates",
       "checks": [
@@ -306,8 +306,8 @@
       }
     },
     {
-      "id": "program-reference:fcfedacf3350f1f6:program-predicate:8",
-      "parent": "program-reference:fcfedacf3350f1f6",
+      "id": "program-reference:500f98fdc8ab09de:program-predicate:8",
+      "parent": "program-reference:500f98fdc8ab09de",
       "claim": "world.blocks filters current observed block candidates",
       "predicate": "world.blocks filters current observed block candidates",
       "checks": [
@@ -344,8 +344,8 @@
       }
     },
     {
-      "id": "program-reference:fcfedacf3350f1f6:program-predicate:9",
-      "parent": "program-reference:fcfedacf3350f1f6",
+      "id": "program-reference:500f98fdc8ab09de:program-predicate:9",
+      "parent": "program-reference:500f98fdc8ab09de",
       "claim": "world.nearest chooses minimum distance only from current observed candidates and supports an explicit origin",
       "predicate": "world.nearest chooses minimum distance only from current observed candidates and supports an explicit origin",
       "checks": [
@@ -382,8 +382,8 @@
       }
     },
     {
-      "id": "program-reference:fcfedacf3350f1f6:program-predicate:10",
-      "parent": "program-reference:fcfedacf3350f1f6",
+      "id": "program-reference:500f98fdc8ab09de:program-predicate:10",
+      "parent": "program-reference:500f98fdc8ab09de",
       "claim": "world.state includes current observation metadata and coverage",
       "predicate": "world.state includes current observation metadata and coverage",
       "checks": [
@@ -420,8 +420,8 @@
       }
     },
     {
-      "id": "program-reference:fcfedacf3350f1f6:program-predicate:11",
-      "parent": "program-reference:fcfedacf3350f1f6",
+      "id": "program-reference:500f98fdc8ab09de:program-predicate:11",
+      "parent": "program-reference:500f98fdc8ab09de",
       "claim": "world.menu returns the observed menu or null",
       "predicate": "world.menu returns the observed menu or null",
       "checks": [
@@ -458,10 +458,10 @@
       }
     },
     {
-      "id": "program-reference:fcfedacf3350f1f6:program-predicate:12",
-      "parent": "program-reference:fcfedacf3350f1f6",
-      "claim": "Missing member access fails rather than inventing a value; inventory zeros describe observed rows",
-      "predicate": "Missing member access fails rather than inventing a value; inventory zeros describe observed rows",
+      "id": "program-reference:500f98fdc8ab09de:program-predicate:12",
+      "parent": "program-reference:500f98fdc8ab09de",
+      "claim": "A key the sample lacks reads null; reading through or comparing null fails; inventory zeros describe observed rows",
+      "predicate": "A key the sample lacks reads null; reading through or comparing null fails; inventory zeros describe observed rows",
       "checks": [
         {
           "file": "coordinator/test/arena-script-parser.test.mjs",
@@ -486,6 +486,11 @@
         {
           "file": "coordinator/test/program-contract-truth.test.mjs",
           "test": "contract: stale observed candidates cannot supply nearest targets after a fresh action observation",
+          "type": "node-behavior"
+        },
+        {
+          "file": "coordinator/test/program-contract-truth.test.mjs",
+          "test": "contract: a fact the sample lacks reads null, so an optional-fact guard runs instead of ending the program",
           "type": "node-behavior"
         }
       ],
@@ -742,8 +747,8 @@
       }
     },
     {
-      "id": "program-reference:eedb21bb0a27ca09:program-predicate:0",
-      "parent": "program-reference:eedb21bb0a27ca09",
+      "id": "program-reference:b86fbd994c07a2df:program-predicate:0",
+      "parent": "program-reference:b86fbd994c07a2df",
       "claim": "Each of abs/floor/ceil/round/sqrt/sin/cos/atan2/min/max/hypot executes its documented finite arithmetic and rejects invalid numeric arguments",
       "predicate": "Each of abs/floor/ceil/round/sqrt/sin/cos/atan2/min/max/hypot executes its documented finite arithmetic and rejects invalid numeric arguments",
       "checks": [
@@ -769,7 +774,7 @@
         },
         {
           "file": "coordinator/test/program-contract-truth.test.mjs",
-          "test": "contract: concatenation accepts strings only and authored strings respect the 4 KiB byte limit",
+          "test": "contract: concatenation joins a string with a string, number, boolean or null and authored strings respect the 4 KiB byte limit",
           "type": "node-behavior"
         }
       ],
@@ -780,8 +785,8 @@
       }
     },
     {
-      "id": "program-reference:eedb21bb0a27ca09:program-predicate:1",
-      "parent": "program-reference:eedb21bb0a27ca09",
+      "id": "program-reference:b86fbd994c07a2df:program-predicate:1",
+      "parent": "program-reference:b86fbd994c07a2df",
       "claim": "Ambient globals, Math, bracket/computed/optional access and array/string methods are rejected",
       "predicate": "Ambient globals, Math, bracket/computed/optional access and array/string methods are rejected",
       "checks": [
@@ -807,7 +812,7 @@
         },
         {
           "file": "coordinator/test/program-contract-truth.test.mjs",
-          "test": "contract: concatenation accepts strings only and authored strings respect the 4 KiB byte limit",
+          "test": "contract: concatenation joins a string with a string, number, boolean or null and authored strings respect the 4 KiB byte limit",
           "type": "node-behavior"
         }
       ],
@@ -818,8 +823,8 @@
       }
     },
     {
-      "id": "program-reference:eedb21bb0a27ca09:program-predicate:2",
-      "parent": "program-reference:eedb21bb0a27ca09",
+      "id": "program-reference:b86fbd994c07a2df:program-predicate:2",
+      "parent": "program-reference:b86fbd994c07a2df",
       "claim": "Observed and literal arrays support immutable bounded for-of iteration",
       "predicate": "Observed and literal arrays support immutable bounded for-of iteration",
       "checks": [
@@ -845,7 +850,7 @@
         },
         {
           "file": "coordinator/test/program-contract-truth.test.mjs",
-          "test": "contract: concatenation accepts strings only and authored strings respect the 4 KiB byte limit",
+          "test": "contract: concatenation joins a string with a string, number, boolean or null and authored strings respect the 4 KiB byte limit",
           "type": "node-behavior"
         }
       ],
@@ -856,8 +861,8 @@
       }
     },
     {
-      "id": "program-reference:eedb21bb0a27ca09:program-predicate:3",
-      "parent": "program-reference:eedb21bb0a27ca09",
+      "id": "program-reference:b86fbd994c07a2df:program-predicate:3",
+      "parent": "program-reference:b86fbd994c07a2df",
       "claim": "128 loop iterations per resume are accepted; iteration 129 is rejected",
       "predicate": "128 loop iterations per resume are accepted; iteration 129 is rejected",
       "checks": [
@@ -883,7 +888,7 @@
         },
         {
           "file": "coordinator/test/program-contract-truth.test.mjs",
-          "test": "contract: concatenation accepts strings only and authored strings respect the 4 KiB byte limit",
+          "test": "contract: concatenation joins a string with a string, number, boolean or null and authored strings respect the 4 KiB byte limit",
           "type": "node-behavior"
         }
       ],
@@ -894,8 +899,8 @@
       }
     },
     {
-      "id": "program-reference:eedb21bb0a27ca09:program-predicate:4",
-      "parent": "program-reference:eedb21bb0a27ca09",
+      "id": "program-reference:b86fbd994c07a2df:program-predicate:4",
+      "parent": "program-reference:b86fbd994c07a2df",
       "claim": "1024 operations is the default per-resume limit",
       "predicate": "1024 operations is the default per-resume limit",
       "checks": [
@@ -921,7 +926,7 @@
         },
         {
           "file": "coordinator/test/program-contract-truth.test.mjs",
-          "test": "contract: concatenation accepts strings only and authored strings respect the 4 KiB byte limit",
+          "test": "contract: concatenation joins a string with a string, number, boolean or null and authored strings respect the 4 KiB byte limit",
           "type": "node-behavior"
         }
       ],
@@ -932,8 +937,8 @@
       }
     },
     {
-      "id": "program-reference:eedb21bb0a27ca09:program-predicate:5",
-      "parent": "program-reference:eedb21bb0a27ca09",
+      "id": "program-reference:b86fbd994c07a2df:program-predicate:5",
+      "parent": "program-reference:b86fbd994c07a2df",
       "claim": "Requery after actions receives fresh facts while an existing for-of loop retains its snapshot",
       "predicate": "Requery after actions receives fresh facts while an existing for-of loop retains its snapshot",
       "checks": [
@@ -959,7 +964,7 @@
         },
         {
           "file": "coordinator/test/program-contract-truth.test.mjs",
-          "test": "contract: concatenation accepts strings only and authored strings respect the 4 KiB byte limit",
+          "test": "contract: concatenation joins a string with a string, number, boolean or null and authored strings respect the 4 KiB byte limit",
           "type": "node-behavior"
         }
       ],
@@ -970,10 +975,10 @@
       }
     },
     {
-      "id": "program-reference:eedb21bb0a27ca09:program-predicate:6",
-      "parent": "program-reference:eedb21bb0a27ca09",
-      "claim": "String concatenation accepts strings and rejects a string/number mix",
-      "predicate": "String concatenation accepts strings and rejects a string/number mix",
+      "id": "program-reference:b86fbd994c07a2df:program-predicate:6",
+      "parent": "program-reference:b86fbd994c07a2df",
+      "claim": "+ joins a string with a string, finite number, boolean or null within the 4 KiB limit and rejects undefined, records and arrays",
+      "predicate": "+ joins a string with a string, finite number, boolean or null within the 4 KiB limit and rejects undefined, records and arrays",
       "checks": [
         {
           "file": "coordinator/test/program-contract-truth.test.mjs",
@@ -997,7 +1002,30 @@
         },
         {
           "file": "coordinator/test/program-contract-truth.test.mjs",
-          "test": "contract: concatenation accepts strings only and authored strings respect the 4 KiB byte limit",
+          "test": "contract: concatenation joins a string with a string, number, boolean or null and authored strings respect the 4 KiB byte limit",
+          "type": "node-behavior"
+        }
+      ],
+      "status": "checked",
+      "location": {
+        "file": "coordinator/src/prompts.mjs",
+        "line": 48
+      }
+    },
+    {
+      "id": "program-reference:b86fbd994c07a2df:program-predicate:7",
+      "parent": "program-reference:b86fbd994c07a2df",
+      "claim": "Runtime errors name their code, line:column and cause",
+      "predicate": "Runtime errors name their code, line:column and cause",
+      "checks": [
+        {
+          "file": "coordinator/test/program-contract-truth.test.mjs",
+          "test": "contract: runtime errors name their code, line:column and cause",
+          "type": "node-behavior"
+        },
+        {
+          "file": "coordinator/test/native-program-executor.test.mjs",
+          "test": "a script fault after an action reaches the model with its code, line:column and cause",
           "type": "node-behavior"
         }
       ],
@@ -1498,7 +1526,7 @@
         },
         {
           "file": "coordinator/test/program-contract-truth.test.mjs",
-          "test": "contract: concatenation accepts strings only and authored strings respect the 4 KiB byte limit",
+          "test": "contract: concatenation joins a string with a string, number, boolean or null and authored strings respect the 4 KiB byte limit",
           "type": "node-behavior"
         }
       ],
@@ -1521,7 +1549,7 @@
         },
         {
           "file": "coordinator/test/program-contract-truth.test.mjs",
-          "test": "contract: concatenation accepts strings only and authored strings respect the 4 KiB byte limit",
+          "test": "contract: concatenation joins a string with a string, number, boolean or null and authored strings respect the 4 KiB byte limit",
           "type": "node-behavior"
         }
       ],
@@ -5562,7 +5590,7 @@
       },
       "location": {
         "file": "coordinator/test/contracts/claims.json",
-        "line": 5428
+        "line": 5456
       }
     },
     {
@@ -24226,7 +24254,7 @@
       "reason": "Source/noteKey, attention handles, timing, freshness and goal verification execute through the attached tests. Loop sizing and timely successor authoring are selected-model guidance; live adoption is unmeasured. Immediate successor preparation is advice to the controlling model; its adoption and in-game speed improvement are not enforced or measured."
     },
     {
-      "predicate": "Documented player.* source requires exactly one valid top-level attention policy; legacy bare action aliases have an existing safe default policy; player.state returns current immutable player facts; inventory.count sums matching observed item rows; inventory.countTag returns observed tag count or zero; inventory.slots filters observed inventory rows; inventory.state returns current inventory metadata; world.items filters current observed item candidates; world.entities filters current observed entity candidates; world.blocks filters current observed block candidates; world.nearest chooses minimum distance only from current observed candidates and supports an explicit origin; world.state includes current observation metadata and coverage; world.menu returns the observed menu or null; Missing member access fails rather than inventing a value; inventory zeros describe observed rows",
+      "predicate": "Documented player.* source requires exactly one valid top-level attention policy; legacy bare action aliases have an existing safe default policy; player.state returns current immutable player facts; inventory.count sums matching observed item rows; inventory.countTag returns observed tag count or zero; inventory.slots filters observed inventory rows; inventory.state returns current inventory metadata; world.items filters current observed item candidates; world.entities filters current observed entity candidates; world.blocks filters current observed block candidates; world.nearest chooses minimum distance only from current observed candidates and supports an explicit origin; world.state includes current observation metadata and coverage; world.menu returns the observed menu or null; A key the sample lacks reads null; reading through or comparing null fails; inventory zeros describe observed rows",
       "checks": [
         {
           "file": "coordinator/test/arena-script-parser.test.mjs",
@@ -24252,12 +24280,17 @@
           "file": "coordinator/test/program-contract-truth.test.mjs",
           "test": "contract: stale observed candidates cannot supply nearest targets after a fresh action observation",
           "type": "node-behavior"
+        },
+        {
+          "file": "coordinator/test/program-contract-truth.test.mjs",
+          "test": "contract: a fact the sample lacks reads null, so an optional-fact guard runs instead of ending the program",
+          "type": "node-behavior"
         }
       ],
-      "id": "program-reference:fcfedacf3350f1f6",
+      "id": "program-reference:500f98fdc8ab09de",
       "contract": {
-        "id": "program-reference:fcfedacf3350f1f6",
-        "claim": "ArenaScript is restricted. Each replacement declares exactly one top-level program.onUnhandledAttention(\"continue_and_notify\"|\"pause_and_notify\",options?): continue for routine movement/action observations, pause when unexpected attention must halt. Read player.state(), inventory.count(itemId), inventory.countTag(tag), inventory.slots(criteria), inventory.state(), world.items(criteria), world.entities(criteria), world.blocks(criteria), world.nearest(candidates,origin?), world.state(), world.menu(). Choose observed facts only. world.state() has metadata/coverage; world.menu() is vanilla or null. Missing facts unknown; counts cover observed inventory.",
+        "id": "program-reference:500f98fdc8ab09de",
+        "claim": "ArenaScript is restricted. Each replacement declares exactly one top-level program.onUnhandledAttention(\"continue_and_notify\"|\"pause_and_notify\",options?): continue for routine movement/action observations, pause when unexpected attention must halt. Read player.state(), inventory.count(itemId), inventory.countTag(tag), inventory.slots(criteria), inventory.state(), world.items(criteria), world.entities(criteria), world.blocks(criteria), world.nearest(candidates,origin?), world.state(), world.menu(). Choose observed facts only. world.state() has metadata/coverage; world.menu() is vanilla or null. A fact the sample lacks (hazard, fire: present only while true) reads null; test it before reading through or comparing it. Counts cover observed inventory.",
         "kind": "program-reference"
       },
       "location": {
@@ -24521,7 +24554,7 @@
       "status": "checked"
     },
     {
-      "predicate": "Each of abs/floor/ceil/round/sqrt/sin/cos/atan2/min/max/hypot executes its documented finite arithmetic and rejects invalid numeric arguments; Ambient globals, Math, bracket/computed/optional access and array/string methods are rejected; Observed and literal arrays support immutable bounded for-of iteration; 128 loop iterations per resume are accepted; iteration 129 is rejected; 1024 operations is the default per-resume limit; Requery after actions receives fresh facts while an existing for-of loop retains its snapshot; String concatenation accepts strings and rejects a string/number mix",
+      "predicate": "Each of abs/floor/ceil/round/sqrt/sin/cos/atan2/min/max/hypot executes its documented finite arithmetic and rejects invalid numeric arguments; Ambient globals, Math, bracket/computed/optional access and array/string methods are rejected; Observed and literal arrays support immutable bounded for-of iteration; 128 loop iterations per resume are accepted; iteration 129 is rejected; 1024 operations is the default per-resume limit; Requery after actions receives fresh facts while an existing for-of loop retains its snapshot; + joins a string with a string, finite number, boolean or null within the 4 KiB limit and rejects undefined, records and arrays; Runtime errors name their code, line:column and cause",
       "checks": [
         {
           "file": "coordinator/test/program-contract-truth.test.mjs",
@@ -24545,19 +24578,29 @@
         },
         {
           "file": "coordinator/test/program-contract-truth.test.mjs",
-          "test": "contract: concatenation accepts strings only and authored strings respect the 4 KiB byte limit",
+          "test": "contract: concatenation joins a string with a string, number, boolean or null and authored strings respect the 4 KiB byte limit",
           "type": "node-behavior"
         },
         {
           "file": "coordinator/test/arena-script-interpreter.test.mjs",
           "test": "long literal loops yield between actions while uninterrupted CPU loops keep the slice limit",
           "type": "node-behavior"
+        },
+        {
+          "file": "coordinator/test/program-contract-truth.test.mjs",
+          "test": "contract: runtime errors name their code, line:column and cause",
+          "type": "node-behavior"
+        },
+        {
+          "file": "coordinator/test/native-program-executor.test.mjs",
+          "test": "a script fault after an action reaches the model with its code, line:column and cause",
+          "type": "node-behavior"
         }
       ],
-      "id": "program-reference:eedb21bb0a27ca09",
+      "id": "program-reference:b86fbd994c07a2df",
       "contract": {
-        "id": "program-reference:eedb21bb0a27ca09",
-        "claim": "Syntax: math.abs/floor/ceil/round/sqrt/sin/cos/atan2/min/max/hypot take finite numbers. No ambient Math/globals/bracket/computed/optional access, candidates[index], or array/string methods. Use dot access. Iterate observed or literal immutable arrays with for-of; compare or world.nearest(candidates) by distance. 1024 literal loop iterations; 128 iterations and 1024 operations per resume. Requery after actions; loops start from a snapshot. Concatenation accepts strings only.",
+        "id": "program-reference:b86fbd994c07a2df",
+        "claim": "Syntax: math.abs/floor/ceil/round/sqrt/sin/cos/atan2/min/max/hypot take finite numbers. No ambient Math/globals/bracket/computed/optional access, candidates[index], or array/string methods. Use dot access. Iterate observed or literal immutable arrays with for-of; compare or world.nearest(candidates) by distance. 1024 literal loop iterations; 128 iterations and 1024 operations per resume. Requery after actions; loops start from a snapshot. + joins strings with strings, finite numbers, booleans or null. Runtime errors name code, line:column and cause.",
         "kind": "program-reference"
       },
       "location": {
@@ -25156,7 +25199,7 @@
         },
         {
           "file": "coordinator/test/program-contract-truth.test.mjs",
-          "test": "contract: concatenation accepts strings only and authored strings respect the 4 KiB byte limit",
+          "test": "contract: concatenation joins a string with a string, number, boolean or null and authored strings respect the 4 KiB byte limit",
           "type": "node-behavior"
         },
         {
@@ -31698,7 +31741,7 @@
       }
     },
     {
-      "predicate": "Orders are stored not run; when is a side-effect-free precondition over the stored sample; a rising edge (or true at install) starts the source as a background program that preempts the model action or a danger-paused program but not a running one; the source must declare survival continue_and_notify or installation is refused; at most four, ttlS default 600 up to 1800, kept across death and respawn; each firing returns standingOrder with cause and preempted; an absent fact reads false with conditionError; standing:{id} deletes.",
+      "predicate": "Orders are stored not run; when is a side-effect-free precondition over the stored sample; a rising edge (or true at install) starts the source as a background program that preempts the model action or a danger-paused program but not a running one; the source must declare survival continue_and_notify or installation is refused; at most four, ttlS default 600 up to 1800, kept across death and respawn; each firing returns standingOrder with cause and preempted; an absent fact reads null so the condition is false; a condition that errors reads false with conditionError; standing:{id} deletes.",
       "checks": [
         {
           "file": "coordinator/test/standing-orders.test.mjs",
@@ -31739,12 +31782,17 @@
           "file": "coordinator/test/standing-orders-wake.test.mjs",
           "test": "drop samples drive an order through changing depth, retreat and a second approach",
           "type": "node-behavior"
+        },
+        {
+          "file": "coordinator/test/standing-orders.test.mjs",
+          "test": "guard wake status exposes a rejected behind-player condition and missing facts without claiming protection",
+          "type": "node-behavior"
         }
       ],
-      "id": "control:20b0f88496ce159e:f3a20085b77513c5",
+      "id": "control:20b0f88496ce159e:46902242937e8cad",
       "contract": {
-        "id": "control:20b0f88496ce159e:f3a20085b77513c5",
-        "claim": "A standing order is a reflex you author once, for danger faster than a model turn. `standing:{id,when,ttlS}` stores the source instead of running it; `when` is one side-effect-free expression over the same facts as a queueProgram precondition. The moment it turns true (or if it is true when stored) the source starts as a background program. It cancels your own running action or a program paused for your decision; a running program keeps the body, since its own watchers answer first. Its source must declare `{ survival: \"continue_and_notify\" }`, because urgent danger otherwise pauses a program, and an order runs during exactly that danger. It fires again only after the condition was false. At most four orders; each expires after `ttlS` seconds (default 600, at most 1800) and survives death and respawn. Every firing returns as a program result whose `standingOrder` names the order, the facts that fired it (`cause`) and what it `preempted`. A condition naming a fact absent from a sample reads false and shows `conditionError` in the order list. `standing:{id}` alone deletes the order.",
+        "id": "control:20b0f88496ce159e:46902242937e8cad",
+        "claim": "A standing order is a reflex you author once, for danger faster than a model turn. `standing:{id,when,ttlS}` stores the source instead of running it; `when` is one side-effect-free expression over the same facts as a queueProgram precondition. The moment it turns true (or if it is true when stored) the source starts as a background program. It cancels your own running action or a program paused for your decision; a running program keeps the body, since its own watchers answer first. Its source must declare `{ survival: \"continue_and_notify\" }`, because urgent danger otherwise pauses a program, and an order runs during exactly that danger. It fires again only after the condition was false. At most four orders; each expires after `ttlS` seconds (default 600, at most 1800) and survives death and respawn. Every firing returns as a program result whose `standingOrder` names the order, the facts that fired it (`cause`) and what it `preempted`. A fact absent from a sample reads null, so a condition over it is simply false; a condition that errors (for example reading a member of null) reads false and shows `conditionError` in the order list. `standing:{id}` alone deletes the order.",
         "kind": "control-reference",
         "topic": "runProgram"
       },

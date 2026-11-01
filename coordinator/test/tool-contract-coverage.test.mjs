@@ -52,7 +52,8 @@ test('model-facing contract bytes remain within the pinned baseline budgets', ()
 	// 14,847 -> 15,028: player.useRanged gains timeoutMs?/untilDead?/fleeAtHealth?/collect? and player.fightTarget collect? (d41-ranged-loop); +15: travelTo fightThrough? (d41-resume); +118: player.fightUntil (d41-fight-until); +118: castObsidian/barterUntil (d41-cast-barter).
 	// +64: fightTarget/useRanged untilItem?/untilCount?, fightTarget/fightUntil roof? (d41-fight-count).
 	// +18: fightTarget/useRanged single? (d41-blaze-survive).
-	assert.ok(Buffer.byteLength(ARENA_SCRIPT_API_REFERENCE) <= 15_228);
+	// +178: absent facts read null, + joins strings with numbers/booleans/null, runtime errors name code, line:column and cause.
+	assert.ok(Buffer.byteLength(ARENA_SCRIPT_API_REFERENCE) <= 15_406);
 });
 
 test('every model-facing contract change requires its reviewed claim-table entry to change', () => {

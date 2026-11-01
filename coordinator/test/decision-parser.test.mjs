@@ -99,7 +99,8 @@ test('uses one selected-model ArenaScript contract and envelope schema', () => {
 	assert.match(PLANNER_SYSTEM_PROMPT, /Iterate observed or literal immutable arrays with for-of/i);
 	assert.match(PLANNER_SYSTEM_PROMPT, /128 iterations and 1024 operations per resume/i);
 	assert.match(PLANNER_SYSTEM_PROMPT, /world\.nearest\(candidates\) by distance/i);
-	assert.match(PLANNER_SYSTEM_PROMPT, /Concatenation accepts strings only/i);
+	assert.match(PLANNER_SYSTEM_PROMPT, /\+ joins strings with strings, finite numbers, booleans or null/i);
+	assert.match(PLANNER_SYSTEM_PROMPT, /A fact the sample lacks .* reads null/i);
 	assert.match(PLANNER_SYSTEM_PROMPT, /coordinate-free player\.respawn\(\)/i);
 	assert.match(PLANNER_SYSTEM_PROMPT, /valid only while the authoritative player facts report dead/i);
 	assert.match(PLANNER_SYSTEM_PROMPT, /respawnDimensionId.*respawnX.*respawnY.*respawnZ.*respawnYaw.*respawnPitch.*respawnForced.*gameMode/s);

@@ -69,7 +69,11 @@ test('guard wake status exposes a rejected behind-player condition and missing f
 	assert.equal(book.evaluate('a', behind)?.id, 'reflex');
 	book.markFired('a', 'reflex');
 	assert.equal(book.guardCoverage('a'), 'reflex: installed, condition true, fired 1x');
+	// A fact this sample lacks reads null, so the condition is simply false; reading through null is still an error.
 	book.set('a', { ...args, when: 'player.state().missingFact' });
+	assert.equal(book.evaluate('a', behind), null);
+	assert.equal(book.guardCoverage('a'), 'reflex: installed, condition false, fired 0x');
+	book.set('a', { ...args, when: 'player.state().missingFact.rate > 1' });
 	assert.equal(book.evaluate('a', behind), null);
 	assert.match(book.guardCoverage('a'), /condition error UNKNOWN_MEMBER/);
 	book.rearm('a');
@@ -975,12 +979,13 @@ test('template receipts confirm accepted root and standing parameters while fail
 		assert.throws(() => normalizeMinecraftToolCall('runProgram', {
 			standing: { template: 'survival', id: 'custom', threats: true }, parameters: { threats: false },
 		}), /Conflicting/);
-		assert.equal(runtime.standingGuardCoverage(record()), 'custom: installed, condition error UNKNOWN_MEMBER, fired 0x');
+		// The facts this quiet sample lacks (underWater, inLava, threat) read null, so the guard evaluates instead of erroring.
+		assert.equal(runtime.standingGuardCoverage(record()), 'custom: installed, condition false, fired 0x');
 		const replaced = await install({ standing: { template: 'survival', id: 'custom', threats: true }, parameters: { fallDepth: 2 } });
 		assert.equal(replaced.parameters.threats, true);
 		assert.equal(replaced.parameters.fallDepth, 2);
 		assert.deepEqual(replaced.standingOrders.map(order => order.id), ['custom']);
-		assert.match(runtime.standingGuardCoverage(record()), /^custom: installed, condition error UNKNOWN_MEMBER, fired 0x/);
+		assert.match(runtime.standingGuardCoverage(record()), /^custom: installed, condition false, fired 0x/);
 		assert.equal(commands(sent).length, 0, 'installing or editing chooses no body action');
 	} finally { await runtime.dispose('agent-a', 'test_complete'); }
 });

@@ -26,7 +26,7 @@ test('native program reference shares the actual language, action contract and e
 	// 14,586 -> 14,695: the generated player.travelTo signature (after digTo).
 	// 14,695 -> 14,722 bytes: shaft and maxShaftY in the generated digTo signature (+27 B).
 	// 14,813 -> 14,847: useItem/interactBlock signatures gain acceptLavaRisk? (d41-portal LAVA_POUR_AT_BODY).
-	assert.ok(Buffer.byteLength(ARENA_SCRIPT_API_REFERENCE) <= 15_228); // +18: fightTarget/useRanged single? (d41-blaze-survive); +64: fightTarget/useRanged untilItem?/untilCount?, roof? (d41-fight-count); +48: useRanged untilDead?/fleeAtHealth?/collect?, fightTarget collect? (d41-ranged-loop); +15: travelTo fightThrough? (d41-resume); +118: player.fightUntil (d41-fight-until); +118: castObsidian/barterUntil (d41-cast-barter)
+	assert.ok(Buffer.byteLength(ARENA_SCRIPT_API_REFERENCE) <= 15_406); // +178: absent facts read null, string + number, located runtime errors; +18: fightTarget/useRanged single? (d41-blaze-survive); +64: fightTarget/useRanged untilItem?/untilCount?, roof? (d41-fight-count); +48: useRanged untilDead?/fleeAtHealth?/collect?, fightTarget collect? (d41-ranged-loop); +15: travelTo fightThrough? (d41-resume); +118: player.fightUntil (d41-fight-until); +118: castObsidian/barterUntil (d41-cast-barter)
 	assert.ok(ARENA_SCRIPT_API_REFERENCE.includes(SCRIPT_ACTION_REFERENCE));
 	assert.match(ARENA_SCRIPT_API_REFERENCE, /Watcher example/);
 	assert.match(ARENA_SCRIPT_API_REFERENCE, /world\.queryMemory/);

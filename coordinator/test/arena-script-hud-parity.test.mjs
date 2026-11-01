@@ -83,7 +83,8 @@ test('public worldTick measures elapsed ticks and resets for body, dimension, de
 test('custom unbranded interpreter facts obey the same mask and private elapsed clock', () => {
 	const raw = observation();
 	const custom = tick => ({ player: raw.player, world: { state: { ...raw.world, gameTime: tick }, entities: raw.entities }, inventory: { items: [], tagCounts: {} } });
-	assert.throws(() => vm('program.finish(player.state().saturation);').start(custom(12000)), error => error.code === 'UNKNOWN_MEMBER');
+	// A hidden field is absent from the masked facts, so it reads null like any fact the sample lacks.
+	assert.equal(vm('program.finish(player.state().saturation === null ? "hidden" : "leaked");').start(custom(12000)).summary, 'hidden');
 	const program = vm(`
 		if (player.state().health !== 18 || player.state().air !== 60) program.finish("wrong precision");
 		await player.wait(world.state().worldTick + 1);
@@ -102,9 +103,9 @@ test('inspection results cannot launder semantic hidden player/world/entity numb
 	for (const key of ['saturation', 'fireTicks', 'airSecondsLeft']) assert.equal(projected.player[key], undefined);
 	for (const key of ['gameTime', 'dayTime', 'worldTick', 'naturalRegeneration']) assert.equal(projected.world[key], undefined);
 	assert.equal(projected.entities[0].health, undefined);
-	const laundering = vm('const page = await world.inspect({section:"entities"}); program.finish(page.player.saturation);');
+	const laundering = vm('const page = await world.inspect({section:"entities"}); program.finish(page.player.saturation === null ? "hidden" : "leaked");');
 	const badQuery = laundering.start(createInterpreterFacts(observation()));
-	assert.throws(() => laundering.resume({ stateToken: badQuery.stateToken, state: 'SUCCEEDED', reasonCode: 'INSPECTED', value: raw }, createInterpreterFacts(observation())), error => error.code === 'UNKNOWN_MEMBER');
+	assert.equal(laundering.resume({ stateToken: badQuery.stateToken, state: 'SUCCEEDED', reasonCode: 'INSPECTED', value: raw }, createInterpreterFacts(observation())).summary, 'hidden');
 	const program = vm(`const page = await world.inspect({section:"entities",limit:16});
 		program.finish(page.player.health === 18 && page.player.air === 60 && page.player.harm.hpLossPerSecond === 2.4 ? "masked" : "wrong precision");`);
 	const query = program.start(createInterpreterFacts(observation()));
@@ -121,9 +122,9 @@ test('reduced debug applies to public facts and query responses, including a cha
 	const projected = freezeQueryResult(observation(), { reducedDebugInfo: true });
 	assert.equal(projected.player.x, undefined);
 	assert.equal(projected.world.biome, undefined);
-	const program = vm(`const page = await world.inspect({section:"hud"}); program.finish(page.player.x);`);
+	const program = vm(`const page = await world.inspect({section:"hud"}); program.finish(page.player.x === null ? "masked" : "leaked");`);
 	const query = program.start(createInterpreterFacts(observation()));
-	assert.throws(() => program.resume({ stateToken: query.stateToken, state: 'SUCCEEDED', reasonCode: 'INSPECTED', value: observation() }, facts), error => error.code === 'UNKNOWN_MEMBER');
+	assert.equal(program.resume({ stateToken: query.stateToken, state: 'SUCCEEDED', reasonCode: 'INSPECTED', value: observation() }, facts).summary, 'masked');
 });
 
 test('masking validates hidden and nested fields before invoking getters or proxy traps', () => {

@@ -1,6 +1,7 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { ArenaScriptEngine, CONTEXT_TRIGGERS } from './arena-script/program-engine.mjs';
 import { parseArenaScript } from './arena-script/parser.mjs';
+import { ArenaScriptError } from './arena-script/errors.mjs';
 import { DEFAULT_ARENA_SCRIPT_LIMITS, MAX_PROGRAM_ACTIONS, MAX_PROGRAM_TIMEOUT_MS } from './arena-script/limits.mjs';
 import { breakOutcomeEvidence, breakOutcomeScriptEvidence, freezeRuntimeResult } from './arena-script/interpreter.mjs';
 import { adaptObservation } from './observation-adapter.mjs';
@@ -619,7 +620,11 @@ export class NativeProgramExecutor {
 			run.lastActionObservationSequence = fresh.eventSequence;
 			run.engine.ingestActionResult({ actionId: command.actionId, state: result.state, reasonCode: result.reasonCode, ...(result.cause === undefined ? {} : { cause: result.cause }), eventSequence: fresh.eventSequence, ...actionFailureEvidence(result), ...partialCraftEvidence(result, explanation), ...breakOutcomeScriptEvidence(result) });
 			this.#check(run);
-		} catch (error) { this.#return(run, { state: 'YIELDED', reasonCode: boundedReason(error?.code, 'FRESH_OBSERVATION_REQUIRED') }, true); }
+		} catch (error) {
+			// A fault in the authored source after this receipt fails with its located message, as one before any action does.
+			this.#return(run, error instanceof ArenaScriptError ? failure(error, 'PROGRAM_EXECUTION_FAILED')
+				: { state: 'YIELDED', reasonCode: boundedReason(error?.code, 'FRESH_OBSERVATION_REQUIRED') }, true);
+		}
 		finally { this.#scheduleObservation(run); }
 	}
 

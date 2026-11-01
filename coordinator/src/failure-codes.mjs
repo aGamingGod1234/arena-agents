@@ -316,7 +316,7 @@ export const FAILURE_CODES = Object.freeze({
 	UNKNOWN_GOAL_IDENTIFIER: ['rule', 'each goal identifier exists on this server', ['exists.test(id)', 'requireLiveIdentifier']],
 	UNKNOWN_GOAL_PREDICATE: ['rule', 'each predicate type is a known goal predicate', ['case "any_of" ->', 'case \'any_of\':']],
 	UNKNOWN_IDENTIFIER: ['rule', 'each referenced name is bound in its lexical scope', ['current.values.has(name)', 'current = current.parent']],
-	UNKNOWN_MEMBER: ['rule', 'the object has the member being read', ['Object.hasOwn(object, name)']],
+	UNKNOWN_MEMBER: ['rule', 'the value read from is a record, not null', ["object === null || typeof object !== 'object'", 'isArenaFunction(object)']],
 	UNKNOWN_MINECRAFT_TOOL: ['rule', 'the tool name is a listed Minecraft tool', ['default:']],
 	UNLISTED_GOAL_IDENTIFIER: ['rule', 'every identifier is in the server candidate list', ['candidates.has(identifier)']],
 	UNSAFE_MEMBER_ACCESS: ['rule', null],
