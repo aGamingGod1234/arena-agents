@@ -1587,3 +1587,23 @@ Full npm: 4,531 passed, 3 skipped, zero failed/cancelled, 109.05 s. Final Deskto
   - **Shield:** the shield reflex never fired against a skeleton.
 
   The last two are body bugs the benchmark surfaced, logged as follow-ups rather than claimed as wins.
+
+### The body picks its own pickaxe
+- **Problem:** Every block that needed a different tool cost two model calls, one to switch and one to mine. An ore mined with too weak a pick was destroyed and dropped nothing.
+- **Solution:** Mining now chooses the fastest carried tool that can harvest the block. It keeps an enchanted tool that already works, and refuses an ore no carried tool can harvest before swinging.
+- **Result:** Blocks that needed a tool switch go from 2 calls to 1 (by design). On fixture inventories, wrong-pick ore loss went to 0, with a stone pick picked for iron and diamond refused with only stone (measured, 22 assertions).
+
+### One call fells a tree
+- **Problem:** Gathering 8 logs took 182-222 s (measured in the audit), because each log was its own model decision.
+- **Solution:** A new `mine_vein` action cuts a tree from beside and then inside its trunk, or mines an ore vein from where the body stands. It refuses any tree whose seen logs it can't all reach, so it never leaves logs floating, and it stops on lava, damage, nearby hostiles or a full inventory.
+- **Result:** A 6-log oak went from 6-7 model calls to 1 (fixture, measured). The body's own time is about 10-15 s per tree (estimated from vanilla break times, not measured live).
+
+### Night trips without the stutter
+- **Problem:** Every hostile within 16 blocks and every berry-bush scratch handed a trip back to the model for a fresh decision.
+- **Solution:** Travel now stops only for mobs that are coming at the body, or ranged mobs aiming at it. It shrugs off small terrain damage while health stays above the trip's floor.
+- **Result:** A night trip with 7 hostiles and 3 scratches went from 10 hand-backs to 2 (synthetic fixture, measured).
+
+### Travel goes down, and through doors
+- **Problem:** A target underground ended in NO_ROUTE, a ledge over deep water counted as a wall, buildings were sealed to navigation, and tunnels could mine through a door.
+- **Solution:** Travel digs a staircase down toward a target below it, and steps off ledges of up to 12 blocks into water at least 2 deep. The walker opens wooden doors and gates and shuts doors behind it, and tunnels never break doors, gates or trapdoors.
+- **Result:** An 11-block drop into a pool went from no path to a single step. A corridor behind a door went from no path to a route through the doorway (fixtures, measured). The calls saved per descent or building visit are estimated, not measured live.
