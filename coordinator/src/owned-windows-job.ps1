@@ -1,4 +1,8 @@
 param([string]$CommandJson, [switch]$LibraryOnly, [string]$EvidencePath)
+# The command's exact environment arrives in this variable, never on the command line, which event 4688, Sysmon and
+# EDR record. Take it out of this process before anything else starts, so no helper or witness inherits it.
+$ownedEnvironmentJson = [Environment]::GetEnvironmentVariable('ARENA_OWNED_JOB_ENVIRONMENT', 'Process')
+[Environment]::SetEnvironmentVariable('ARENA_OWNED_JOB_ENVIRONMENT', $null, 'Process')
 $ErrorActionPreference = 'Stop'
 # Progress records (e.g. first-use module preparation) are written as CLIXML into the child's redirected streams.
 $ProgressPreference = 'SilentlyContinue'
@@ -199,10 +203,11 @@ else { [ArenaOwnedJob]::Attach() }
 $invocation = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($CommandJson)) | ConvertFrom-Json
 $ownedCommand = [string]$invocation.command
 $ownedArguments = @($invocation.args | ForEach-Object { [string]$_ })
+if ($null -ne $invocation.PSObject.Properties['env']) { throw "CommandJson must not carry the environment; pass it in ARENA_OWNED_JOB_ENVIRONMENT" }
 $ownedEnvironment = $null
-if ($null -ne $invocation.env) {
+if ($null -ne $ownedEnvironmentJson) {
 	$ownedEnvironment = @{}
-	foreach ($variable in $invocation.env.PSObject.Properties) { $ownedEnvironment[$variable.Name] = [string]$variable.Value }
+	foreach ($variable in ($ownedEnvironmentJson | ConvertFrom-Json).PSObject.Properties) { $ownedEnvironment[$variable.Name] = [string]$variable.Value }
 }
 if ($null -ne $invocation.PSObject.Properties['commandLine']) {
 	exit ([ArenaOwnedJob]::RunCommandLine($ownedCommand, [string]$invocation.commandLine, $ownedEnvironment))
