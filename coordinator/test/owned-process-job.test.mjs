@@ -162,6 +162,22 @@ test('job witness promptly reports incomplete when launcher exits without a froz
 	}
 });
 
+test('the Windows job witness publishes every signal file by rename, so the wrapper never deletes a file still being written', async () => {
+	// The wrapper polls File.Exists(control + ".ready") and deletes the file at once. Written in place with
+	// File.WriteAllText, the name appears before the witness closes it, and that delete failed on Windows CI with
+	// "being used by another process": AttachWithEvidence threw, the command never ran, and the cleanup proof read
+	// INCOMPLETE with wrapperExited false.
+	const witness = await readFile(new URL('../src/owned-job-witness.ps1', import.meta.url), 'utf8');
+	const wrapper = await readFile(new URL('../src/owned-windows-job.ps1', import.meta.url), 'utf8');
+	assert.match(witness, /static void Publish\(string path,string text\) \{\s*File\.WriteAllText\(path\+"\.writing",text\);File\.Move\(path\+"\.writing",path\);/);
+	for (const signal of ['control+".ready"', 'evidence+".ready"']) assert.ok(witness.includes(`Publish(${signal},`), `${signal} is published by rename`);
+	assert.doesNotMatch(witness, /WriteAllText\((control|evidence)\+"\.ready"/, 'no polled signal is written in place');
+	// The wrapper's own control file is published the same way, and its cleanup of the witness's signal cannot fail the attach.
+	assert.match(wrapper, /File\.WriteAllText\(control \+ "\.writing",[^\n]*\n\s*File\.Move\(control \+ "\.writing", control\);/);
+	assert.match(wrapper, /try \{ File\.Delete\(control \+ "\.ready"\); \} catch \(IOException\) \{ \}/);
+	assert.equal(wrapper.match(/File\.Delete\(control \+ "\.ready"\)/g).length, 1, 'no unguarded delete of the ready signal');
+});
+
 test('the Windows job wrapper starts System32 PowerShell even when the provider PATH omits it', () => {
 	const calls = [];
 	spawnOwnedProcess('codex.cmd', ['app-server'], { env: { PATH: 'C:\fake-bin' } }, { platform: 'win32', spawn: (command, args, options) => { calls.push({ command, options }); return {}; } });

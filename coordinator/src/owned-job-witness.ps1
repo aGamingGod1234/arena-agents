@@ -33,6 +33,9 @@ public static class ArenaJobWitness {
             }finally{Marshal.FreeHGlobal(data);}
         }
     }
+    static void Publish(string path,string text) {
+        File.WriteAllText(path+".writing",text);File.Move(path+".writing",path);
+    }
     public static void Observe(string control,string evidence) {
         IntPtr job=IntPtr.Zero,wrapper=IntPtr.Zero;
         var retained=new List<IntPtr>(); var current=new Dictionary<uint,IntPtr>();
@@ -45,7 +48,9 @@ public static class ArenaJobWitness {
             }
             var values=File.ReadAllText(control).Split(' ');
             job=new IntPtr(long.Parse(values[0]));wrapper=new IntPtr(long.Parse(values[1]));
-            File.Delete(control);File.WriteAllText(control+".ready","ready");
+            // Publish each signal by rename, never by writing it in place: the other side acts the moment the name
+            // appears, and a file still open here cannot be deleted there (a sharing violation on Windows).
+            File.Delete(control);Publish(control+".ready","ready");
             while(!File.Exists(evidence+".freeze")) {
                 if(WaitForSingleObject(wrapper,0)==0||clock.ElapsedMilliseconds>300000)throw new TimeoutException();
                 System.Threading.Thread.Sleep(20);
@@ -80,7 +85,7 @@ public static class ArenaJobWitness {
             // All members are suspended, so the census cannot grow. Release our query reference
             // before the normal retained launcher handle is killed. Only production kill-on-close stops members.
             CloseHandle(job);job=IntPtr.Zero;jobClosedBeforeStop=true;
-            File.WriteAllText(evidence+".ready","FROZEN_JOB_HANDLE_CLOSED");
+            Publish(evidence+".ready","FROZEN_JOB_HANDLE_CLOSED");
             long readyAt=clock.ElapsedMilliseconds;
             while(clock.ElapsedMilliseconds-readyAt<15000) {
                 wrapperExited=WaitForSingleObject(wrapper,0)==0;
@@ -93,7 +98,7 @@ public static class ArenaJobWitness {
             foreach(IntPtr handle in retained){if(WaitForSingleObject(handle,0)!=0)NtResumeProcess(handle);CloseHandle(handle);}
             if(job!=IntPtr.Zero)CloseHandle(job);
             if(wrapper!=IntPtr.Zero)CloseHandle(wrapper);
-            try{File.Delete(control);File.Delete(control+".ready");File.Delete(evidence+".freeze");File.Delete(evidence+".ready");}catch{}
+            foreach(string leftover in new[]{control,control+".ready",control+".ready.writing",evidence+".freeze",evidence+".ready",evidence+".ready.writing"}){try{File.Delete(leftover);}catch{}}
         }
         bool complete=frozen&&jobClosedBeforeStop&&allExited&&wrapperExited;
         string json="{\"status\":\""+(complete?"COMPLETE":"INCOMPLETE")+"\",\"allMembersExited\":"+allExited.ToString().ToLowerInvariant()+",\"wrapperExited\":"+wrapperExited.ToString().ToLowerInvariant()+",\"frozenMemberCount\":"+retained.Count+",\"jobHandleClosedBeforeStop\":"+jobClosedBeforeStop.ToString().ToLowerInvariant()+",\"observationHandlesClosed\":true}";

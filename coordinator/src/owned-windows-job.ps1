@@ -67,7 +67,9 @@ public static class ArenaOwnedJob {
                 if (witness.HasExited || DateTime.UtcNow > deadline) throw new InvalidOperationException("Job witness did not become ready");
                 System.Threading.Thread.Sleep(20);
             }
-            File.Delete(control + ".ready");
+            // The witness publishes the signal by rename and deletes it again on exit, so this cleanup is best
+            // effort: a scanner or indexer briefly holding the file must not fail an attach that already succeeded.
+            try { File.Delete(control + ".ready"); } catch (IOException) { } catch (UnauthorizedAccessException) { }
         }
     }
     // Kept open for this wrapper's lifetime, non-inheritable and never reopened by PID.
