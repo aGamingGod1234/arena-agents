@@ -494,8 +494,9 @@ public final class CoordinatorProcessSupervisorVerification {
 					)
 			);
 			assertEquals(1, reaped, "a replacement supervisor reopens and terminates the named coordinator job");
-			awaitCondition(() -> !exactProvider.isAlive(),
-					"Windows job cleanup terminates the unsnapshotted reparented provider");
+			// Termination returns only once the job has drained, so nothing it owned still holds the runtime open.
+			assertFalse(exactProvider.isAlive(),
+					"Windows job cleanup has terminated the unsnapshotted reparented provider when it returns");
 			assertTrue(exactUnrelated.isAlive(), "Windows job cleanup leaves unrelated processes alive");
 			assertFalse(Files.exists(CoordinatorProcessOwnership.ownershipFile(root)),
 					"Windows job ownership clears after kernel cleanup is accepted");

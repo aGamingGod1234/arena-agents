@@ -6,6 +6,8 @@ import com.sun.jna.Pointer;
 import com.sun.jna.WString;
 import com.sun.jna.win32.StdCallLibrary;
 import com.sun.jna.win32.W32APIOptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -14,6 +16,12 @@ import java.util.UUID;
 
 /** Gives one Windows coordinator launch durable, kernel-owned process-tree lifetime. */
 final class WindowsCoordinatorJob {
+	private static final Logger LOGGER = LoggerFactory.getLogger(WindowsCoordinatorJob.class);
+	private static final int JOB_OBJECT_BASIC_ACCOUNTING_INFORMATION = 1;
+	private static final int BASIC_ACCOUNTING_INFORMATION_SIZE = 48;
+	private static final long ACTIVE_PROCESSES_OFFSET = 40L;
+	private static final int JOB_OBJECT_QUERY = 0x0004;
+	static final long DRAIN_TIMEOUT_MS = 5_000L;
 	private static final int JOB_OBJECT_EXTENDED_LIMIT_INFORMATION = 9;
 	private static final int JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE = 0x00002000;
 	private static final int JOB_OBJECT_TERMINATE = 0x0008;
@@ -64,7 +72,7 @@ final class WindowsCoordinatorJob {
 	static boolean terminateExisting(String launchId) throws IOException {
 		if (!supported()) return false;
 		Pointer handle = Kernel32.INSTANCE.OpenJobObjectW(
-				JOB_OBJECT_TERMINATE, false, new WString(name(launchId))
+				JOB_OBJECT_TERMINATE | JOB_OBJECT_QUERY, false, new WString(name(launchId))
 		);
 		if (nullHandle(handle)) {
 			int error = Native.getLastError();
@@ -101,7 +109,40 @@ final class WindowsCoordinatorJob {
 		if (!Kernel32.INSTANCE.TerminateJobObject(handle, 1)) {
 			throw failure("terminate owned coordinator job", Native.getLastError());
 		}
+		awaitDrained();
 		closeHandle();
+	}
+
+	/**
+	 * TerminateJobObject only starts termination. Wait until no process in the job (nested jobs included) is
+	 * left, so that once this returns nothing it owned still holds the runtime's files open, such as node.exe.
+	 * The job's root is usually gone first while a child it started (a provider CLI) is still exiting.
+	 */
+	private void awaitDrained() {
+		long deadline = System.nanoTime() + java.util.concurrent.TimeUnit.MILLISECONDS.toNanos(DRAIN_TIMEOUT_MS);
+		try (Memory information = new Memory(BASIC_ACCOUNTING_INFORMATION_SIZE)) {
+			while (true) {
+				information.clear();
+				if (!Kernel32.INSTANCE.QueryInformationJobObject(
+						handle, JOB_OBJECT_BASIC_ACCOUNTING_INFORMATION, information, BASIC_ACCOUNTING_INFORMATION_SIZE, Pointer.NULL
+				)) {
+					LOGGER.warn("Could not read the terminated coordinator job's process count (Windows error {})", Native.getLastError());
+					return;
+				}
+				int active = information.getInt(ACTIVE_PROCESSES_OFFSET);
+				if (active <= 0) return;
+				if (System.nanoTime() >= deadline) {
+					LOGGER.warn("{} coordinator job process(es) still exiting {} ms after termination", active, DRAIN_TIMEOUT_MS);
+					return;
+				}
+				try {
+					Thread.sleep(10L);
+				} catch (InterruptedException interrupted) {
+					Thread.currentThread().interrupt();
+					return;
+				}
+			}
+		}
 	}
 
 	synchronized void closeHandle() throws IOException {
@@ -154,6 +195,8 @@ final class WindowsCoordinatorJob {
 		Pointer OpenProcess(int desiredAccess, boolean inheritHandle, int processId);
 
 		boolean SetInformationJobObject(Pointer job, int informationClass, Pointer information, int length);
+
+		boolean QueryInformationJobObject(Pointer job, int informationClass, Pointer information, int length, Pointer returnLength);
 
 		boolean AssignProcessToJobObject(Pointer job, Pointer process);
 
