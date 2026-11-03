@@ -12,6 +12,7 @@ $ErrorActionPreference = 'Stop'
 if ([string]::IsNullOrWhiteSpace($ProjectRoot)) { $ProjectRoot = Split-Path -Parent $PSScriptRoot }
 . (Join-Path $PSScriptRoot 'offline-server-policy.ps1')
 . (Join-Path $PSScriptRoot 'project-metadata.ps1')
+. (Join-Path $PSScriptRoot 'runtime-target-guard.ps1')
 
 $null = Use-ArenaMinecraftTarget $ProjectRoot $Target
 $MinecraftVersion = Get-ArenaGradleProperty $ProjectRoot 'minecraft_version'
@@ -43,6 +44,19 @@ $CarpetJar = Resolve-ArenaCarpetJar $Project
 $FabricApi = Join-Path $Minecraft "mods\fabric-api-$FabricApiVersion.jar"
 $Installer = Join-Path $Downloads "fabric-installer-$InstallerVersion.jar"
 $WorldEvidence = Join-Path $Evidence 'world-copy.json'
+
+# These fixed paths are also used by the launch scripts. Bind each one to its
+# exact managed versions so target switches cannot mix launchers or mod JARs.
+$RuntimeDirectories = @($Server, $Agent55, $Agent56)
+$RuntimeTarget = [ordered]@{
+    schemaVersion = 1
+    minecraftVersion = $MinecraftVersion
+    loaderVersion = $LoaderVersion
+    fabricApiVersion = $FabricApiVersion
+    carpetJar = [IO.Path]::GetFileName($CarpetJar)
+    agentJar = [IO.Path]::GetFileName($AgentJar)
+}
+Assert-ArenaRuntimeTarget $RuntimeDirectories $RuntimeTarget
 
 function Assert-ExactPath([string] $Actual, [string] $Expected, [string] $Label) {
     if (-not ([IO.Path]::GetFullPath($Actual)).Equals([IO.Path]::GetFullPath($Expected), [StringComparison]::OrdinalIgnoreCase)) {
@@ -118,6 +132,7 @@ if (-not $SkipBuild) {
 }
 if (-not (Test-Path -LiteralPath $AgentJar -PathType Leaf)) { throw "Missing final mod JAR: $AgentJar" }
 
+Initialize-ArenaRuntimeTarget $RuntimeDirectories $RuntimeTarget
 New-Item -ItemType Directory -Force -Path $Runtime,$Evidence,$Downloads | Out-Null
 if (-not (Test-Path -LiteralPath $Installer -PathType Leaf)) {
     Invoke-WebRequest -UseBasicParsing -Uri $InstallerUrl -OutFile $Installer
