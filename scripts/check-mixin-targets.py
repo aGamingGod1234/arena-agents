@@ -11,6 +11,7 @@ target (src/main, src/client, and src/compat/<target>/) and checks each target w
 Exit 0 when every target resolves; otherwise each unresolved target is listed and the exit code is 1.
 """
 import argparse
+import json
 import os
 import re
 import subprocess
@@ -29,7 +30,6 @@ def configs(target):
     names = ['src/main/resources/arenaagents.mixins.json', 'src/client/resources/arenaagents.client.mixins.json',
              f'src/compat/{target}/resources/arenaagents.compat.mixins.json',
              f'src/compat/{target}/clientResources/arenaagents.client.compat.mixins.json']
-    import json
     found = []
     for name in names:
         path = os.path.join(ROOT, name)
@@ -108,6 +108,103 @@ def resolve(name, table):
     return name
 
 
+def at_target_values(source):
+    """Yield (value, error) for every @At target; never accept a partial expression.
+
+    This deliberately supports a small Java string-constant grammar. Imported constants,
+    text blocks and other Java expressions require explicit support rather than silent skips.
+    """
+    tokens = [m.group() for m in re.finditer(
+        r'//[^\n]*|/\*[\s\S]*?\*/|"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'|[\w$]+|[^\s]', source)
+        if not m.group().startswith(('//', '/*'))]
+    constants = {}
+    for i in range(len(tokens) - 4):
+        if tokens[i:i + 2] == ['final', 'String'] and tokens[i + 3] == '=':
+            end = i + 4
+            while end < len(tokens) and tokens[end] != ';':
+                end += 1
+            name = tokens[i + 2]
+            # Ambiguous declarations (e.g. nested classes) must not pick an arbitrary value.
+            constants[name] = None if name in constants else tokens[i + 4:end]
+
+    def evaluate(parts, active=frozenset()):
+        index = 0
+
+        def expression():
+            nonlocal index
+            value = atom()
+            while index < len(parts) and parts[index] == '+':
+                index += 1
+                value += atom()
+            return value
+
+        def atom():
+            nonlocal index
+            if index >= len(parts):
+                raise ValueError('incomplete string expression')
+            token = parts[index]
+            index += 1
+            if token == '(':
+                value = expression()
+                if index >= len(parts) or parts[index] != ')':
+                    raise ValueError('unbalanced parentheses')
+                index += 1
+                return value
+            if token.startswith('"'):
+                try:
+                    return json.loads(token)
+                except ValueError:
+                    raise ValueError('unsupported string literal escape') from None
+            if token in active:
+                raise ValueError(f'cyclic constant {token}')
+            if token not in constants or constants[token] is None:
+                raise ValueError(f'unknown or ambiguous constant {token}')
+            return evaluate(constants[token], active | {token})
+
+        value = expression()
+        if index != len(parts):
+            raise ValueError('unsupported tokens in string expression')
+        return value
+
+    for i in range(len(tokens) - 2):
+        if tokens[i] != '@':
+            continue
+        j = i + 1
+        while j + 2 < len(tokens) and tokens[j + 1] == '.':
+            j += 2
+        if tokens[j:j + 2] != ['At', '(']:
+            continue
+        depth, j = 0, j + 2
+        while j < len(tokens):
+            token = tokens[j]
+            if token == ')' and depth == 0:
+                break
+            if depth == 0 and tokens[j:j + 2] == ['target', '=']:
+                start = j + 2
+                j = start
+                nested = 0
+                while j < len(tokens):
+                    token = tokens[j]
+                    if nested == 0 and token in (',', ')'):
+                        break
+                    if token == '(':
+                        nested += 1
+                    elif token == ')':
+                        nested -= 1
+                    j += 1
+                parts = tokens[start:j]
+                try:
+                    yield evaluate(parts), None
+                except ValueError as error:
+                    yield None, f"unsupported @At target expression {' '.join(parts)}: {error}"
+                continue
+            if token == '(':
+                depth += 1
+            elif token == ')':
+                depth -= 1
+            j += 1
+
+
 def check(jar, target):
     problems, checked = [], 0
     for mixin in configs(target):
@@ -146,8 +243,10 @@ def check(jar, target):
                 elif '(' in entry and entry[entry.index('('):] not in owner_methods[name]:
                     problems.append(f'{short}: injected method {entry} has no matching descriptor')
         # @At targets: Lowner;name(desc)ret for INVOKE, Lowner;name:type for FIELD.
-        for at in re.findall(r'target\s*=\s*((?:"[^"]*"\s*\+?\s*)+)', source):
-            value = ''.join(re.findall(r'"([^"]*)"', at))
+        for value, error in at_target_values(source):
+            if error:
+                problems.append(f'{short}: {error}')
+                continue
             match = re.match(r'L([\w/$]+);([\w<>$]+)(\(.*|:.*)$', value)
             if not match:
                 continue
