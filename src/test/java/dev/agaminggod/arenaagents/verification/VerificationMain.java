@@ -187,6 +187,7 @@ public final class VerificationMain {
 		passedAssertions += dev.agaminggod.arenaagents.server.runtime.reflex.LeaveFireDouseRecoveryVerification.verify();
 		passedAssertions += dev.agaminggod.arenaagents.server.runtime.reflex.RetreatEmergencyPriorityVerification.verify();
 		passedAssertions += dev.agaminggod.arenaagents.server.runtime.reflex.DefaultEatRearmingVerification.verify();
+		passedAssertions += dev.agaminggod.arenaagents.server.runtime.reflex.ModelOwnedDefaultRulesVerification.verify();
 		passedAssertions += CoordinatorProcessOwnershipVerification.verify();
 		passedAssertions += CoordinatorStartupSmokeVerification.verify();
 		passedAssertions += CoordinatorVoiceTimeoutLifecycleVerification.verify();

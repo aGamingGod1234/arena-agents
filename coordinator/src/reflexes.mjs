@@ -417,7 +417,12 @@ export class ReflexBook {
 		agent.sentAtMs = this.#now();
 		// The mod knows ttlMs only: a rule scoped to a context gets the longest ttl unless it set its own; the coordinator
 		// ends it when the context ends.
-		const rules = [...agent.rules.values()].map(({ lasts, ...rule }) => (lasts !== undefined && rule.ttlMs === undefined ? { ...rule, ttlMs: MAX_REFLEX_TTL_MS } : rule));
+		const rules = [...agent.rules.values()].map(({ lasts, ...rule }) => ({
+			...rule,
+			...(lasts !== undefined && rule.ttlMs === undefined ? { ttlMs: MAX_REFLEX_TTL_MS } : {}),
+			// Ownership is bookkeeping, not an id convention: a replacement belongs to the model.
+			...(agent.defaults.has(rule.id) ? { coordinatorDefault: true } : {}),
+		}));
 		return { revision: agent.revision, rules: structuredClone(rules), yield: yieldFiring };
 	}
 

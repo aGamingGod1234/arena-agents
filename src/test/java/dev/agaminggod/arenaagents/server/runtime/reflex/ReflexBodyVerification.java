@@ -176,19 +176,19 @@ public final class ReflexBodyVerification {
 	/** The coordinator's item-dependent defaults (reflexes.mjs) sleep without their item; the same rule of the model's own fires. */
 	private static void defaultsSleepWithoutTheirItem() {
 		List<ReflexSpec.Rule> parsed = rules("""
-				[{"id":"default-arrow","when":{"type":"incoming_projectile","withinS":0.6},"do":{"type":"shield"},"ttlMs":3600000},
-				 {"id":"default-eat","priority":3,"when":[{"type":"hunger_below","value":14},{"type":"hostile_near","within":8,"not":true}],"do":{"type":"eat"},"cooldownMs":20000,"ttlMs":3600000},
-				 {"id":"default-creeper","priority":9,"when":{"type":"creeper_fusing","within":5},"do":{"type":"sprint_away","blocks":8},"ttlMs":3600000},
+				[{"id":"default-arrow","coordinatorDefault":true,"when":{"type":"incoming_projectile","withinS":0.6},"do":{"type":"shield"},"ttlMs":3600000},
+				 {"id":"default-eat","coordinatorDefault":true,"priority":3,"when":[{"type":"hunger_below","value":14},{"type":"hostile_near","within":8,"not":true}],"do":{"type":"eat"},"cooldownMs":20000,"ttlMs":3600000},
+				 {"id":"default-creeper","coordinatorDefault":true,"priority":9,"when":{"type":"creeper_fusing","within":5},"do":{"type":"sprint_away","blocks":8},"ttlMs":3600000},
 				 {"id":"my-arrow","when":{"type":"incoming_projectile","withinS":0.6},"do":{"type":"shield"}}]""");
 		ReflexActions.Held none = ReflexActions.Held.EMPTY;
 		java.util.function.IntFunction<ReflexActions.Held> empty = index -> none;
-		check(ReflexEngine.sleepsWithoutItem("default-arrow", ReflexActions.lacks(parsed.get(0).action(), empty, 0, none)), "no shield: the default arrow rule sleeps");
-		check(ReflexEngine.sleepsWithoutItem("default-eat", ReflexActions.lacks(parsed.get(1).action(), empty, 0, none)), "no food: the default eat rule sleeps");
-		check(!ReflexEngine.sleepsWithoutItem("default-creeper", ReflexActions.lacks(parsed.get(2).action(), empty, 0, none)), "sprinting away needs nothing");
-		check(!ReflexEngine.sleepsWithoutItem("my-arrow", ReflexActions.lacks(parsed.get(3).action(), empty, 0, none)), "the model's own rule still fires and reports");
-		check(!ReflexEngine.sleepsWithoutItem("default-arrow", ReflexActions.lacks(parsed.get(0).action(), empty, 0, held("minecraft:shield"))), "an offhand shield wakes it");
+		check(ReflexEngine.sleepsWithoutItem(parsed.get(0), ReflexActions.lacks(parsed.get(0).action(), empty, 0, none)), "no shield: the default arrow rule sleeps");
+		check(ReflexEngine.sleepsWithoutItem(parsed.get(1), ReflexActions.lacks(parsed.get(1).action(), empty, 0, none)), "no food: the default eat rule sleeps");
+		check(!ReflexEngine.sleepsWithoutItem(parsed.get(2), ReflexActions.lacks(parsed.get(2).action(), empty, 0, none)), "sprinting away needs nothing");
+		check(!ReflexEngine.sleepsWithoutItem(parsed.get(3), ReflexActions.lacks(parsed.get(3).action(), empty, 0, none)), "the model's own rule still fires and reports");
+		check(!ReflexEngine.sleepsWithoutItem(parsed.get(0), ReflexActions.lacks(parsed.get(0).action(), empty, 0, held("minecraft:shield"))), "an offhand shield wakes it");
 		java.util.function.IntFunction<ReflexActions.Held> bread = index -> index == 2 ? new ReflexActions.Held("minecraft:bread", true, false) : none;
-		check(!ReflexEngine.sleepsWithoutItem("default-eat", ReflexActions.lacks(parsed.get(1).action(), bread, 0, none)), "hotbar food wakes it");
+		check(!ReflexEngine.sleepsWithoutItem(parsed.get(1), ReflexActions.lacks(parsed.get(1).action(), bread, 0, none)), "hotbar food wakes it");
 		check(ReflexSpec.MAX_RULES == 22, "the mod holds the model's 12 rules plus the 10 defaults");
 	}
 

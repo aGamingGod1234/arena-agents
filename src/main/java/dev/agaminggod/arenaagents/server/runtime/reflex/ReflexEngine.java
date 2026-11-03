@@ -268,7 +268,7 @@ public final class ReflexEngine {
 			}
 			// A default rule sleeps while its action needs an item the body does not hold (no shield, no food), so a
 			// default shield or eat rule costs nothing and reports no failure until the item is there.
-			if (truth && sleepsWithoutItem(rule.id(), ReflexActions.lacks(player, rule.action()))) truth = false;
+			if (truth && sleepsWithoutItem(rule, ReflexActions.lacks(player, rule.action()))) truth = false;
 			boolean until = !rule.until().isEmpty();
 			for (ReflexSpec.Condition condition : rule.until()) {
 				if (!until) break;
@@ -515,7 +515,7 @@ public final class ReflexEngine {
 	}
 
 	/** A coordinator default rule whose action lacks its item (ReflexActions.lacks) does not fire; a model rule does. */
-	static boolean sleepsWithoutItem(String ruleId, String lacks) {
-		return lacks != null && ruleId != null && ruleId.startsWith(ReflexSpec.DEFAULT_RULE_PREFIX);
+	static boolean sleepsWithoutItem(ReflexSpec.Rule rule, String lacks) {
+		return rule.sleepsWithoutItem(lacks);
 	}
 }

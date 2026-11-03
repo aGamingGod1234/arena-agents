@@ -1,5 +1,6 @@
 [
 	{
+		"coordinatorDefault": true,
 		"id": "default-lava",
 		"kind": "trigger",
 		"priority": 9,
@@ -14,6 +15,7 @@
 		"ttlMs": 3600000
 	},
 	{
+		"coordinatorDefault": true,
 		"id": "default-fire",
 		"kind": "trigger",
 		"priority": 8,
@@ -28,6 +30,7 @@
 		"ttlMs": 3600000
 	},
 	{
+		"coordinatorDefault": true,
 		"id": "default-air",
 		"kind": "trigger",
 		"priority": 8,
@@ -43,6 +46,7 @@
 		"ttlMs": 3600000
 	},
 	{
+		"coordinatorDefault": true,
 		"id": "default-edge",
 		"kind": "stance",
 		"priority": 7,
@@ -60,6 +64,7 @@
 		"ttlMs": 3600000
 	},
 	{
+		"coordinatorDefault": true,
 		"id": "default-creeper",
 		"kind": "trigger",
 		"priority": 9,
@@ -76,6 +81,7 @@
 		"ttlMs": 3600000
 	},
 	{
+		"coordinatorDefault": true,
 		"id": "default-suffocate",
 		"kind": "trigger",
 		"priority": 9,
@@ -90,6 +96,7 @@
 		"ttlMs": 3600000
 	},
 	{
+		"coordinatorDefault": true,
 		"id": "default-fireball",
 		"kind": "trigger",
 		"priority": 8,
@@ -106,6 +113,7 @@
 		"ttlMs": 3600000
 	},
 	{
+		"coordinatorDefault": true,
 		"id": "default-arrow",
 		"kind": "trigger",
 		"priority": 7,
@@ -121,6 +129,7 @@
 		"ttlMs": 3600000
 	},
 	{
+		"coordinatorDefault": true,
 		"id": "default-retreat",
 		"kind": "trigger",
 		"priority": 7,
@@ -142,6 +151,7 @@
 		"ttlMs": 3600000
 	},
 	{
+		"coordinatorDefault": true,
 		"id": "default-eat",
 		"kind": "stance",
 		"priority": 3,
