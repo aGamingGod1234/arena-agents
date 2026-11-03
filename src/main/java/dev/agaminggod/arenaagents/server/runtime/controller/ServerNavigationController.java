@@ -1588,7 +1588,7 @@ public final class ServerNavigationController implements ServerController {
 				: state.getBlock() instanceof net.minecraft.world.level.block.FenceGateBlock;
 	}
 
-	/** One turn step toward the door with the feet still; a right-click once the crosshair is on it. True on the click. */
+	/** One turn step toward the door with the feet still; true when a right-click toggles its open state. */
 	private boolean clickDoor(ServerPlayer player, BlockPos door, long nowEpochMs) {
 		if (inputLease == null) {
 			inputController = AgentInputRuntime.controller(player);
@@ -1616,7 +1616,11 @@ public final class ServerNavigationController implements ServerController {
 		if (!player.level().mayInteract(player, hit.getBlockPos()) || doorClicks >= 3) return false;
 		doorClicks++;
 		doorCooldown = DOOR_CLICK_GAP;
-		return TravelBuilder.click(player, hit);
+		boolean wasOpen = player.level().getBlockState(hit.getBlockPos()).getValue(BlockStateProperties.OPEN);
+		// TravelBuilder.click reports adjacent placement, while a door click changes the hit block itself.
+		TravelBuilder.click(player, hit);
+		BlockState after = player.level().getBlockState(hit.getBlockPos());
+		return door(after) && after.getValue(BlockStateProperties.OPEN) != wasOpen;
 	}
 
 	private MinecraftNavigationWorld navigationWorld(ServerPlayer player) {
