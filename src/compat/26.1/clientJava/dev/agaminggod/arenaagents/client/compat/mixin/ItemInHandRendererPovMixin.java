@@ -7,6 +7,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.agaminggod.arenaagents.client.pov.PovClient;
 import dev.agaminggod.arenaagents.client.pov.PovHands;
 import dev.agaminggod.arenaagents.client.pov.PovHudProxy;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.ItemInHandRenderer;
@@ -43,7 +44,8 @@ abstract class ItemInHandRendererPovMixin {
 		}
 		AbstractClientPlayer agent = PovClient.agentPlayer();
 		if (agent == null || PovClient.handsHidden()) return;
-		original.call(renderer, agent, partialTick, pitch, hand, attack, stack, inverseArmHeight, poseStack, collector, light);
+		int agentLight = Minecraft.getInstance().getEntityRenderDispatcher().getPackedLightCoords(agent, partialTick);
+		original.call(renderer, agent, partialTick, pitch, hand, attack, stack, inverseArmHeight, poseStack, collector, agentLight);
 	}
 
 	@WrapOperation(method = "renderHandsWithItems", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getAttackAnim(F)F"))
