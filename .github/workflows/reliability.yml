@@ -40,6 +40,18 @@ jobs:
         if: runner.os == 'Linux'
         working-directory: coordinator
         run: node --test --test-timeout=60000 test/posix-process-wrapper.test.mjs test/provider-process-cleanup.test.mjs test/recovery-real-process.test.mjs
+      - name: Test reviewed coordinator regressions
+        if: runner.os == 'Linux'
+        working-directory: coordinator
+        run: >-
+          node --test --test-timeout=60000
+          test/body-overlap*.test.mjs
+          test/arena-script-function-identity.test.mjs
+          test/arena-script-facts-benchmark-*.test.mjs
+          test/model-owned-default-rules.test.mjs
+          test/live-body-benchmark-*.test.mjs
+          test/fight-steer-decision.test.mjs
+          test/default-reflexes.test.mjs
 
       - uses: actions/setup-java@v4
         if: runner.os == 'Linux'
@@ -80,6 +92,13 @@ jobs:
         run: ./scripts/fetch-libs.sh ${{ matrix.mc }}
       - name: Check, build and check mixin targets for ${{ matrix.mc }}
         run: ./gradlew -Pmc=${{ matrix.mc }} check build verifyMixinTargets --no-daemon --console=plain
+      - name: Test reviewed server harness and compatibility regressions
+        if: matrix.mc == '26.3'
+        run: |
+          python3 -B -m unittest discover -s scripts/tests -p 'test_*.py'
+          python3 -B -W ignore::ResourceWarning -m unittest discover -s scripts -p 'test_mixin_*.py'
+          python3 scripts/test-door-close.py
+          python3 -B -m unittest discover -s src/test/python -p 'test_*.py'
       - name: Boot a live ${{ matrix.mc }} server with the mod set
         run: python3 scripts/live-server.py --target ${{ matrix.mc }}
       - name: Upload the ${{ matrix.mc }} mod JAR
@@ -129,6 +148,7 @@ jobs:
         shell: powershell
         run: |
           .\scripts\test-minecraft-server-loopback-policy.ps1
+          .\scripts\test-runtime-target-isolation.ps1
           .\gradlew.bat clean check build packageWindowsDistribution --no-daemon --console=plain
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python -m unittest scripts.maps.tests.test_map_tools
