@@ -94,6 +94,38 @@ class Inbox {
 	}
 }
 
+// Server snapshots contain a bounded, cumulative event window, including older rule sets.
+// Keep every received event for this install; the staging sequence excludes pre-trial history.
+export function trackBenchmarkReflexes({ bridge, inbox, record }) {
+	let revision = 0, seen = 0;
+	const events = new Map();
+	bridge.on('observation', (event) => {
+		if (event.agentId !== record.agentId) return;
+		const observation = event.payload;
+		seen = Math.max(seen, observation.eventSequence ?? 0);
+		if (observation.reflexes?.revision !== revision) return;
+		// Terminal observations may carry final events even when ready is false.
+		for (const event of observation.reflexes.events ?? []) events.set(event.seq, event);
+	});
+	return {
+		begin(nextRevision) { revision = nextRevision; events.clear(); },
+		async status({ died = false } = {}) {
+			if (died) return null;
+			const after = seen;
+			const next = inbox.wait('observation', (event) => event.agentId === record.agentId
+				&& event.payload.eventSequence > after
+				&& (!event.payload.ready || event.payload.reflexes?.revision === revision), 10000).catch(() => null);
+			await bridge.send('request_observation', record.agentId, { goalRevision: record.goalRevision });
+			const status = (await next)?.payload?.reflexes;
+			return status?.revision === revision ? status : null;
+		},
+		firings(seqBefore) {
+			return [...events.values()].filter((event) => (event.seq ?? 0) > seqBefore)
+				.sort((a, b) => a.seq - b.seq).map((event) => `${event.id}:${event.outcome}`);
+		},
+	};
+}
+
 const number = (text) => { const match = /(-?[0-9.]+)[fdbs]?\s*$/.exec(text ?? ''); return match ? Number(match[1]) : null; };
 
 // Retry only setup failures, never gameplay outcomes. Three attempts bound a broken staging run.
@@ -101,10 +133,12 @@ export async function stageBenchmarkTrial({ scenario, rules, reset, install, ref
 	for (let attempt = 1; attempt <= 3; attempt++) {
 		await reset();
 		await install(rules);
-		const seqBefore = Math.max(0, ...((await reflexStatus())?.events ?? []).map((event) => event.seq ?? 0));
+		const status = await reflexStatus();
+		const seqBefore = Math.max(0, ...(status?.events ?? []).map((event) => event.seq ?? 0));
 		await sleep(500);
 		const startHealth = number(await command(`data get entity ${AGENT} Health`));
 		let reason = startHealth === 20 ? null : 'Reset must produce a live body at 20 HP';
+		if (!reason && !status) reason = 'Installed reflex status must be observed before staging';
 		let startFood = null, stagedSaturation = null, stagedHealth = null;
 		if (!reason) {
 			for (const step of scenario.setup) await (typeof step === 'number' ? sleep(step) : command(step));
@@ -162,15 +196,12 @@ async function main() {
 		await sleep(4000); // spawn invulnerability
 
 		let revision = 0;
-		const install = async (rules) => bridge.send('reflex_update', record.agentId, { revision: ++revision, rules: structuredClone(rules), yield: false });
-		let observation = null;
-		bridge.on('observation', (e) => { if (e.agentId === record?.agentId && e.payload.ready) observation = e.payload; });
-		const reflexStatus = async () => {
-			const seen = observation?.eventSequence ?? 0;
-			const next = inbox.wait('observation', (e) => e.agentId === record.agentId && e.payload.ready && e.payload.eventSequence > seen, 10000).catch(() => null);
-			await bridge.send('request_observation', record.agentId, { goalRevision: record.goalRevision });
-			return (await next)?.payload?.reflexes ?? null;
+		const reflexHistory = trackBenchmarkReflexes({ bridge, inbox, record });
+		const install = async (rules) => {
+			reflexHistory.begin(++revision);
+			await bridge.send('reflex_update', record.agentId, { revision, rules: structuredClone(rules), yield: false });
 		};
+		const reflexStatus = () => reflexHistory.status();
 		const alive = async () => { const health = number(await command(`data get entity ${AGENT} Health`)); return health !== null && health > 0; };
 		const reset = async () => {
 			if (!(await alive())) {
@@ -223,8 +254,8 @@ async function main() {
 					const row = { scenario: name, arm, trial, died, survivedMs, startHealth, stagedHealth, minHealth: died ? 0 : minHealth, endHealth,
 						healthLost: Math.max(0, (stagedHealth ?? 20) - (died ? 0 : endHealth ?? 0)), ...(scenario.measureFood ? { startFood, endFood } : {}),
 						...(scenario === SCENARIOS.low_health_zombie ? { stagedSaturation } : {}) };
-					const status = await reflexStatus();
-					row.firings = (status?.events ?? []).filter((event) => (event.seq ?? 0) > seqBefore).map((event) => `${event.id}:${event.outcome}`);
+					await reflexHistory.status({ died });
+					row.firings = reflexHistory.firings(seqBefore);
 					results.push(row);
 					console.log(JSON.stringify(row));
 				}
