@@ -15,7 +15,8 @@ public final class LeaveFireDouseRecoveryVerification {
 	}
 
 	public static int verify() throws Exception {
-		String source = Files.readString(Path.of("src/main/java/dev/agaminggod/arenaagents/server/runtime/reflex/ReflexActions.java"));
+		// A Windows checkout gives Java sources CRLF line endings; the anchors below are written with \n.
+		String source = Files.readString(Path.of("src/main/java/dev/agaminggod/arenaagents/server/runtime/reflex/ReflexActions.java")).replace("\r\n", "\n");
 		String leaveFire = source.substring(source.indexOf("static final class LeaveFire"));
 		String dispatch = between(leaveFire, "\t\t\tif (afterburn != null) {", "\t\t\tif (walk != null && hazard.equals");
 		String hold = between(leaveFire, "\t\tprivate Step holdBurning(", "\n\t\t/**\n\t\t * The exit among");
