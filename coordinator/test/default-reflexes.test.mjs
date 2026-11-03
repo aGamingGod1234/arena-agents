@@ -18,7 +18,7 @@ test('the default survival rules arm at spawn as canonical rules the mod accepts
 	// The defaults pass the same validation as a model's rules.
 	assert.deepEqual(sent.rules, normalizeReflexEntries(DEFAULT_REFLEXES.map(({ ttlMs, cooldownMs, ...rule }) => ({ ...rule, ttlS: ttlMs / 1_000, ...(cooldownMs === undefined ? {} : { cooldownS: cooldownMs / 1_000 }) }))));
 	assert.equal(book.observeContext('a', live()), false, 'an unchanged context sends nothing');
-	assert.match(book.takeReport('a'), /^armed default-lava, default-fire, default-air, default-edge\(stance\), default-creeper, default-suffocate, default-fireball, default-arrow, default-retreat, default-eat$/, 'the wake lists them by id, without their definitions');
+	assert.match(book.takeReport('a'), /^armed default-lava, default-fire, default-air, default-edge\(stance\), default-creeper, default-suffocate, default-fireball, default-arrow, default-retreat, default-eat\(stance\)$/, 'the wake lists them by id, without their definitions');
 });
 
 test('the model switches a default off by id until the next respawn or dimension change; "*" removes only its own rules', () => {

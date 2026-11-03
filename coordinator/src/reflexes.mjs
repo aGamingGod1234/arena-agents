@@ -33,8 +33,8 @@ export const DEFAULT_REFLEXES = Object.freeze([
 	// attackers: at 3 hearts with a hostile in reach, run. Rules that hold fire at once when an action bails out.
 	// Air and fire must interrupt a retreat already in progress: only a strictly higher priority preempts.
 	{ id: 'default-retreat', kind: 'trigger', priority: 7, when: [{ type: 'health_below', value: 7 }, { type: 'hostile_near', within: 6 }], do: { type: 'sprint_away', blocks: 10 }, cooldownMs: 5_000, ttlMs: 3_600_000 },
-	// Eats only with no hostile within 8 blocks: eating stands still for 1.6 s. Below 14 hunger is when a player tops up.
-	{ id: 'default-eat', kind: 'trigger', priority: 3, when: [{ type: 'hunger_below', value: 14 }, { type: 'hostile_near', within: 8, not: true }], do: { type: 'eat' }, cooldownMs: 20_000, ttlMs: 3_600_000 },
+	// Each firing eats one item. A stance retries after cooldown while hungry and releases if a hostile comes within 8 blocks.
+	{ id: 'default-eat', kind: 'stance', priority: 3, when: [{ type: 'hunger_below', value: 14 }, { type: 'hostile_near', within: 8, not: true }], do: { type: 'eat' }, cooldownMs: 20_000, ttlMs: 3_600_000 },
 ].map((rule) => Object.freeze(rule)));
 export const DEFAULT_REFLEX_IDS = Object.freeze(new Set(DEFAULT_REFLEXES.map((rule) => rule.id)));
 export const MAX_REFLEX_CONDITIONS = 4;
