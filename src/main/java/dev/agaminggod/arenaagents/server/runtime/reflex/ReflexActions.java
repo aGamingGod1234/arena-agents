@@ -2042,7 +2042,8 @@ final class ReflexActions {
 			}
 			if (afterburn != null) {
 				if (safeFooting(player)) {
-					if (!player.isOnFire()) return Step.done(afterburn + "; no longer burning");
+					// Water extinguishes before Place finishes aiming and scooping its source back.
+					if (douse == null && !player.isOnFire()) return Step.done(afterburn + "; no longer burning");
 					return holdBurning(afterburn, context, player, input);
 				}
 				// Shoved or slid off it, or the flow came on: get out again.

@@ -184,6 +184,7 @@ public final class VerificationMain {
 		passedAssertions += NodeRuntimeLocatorVerification.verify();
 		passedAssertions += CoordinatorLaunchPolicyVerification.verify();
 		passedAssertions += CoordinatorExhaustedStatusSnapshotVerification.verify();
+		passedAssertions += dev.agaminggod.arenaagents.server.runtime.reflex.LeaveFireDouseRecoveryVerification.verify();
 		passedAssertions += CoordinatorProcessOwnershipVerification.verify();
 		passedAssertions += CoordinatorStartupSmokeVerification.verify();
 		passedAssertions += CoordinatorVoiceTimeoutLifecycleVerification.verify();
