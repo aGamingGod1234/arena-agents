@@ -1043,7 +1043,8 @@ export class NativeToolRuntime {
 	/**
 	 * keepGoing: run the leg as asked; each time a leg succeeds with progress, the same leg starts again at once, so the
 	 * body keeps going while the model reads the result. The chain ends at the model's next body call, cancelAction,
-	 * replaceAction or after; at a leg that fails, is interrupted or makes no progress; or after MAX_KEEP_GOING_LEGS.
+	 * replaceAction or after; at a leg that sees its requested target, fails, is interrupted or makes no progress;
+	 * or after MAX_KEEP_GOING_LEGS.
 	 */
 	async #executeKeepGoing(request, record, lifecycleGeneration) {
 		const { keepGoing: _keepGoing, ...tool } = request.tool;
@@ -1085,6 +1086,8 @@ export class NativeToolRuntime {
 			this.#trace('native_keep_going_stopped', { agentId, goalRevision: chain.goalRevision, actionId: previous.actionId, legs: chain.legs, reason });
 		};
 		if (outcome?.state !== 'SUCCEEDED') return stop(outcome?.state ?? 'UNKNOWN');
+		// Seeing the requested landmark completes the whole trip, even when this leg made progress.
+		if (outcome.reasonCode === 'TARGET_SEEN') return stop(outcome.reasonCode);
 		if (previous.interruptedBy !== undefined) return stop('INTERRUPTED');
 		if (chain.legs >= MAX_KEEP_GOING_LEGS) return stop('LEG_LIMIT');
 		const from = previous.startPosition?.position;
