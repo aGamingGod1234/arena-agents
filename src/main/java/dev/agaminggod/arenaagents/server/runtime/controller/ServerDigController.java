@@ -282,7 +282,8 @@ public final class ServerDigController implements ServerController {
 			started = true;
 			startY = player.blockPosition().getY();
 			lastHealth = player.getHealth();
-			if (heading == null && targetX == null && targetZ == null) heading = player.getDirection();
+			// A same-column x/z goal has no bearing; plan() still steers toward any horizontal displacement.
+			if (heading == null) heading = player.getDirection();
 			// Already falling when the call starts (a drop the last call began): the landing is not this call's surprise.
 			if (!player.onGround() && player.fallDistance > 0.0F) plannedFall = player.getHealth();
 			// A shaft drops the body through every floor it breaks; a player digs one only with water in hand for the fall
