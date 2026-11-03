@@ -16,16 +16,32 @@ def phase(name):
 
 
 phase(f"bootstrap executable={sys.executable!r} version={sys.version!r}")
-# Arm before the remaining imports so startup stalls also leave a traceback.
+# Distinguish watchdog startup from stdlib imports if native startup stalls.
+phase("arm watchdog")
 faulthandler.dump_traceback_later(8, file=_DIAGNOSTIC_STDERR)
+phase("watchdog armed")
 
+phase("import base64")
 import base64
+phase("import base64 complete")
+phase("import contextlib")
 import contextlib
+phase("import contextlib complete")
+phase("import importlib.util")
 import importlib.util
+phase("import importlib.util complete")
+phase("import json")
 import json
+phase("import json complete")
+phase("import pathlib")
 from pathlib import Path
+phase("import pathlib complete")
+phase("import threading")
 import threading
+phase("import threading complete")
+phase("import types")
 import types
+phase("import types complete")
 
 
 class InferenceTracker:

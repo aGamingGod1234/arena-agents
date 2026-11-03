@@ -27,6 +27,10 @@ jobs:
           node-version: '22'
           cache: npm
           cache-dependency-path: coordinator/package-lock.json
+      # Match the explicit Python runtime used by Windows packaging tests.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
       - name: Install locked coordinator dependencies
         working-directory: coordinator
         run: npm ci --ignore-scripts --omit=dev
