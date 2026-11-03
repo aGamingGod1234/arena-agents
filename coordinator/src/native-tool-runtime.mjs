@@ -861,6 +861,7 @@ export class NativeToolRuntime {
 		}
 		if (request.tool.kind === 'cancel_action') return this.#cancelAction(record, request.tool);
 		if (request.tool.kind === 'notebook' || request.tool.kind === 'query_memory' || request.tool.kind === 'task_memory') return this.#memory(request, record);
+		if (request.tool.after !== undefined) return this.#executeAfter(request, record, lifecycleGeneration);
 		if (request.tool.kind === 'action' && request.tool.actionType === 'chat') return this.#executeAction(request, record, request.tool);
 		if (request.tool.kind === 'replace_action') {
 			const rejected = this.#operationRejection(record, request.tool);
@@ -872,7 +873,6 @@ export class NativeToolRuntime {
 			if (previous !== null) return this.#startReplacementAsNewAction(request, record, previous, { pausedProgram });
 			return this.#withBlockingToolRun(record, run => this.#replaceAction(request, record, run));
 		}
-		if (request.tool.after !== undefined) return this.#executeAfter(request, record, lifecycleGeneration);
 		// keepGoing runs until the model's reply: its next body call stops the running leg first, then runs as asked.
 		// Only an unanswered leg awaits here, so every other call keeps its exact dispatch timing.
 		const endedLeg = this.#legChainOwnsBody(record, request.tool) ? await this.#endLegChainForReply(record, request.tool) : null;
