@@ -30,11 +30,17 @@
     "low_health_zombie": "The body is at 6 HP (3 hearts), with no saturation left to heal fast, beside a zombie 2.5 blocks away."
   },
   "validity": {
-    "status": "invalid-for-zombie-comparison",
+    "status": "invalid-for-arm-comparisons",
     "reviewedAt": "2026-11-03",
     "freshTrialsRun": false,
-    "reason": "Zombie staging was not validated before timing. One original4 trial started dead; other trials started below the promised 6 HP. Both zombie summaries are invalid as evidence for the stated comparison. Historical results and aggregate numbers are retained unchanged, not corrected measurements.",
+    "reason": "Zombie staging was not validated before timing. One original4 trial started dead; other trials started below the promised 6 HP. Both zombie summaries are invalid as evidence for the stated comparison. Historical results and aggregate numbers are retained unchanged, not corrected measurements. Terrain was also not restored between trials: creeper craters could alter later arms and scenarios. Every paired summary is invalid as controlled comparison evidence; the size or effect of any historical crater was not measured.",
     "affectedSummaries": [
+      "creeper/original4",
+      "creeper/current10",
+      "skeleton_arrows/original4",
+      "skeleton_arrows/current10",
+      "hungry/original4",
+      "hungry/current10",
       "low_health_zombie/original4",
       "low_health_zombie/current10"
     ],
@@ -65,32 +71,46 @@
         "stagedHealth": 0
       }
     ],
-    "remainingEvidenceGap": "Run new paired live trials with validated 20 HP reset, 6 HP staged health and zero saturation. Historical saturation was not recorded; no corrected survival comparison is available."
+    "remainingEvidenceGap": "Run new paired live trials with validated 20 HP reset, 6 HP staged health and zero saturation. Historical saturation was not recorded; no corrected survival comparison is available. Rerun all arms/scenarios with restored support layers and verified supported starting positions; no corrected terrain-controlled comparison is available.",
+    "terrainReset": {
+      "status": "invalid",
+      "reason": "Only air above the floor was reset; mob block destruction was enabled and the grass/dirt support layers were not restored. Trial-order terrain contamination cannot be excluded.",
+      "freshTrialsRun": false,
+      "historicalCraterDimensionsMeasured": false
+    }
   },
   "summary": {
     "creeper/original4": {
       "trials": 6,
       "deaths": 0,
       "meanHealthLost": 8,
-      "meanSurvivedS": 8
+      "meanSurvivedS": 8,
+      "validity": "invalid",
+      "reason": "Terrain was not reset after explosions; retained aggregates do not establish a controlled arm comparison."
     },
     "creeper/current10": {
       "trials": 6,
       "deaths": 2,
       "meanHealthLost": 10.4,
-      "meanSurvivedS": 6.5
+      "meanSurvivedS": 6.5,
+      "validity": "invalid",
+      "reason": "Terrain was not reset after explosions; retained aggregates do not establish a controlled arm comparison."
     },
     "skeleton_arrows/original4": {
       "trials": 6,
       "deaths": 0,
       "meanHealthLost": 2.7,
-      "meanSurvivedS": 10
+      "meanSurvivedS": 10,
+      "validity": "invalid",
+      "reason": "Terrain was not reset after explosions; retained aggregates do not establish a controlled arm comparison."
     },
     "skeleton_arrows/current10": {
       "trials": 6,
       "deaths": 0,
       "meanHealthLost": 2.8,
-      "meanSurvivedS": 10
+      "meanSurvivedS": 10,
+      "validity": "invalid",
+      "reason": "Terrain was not reset after explosions; retained aggregates do not establish a controlled arm comparison."
     },
     "hungry/original4": {
       "trials": 6,
@@ -98,7 +118,9 @@
       "meanHealthLost": 0,
       "meanEndFood": 2.3,
       "eats": 0,
-      "meanSurvivedS": 12
+      "meanSurvivedS": 12,
+      "validity": "invalid",
+      "reason": "Terrain was not reset after explosions; retained aggregates do not establish a controlled arm comparison."
     },
     "hungry/current10": {
       "trials": 6,
@@ -106,11 +128,13 @@
       "meanHealthLost": 0,
       "meanEndFood": 10.8,
       "eats": 6,
-      "meanSurvivedS": 12
+      "meanSurvivedS": 12,
+      "validity": "invalid",
+      "reason": "Terrain was not reset after explosions; retained aggregates do not establish a controlled arm comparison."
     },
     "low_health_zombie/original4": {
       "validity": "invalid",
-      "reason": "Unvalidated starting conditions; retained aggregates are historical and do not support the stated 6 HP comparison.",
+      "reason": "Unvalidated starting conditions; retained aggregates are historical and do not support the stated 6 HP comparison. Terrain was not reset after explosions; retained aggregates do not establish a controlled arm comparison.",
       "trials": 6,
       "deaths": 6,
       "meanHealthLost": 4.5,
@@ -118,7 +142,7 @@
     },
     "low_health_zombie/current10": {
       "validity": "invalid",
-      "reason": "Unvalidated starting conditions; retained aggregates are historical and do not support the stated 6 HP comparison.",
+      "reason": "Unvalidated starting conditions; retained aggregates are historical and do not support the stated 6 HP comparison. Terrain was not reset after explosions; retained aggregates do not establish a controlled arm comparison.",
       "trials": 6,
       "deaths": 6,
       "meanHealthLost": 4.8,

@@ -180,13 +180,23 @@ async function main() {
 				await sleep(3500); // spawn invulnerability
 			}
 			await command(`kill @e[type=!minecraft:player,distance=..64,x=${X},y=${Y},z=${Z}]`);
-			await command(`fill ${Math.floor(X) - 16} ${Y} ${Math.floor(Z) - 16} ${Math.floor(X) + 16} ${Y + 4} ${Math.floor(Z) + 16} minecraft:air`);
+			// Rebuild the generated flat-world layers, including the approach/escape area.
+			// Clearing air alone leaves earlier creeper craters below the body's feet.
+			const x0 = Math.floor(X) - 48, x1 = Math.floor(X) + 48;
+			const z0 = Math.floor(Z) - 48, z1 = Math.floor(Z) + 48;
+			for (const [bottom, top, block] of [[Y - 4, Y - 4, 'bedrock'], [Y - 3, Y - 2, 'dirt'], [Y - 1, Y - 1, 'grass_block'],
+				[Y, Y + 2, 'air'], [Y + 3, Y + 4, 'air']]) {
+				// Split headroom fills to stay below the vanilla 32,768-block command limit.
+				await command(`fill ${x0} ${bottom} ${z0} ${x1} ${top} ${z1} minecraft:${block}`);
+			}
 			await command(`tp ${AGENT} ${X} ${Y} ${Z} 90 0`);
 			await command(`clear ${AGENT}`);
 			await command(`effect clear ${AGENT}`);
 			await command(`effect give ${AGENT} minecraft:instant_health 1 10 true`);
 			await command(`effect give ${AGENT} minecraft:saturation 1 20 true`);
 			await sleep(1500);
+			const supportedY = number(await command(`execute positioned ${X} ${Y} ${Z} if entity @a[name=${AGENT},distance=..0.01] if block ~ ~-1 ~ minecraft:grass_block if block ~ ~ ~ minecraft:air if block ~ ~1 ~ minecraft:air run data get entity ${AGENT} Pos[1]`));
+			if (supportedY !== Y) throw new Error('Reset must produce the supported benchmark position before staging');
 		};
 		scenarios: for (const name of chosen) {
 			const scenario = SCENARIOS[name];
