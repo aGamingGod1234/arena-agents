@@ -29,6 +29,44 @@
     "hungry": "Hunger drained below 14 of 20 with cooked beef in the hotbar and no hostile near.",
     "low_health_zombie": "The body is at 6 HP (3 hearts), with no saturation left to heal fast, beside a zombie 2.5 blocks away."
   },
+  "validity": {
+    "status": "invalid-for-zombie-comparison",
+    "reviewedAt": "2026-11-03",
+    "freshTrialsRun": false,
+    "reason": "Zombie staging was not validated before timing. One original4 trial started dead; other trials started below the promised 6 HP. Both zombie summaries are invalid as evidence for the stated comparison. Historical results and aggregate numbers are retained unchanged, not corrected measurements.",
+    "affectedSummaries": [
+      "low_health_zombie/original4",
+      "low_health_zombie/current10"
+    ],
+    "observedInvalidStarts": [
+      {
+        "arm": "original4",
+        "trial": 2,
+        "stagedHealth": 2.833334
+      },
+      {
+        "arm": "current10",
+        "trial": 2,
+        "stagedHealth": 3.5
+      },
+      {
+        "arm": "current10",
+        "trial": 4,
+        "stagedHealth": 3.5
+      },
+      {
+        "arm": "current10",
+        "trial": 5,
+        "stagedHealth": 3.5
+      },
+      {
+        "arm": "original4",
+        "trial": 5,
+        "stagedHealth": 0
+      }
+    ],
+    "remainingEvidenceGap": "Run new paired live trials with validated 20 HP reset, 6 HP staged health and zero saturation. Historical saturation was not recorded; no corrected survival comparison is available."
+  },
   "summary": {
     "creeper/original4": {
       "trials": 6,
@@ -71,12 +109,16 @@
       "meanSurvivedS": 12
     },
     "low_health_zombie/original4": {
+      "validity": "invalid",
+      "reason": "Unvalidated starting conditions; retained aggregates are historical and do not support the stated 6 HP comparison.",
       "trials": 6,
       "deaths": 6,
       "meanHealthLost": 4.5,
       "meanSurvivedS": 3.5
     },
     "low_health_zombie/current10": {
+      "validity": "invalid",
+      "reason": "Unvalidated starting conditions; retained aggregates are historical and do not support the stated 6 HP comparison.",
       "trials": 6,
       "deaths": 6,
       "meanHealthLost": 4.8,

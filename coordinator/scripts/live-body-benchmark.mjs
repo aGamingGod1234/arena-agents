@@ -35,7 +35,7 @@ const ARMS = {
 };
 
 // Each scenario stages one danger on a fresh, full-health survival body and watches it for durationMs.
-const SCENARIOS = {
+export const SCENARIOS = {
 	creeper: {
 		about: 'A creeper 3 blocks away walks in and lights its 1.5 s fuse.',
 		durationMs: 8000,
@@ -96,6 +96,41 @@ class Inbox {
 
 const number = (text) => { const match = /(-?[0-9.]+)[fdbs]?\s*$/.exec(text ?? ''); return match ? Number(match[1]) : null; };
 
+// Retry only setup failures, never gameplay outcomes. Three attempts bound a broken staging run.
+export async function stageBenchmarkTrial({ scenario, rules, reset, install, reflexStatus, command, sleep, onRejected }) {
+	for (let attempt = 1; attempt <= 3; attempt++) {
+		await reset();
+		await install(rules);
+		const seqBefore = Math.max(0, ...((await reflexStatus())?.events ?? []).map((event) => event.seq ?? 0));
+		await sleep(500);
+		const startHealth = number(await command(`data get entity ${AGENT} Health`));
+		let reason = startHealth === 20 ? null : 'Reset must produce a live body at 20 HP';
+		let startFood = null, stagedSaturation = null, stagedHealth = null;
+		if (!reason) {
+			for (const step of scenario.setup) await (typeof step === 'number' ? sleep(step) : command(step));
+			if (scenario.settleMs) await sleep(scenario.settleMs);
+			startFood = number(await command(`data get entity ${AGENT} foodLevel`));
+			if (scenario === SCENARIOS.low_health_zombie) {
+				stagedSaturation = number(await command(`data get entity ${AGENT} foodSaturationLevel`));
+			}
+			// Read health last, immediately before the caller starts the survival timer.
+			stagedHealth = number(await command(`data get entity ${AGENT} Health`));
+			if (!Number.isFinite(stagedHealth) || stagedHealth <= 0) reason = 'Staged body must be alive';
+			if (scenario === SCENARIOS.low_health_zombie) {
+				if (stagedHealth !== 6) reason = 'Zombie setup must start at 6 HP';
+				else if (stagedSaturation !== 0) reason = 'Zombie setup must have zero saturation';
+			}
+			if (scenario.measureFood && (!Number.isFinite(startFood) || startFood >= 14 || startFood < 0)) {
+				reason = 'Hungry setup must start with food below 14';
+			}
+		}
+		const state = { startHealth, startFood, stagedHealth, stagedSaturation, seqBefore };
+		if (!reason) return state;
+		onRejected({ attempt, ...state, reason });
+	}
+	return null;
+}
+
 async function main() {
 	const { child, info } = await startServer();
 	const rcon = new HeadlessRconClient({ host: '127.0.0.1', port: info.rconPort, password: info.rconPassword, commandTimeoutMs: 10000 });
@@ -107,7 +142,8 @@ async function main() {
 	bridge.on('goal_spec_request', (event) => {
 		bridge.send('goal_spec_proposal', event.agentId, { requestId: event.payload.requestId, summary: 'Live body benchmark', predicate: { type: 'survive_duration', ticks: 1_200_000 } }).catch(() => {});
 	});
-	const results = [];
+	const results = [], setupFailures = [];
+	let incomplete = false;
 	try {
 		const ready = inbox.wait('ready', () => true, 120000);
 		bridge.start();
@@ -152,20 +188,18 @@ async function main() {
 			await command(`effect give ${AGENT} minecraft:saturation 1 20 true`);
 			await sleep(1500);
 		};
-		for (const name of chosen) {
+		scenarios: for (const name of chosen) {
 			const scenario = SCENARIOS[name];
 			for (let trial = 0; trial < trials; trial++) {
 				for (const arm of trial % 2 === 0 ? ['original4', 'current10'] : ['current10', 'original4']) {
-					await reset();
-					await install(ARMS[arm]);
-					const seqBefore = Math.max(0, ...((await reflexStatus())?.events ?? []).map((event) => event.seq ?? 0));
-					await sleep(500);
-					const startHealth = number(await command(`data get entity ${AGENT} Health`));
-					for (const step of scenario.setup) await (typeof step === 'number' ? sleep(step) : command(step));
-					if (scenario.settleMs) await sleep(scenario.settleMs);
-					const startFood = number(await command(`data get entity ${AGENT} foodLevel`));
-					// Health once the danger is staged: the zombie scenario deals its own 14 first.
-					const stagedHealth = number(await command(`data get entity ${AGENT} Health`));
+					const staged = await stageBenchmarkTrial({ scenario, rules: ARMS[arm], reset, install, reflexStatus, command, sleep,
+						onRejected: (failure) => {
+							const row = { scenario: name, arm, trial, ...failure };
+							setupFailures.push(row);
+							console.error(JSON.stringify({ setupFailure: row }));
+						} });
+					if (!staged) { incomplete = true; break scenarios; }
+					const { startHealth, startFood, stagedHealth, stagedSaturation, seqBefore } = staged;
 					let minHealth = stagedHealth, died = false, survivedMs = scenario.durationMs;
 					const began = Date.now(), deadline = began + scenario.durationMs;
 					while (Date.now() < deadline) {
@@ -177,7 +211,8 @@ async function main() {
 					const endHealth = died ? 0 : number(await command(`data get entity ${AGENT} Health`));
 					const endFood = died ? null : number(await command(`data get entity ${AGENT} foodLevel`));
 					const row = { scenario: name, arm, trial, died, survivedMs, startHealth, stagedHealth, minHealth: died ? 0 : minHealth, endHealth,
-						healthLost: Math.max(0, (stagedHealth ?? 20) - (died ? 0 : endHealth ?? 0)), ...(scenario.measureFood ? { startFood, endFood } : {}) };
+						healthLost: Math.max(0, (stagedHealth ?? 20) - (died ? 0 : endHealth ?? 0)), ...(scenario.measureFood ? { startFood, endFood } : {}),
+						...(scenario === SCENARIOS.low_health_zombie ? { stagedSaturation } : {}) };
 					const status = await reflexStatus();
 					row.firings = (status?.events ?? []).filter((event) => (event.seq ?? 0) > seqBefore).map((event) => `${event.id}:${event.outcome}`);
 					results.push(row);
@@ -200,12 +235,13 @@ async function main() {
 				eats: rows.reduce((count, row) => count + row.firings.filter((firing) => firing === 'default-eat:done').length, 0) } : {}),
 			meanSurvivedS: mean(rows.map((row) => row.survivedMs / 1000)) };
 	}
-	const report = { kind: 'provider-free live body benchmark', minecraftVersion: info.minecraftVersion, target: info.target, trialsPerArm: trials,
+	const report = { kind: 'provider-free live body benchmark', status: incomplete ? 'incomplete-invalid-setup' : 'complete', setupFailures, minecraftVersion: info.minecraftVersion, target: info.target, trialsPerArm: trials,
 		arms: Object.fromEntries(Object.entries(ARMS).map(([name, rules]) => [name, rules.map((rule) => rule.id)])),
 		scenarios: Object.fromEntries(chosen.map((name) => [name, SCENARIOS[name].about])), summary, results };
 	await mkdir(path.dirname(options.out), { recursive: true });
 	await writeFile(options.out, JSON.stringify(report, null, 2));
 	console.table(summary);
+	if (incomplete) process.exitCode = 1;
 }
 
-await main();
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) await main();
