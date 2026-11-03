@@ -53,8 +53,12 @@ class Rcon:
     def __init__(self, port, password, timeout=30):
         self.socket = socket.create_connection(('127.0.0.1', port), timeout=timeout)
         self.request = 0
-        if self._send(3, password) == -1:
-            raise RuntimeError('RCON login was refused')
+        try:
+            if self._send(3, password) == -1:
+                raise RuntimeError('RCON login was refused')
+        except Exception:
+            self.socket.close()
+            raise
 
     def _packet(self):
         def read(count):
@@ -140,15 +144,24 @@ class LiveServer:
         extra = [f'-PserverJvmArgs={json.dumps(self.jvm_args)}'] if self.jvm_args else []
         self.process = subprocess.Popen(self._gradle(':runServer', f'-PserverRunDir={relative}', *extra, '--args=nogui'),
                                         cwd=ROOT, stdout=self.log, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL)
-        deadline = time.time() + timeout
-        while time.time() < deadline:
+        deadline = time.monotonic() + timeout
+        while time.monotonic() < deadline:
             text = self.read_log()
             if re.search(r' Done \([0-9.]+s\)! For help', text):
-                self.rcon = Rcon(self.rcon_port, self.password)
-                return self
+                remaining = deadline - time.monotonic()
+                if remaining <= 0:
+                    break
+                try:
+                    # Minecraft logs Done before starting RCON. Keep polling until login succeeds.
+                    self.rcon = Rcon(self.rcon_port, self.password, timeout=min(1, remaining))
+                except OSError:
+                    pass
+                else:
+                    self.rcon.socket.settimeout(30)
+                    return self
             if self.process.poll() is not None:
                 raise RuntimeError(f'server exited with {self.process.returncode} before it was ready; see {self.log_path}')
-            time.sleep(1)
+            time.sleep(min(1, max(0, deadline - time.monotonic())))
         raise TimeoutError(f'server was not ready in {timeout} s; see {self.log_path}')
 
     def read_log(self):
