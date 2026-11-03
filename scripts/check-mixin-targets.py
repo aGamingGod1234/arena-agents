@@ -117,17 +117,34 @@ def at_target_values(source):
     tokens = [m.group() for m in re.finditer(
         r'//[^\n]*|/\*[\s\S]*?\*/|"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'|[\w$]+|[^\s]', source)
         if not m.group().startswith(('//', '/*'))]
+    # Only class fields are candidates; locals and sibling classes cannot bind an annotation reference.
+    class_bodies = set()
+    for i, token in enumerate(tokens[:-1]):
+        if token in ('class', 'interface', 'enum', 'record') and (i == 0 or tokens[i - 1] != '.') \
+                and re.fullmatch(r'[\w$]+', tokens[i + 1]):
+            opening = next((j for j in range(i + 2, len(tokens)) if tokens[j] == '{'), None)
+            if opening is not None:
+                class_bodies.add(opening)
+    scopes, braces = [], []
+    for i, token in enumerate(tokens):
+        scopes.append(tuple(braces))
+        if token == '{':
+            braces.append(i)
+        elif token == '}' and braces:
+            braces.pop()
     constants = {}
     for i in range(len(tokens) - 4):
-        if tokens[i:i + 2] == ['final', 'String'] and tokens[i + 3] == '=':
+        if tokens[i:i + 2] == ['final', 'String'] and tokens[i + 3] == '=' \
+                and scopes[i] and scopes[i][-1] in class_bodies:
             end = i + 4
             while end < len(tokens) and tokens[end] != ';':
                 end += 1
             name = tokens[i + 2]
-            # Ambiguous declarations (e.g. nested classes) must not pick an arbitrary value.
-            constants[name] = None if name in constants else tokens[i + 4:end]
+            scope = tuple(body for body in scopes[i] if body in class_bodies)
+            key = (scope, name)
+            constants[key] = None if key in constants else tokens[i + 4:end]
 
-    def evaluate(parts, active=frozenset()):
+    def evaluate(parts, scope, active=frozenset()):
         index = 0
 
         def expression():
@@ -155,11 +172,13 @@ def at_target_values(source):
                     return json.loads(token)
                 except ValueError:
                     raise ValueError('unsupported string literal escape') from None
-            if token in active:
+            key = next(((scope[:size], token) for size in range(len(scope), 0, -1)
+                        if (scope[:size], token) in constants), None)
+            if key in active:
                 raise ValueError(f'cyclic constant {token}')
-            if token not in constants or constants[token] is None:
+            if key is None or constants[key] is None:
                 raise ValueError(f'unknown or ambiguous constant {token}')
-            return evaluate(constants[token], active | {token})
+            return evaluate(constants[key], key[0], active | {key})
 
         value = expression()
         if index != len(parts):
@@ -194,7 +213,8 @@ def at_target_values(source):
                     j += 1
                 parts = tokens[start:j]
                 try:
-                    yield evaluate(parts), None
+                    scope = tuple(body for body in scopes[i] if body in class_bodies)
+                    yield evaluate(parts, scope), None
                 except ValueError as error:
                     yield None, f"unsupported @At target expression {' '.join(parts)}: {error}"
                 continue

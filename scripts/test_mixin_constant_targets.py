@@ -74,6 +74,35 @@ class ConstantTargetsTest(unittest.TestCase):
 
 
 class ConstantTargetsCliTest(unittest.TestCase):
+    def test_imported_target_cannot_resolve_an_unrelated_local_constant(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = pathlib.Path(directory)
+            source = root / 'Hands.java'
+            source.write_text('''package fixture;
+import static fixture.External.ARM;
+@Mixin(targets = "fixture.Renderer") class Hands {
+    @Inject(method = "draw", at = @At(target = ARM)) void hook() {}
+    void helper() { final String ARM = "Lfixture/Renderer;arm()V"; }
+}
+class Renderer { void draw() {} void arm() {} }
+@interface Mixin { String targets(); }
+@interface Inject { String method(); At at(); }
+@interface At { String target(); }
+''')
+            classes = root / 'classes'
+            external = root / 'External.java'
+            external.write_text('package fixture; class External { static final String ARM = "Lfixture/Renderer;missing()V"; }')
+            subprocess.run(['javac', '-d', str(classes), str(source), str(external)], check=True, capture_output=True)
+            compiled = subprocess.run(['javap', '-v', '-p', '-cp', str(classes), 'fixture.Hands'],
+                                      check=True, capture_output=True, text=True).stdout
+            self.assertIn('target="Lfixture/Renderer;missing()V"', compiled)
+            jar = root / 'fixture.jar'
+            subprocess.run(['jar', '--create', '--file', str(jar), '-C', str(classes), '.'], check=True, capture_output=True)
+            with patch.object(checker, 'configs', return_value=['fixture.Hands']), \
+                    patch.object(checker, 'source_for', return_value=str(source)):
+                _, problems = checker.check(checker.Jar([str(jar)], 'javap'), 'fixture')
+            self.assertTrue(any('unsupported @At target expression' in p for p in problems), problems)
+
     def test_real_jar_and_cli_exit_status(self):
         with tempfile.TemporaryDirectory() as directory:
             root = pathlib.Path(directory)
