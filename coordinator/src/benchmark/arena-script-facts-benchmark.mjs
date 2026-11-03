@@ -9,11 +9,12 @@
 import { createHash } from 'node:crypto';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import path from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
-const root = path.resolve(process.argv[2] ?? path.join(path.dirname(new URL(import.meta.url).pathname), '../..'));
+const moduleDirectory = path.dirname(fileURLToPath(import.meta.url));
+const root = path.resolve(process.argv[2] ?? path.join(moduleDirectory, '../..'));
 const ROUNDS = Number(process.argv[3] ?? 7);
-const fixtures = path.resolve(path.dirname(new URL(import.meta.url).pathname), '../../test/fixtures/decision-eval');
+const fixtures = path.resolve(moduleDirectory, '../../test/fixtures/decision-eval');
 const imp = (rel) => import(pathToFileURL(path.join(root, rel)).href);
 const { createInterpreterFacts } = await imp('src/arena-script/facts.mjs');
 const { ArenaScriptInterpreter } = await imp('src/arena-script/interpreter.mjs');
