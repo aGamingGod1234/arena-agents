@@ -57,8 +57,8 @@ export const SCENARIOS = {
 	low_health_zombie: {
 		about: 'The body is at 6 HP (3 hearts), with no saturation left to heal fast, beside a zombie 2.5 blocks away.',
 		durationMs: 10000,
-		// A short strong hunger burns the saturation (and some food), so neither arm out-heals the zombie for free.
-		setup: [`effect give ${AGENT} minecraft:hunger 2 250 true`, 2500, `damage ${AGENT} 14 minecraft:generic`,
+		// The two-second drain left 7-8 saturation in live checks. Use the proven full drain and let it expire before injury.
+		setup: [`effect give ${AGENT} minecraft:hunger 6 250 true`, 6500, `damage ${AGENT} 14 minecraft:generic`,
 			`summon minecraft:zombie ${X + 2.5} ${Y} ${Z} {PersistenceRequired:1b}`],
 	},
 };
@@ -185,7 +185,7 @@ async function main() {
 		await ready;
 		await bridge.send('catalog_snapshot', 'server', { refreshedAtEpochMs: Date.now(), models: [{ provider: 'codex', model: MODEL, id: MODEL, displayName: 'Provider-free benchmark body', reasoningEfforts: ['low'], serviceTiers: ['priority'] }] });
 		for (const setup of ['gamerule minecraft:send_command_feedback false', 'gamerule minecraft:spawn_mobs false', 'gamerule minecraft:advance_time false',
-			'difficulty normal', 'time set 18000', 'weather clear', `forceload add ${X - 48} ${Z - 48} ${X + 48} ${Z + 48}`]) await command(setup);
+			'difficulty normal', 'time set 18000', 'weather clear', `forceload add ${Math.floor(X) - 48} ${Math.floor(Z) - 48} ${Math.floor(X) + 48} ${Math.floor(Z) + 48}`]) await command(setup);
 		await sleep(2000);
 		const registered = inbox.wait('agent_registered');
 		await command(`execute positioned ${X} ${Y} ${Z} run codex summon ${MODEL} low ${AGENT}`);
@@ -205,13 +205,20 @@ async function main() {
 		const reflexStatus = () => reflexHistory.status();
 		const alive = async () => { const health = number(await command(`data get entity ${AGENT} Health`)); return health !== null && health > 0; };
 		const reset = async () => {
+			// Remove the previous trial's threat before waiting out respawn protection.
+			await command(`kill @e[type=!minecraft:player,distance=..64,x=${X},y=${Y},z=${Z}]`);
+			// The selector above was resolved before killed mobs produced their loot.
+			await command(`kill @e[type=minecraft:item,distance=..64,x=${X},y=${Y},z=${Z}]`);
 			if (!(await alive())) {
 				await command(`codex respawn ${AGENT}`);
 				for (let i = 0; i < 40 && !(await alive()); i++) await sleep(500);
 				await command(`gamemode survival ${AGENT}`);
 				await sleep(3500); // spawn invulnerability
 			}
-			await command(`kill @e[type=!minecraft:player,distance=..64,x=${X},y=${Y},z=${Z}]`);
+			// Replacing rules ends their input leases; no previous firing may steer the reset.
+			await install([]);
+			const idle = await reflexStatus();
+			if (!idle || idle.firing || idle.rules?.length !== 0) throw new Error('Reset must observe an idle, empty reflex set');
 			// Rebuild the generated flat-world layers, including the approach/escape area.
 			// Clearing air alone leaves earlier creeper craters below the body's feet.
 			const x0 = Math.floor(X) - 48, x1 = Math.floor(X) + 48;

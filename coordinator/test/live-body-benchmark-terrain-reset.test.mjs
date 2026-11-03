@@ -6,13 +6,16 @@ import * as benchmark from '../scripts/live-body-benchmark.mjs';
 
 // Exercise the actual reset entry point without launching a server. The block model
 // starts with blast holes in both the spawn floor and the hostile/escape area.
-async function fixture({ geometryResponse = 'Bench has the following entity data: -60.0d' } = {}) {
+async function fixture({ geometryResponse = 'Bench has the following entity data: -60.0d', dead = false,
+	idle = { rules: [] } } = {}) {
 	const source = await readFile(new URL('../scripts/live-body-benchmark.mjs', import.meta.url), 'utf8');
 	const resetSource = source.match(/const reset = async \(\) => \{([\s\S]*?)\n\t\t\};/)[1];
 	const blocks = new Map(), commands = [];
+	let alive = !dead;
 	const key = (x, y, z) => `${x},${y},${z}`;
 	const command = async (text) => {
 		commands.push(text);
+		if (text === 'codex respawn Bench') alive = true;
 		const parts = text.split(' ');
 		if (parts[0] === 'fill') {
 			const [x1, y1, z1, x2, y2, z2] = parts.slice(1, 7).map(Number);
@@ -25,7 +28,10 @@ async function fixture({ geometryResponse = 'Bench has the following entity data
 		return '';
 	};
 	const reset = vm.runInNewContext(`${source.match(/^const number = .*$/m)[0]}\n(async () => {${resetSource}\n})`, {
-		...benchmark, command, alive: async () => true, sleep: async () => {}, X: 100.5, Y: -60, Z: 100.5, AGENT: 'Bench',
+		...benchmark, command, alive: async () => alive, sleep: async () => {},
+		install: async (rules) => { commands.push(`rules:${JSON.stringify(rules)}`); },
+		reflexStatus: async () => { commands.push('observe:rules'); return idle; },
+		X: 100.5, Y: -60, Z: 100.5, AGENT: 'Bench',
 	});
 	return { reset, blocks, commands, key };
 }
@@ -53,6 +59,25 @@ test('each arm reset repairs blast holes across the floor and clears headroom be
 	assert.match(validation, /100\.5 -60 100\.5.*distance=\.\.0\.01/);
 	assert.match(validation, /if block ~ ~-1 ~ minecraft:grass_block/);
 	assert.match(validation, /if block ~ ~ ~ minecraft:air if block ~ ~1 ~ minecraft:air/);
+});
+
+test('reset removes surviving threats before respawn and stops prior reflex inputs before rebuilding', async () => {
+	const f = await fixture({ dead: true });
+	await f.reset();
+	const index = (prefix) => f.commands.findIndex((command) => command.startsWith(prefix));
+	assert.ok(index('kill @e') < index('codex respawn'), 'the old zombie must not attack the respawned body');
+	assert.ok(index('kill @e[type=minecraft:item') > index('kill @e[type=!minecraft:player'));
+	assert.ok(index('kill @e[type=minecraft:item') < index('clear Bench'), 'newly dropped loot must not be picked up after clearing inventory');
+	assert.ok(index('rules:[]') >= 0 && index('rules:[]') < index('observe:rules'));
+	assert.ok(index('observe:rules') < index('fill '), 'the old arm must release its inputs before terrain changes');
+});
+
+test('reset refuses to rebuild while the empty reflex set has not been confirmed', async () => {
+	for (const idle of [null, { rules: [{ id: 'old-arm' }] }, { rules: [], firing: { id: 'old-arm' } }]) {
+		const f = await fixture({ idle });
+		await assert.rejects(f.reset(), /idle, empty reflex set/);
+		assert.equal(f.commands.some((command) => command.startsWith('fill ')), false);
+	}
 });
 
 test('failed supported-position check aborts reset instead of accepting a measurement', async () => {

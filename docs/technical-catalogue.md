@@ -1582,7 +1582,7 @@ Full npm: 4,531 passed, 3 skipped, zero failed/cancelled, 109.05 s. Final Deskto
 - **Solution:** A benchmark connects to a real server as the coordinator, summons a body and stages dangers with server commands. Trials alternate the 4 original default reflexes with the 10 current ones.
 - **Result:** The historical 26.3 run contains 6 trials per arm, but its arm comparisons are invalid. Terrain was not restored after explosions, and one zombie trial started dead while others began below the promised 6 HP. All 48 observations and aggregate numbers remain in `reports/live-body-benchmark-26.3-2026-11-01.json`, explicitly marked invalid as controlled comparison evidence. The old 6.1 s versus 3.5 s survival and 10.8 versus 2.3 food figures do not establish improvements. Missing reflex events after death also limit diagnosis from that run.
 
-  The harness now validates staging, restores terrain and retains received trial events through death. New paired live trials are required before publishing corrected comparisons. Creeper sprint timeouts and shield behavior remain follow-ups; this review did not measure their cause or resolution.
+  The harness now validates staging, restores terrain and retains received trial events through death. Resets remove old threats and loot, then confirm that prior reflex inputs have stopped before rebuilding the arena. New paired live trials are required before publishing corrected comparisons. Creeper sprint timeouts and shield behavior remain follow-ups; this review did not measure their cause or resolution.
 
 ### The body picks its own pickaxe
 - **Problem:** Every block that needed a different tool cost two model calls, one to switch and one to mine. An ore mined with too weak a pick was destroyed and dropped nothing.
@@ -1603,3 +1603,8 @@ Full npm: 4,531 passed, 3 skipped, zero failed/cancelled, 109.05 s. Final Deskto
 - **Problem:** A target underground ended in NO_ROUTE, a ledge over deep water counted as a wall, buildings were sealed to navigation, and tunnels could mine through a door.
 - **Solution:** Travel digs a staircase down toward a target below it, and steps off ledges of up to 12 blocks into water at least 2 deep. The walker opens wooden doors and gates and shuts doors behind it, and tunnels never break doors, gates or trapdoors.
 - **Result:** An 11-block drop into a pool went from no path to a single step. A corridor behind a door went from no path to a route through the doorway (fixtures, measured). The calls saved per descent or building visit are estimated, not measured live.
+
+### Stopping the server after Gradle detaches
+- **Problem:** A timed-out live check could leave the server running because Gradle's daemon detached from the launcher's process group. Killing that group did not reach the server.
+- **Solution:** On Linux a subreaper retains and reaps detached descendants. Windows uses the existing retained job wrapper so ownership lasts after the launcher exits.
+- **Result:** An actual cached Gradle daemon and its child survived the original cleanup and are both reaped after the correction. The independent review also passed 60 shutdown stress cases (measured on Linux). Native Windows execution remains unverified.
