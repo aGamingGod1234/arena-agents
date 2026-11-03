@@ -6,8 +6,6 @@ import com.sun.jna.Pointer;
 import com.sun.jna.WString;
 import com.sun.jna.win32.StdCallLibrary;
 import com.sun.jna.win32.W32APIOptions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -16,7 +14,6 @@ import java.util.UUID;
 
 /** Gives one Windows coordinator launch durable, kernel-owned process-tree lifetime. */
 final class WindowsCoordinatorJob {
-	private static final Logger LOGGER = LoggerFactory.getLogger(WindowsCoordinatorJob.class);
 	private static final int JOB_OBJECT_BASIC_ACCOUNTING_INFORMATION = 1;
 	private static final int BASIC_ACCOUNTING_INFORMATION_SIZE = 48;
 	private static final long ACTIVE_PROCESSES_OFFSET = 40L;
@@ -80,7 +77,13 @@ final class WindowsCoordinatorJob {
 			throw failure("open owned coordinator job", error);
 		}
 		WindowsCoordinatorJob job = new WindowsCoordinatorJob(handle);
-		job.terminateAndClose();
+		try {
+			job.terminateAndClose();
+		} catch (IOException failure) {
+			// Reaping has no retained owner to retry this handle. Keep the ownership record and release the query handle.
+			try { job.closeHandle(); } catch (IOException closeFailure) { failure.addSuppressed(closeFailure); }
+			throw failure;
+		}
 		return true;
 	}
 
@@ -113,34 +116,39 @@ final class WindowsCoordinatorJob {
 		closeHandle();
 	}
 
-	/**
-	 * TerminateJobObject only starts termination. Wait until no process in the job (nested jobs included) is
-	 * left, so that once this returns nothing it owned still holds the runtime's files open, such as node.exe.
-	 * The job's root is usually gone first while a child it started (a provider CLI) is still exiting.
-	 */
-	private void awaitDrained() {
-		long deadline = System.nanoTime() + java.util.concurrent.TimeUnit.MILLISECONDS.toNanos(DRAIN_TIMEOUT_MS);
+	/** An unconfirmed stop must not let callers discard ownership of a process tree. */
+	private void awaitDrained() throws IOException {
 		try (Memory information = new Memory(BASIC_ACCOUNTING_INFORMATION_SIZE)) {
-			while (true) {
+			awaitDrained(() -> {
 				information.clear();
 				if (!Kernel32.INSTANCE.QueryInformationJobObject(
 						handle, JOB_OBJECT_BASIC_ACCOUNTING_INFORMATION, information, BASIC_ACCOUNTING_INFORMATION_SIZE, Pointer.NULL
 				)) {
-					LOGGER.warn("Could not read the terminated coordinator job's process count (Windows error {})", Native.getLastError());
-					return;
+					throw failure("query terminated coordinator job process count", Native.getLastError());
 				}
-				int active = information.getInt(ACTIVE_PROCESSES_OFFSET);
-				if (active <= 0) return;
-				if (System.nanoTime() >= deadline) {
-					LOGGER.warn("{} coordinator job process(es) still exiting {} ms after termination", active, DRAIN_TIMEOUT_MS);
-					return;
-				}
-				try {
-					Thread.sleep(10L);
-				} catch (InterruptedException interrupted) {
-					Thread.currentThread().interrupt();
-					return;
-				}
+				return Integer.toUnsignedLong(information.getInt(ACTIVE_PROCESSES_OFFSET));
+			}, DRAIN_TIMEOUT_MS);
+		}
+	}
+
+	@FunctionalInterface
+	interface ActiveProcessCount {
+		long read() throws IOException;
+	}
+
+	static void awaitDrained(ActiveProcessCount count, long timeoutMs) throws IOException {
+		long deadline = System.nanoTime() + java.util.concurrent.TimeUnit.MILLISECONDS.toNanos(timeoutMs);
+		while (true) {
+			long active = count.read();
+			if (active == 0L) return;
+			if (System.nanoTime() >= deadline) {
+				throw new IOException(active + " coordinator job process(es) still exiting after " + timeoutMs + " ms");
+			}
+			try {
+				Thread.sleep(10L);
+			} catch (InterruptedException interrupted) {
+				Thread.currentThread().interrupt();
+				throw new IOException("Interrupted while waiting for the coordinator job to drain", interrupted);
 			}
 		}
 	}
