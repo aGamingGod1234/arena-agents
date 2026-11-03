@@ -65,6 +65,9 @@ public static class WitnessFiles {
 }
 '@
 Add-Type -TypeDefinition $code
+# Match names with PowerShell's -like. A Win32 search pattern would not do: its trailing '.*' also matches
+# no extension, so 'proof.json.*' counts the evidence file itself.
+function Get-HandshakeLeftovers { @([IO.Directory]::GetFiles($PSScriptRoot) | ForEach-Object { [IO.Path]::GetFileName($_) } | Where-Object { $_ -like 'control*' -or $_ -like 'proof.json.*' }) }
 $control = Join-Path $PSScriptRoot 'control'
 $proof = Join-Path $PSScriptRoot 'proof.json'
 [WitnessFiles]::Control = $control; [WitnessFiles]::Evidence = $proof
@@ -75,7 +78,8 @@ if ([WitnessFiles]::OpenWriteChecks -ne 2 -or [WitnessFiles]::Publications -ne 2
 $result = [IO.File]::ReadAllText($proof) | ConvertFrom-Json
 if ($result.status -ne 'COMPLETE' -or -not $result.allMembersExited -or -not $result.wrapperExited -or -not $result.jobHandleClosedBeforeStop -or -not $result.observationHandlesClosed -or $result.frozenMemberCount -ne 1) { throw 'Witness did not preserve complete cleanup evidence' }
 if (([WitnessFiles]::Closed -join ',') -ne '1,3,2') { throw 'Observation handles were not closed exactly once' }
-if (([IO.Directory]::GetFiles($PSScriptRoot,'control*')).Length -ne 0 -or ([IO.Directory]::GetFiles($PSScriptRoot,'proof.json.*')).Length -ne 0) { throw 'Witness left handshake files behind' }
+$leftovers = Get-HandshakeLeftovers
+if ($leftovers.Count -ne 0) { throw "Witness left handshake files behind: $($leftovers -join ', ')" }
 # A failed rename must keep the witness incomplete and remove the closed staging file.
 [IO.File]::Delete($proof)
 [WitnessFiles]::Frozen = $false; [WitnessFiles]::RejectReadyPublication = $true
@@ -85,7 +89,8 @@ if (([IO.Directory]::GetFiles($PSScriptRoot,'control*')).Length -ne 0 -or ([IO.D
 $result = [IO.File]::ReadAllText($proof) | ConvertFrom-Json
 if ($result.status -ne 'INCOMPLETE' -or $result.allMembersExited -or $result.jobHandleClosedBeforeStop -or -not $result.observationHandlesClosed -or $result.frozenMemberCount -ne 0) { throw 'Publication failure must fail closed' }
 if (([WitnessFiles]::Closed -join ',') -ne '1,2') { throw 'Publication failure leaked an observation handle' }
-if (([IO.Directory]::GetFiles($PSScriptRoot,'control*')).Length -ne 0 -or ([IO.Directory]::GetFiles($PSScriptRoot,'proof.json.*')).Length -ne 0) { throw 'Failed publication left handshake files behind' }
+$leftovers = Get-HandshakeLeftovers
+if ($leftovers.Count -ne 0) { throw "Failed publication left handshake files behind: $($leftovers -join ', ')" }
 Write-Output 'PASS closed ready publication and cleanup'
 `);
  assert.match(output, /PASS closed ready publication and cleanup/);
