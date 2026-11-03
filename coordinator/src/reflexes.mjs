@@ -31,7 +31,8 @@ export const DEFAULT_REFLEXES = Object.freeze([
 	{ id: 'default-arrow', kind: 'trigger', priority: 7, when: [{ type: 'incoming_projectile', withinS: 0.6 }], do: { type: 'shield' }, ttlMs: 3_600_000 },
 	// A fight with no fleeAtHealth fights to the death, and LOW_HEALTH_BAILOUT used to leave the body idle beside its
 	// attackers: at 3 hearts with a hostile in reach, run. Rules that hold fire at once when an action bails out.
-	{ id: 'default-retreat', kind: 'trigger', priority: 8, when: [{ type: 'health_below', value: 7 }, { type: 'hostile_near', within: 6 }], do: { type: 'sprint_away', blocks: 10 }, cooldownMs: 5_000, ttlMs: 3_600_000 },
+	// Air and fire must interrupt a retreat already in progress: only a strictly higher priority preempts.
+	{ id: 'default-retreat', kind: 'trigger', priority: 7, when: [{ type: 'health_below', value: 7 }, { type: 'hostile_near', within: 6 }], do: { type: 'sprint_away', blocks: 10 }, cooldownMs: 5_000, ttlMs: 3_600_000 },
 	// Eats only with no hostile within 8 blocks: eating stands still for 1.6 s. Below 14 hunger is when a player tops up.
 	{ id: 'default-eat', kind: 'trigger', priority: 3, when: [{ type: 'hunger_below', value: 14 }, { type: 'hostile_near', within: 8, not: true }], do: { type: 'eat' }, cooldownMs: 20_000, ttlMs: 3_600_000 },
 ].map((rule) => Object.freeze(rule)));

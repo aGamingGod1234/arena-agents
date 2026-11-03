@@ -123,7 +123,7 @@
 	{
 		"id": "default-retreat",
 		"kind": "trigger",
-		"priority": 8,
+		"priority": 7,
 		"when": [
 			{
 				"type": "health_below",
