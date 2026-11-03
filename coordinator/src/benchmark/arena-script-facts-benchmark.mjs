@@ -46,8 +46,9 @@ const SCRIPTS = [
 
 function digestOf(hash, value) {
 	if (value === null || typeof value !== 'object') { hash.update(JSON.stringify(value) ?? 'undefined'); return; }
-	if (Array.isArray(value)) { hash.update('['); for (const entry of value) { digestOf(hash, entry); hash.update(','); } hash.update(']'); return; }
-	hash.update(`{${Object.isFrozen(value) ? 'F' : 'M'}${Object.getPrototypeOf(value) === null ? 'N' : 'P'}`);
+	const array = Array.isArray(value);
+	hash.update(`${array ? '[' : '{'}${Object.isFrozen(value) ? 'F' : 'M'}${Object.getPrototypeOf(value) === null ? 'N' : 'P'}`);
+	if (array) { for (let index = 0; index < value.length; index += 1) { digestOf(hash, value[index]); hash.update(','); } hash.update(']'); return; }
 	for (const key of Object.keys(value)) { hash.update(JSON.stringify(key)); hash.update(':'); digestOf(hash, value[key]); hash.update(','); }
 	hash.update('}');
 }
