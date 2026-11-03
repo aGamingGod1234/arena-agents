@@ -1955,7 +1955,8 @@ public final class ServerActionExecutor {
 		ServerActionRequest internal = new ServerActionRequest(parent.agentId(), parent.goalRevision(), parent.actionId(),
 				ActionType.BREAK_BLOCK, args, parent.provenance(), parent.traceId());
 		ActiveAction mine = ActiveAction.breakBlock(internal, body, at, timeoutMs, target.blockId(), target.blockId(), target.aim());
-		mine.selectsBreakTool = true;
+		// Hold the final tool before mine_vein checks its drops and pickup capacity.
+		mine.breakToolNote = selectBreakTool(body, body.level().getBlockState(at));
 		mine.breakNamesBlock = true;
 		mine.plantProtection = cell -> {
 			if (!protection.mayModifyBlock(body, body.level(), cell) || !body.level().mayInteract(body, cell)

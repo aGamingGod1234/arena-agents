@@ -284,6 +284,7 @@ public final class VerificationMain {
 		passedAssertions += dev.agaminggod.arenaagents.server.runtime.controller.VerticalDescentHeadingVerification.verify();
 		passedAssertions += dev.agaminggod.arenaagents.server.runtime.controller.MiningToolsVerification.verify();
 		passedAssertions += dev.agaminggod.arenaagents.server.runtime.controller.VeinPlanVerification.verify();
+		passedAssertions += dev.agaminggod.arenaagents.server.runtime.controller.VeinSelectedToolInventoryVerification.verify();
 		passedAssertions += dev.agaminggod.arenaagents.server.runtime.controller.TravelStopsVerification.verify();
 		passedAssertions += dev.agaminggod.arenaagents.server.runtime.controller.DoorNavigationVerification.verify();
 		passedAssertions += dev.agaminggod.arenaagents.server.perception.HearingPerceptionVerification.verify();

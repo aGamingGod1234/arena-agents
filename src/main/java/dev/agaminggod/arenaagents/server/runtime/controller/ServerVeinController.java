@@ -39,7 +39,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
  * logs it knew about. The model chose the block; nothing here picks another tree or vein.
  */
 public final class ServerVeinController implements ServerController {
-	/** Executor services: one break_block sub-action with its admission gates (throws its refusal). */
+	/** Admits one break_block and holds its final tool (throws its refusal); swinging starts on its first tick. */
 	public interface Environment {
 		ServerController breakBlock(ServerPlayer body, BlockPos at, long timeoutMs);
 	}
@@ -232,11 +232,6 @@ public final class ServerVeinController implements ServerController {
 	}
 
 	private TickResult startBreak(ServerPlayer player, BlockPos at, boolean leaf, long now) {
-		BlockState state = player.level().getBlockState(at);
-		if (!leaf) {
-			TickResult room = inventoryRoom(player, at, state, now);
-			if (room != null) return room;
-		}
 		try {
 			breaking = environment.breakBlock(player, at, Math.max(1L, Math.min(BLOCK_TIMEOUT_MS, deadline - now)));
 		} catch (AgentDomainException refused) {
@@ -252,6 +247,11 @@ public final class ServerVeinController implements ServerController {
 					return stop(player, refused.code(), refused.getMessage(), false, now);
 				}
 			}
+		}
+		// Admission holds the tool the sub-action will swing, including any main-inventory swap.
+		if (!leaf) {
+			TickResult room = inventoryRoom(player, at, player.level().getBlockState(at), now);
+			if (room != null) return room;
 		}
 		breakingAt = at;
 		breakingLeaves = leaf;
