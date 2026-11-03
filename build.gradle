@@ -452,6 +452,16 @@ tasks.named('test') {
 	failOnNoDiscoveredTests = false
 }
 
+if (!defaultTarget) {
+	tasks.register('verifyFurnaceFuelDuration', JavaExec) {
+		group = 'verification'
+		description = 'Checks subtype-specific furnace fuel duration on older Minecraft targets.'
+		dependsOn tasks.named('testClasses')
+		classpath = sourceSets.test.runtimeClasspath
+		mainClass.set('dev.agaminggod.arenaagents.compat.FurnaceFuelDurationVerification')
+	}
+}
+
 tasks.register('verifyDirector', JavaExec) {
 	group = 'verification'
 	description = 'Checks Director authoring, speech sequencing, camera persistence and command contracts.'
@@ -664,6 +674,7 @@ tasks.register('verifyMixinTargets', Exec) {
 }
 
 tasks.named('check') {
+	if (!defaultTarget) dependsOn tasks.named('verifyFurnaceFuelDuration')
 	dependsOn tasks.named('verifyStrategyKnowledge')
 	dependsOn tasks.named('verifyCore'), tasks.named('verifyCameraMixin'), tasks.named('verifyPovMixins'), tasks.named('verifyEntrypoints'), tasks.named('verifyMapStructureDataFixer'), ':voice-addon:check'
 	// Map modules are authored against the pinned 26.3 block-state catalog; older drops lack some of its states

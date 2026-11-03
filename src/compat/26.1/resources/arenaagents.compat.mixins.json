@@ -3,6 +3,7 @@
   "package": "dev.agaminggod.arenaagents.compat.mixin",
   "compatibilityLevel": "JAVA_25",
   "mixins": [
+    "FurnaceBurnDurationInvoker",
     "FakePlayerFallDamageMixin"
   ],
   "injectors": {

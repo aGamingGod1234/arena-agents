@@ -1,5 +1,6 @@
 package dev.agaminggod.arenaagents.compat;
 
+import dev.agaminggod.arenaagents.compat.mixin.FurnaceBurnDurationInvoker;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
@@ -141,8 +142,9 @@ public final class McCompat {
 		return contents.items().stream().map(ItemStackTemplate::create);
 	}
 
-	/** Before 26.3 burn times came from the level's fuel table, the same for every furnace. */
+	/** Resolve virtual furnace adjustments; without a furnace, use the raw level fuel table. */
 	public static int burnDuration(ServerLevel level, AbstractFurnaceBlockEntity furnace, ItemStack fuel) {
+		if (furnace instanceof FurnaceBurnDurationInvoker invoker) return invoker.arenaagents$burnDuration(level.fuelValues(), fuel);
 		return level.fuelValues().burnDuration(fuel);
 	}
 
