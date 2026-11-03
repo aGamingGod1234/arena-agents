@@ -40,7 +40,7 @@ public final class VeinPlan {
 	public enum Kind { TREE, VEIN }
 
 	/**
-	 * The family a block id belongs to: a natural log or stem (one species), or an ore with its deepslate twin
+	 * The family a block id belongs to: a natural log or woody fungus stem (one species), or an ore with its deepslate twin
 	 * ({@code minecraft:deepslate_iron_ore} mines with {@code minecraft:iron_ore}). Null for anything else.
 	 */
 	public static String family(String blockId) {
@@ -49,7 +49,7 @@ public final class VeinPlan {
 		String namespace = colon < 0 ? "minecraft" : blockId.substring(0, colon);
 		String path = colon < 0 ? blockId : blockId.substring(colon + 1);
 		if (path.startsWith("stripped_")) return null;
-		if (path.endsWith("_log") || path.endsWith("_stem")) return "tree:" + namespace + ":" + path;
+		if (path.endsWith("_log") || path.equals("crimson_stem") || path.equals("warped_stem")) return "tree:" + namespace + ":" + path;
 		if (path.equals("ancient_debris")) return "vein:" + namespace + ":" + path;
 		if (path.endsWith("_ore")) {
 			if (path.startsWith("deepslate_")) path = path.substring("deepslate_".length());

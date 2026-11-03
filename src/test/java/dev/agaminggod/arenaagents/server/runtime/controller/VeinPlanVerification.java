@@ -26,11 +26,29 @@ public final class VeinPlanVerification {
 
 	public static int verify() {
 		assertions = 0;
+		verifyCropStemFamilies();
 		verifyFamilies();
 		verifyTree();
 		verifyTallTree();
 		verifyVein();
 		return assertions;
+	}
+
+	private static void verifyCropStemFamilies() {
+		for (String crop : List.of("pumpkin_stem", "melon_stem", "attached_pumpkin_stem", "attached_melon_stem")) {
+			check(VeinPlan.family("minecraft:" + crop) == null, "a crop stem is not a tree: " + crop);
+			check(VeinPlan.family(crop) == null, "an unqualified crop stem is not a tree: " + crop);
+		}
+		for (String stem : List.of("crimson_stem", "warped_stem")) {
+			check(("tree:minecraft:" + stem).equals(VeinPlan.family("minecraft:" + stem)), "a fungus stem remains a tree: " + stem);
+			check(("tree:minecraft:" + stem).equals(VeinPlan.family(stem)), "an unqualified fungus stem remains a tree: " + stem);
+			check(VeinPlan.family("minecraft:stripped_" + stem) == null, "a stripped fungus stem is not a natural tree: " + stem);
+		}
+		for (String species : List.of("oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "pale_oak")) {
+			String log = "minecraft:" + species + "_log";
+			check(("tree:" + log).equals(VeinPlan.family(log)), "a supported log remains a tree: " + log);
+		}
+		check("tree:example:custom_log".equals(VeinPlan.family("example:custom_log")), "namespaced logs retain their family");
 	}
 
 	private static void verifyFamilies() {
