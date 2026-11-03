@@ -61,9 +61,9 @@ class Jar:
 
     @lru_cache(maxsize=None)
     def members(self, fqcn):
-        """(methods {name: [descriptors]}, fields {name}) declared by the class or inherited from Minecraft supertypes."""
+        """(methods, fields), each {name: [descriptors]}, declared or inherited from jar supertypes."""
         out = subprocess.run([self.javap, '-p', '-s', '-cp', self.jar, fqcn], capture_output=True, text=True).stdout
-        methods, fields, supers = {}, set(), []
+        methods, fields, supers = {}, {}, []
         header = next((line for line in out.splitlines() if re.search(r'\b(class|interface|enum|record)\b', line)), '')
         for clause in re.findall(r'(?:extends|implements) ([^{]+)', header):
             supers += [re.sub(r'<.*', '', part.strip()) for part in clause.split(',')]
@@ -82,14 +82,15 @@ class Jar:
             elif not descriptor.startswith('('):
                 field = re.search(r'([\w$]+);\s*$', decl)
                 if field:
-                    fields.add(field.group(1))
+                    fields.setdefault(field.group(1), []).append(descriptor)
         for parent in supers:
             parent = parent.split()[0]
             if parent in self.classes:
                 parent_methods, parent_fields = self.members(parent)
                 for name, descriptors in parent_methods.items():
                     methods.setdefault(name, []).extend(descriptors)
-                fields |= parent_fields
+                for name, descriptors in parent_fields.items():
+                    fields.setdefault(name, []).extend(descriptors)
         return methods, fields
 
 
@@ -245,12 +246,12 @@ def check(jar, target):
         present = [owner for owner in targets if owner in jar.classes]
         if not present:
             continue
-        owner_methods, owner_fields = {}, set()
+        owner_methods, owner_fields = {}, {}
         for owner in present:
             methods, fields = jar.members(owner)
             for name, descriptors in methods.items():
                 owner_methods.setdefault(name, []).extend(descriptors)
-            owner_fields |= fields
+            owner_fields.update(fields)
         # Injected method names (method = "name" or {"a", "b"}; an optional descriptor after the name).
         for group in re.findall(r'\bmethod\s*=\s*(\{[^}]*\}|"[^"]*")', source):
             for entry in re.findall(r'"([^"]+)"', group):
@@ -281,6 +282,8 @@ def check(jar, target):
             if rest.startswith(':'):
                 if name not in fields:
                     problems.append(f'{short}: @At field {owner}.{name} does not exist')
+                elif rest[1:] not in fields[name]:
+                    problems.append(f'{short}: @At field {owner}.{name}{rest} has no matching descriptor (have {fields[name]})')
             elif name not in methods:
                 problems.append(f'{short}: @At method {owner}.{name} does not exist')
             elif rest not in methods[name]:
