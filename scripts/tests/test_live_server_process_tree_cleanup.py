@@ -1,5 +1,6 @@
 """Owned subprocess-tree regressions through LiveServer.start()/stop(), without Gradle."""
 import ctypes
+import base64
 import importlib.util
 import json
 import os
@@ -24,13 +25,15 @@ signal.signal(signal.SIGTERM, lambda *_: sys.exit(0))
 child = subprocess.Popen([sys.executable, '-c', ''' + repr('''
 import os, pathlib, subprocess, sys, time
 child = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(60)'])
-pathlib.Path(sys.argv[1]).write_text(str(child.pid))
+pathlib.Path(sys.argv[1] + '.writing').write_text(str(child.pid))
+os.replace(sys.argv[1] + '.writing', sys.argv[1])
 time.sleep(60)
 ''') + ''', sys.argv[1] + '.grandchild'])
 path = pathlib.Path(sys.argv[1] + '.grandchild')
 while not path.exists():
     time.sleep(.01)
-pathlib.Path(sys.argv[1]).write_text(json.dumps([child.pid, int(path.read_text())]))
+pathlib.Path(sys.argv[1] + '.writing').write_text(json.dumps([child.pid, int(path.read_text())]))
+os.replace(sys.argv[1] + '.writing', sys.argv[1])
 print(' Done (1.0s)! For help', flush=True)
 time.sleep(60)
 '''
@@ -48,7 +51,7 @@ def running(pid):
         return False
 
 
-@unittest.skipUnless(os.name == 'posix', 'real POSIX process group tests')
+@unittest.skipUnless(sys.platform == 'linux', 'real Linux owned-process tests')
 class ProcessTreeCleanupTest(unittest.TestCase):
     def setUp(self):
         if sys.platform == 'linux':
@@ -77,6 +80,10 @@ class ProcessTreeCleanupTest(unittest.TestCase):
         pids = self.descendants()
         if self.server.process:
             pids.insert(0, self.server.process.pid)
+            try:
+                os.killpg(self.server.process.pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
         for pid in pids:
             try:
                 os.kill(pid, signal.SIGKILL)
@@ -126,16 +133,19 @@ class ProcessTreeCleanupTest(unittest.TestCase):
         with mock.patch.object(live_server, 'Rcon', side_effect=ConnectionRefusedError()):
             with self.assertRaises(TimeoutError):
                 self.server.start(timeout=.5)
+        # The deliberately short startup budget may expire before the fixture publishes its children.
+        deadline = time.monotonic() + 5
+        while not self.pids_file.exists() and time.monotonic() < deadline:
+            time.sleep(.01)
         self.assertEqual(2, len(self.descendants()))
         self.server.stop(timeout=.02)
         self.assert_tree_stopped()
 
     def test_exited_launcher_does_not_hide_surviving_descendants(self):
         self.start_tree()
-        self.server.process.terminate()
-        self.server.process.wait(timeout=5)
-        self.assertTrue(all(running(pid) for pid in self.descendants()))
-        self.server.stop(timeout=.02)
+        launcher = int(Path(f'/proc/{self.server.process.pid}/task/{self.server.process.pid}/children').read_text().split()[0])
+        os.kill(launcher, signal.SIGTERM)
+        self.server.stop(timeout=5)
         self.assert_tree_stopped()
 
     def test_graceful_rcon_shutdown_retains_successful_exit(self):
@@ -143,15 +153,45 @@ class ProcessTreeCleanupTest(unittest.TestCase):
         def graceful_stop(command):
             for pid in reversed(self.descendants()):
                 os.kill(pid, signal.SIGTERM)
-            self.server.process.terminate()
+            launcher = int(Path(f'/proc/{self.server.process.pid}/task/{self.server.process.pid}/children').read_text().split()[0])
+            os.kill(launcher, signal.SIGTERM)
         self.server.rcon.command.side_effect = graceful_stop
         code = self.server.stop(timeout=5)
         self.assertEqual(0, code)
         self.assert_tree_stopped()
 
+    @unittest.skipUnless(sys.platform == 'linux', 'checks real Gradle process groups on Linux')
+    def test_real_gradle_daemon_stays_in_owned_group(self):
+        cache = Path.home() / '.gradle/wrapper/dists'
+        if not list(cache.glob('gradle-9.8.2-bin/*/gradle-9.8.2/bin/gradle')):
+            self.skipTest('requires the pinned Gradle distribution already cached')
+        directory = self.pids_file.parent
+        (directory / 'settings.gradle').write_text("rootProject.name = 'owned-process-regression'\n")
+        (directory / 'gradle.properties').write_text('org.gradle.jvmargs=-Xmx1G\n')
+        (directory / 'build.gradle').write_text('''tasks.register('hold') { doLast {
+            def child = new ProcessBuilder(PYTHON, '-c', 'import time; time.sleep(60)').start()
+            new File(PIDS).text = '[' + ProcessHandle.current().pid() + ',' + child.pid() + ']'
+            println(' Done (1.0s)! For help')
+            Thread.sleep(60000)
+        } }
+'''.replace('PYTHON', json.dumps(sys.executable)).replace('PIDS', json.dumps(str(self.pids_file))))
+        command = live_server.LiveServer._gradle(self.server, '-p', str(directory), 'hold')
+        with mock.patch.object(self.server, '_gradle', return_value=command), \
+                mock.patch.object(live_server, 'Rcon', return_value=mock.Mock()):
+            try:
+                self.server.start(timeout=60)
+            except Exception:
+                print(self.server.read_log(), file=sys.stderr)
+                raise
+        self.assertEqual(2, len(self.descendants()))
+        self.assertNotEqual(self.server.process.pid, os.getpgid(self.descendants()[0]),
+                            'exercise the real detached Gradle daemon')
+        self.server.stop(timeout=.02)
+        self.assert_tree_stopped()
+
 
 class WindowsTreeCleanupContractTest(unittest.TestCase):
-    def test_timeout_uses_only_launched_pid_and_tree_switch(self):
+    def test_timeout_terminates_the_owned_job_wrapper(self):
         with tempfile.TemporaryDirectory() as directory:
             server = live_server.LiveServer(run_dir=directory)
             process = mock.Mock(pid=12345, returncode=0)
@@ -168,16 +208,19 @@ class WindowsTreeCleanupContractTest(unittest.TestCase):
                     self.assertEqual(0, server.stop(timeout=.02))
                     self.assertEqual(0x200, launch.call_args.kwargs['creationflags'])
                     self.assertNotIn('start_new_session', launch.call_args.kwargs)
-                    kill_tree.assert_called_once_with(
-                        ['taskkill', '/PID', '12345', '/T', '/F'], check=True,
-                        stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
+                    command = launch.call_args.args[0]
+                    self.assertIn('owned-windows-job.ps1', command[command.index('-File') + 1])
+                    invocation = json.loads(base64.b64decode(command[-1]))
+                    self.assertIn('args', invocation)
+                    self.assertNotIn('env', invocation)
+                    kill_tree.assert_not_called()
                     self.assertEqual([mock.call(.02), mock.call()], process.wait.call_args_list)
-                    process.kill.assert_not_called()
+                    process.kill.assert_called_once_with()
                 finally:
                     if hasattr(server, 'log'):
                         server.log.close()
 
-    def test_graceful_exit_does_not_invoke_taskkill(self):
+    def test_exited_wrapper_has_already_closed_its_owned_job(self):
         server = live_server.LiveServer()
         server.process = mock.Mock(returncode=0)
         server.rcon = mock.Mock()
@@ -187,7 +230,12 @@ class WindowsTreeCleanupContractTest(unittest.TestCase):
             self.assertEqual(0, server.stop(timeout=5))
             kill_tree.assert_not_called()
         server.process.wait.assert_called_once_with(5)
+        server.process.kill.assert_not_called()
         server.log.close.assert_called_once_with()
+        wrapper = (ROOT / 'coordinator/src/owned-windows-job.ps1').read_text()
+        self.assertLess(wrapper.index('[ArenaOwnedJob]::Attach()'), wrapper.index('[ArenaOwnedJob]::Run('))
+        self.assertIn('JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE', wrapper)
+        self.assertIn('child.WaitForExit();\n            StopRemainingMembers();', wrapper)
 
 
 if __name__ == '__main__':

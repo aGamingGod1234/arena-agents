@@ -11,11 +11,11 @@ localhost. Nothing here talks to a model provider.
 Other scripts import LiveServer to run commands against a live world (see scripts/live-body-benchmark.py).
 """
 import argparse
+import base64
 import json
 import os
 import re
 import secrets
-import signal
 import shutil
 import socket
 import struct
@@ -99,15 +99,34 @@ class LiveServer:
         self.password = secrets.token_hex(16)
         self.rcon_port = free_port()
         self.process = None
-        self._process_group = None
         self.rcon = None
         self.log_path = os.path.join(self.run_dir, 'live-server.log')
 
     def _gradle(self, *tasks):
-        args = ['./gradlew']
+        if os.name == 'nt':
+            java_home = os.environ.get('JAVA_HOME')
+            java = os.path.join(java_home, 'bin', 'java.exe') if java_home else shutil.which('java')
+            if not java:
+                raise RuntimeError('Java is required to launch the Gradle wrapper')
+            args = [java, '-classpath', os.path.join(ROOT, 'gradle', 'wrapper', 'gradle-wrapper.jar'),
+                    'org.gradle.wrapper.GradleWrapperMain']
+        else:
+            args = ['./gradlew']
         if self.target != properties(None)['mc_compat']:
             args.append(f'-Pmc={self.target}')
         return args + list(tasks) + ['--offline', '--no-daemon', '--console=plain']
+
+    def _owned_command(self, command):
+        if sys.platform == 'linux' and os.name != 'nt':
+            return [sys.executable, os.path.join(os.path.dirname(__file__), 'owned-live-server.py'), *command]
+        if os.name != 'nt':
+            raise RuntimeError('Live-server process ownership is supported on Linux and Windows')
+        # The existing wrapper attaches itself before spawning work and retains its kill-on-close job handle.
+        invocation = base64.b64encode(json.dumps({'command': command[0], 'args': command[1:]}).encode()).decode()
+        powershell = os.path.join(os.environ.get('SystemRoot', r'C:\Windows'), 'System32',
+                                  'WindowsPowerShell', 'v1.0', 'powershell.exe')
+        return [powershell, '-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-File',
+                os.path.join(ROOT, 'coordinator', 'src', 'owned-windows-job.ps1'), '-CommandJson', invocation]
 
     def prepare(self):
         """A fresh offline flat world with the target's companion mods, built from this checkout."""
@@ -140,17 +159,17 @@ class LiveServer:
             handle.writelines(f'{key}={value}\n' for key, value in server.items())
 
     def start(self, timeout=900):
+        if os.name != 'nt' and sys.platform != 'linux':
+            raise RuntimeError('Live-server process ownership is supported on Linux and Windows')
         self.prepare()
         relative = os.path.relpath(self.run_dir, ROOT)
         self.log = open(self.log_path, 'w', encoding='utf-8')
         extra = [f'-PserverJvmArgs={json.dumps(self.jvm_args)}'] if self.jvm_args else []
         ownership = ({'creationflags': subprocess.CREATE_NEW_PROCESS_GROUP} if os.name == 'nt'
                      else {'start_new_session': True})
-        self.process = subprocess.Popen(self._gradle(':runServer', f'-PserverRunDir={relative}', *extra, '--args=nogui'),
+        self.process = subprocess.Popen(self._owned_command(self._gradle(':runServer', f'-PserverRunDir={relative}', *extra, '--args=nogui')),
                                         cwd=ROOT, stdout=self.log, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL,
                                         **ownership)
-        if os.name != 'nt':
-            self._process_group = self.process.pid
         deadline = time.monotonic() + timeout
         while time.monotonic() < deadline:
             text = self.read_log()
@@ -189,14 +208,11 @@ class LiveServer:
 
     def _kill_process_tree(self):
         if os.name == 'nt':
-            subprocess.run(['taskkill', '/PID', str(self.process.pid), '/T', '/F'],
-                           check=True, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
-        elif self._process_group is not None:
-            try:
-                os.killpg(self._process_group, signal.SIGKILL)
-            except ProcessLookupError:
-                pass
-            self._process_group = None
+            # Terminating the wrapper closes the retained job handle, including after the workload launcher exits.
+            self.process.kill()
+        else:
+            # The Linux supervisor must remain alive to adopt and reap detached descendants.
+            self.process.terminate()
 
     def stop(self, timeout=180):
         if self.rcon is not None:
@@ -213,9 +229,6 @@ class LiveServer:
                 except subprocess.TimeoutExpired:
                     self._kill_process_tree()
                     self.process.wait()
-                # A launcher may exit before its descendants, so keep the group ID until cleanup.
-                if self._process_group is not None:
-                    self._kill_process_tree()
             finally:
                 self.log.close()
         return self.process.returncode if self.process else None
