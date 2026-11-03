@@ -137,7 +137,7 @@ class LiveServer:
         self.prepare()
         relative = os.path.relpath(self.run_dir, ROOT)
         self.log = open(self.log_path, 'w', encoding='utf-8')
-        extra = [f"-PserverJvmArgs={' '.join(self.jvm_args)}"] if self.jvm_args else []
+        extra = [f'-PserverJvmArgs={json.dumps(self.jvm_args)}'] if self.jvm_args else []
         self.process = subprocess.Popen(self._gradle(':runServer', f'-PserverRunDir={relative}', *extra, '--args=nogui'),
                                         cwd=ROOT, stdout=self.log, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL)
         deadline = time.time() + timeout

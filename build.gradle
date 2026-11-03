@@ -52,7 +52,8 @@ loom {
 			// scripts/live-server.py boots each target's server in its own directory, with its own JVM properties.
 			runDir = project.findProperty('serverRunDir') ?: 'run'
 			def extraServerJvmArgs = project.findProperty('serverJvmArgs')
-			if (extraServerJvmArgs) vmArgs(*extraServerJvmArgs.toString().trim().split(/\s+/))
+			// JSON preserves each JVM argument, including spaces in checkout paths.
+			if (extraServerJvmArgs) vmArgs(*new groovy.json.JsonSlurper().parseText(extraServerJvmArgs.toString()))
 		}
 	}
 
