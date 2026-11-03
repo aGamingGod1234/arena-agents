@@ -1,11 +1,12 @@
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 
 for (const thinkingMs of [100, 4000, 30000]) {
 	test(`tunnel benchmark accounts for completed and cancelled work at ${thinkingMs}ms thinking`, () => {
 		const output = execFileSync(process.execPath, [...process.execArgv,
-			new URL('../src/benchmark/body-overlap-benchmark.mjs', import.meta.url).pathname, String(thinkingMs)], { encoding: 'utf8' });
+			fileURLToPath(new URL('../src/benchmark/body-overlap-benchmark.mjs', import.meta.url)), String(thinkingMs)], { encoding: 'utf8' });
 		const result = JSON.parse(output);
 		const { serial, keepGoing } = result.workloads.tunnel.accounting;
 		assert.equal(serial.dispatches.length, 6);
