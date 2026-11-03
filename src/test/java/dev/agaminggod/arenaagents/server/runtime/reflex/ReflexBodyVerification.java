@@ -216,6 +216,12 @@ public final class ReflexBodyVerification {
 	private static void foodChoice() {
 		record Case(String name, List<ReflexActions.Eat.FoodOption> options, int gap, float health, String wanted) {}
 		List<Case> cases = List.of(
+				new Case("raw chicken beside safe offhand berries at hunger 12", hotbar(food("sweet_berries", 2, 0.4), food("chicken", 2, 1.2)), 8, 20.0F, "minecraft:sweet_berries"),
+				new Case("offhand raw chicken beside safe berries", hotbar(food("chicken", 2, 1.2), food("sweet_berries", 2, 0.4)), 8, 20.0F, "minecraft:sweet_berries"),
+				new Case("only raw chicken while starving", hotbar(null, food("chicken", 2, 1.2)), 10, 20.0F, "minecraft:chicken"),
+				new Case("cooked chicken beside offhand berries", hotbar(food("sweet_berries", 2, 0.4), food("cooked_chicken", 6, 7.2)), 8, 20.0F, "minecraft:cooked_chicken"),
+				new Case("golden apple at healing threshold beside raw chicken", hotbar(null, food("chicken", 2, 1.2), food("bread", 5, 6.0), food("golden_apple", 4, 9.6)), 8, 8.0F, "minecraft:golden_apple"),
+				new Case("golden apple above healing threshold beside raw chicken", hotbar(null, food("chicken", 2, 1.2), food("bread", 5, 6.0), food("golden_apple", 4, 9.6)), 8, 8.01F, "minecraft:bread"),
 				new Case("rotten flesh beside a carrot", hotbar(null, food("rotten_flesh", 4, 0.8), food("carrot", 3, 3.6)), 6, 20.0F, "minecraft:carrot"),
 				new Case("golden apple beside an apple at full health", hotbar(null, food("golden_apple", 4, 9.6), food("apple", 4, 2.4)), 8, 20.0F, "minecraft:apple"),
 				new Case("offhand pufferfish beside steak", hotbar(food("pufferfish", 1, 0.2), food("cooked_beef", 8, 12.8)), 10, 20.0F, "minecraft:cooked_beef"),

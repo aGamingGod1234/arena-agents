@@ -592,7 +592,7 @@ final class ReflexActions {
 
 		/** Foods whose effect hurts (poison, nausea, hunger, a random stew) or moves the body (chorus fruit). */
 		static final Set<String> LAST_RESORT_FOODS = Set.of("minecraft:rotten_flesh", "minecraft:spider_eye", "minecraft:poisonous_potato",
-				"minecraft:pufferfish", "minecraft:suspicious_stew", "minecraft:chorus_fruit");
+				"minecraft:pufferfish", "minecraft:suspicious_stew", "minecraft:chorus_fruit", "minecraft:chicken");
 		/** Kept for healing: their absorption and regeneration are worth far more than their hunger points. */
 		static final Set<String> HEALING_FOODS = Set.of("minecraft:golden_apple", "minecraft:enchanted_golden_apple");
 		/** At or below this health a golden apple is the right thing to eat. */
