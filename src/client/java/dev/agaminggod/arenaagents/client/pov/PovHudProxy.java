@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.client.pov;
 
+import dev.agaminggod.arenaagents.client.compat.McClientCompat;
+
 import com.mojang.authlib.GameProfile;
 import dev.agaminggod.arenaagents.pov.AgentPovStatePayload;
 import dev.agaminggod.arenaagents.pov.PovInventory;
@@ -59,7 +61,7 @@ public final class PovHudProxy {
 	static void tick(Minecraft client, Entity agent) {
 		RemotePlayer target = ensure(client);
 		if (target == null) return;
-		if (target.damageCooldownTime > 0) target.damageCooldownTime--;
+		if (McClientCompat.damageBlinkTicks(target) > 0) McClientCompat.setDamageBlinkTicks(target, McClientCompat.damageBlinkTicks(target) - 1);
 		// Item models such as compasses read the holder's position.
 		if (agent != null) target.snapTo(agent.getX(), agent.getY(), agent.getZ(), agent.getYRot(), agent.getXRot());
 	}
@@ -102,7 +104,7 @@ public final class PovHudProxy {
 		float previousHealth = target.getHealth();
 		target.setHealth(vitals.health());
 		// Vanilla blinks the hearts while invulnerableTime is positive after a drop.
-		if (blinkOnDamage && target.getHealth() < previousHealth) target.damageCooldownTime = HURT_BLINK_TICKS;
+		if (blinkOnDamage && target.getHealth() < previousHealth) McClientCompat.setDamageBlinkTicks(target, HURT_BLINK_TICKS);
 		target.setAbsorptionAmount(vitals.absorption());
 		target.getFoodData().setFoodLevel(vitals.food());
 		target.getFoodData().setSaturation(vitals.saturation());

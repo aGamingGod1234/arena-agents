@@ -11,7 +11,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.PointedDripstoneBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.SpeleothemThickness;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluids;
 
@@ -142,9 +141,8 @@ public final class HearingPerceptionVerification {
 				"only flowing, non-falling water murmurs");
 		check(Fluids.FLOWING_WATER.getFlowing(7, true).getValue(FlowingFluid.FALLING), "falling water fixture is falling");
 		Map<Long, BlockState> drip = world();
-		BlockState tip = Blocks.POINTED_DRIPSTONE.defaultBlockState().setValue(PointedDripstoneBlock.TIP_DIRECTION, Direction.DOWN)
-				.setValue(PointedDripstoneBlock.THICKNESS, SpeleothemThickness.TIP);
-		BlockState base = tip.setValue(PointedDripstoneBlock.THICKNESS, SpeleothemThickness.BASE);
+		BlockState tip = dev.agaminggod.arenaagents.compat.TestCompat.dripstone(true);
+		BlockState base = dev.agaminggod.arenaagents.compat.TestCompat.dripstone(false);
 		drip.put(BlockPos.asLong(0, 70, 0), tip);
 		drip.put(BlockPos.asLong(0, 71, 0), base);
 		drip.put(BlockPos.asLong(0, 72, 0), Blocks.STONE.defaultBlockState());

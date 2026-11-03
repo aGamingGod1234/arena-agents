@@ -312,15 +312,72 @@ test('history eviction, retention migration and note clearing cannot discard rec
 	assert.equal(await memory.recordResult(record, terminal('unmapped')), false);
 });
 
-test('recovery capacity rejects admission without losing pending actions and terminal reconciliation frees capacity', async () => {
-	const notebook = new ModelNotebook({ maximumReceipts: 1 });
-	for (let i = 0; i < 1024; i++) await notebook.recordDispatch('a', identity(`pending-${i}`));
-	await assert.rejects(notebook.recordDispatch('a', identity('overflow')), /RECEIPT_RECOVERY_LIMIT/);
-	assert.equal(await notebook.findReceipt('a', { actionId: 'overflow' }), null);
-	assert.equal((await notebook.listUnresolved('a', query)).total, 1024);
-	await notebook.recordReceipt('a', terminal('pending-0'));
+test('a full recovery list forgets its oldest stale entry instead of refusing every later action', async t => {
+	const directory = await fixture(t);
+	const notebook = new ModelNotebook({ directory, maximumReceipts: 1 });
+	for (let i = 0; i < 1024; i++) await (i % 2 === 0 ? notebook.recordDispatch('a', identity(`pending-${i}`)) : notebook.recordUnknown('a', { ...identity(`pending-${i}`), reasonCode: 'RUNTIME_DISCONNECTED' }));
+	const full = await notebook.listUnresolved('a', query);
+	assert.equal(full.total, 1024);
+	assert.equal(full.evictedUnresolved, undefined, 'nothing is forgotten until the bound is passed');
 	await notebook.recordDispatch('a', identity('overflow'));
-	assert.equal((await notebook.listUnresolved('a', query)).total, 1024);
+	assert.equal((await notebook.findReceipt('a', { actionId: 'overflow' })).state, 'DISPATCHED');
+	assert.equal(await notebook.findReceipt('a', { actionId: 'pending-0' }), null, 'the oldest unresolved entry is the one forgotten');
+	assert.equal((await notebook.findReceipt('a', { actionId: 'pending-1' })).state, 'UNKNOWN', 'it is forgotten, never settled as not having happened');
+	for (let i = 0; i < 100; i++) await notebook.recordDispatch('a', identity(`later-${i}`));
+	const bounded = await notebook.listUnresolved('a', query);
+	assert.equal(bounded.total, 1024);
+	assert.equal(bounded.evictedUnresolved, 101);
+	const restored = new ModelNotebook({ directory, maximumReceipts: 1 });
+	const replayed = await restored.listUnresolved('a', query);
+	assert.equal(replayed.total, 1024);
+	assert.equal(replayed.evictedUnresolved, 101, 'the forgotten count survives journal replay');
+	await restored.recordReceipt('a', terminal('pending-500'));
+	assert.equal((await restored.listUnresolved('a', query)).total, 1023, 'terminal reconciliation still frees capacity');
+});
+
+test('actions that never reached the bridge are settled history, not unknown outcomes', async t => {
+	const directory = await fixture(t);
+	const notebook = new ModelNotebook({ directory, maximumReceipts: 1 });
+	await notebook.recordDispatch('a', identity('cancelled'));
+	const cancelled = await notebook.recordNotSent('a', { ...identity('cancelled'), reasonCode: 'CANCELLED_BEFORE_DISPATCH' });
+	assert.deepEqual([cancelled.source, cancelled.state, cancelled.reasonCode], ['coordinator_not_sent', 'CANCELLED', 'CANCELLED_BEFORE_DISPATCH']);
+	assert.deepEqual(cancelled.arguments, identity().arguments, 'the write-ahead evidence is kept');
+	assert.equal((await notebook.recordDispatch('a', identity('cancelled'))).state, 'CANCELLED', 'a late write-ahead intent cannot reopen it');
+	const unsent = await notebook.recordNotSent('a', { ...identity('unsent'), reasonCode: 'DISPATCH_NOT_SENT' });
+	assert.deepEqual([unsent.state, unsent.reasonCode], ['FAILED', 'DISPATCH_NOT_SENT']);
+	assert.throws(() => notebook.recordNotSent('a', { ...identity('maybe-sent'), reasonCode: 'DISPATCH_RESULT_UNKNOWN' }), /reasonCode must be one of/);
+	// Far past the old 1024-entry hard cap that every cancellation used to count against.
+	for (let i = 0; i < 1500; i++) {
+		await notebook.recordDispatch('a', identity(`cancel-${i}`));
+		await notebook.recordNotSent('a', { ...identity(`cancel-${i}`), reasonCode: i % 2 === 0 ? 'CANCELLED_BEFORE_DISPATCH' : 'DISPATCH_NOT_SENT' });
+	}
+	const page = await notebook.listUnresolved('a', query);
+	assert.equal(page.total, 0);
+	assert.equal(page.evictedUnresolved, undefined, 'no real unknown was forgotten to make room');
+	const saved = await new AtomicAgentStore({ directory, namespace: 'notebook' }).read('a');
+	const restored = new ModelNotebook({ directory, maximumReceipts: 1 });
+	assert.equal((await restored.listUnresolved('a', query)).total, 0);
+	assert.equal((await restored.findReceipt('a', { actionId: 'cancel-1499' })).state, 'FAILED');
+	assert.equal(saved?.recovery?.length ?? 0, 0, 'nothing reaches the recovery list');
+	// A server result still wins if one ever arrives.
+	assert.equal((await restored.recordReceipt('a', terminal('cancel-1499'))).source, 'server_action_result');
+});
+
+test('legacy not-sent unknowns are settled on load while real unknowns stay unresolved', async t => {
+	const directory = await fixture(t), disk = new AtomicAgentStore({ directory, namespace: 'notebook' });
+	const entry = (actionId, source, state, reasonCode, revision) => ({ kind: 'receipt', source, ...identity(actionId), state, reasonCode, revision });
+	await disk.write('a', { version: 1, revision: 5, notes: [], evictedReceipts: 2, evictedNotes: 0,
+		receipts: [entry('cancelled', 'coordinator_uncertain', 'UNKNOWN', 'CANCELLED_BEFORE_DISPATCH', 4), entry('lost', 'coordinator_uncertain', 'UNKNOWN', 'RUNTIME_DISCONNECTED', 5)],
+		recovery: [entry('old-unsent', 'coordinator_uncertain', 'UNKNOWN', 'DISPATCH_NOT_SENT', 1), entry('old-pending', 'coordinator_dispatch', 'DISPATCHED', 'AWAITING_AUTHORITATIVE_RESULT', 2)] });
+	const notebook = new ModelNotebook({ directory });
+	const page = await notebook.listUnresolved('a', query);
+	assert.deepEqual(page.entries.map(({ actionId }) => actionId).sort(), ['lost', 'old-pending']);
+	assert.deepEqual(await notebook.findReceipt('a', { actionId: 'old-unsent' }), null);
+	const cancelled = await notebook.findReceipt('a', { actionId: 'cancelled' });
+	assert.deepEqual([cancelled.source, cancelled.state, cancelled.revision], ['coordinator_not_sent', 'CANCELLED', 4]);
+	const migrated = await disk.read('a');
+	assert.equal(migrated.recovery.length, 1, 'the migration is checkpointed');
+	assert.equal(migrated.receipts.find(({ actionId }) => actionId === 'cancelled').source, 'coordinator_not_sent');
 });
 
 test('agent/world isolation, session exclusion and exact note lookup survive journal replay', async t => {

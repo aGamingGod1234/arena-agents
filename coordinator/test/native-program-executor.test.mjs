@@ -67,6 +67,24 @@ test('an invalid action argument ends the program with the validator text', asyn
 	assert.equal(run.commands.length, 0);
 });
 
+// Audit 2026-11-01 #6: a fault after the first receipt reached the model as a bare code, and optional facts crashed guards.
+test('a script fault after an action reaches the model with its code, line:column and cause', async () => {
+	const run = setup();
+	const result = await run.executor.run(record, { source: `${prefix}
+		await player.wait(1);
+		if (player.state().hazard === "lava") program.finish("lava");
+		await player.chat({ message: "health " + player.state().health });
+		const rate = player.state().harm.hpLossPerSecond;
+	` }, run.context);
+	assert.deepEqual(run.commands.map(command => command.action.type), ['wait', 'chat'], 'the absent hazard and a string + number do not end the program');
+	assert.equal(run.commands[1].action.arguments.message, 'health 20');
+	assert.equal(result.state, 'FAILED');
+	assert.equal(result.reasonCode, 'UNKNOWN_MEMBER');
+	assert.match(result.message, /^ArenaScript UNKNOWN_MEMBER at 5:\d+: cannot read hpLossPerSecond of null \(player\.state\(\)\.harm\)/);
+	const shown = JSON.parse(presentNativeToolResult(result, { kind: 'run_program' }).response.contentItems[0].text);
+	assert.equal((shown.data ?? shown).failure.blockedBy, result.message);
+});
+
 test('explicit ranged options survive ArenaScript execution', async () => {
 	const run = setup();
 	const result = await run.executor.run(record, { source: `${prefix}

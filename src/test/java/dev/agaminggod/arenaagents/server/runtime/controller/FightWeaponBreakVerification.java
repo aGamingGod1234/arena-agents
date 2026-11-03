@@ -25,7 +25,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
+import dev.agaminggod.arenaagents.compat.McEntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.EntityEquipment;
 import net.minecraft.world.entity.monster.zombie.Zombie;
@@ -181,7 +181,7 @@ public final class FightWeaponBreakVerification {
 			player.selectedAtAttack = new ArrayList<>();
 			set(unsafe, player, Entity.class, "uuid", playerId);
 			set(unsafe, player, Player.class, "gameProfile", new GameProfile(playerId, "Fighter"));
-			set(unsafe, player, Entity.class, "type", EntityTypes.PLAYER);
+			set(unsafe, player, Entity.class, "type", McEntityTypes.PLAYER);
 			set(unsafe, player, Entity.class, "level", level);
 			EntityEquipment equipment = new EntityEquipment();
 			set(unsafe, player, LivingEntity.class, "equipment", equipment);
@@ -199,7 +199,7 @@ public final class FightWeaponBreakVerification {
 			zombie.setId(1014); // 26.3 assigns entity IDs in the constructor, which Unsafe allocation skips.
 			zombie.fixtureLevel = level;
 			set(unsafe, zombie, Entity.class, "uuid", UUID.fromString("00000000-0000-4000-8000-00000000f00d"));
-			set(unsafe, zombie, Entity.class, "type", EntityTypes.ZOMBIE);
+			set(unsafe, zombie, Entity.class, "type", McEntityTypes.ZOMBIE);
 			set(unsafe, zombie, Entity.class, "level", level);
 			set(unsafe, zombie, LivingEntity.class, "activeEffects", new HashMap<>());
 			set(unsafe, zombie, LivingEntity.class, "equipment", new EntityEquipment());
@@ -408,7 +408,7 @@ public final class FightWeaponBreakVerification {
 	private static final class FightLevel extends ServerLevel {
 		// 26.3 entities take their ID from the level, and ServerLevel asks its (absent) chunk source.
 		private int fixtureEntityIds = 100_000;
-		@Override public int getNextEntityId() { return ++fixtureEntityIds; }
+		public int getNextEntityId() { return ++fixtureEntityIds; }
 		private MinecraftServer server;
 		private net.minecraft.core.RegistryAccess registries;
 		private List<Entity> entities;
@@ -438,7 +438,7 @@ public final class FightWeaponBreakVerification {
 		}
 	}
 
-	private static final class FightPlayer extends ServerPlayer {
+	private static final class FightPlayer extends dev.agaminggod.arenaagents.compat.TestServerPlayerBase {
 		private FightLevel fixtureLevel;
 		private float charge;
 		private long lastTickTime;
@@ -463,7 +463,7 @@ public final class FightWeaponBreakVerification {
 		@Override public int getAirSupply() { return 300; }
 		@Override public float getAttackStrengthScale(float partialTick) { return charge; }
 		@Override public double entityInteractionRange() { return 3.0D; }
-		@Override public boolean swing(net.minecraft.world.InteractionHand hand, net.minecraft.world.item.component.SwingAnimation animation, boolean toSelf) { return true; }
+		@Override protected boolean testSwing(net.minecraft.world.InteractionHand hand, boolean toSelf) { return true; }
 
 		@Override
 		public void attack(Entity target) {
@@ -478,7 +478,7 @@ public final class FightWeaponBreakVerification {
 		private FightLevel fixtureLevel;
 
 		private FightZombie() {
-			super(EntityTypes.ZOMBIE, null);
+			super(McEntityTypes.ZOMBIE, null);
 		}
 
 		@Override public Level level() { return fixtureLevel; }

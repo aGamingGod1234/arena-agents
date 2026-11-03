@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.server;
 
+import dev.agaminggod.arenaagents.compat.McCompat;
+
 import dev.agaminggod.arenaagents.agent.AgentDomainException;
 import dev.agaminggod.arenaagents.agent.AgentDeathSnapshot;
 import dev.agaminggod.arenaagents.agent.AgentGameMode;
@@ -68,7 +70,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.server.level.TicketType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
+import dev.agaminggod.arenaagents.compat.McEntityTypes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Blocks;
@@ -791,7 +793,7 @@ public final class CodexAgentManager {
 		for (var advancement : server.getAdvancements().getAllAdvancements()) {
 			titles.put(
 					advancement.id().toString(),
-					advancement.value().display().map(display -> display.title().getString()).orElse("")
+					advancement.value().display().map(display -> McCompat.advancementTitle(display).getString()).orElse("")
 			);
 		}
 		return Map.copyOf(titles);
@@ -1736,7 +1738,7 @@ public final class CodexAgentManager {
 	}
 
 	static boolean recoveryBodySafe(ServerLevel level, double x, double y, double z) {
-		var body = EntityTypes.PLAYER.getDimensions().makeBoundingBox(x, y, z);
+		var body = McEntityTypes.PLAYER.getDimensions().makeBoundingBox(x, y, z);
 		var border = level.getWorldBorder();
 		if (body.minY < level.getMinY() || body.maxY > level.getMaxY()
 				|| body.minX < border.getMinX() || body.maxX > border.getMaxX()

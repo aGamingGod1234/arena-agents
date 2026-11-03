@@ -77,7 +77,7 @@ public final class PlanItemIconsVerification {
   Method usage = method(icons, "iconAtlasUsage", int.class);
   var allocating = icons.getDeclaredField("allocatingIconAtlas");
   allocating.setAccessible(true);
-  int copySource = com.mojang.renderpearl.api.textures.GpuTexture.USAGE_COPY_SRC;
+  int copySource = dev.agaminggod.arenaagents.client.compat.McClientCompat.TEXTURE_USAGE_COPY_SRC;
   checks += expect(13, usage.invoke(null, 13));
   allocating.setBoolean(null, true);
   try {

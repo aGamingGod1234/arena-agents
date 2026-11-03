@@ -31,7 +31,25 @@ public final class TravelVerification {
 		verifyColumnStanding();
 		verifyBuildingBlocks();
 		verifyCarriedSupplies();
+		verifyDescent();
 		return assertions;
+	}
+
+	/**
+	 * A target below with nothing seen that gets closer: before, travel_to only bridged, pillared or tunnelled level and
+	 * then handed back NO_ROUTE, and the model had to call dig_to itself; now the trip digs a dig_to staircase down.
+	 */
+	private static void verifyDescent() {
+		check(ServerTravelController.digsDown(70.0D, -40.0D, 3.0D), "a target 110 blocks below digs down");
+		check(ServerTravelController.digsDown(70.0D, 65.9D, 3.0D), "a target four blocks below the band digs down");
+		check(!ServerTravelController.digsDown(70.0D, 66.0D, 3.0D), "a target within the band plus a block is walked or built to");
+		check(!ServerTravelController.digsDown(70.0D, 90.0D, 3.0D), "a target above never digs down");
+		check(!ServerTravelController.digsDown(70.0D, Double.NaN, 3.0D), "a trip without a target y never digs down");
+		check(!ServerTravelController.digsDown(70.0D, 69.0D, 0.6D), "a route leg's next shaft level one block down is not a staircase");
+		check(ServerTravelController.MAX_DIGS == 3, "a trip digs at most three staircases before it hands back");
+		check(dev.agaminggod.arenaagents.client.navigation.LocalPathfinder.MAX_WATER_DROP_BLOCKS == 12
+				&& dev.agaminggod.arenaagents.client.navigation.LocalPathfinder.MAX_DROP_BLOCKS == 3,
+				"dry drops stay at three blocks; drops into water two deep reach twelve");
 	}
 
 	private static void verifyCheckpoints() {
@@ -356,7 +374,7 @@ public final class TravelVerification {
 		check(TravelBuilder.buildingBlock(Blocks.COBBLESTONE), "cobblestone builds a bridge");
 		check(TravelBuilder.buildingBlock(Blocks.NETHERRACK), "netherrack builds a bridge");
 		check(!TravelBuilder.buildingBlock(Blocks.OAK_PLANKS), "planks never: lava sets them alight");
-		check(!TravelBuilder.buildingBlock(Blocks.WOOL.white()), "wool never: lava sets it alight");
+		check(!TravelBuilder.buildingBlock(dev.agaminggod.arenaagents.compat.McBlocks.WHITE_WOOL), "wool never: lava sets it alight");
 		check(!TravelBuilder.buildingBlock(Blocks.GRAVEL), "gravel never: it falls");
 		check(!TravelBuilder.buildingBlock(Blocks.OBSIDIAN), "obsidian is kept for portals");
 	}

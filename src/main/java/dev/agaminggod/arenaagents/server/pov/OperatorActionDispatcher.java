@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.server.pov;
 
+import dev.agaminggod.arenaagents.compat.McCompat;
+
 import dev.agaminggod.arenaagents.server.runtime.ArmSwing;
 import carpet.patches.EntityPlayerMPFake;
 import dev.agaminggod.arenaagents.agent.AgentDomainException;
@@ -145,8 +147,8 @@ public final class OperatorActionDispatcher {
 		List<String> lines = text.lines();
 		return switch (text.kind()) {
 			case RENAME_ITEM -> relay(agent, listener -> listener.handleRenameItem(new ServerboundRenameItemPacket(lines.get(0))));
-			case SIGN_UPDATE -> relay(agent, listener -> listener.handleSignUpdate(new ServerboundSignUpdatePacket(
-					text.pos(), List.of(lines.get(0), lines.get(1), lines.get(2), lines.get(3)), text.value() != 0 ? net.minecraft.world.level.block.entity.SignTextSlot.FRONT : net.minecraft.world.level.block.entity.SignTextSlot.BACK)));
+			case SIGN_UPDATE -> relay(agent, listener -> listener.handleSignUpdate(McCompat.signUpdatePacket(
+					text.pos(), List.of(lines.get(0), lines.get(1), lines.get(2), lines.get(3)), text.value() != 0)));
 			case EDIT_BOOK -> relay(agent, listener -> listener.handleEditBook(
 					new ServerboundEditBookPacket(text.value(), lines, text.title())));
 		};

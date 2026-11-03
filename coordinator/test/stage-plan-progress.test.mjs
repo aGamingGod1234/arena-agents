@@ -240,10 +240,11 @@ test('shots stopped by iron bars keep counting while other crystals break, and t
  assert.match(views.continuity(record).repeats, new RegExp(`^use_ranged ${REPEAT_COUNT} times in 4 min with the same result: shot stopped by minecraft:iron_bars \\(.*\\); other plan progress meanwhile \\(step crystals: crystals 1 standing \\(1 caged\\) of 10 seen\\)$`));
 });
 
-test('the beat-the-game plan prompt offers a gold piece before the Nether, the bastion-first route and fire resistance before the fortress', () => {
+test('the beat-the-game plan prompt offers a gold piece before the Nether, warped-forest pearls with an optional bastion, and fire resistance before the fortress', () => {
  const prompt = buildGoalSpecTranslatorPrompt({ requestId: '729d84a7-4e34-4a03-84c4-f89f8f103bfd', originalRequest: 'Beat the game', candidateIds: ['minecraft:ender_dragon'] });
  assert.match(prompt, /Nether preparation step that Nether access does not depend on: a gold armour piece, check has:minecraft:golden_helmet\|minecraft:golden_chestplate\|minecraft:golden_leggings\|minecraft:golden_boots\*1/);
  assert.match(prompt, /a bastion first \(a manual step, check null, since a seen check completes on sight before any loot or barter; detail: barter gold with calm piglins for ender pearls \(~15 ingots per pearl\)/);
  assert.match(prompt, /seen:minecraft:fortress, detail: fortresses and bastions share 432-block regions, one structure each, so a seen bastion's region holds no fortress; the wake lists the regions not yet seen; Nether fog ends at 96 blocks; drink fire resistance, if held, before entering/);
- assert.match(prompt, /List the bastion step before the fortress steps and do not label it optional/);
+ assert.match(prompt, /Ender pearls come from warped-forest endermen first .*a bastion step is optional, the source of fire resistance, obsidian and spare gold rather than the pearl plan, and nothing waits on it\./);
+ assert.doesNotMatch(prompt, /do not label it optional/, 'the plan agrees with AGENTS.md: bastion routing is not the default pearl plan');
 });

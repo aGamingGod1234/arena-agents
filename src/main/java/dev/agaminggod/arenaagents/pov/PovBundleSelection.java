@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.pov;
 
+import dev.agaminggod.arenaagents.compat.McCompat;
+
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.BundleContents;
@@ -19,7 +21,7 @@ public final class PovBundleSelection {
 		if (before == null || after == null || after.getSelectedItemIndex() >= 0) return incoming;
 		int selected = before.getSelectedItemIndex();
 		if (selected < 0 || selected >= after.size() || !before.items().equals(after.items())) return incoming;
-		BundleContents.Mutable kept = after.asMutable();
+		BundleContents.Mutable kept = McCompat.mutableBundle(after);
 		kept.toggleSelectedItem(selected);
 		ItemStack result = incoming.copy();
 		result.set(DataComponents.BUNDLE_CONTENTS, kept.toImmutable());

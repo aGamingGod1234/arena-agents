@@ -8,6 +8,11 @@ import { FakePlanner, eventually, immutableGoalSpec, record, start } from './fix
 const config = { bridge: { port: 25570, secret: 's'.repeat(32) }, codex: { controlProtocol: 'native_tools',
 	launchProfile: { agentId: 'coordinator', model: 'gpt-6.1-sol', reasoningEffort: 'low', serviceTier: 'priority' } } };
 
+// The bridge socket keeps the loop alive in production while a body tool waits; these tests' 100 ms guards are unref'd.
+// Without one ref'd handle the loop drained mid-test and cancelled the rest of this file.
+const keepAlive = setInterval(() => {}, 1_000);
+test.after(() => clearInterval(keepAlive));
+
 async function launch(t, { provider = 'claude', holdTool = false, initialDanger = false, initialWire = {}, callAgeMs = 2_000 } = {}) {
 	let now = 0;
 	const registry = new AgentRegistry(), planner = new FakePlanner(registry), turns = [], traces = [];

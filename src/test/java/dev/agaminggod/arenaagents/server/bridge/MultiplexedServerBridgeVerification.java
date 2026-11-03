@@ -3754,11 +3754,10 @@ public final class MultiplexedServerBridgeVerification {
 		unsafe.putObject(manager, unsafe.objectFieldOffset(field), value);
 	}
 
-	private static final class TestMinecraftServer extends MinecraftServer {
+	private static final class TestMinecraftServer extends dev.agaminggod.arenaagents.compat.TestMinecraftServerBase {
 		private EmptyPlayerList playerList;
 
 		private TestMinecraftServer() {
-			super(null, null, null, null, java.util.Optional.empty(), Proxy.NO_PROXY, null, null, null, false, null);
 		}
 
 		@Override protected boolean initServer() { return true; }
@@ -3767,8 +3766,6 @@ public final class MultiplexedServerBridgeVerification {
 		@Override public boolean shouldRconBroadcast() { return false; }
 		@Override protected SampleLogger getTickTimeLogger() { return null; }
 		@Override public boolean isTickTimeLoggingEnabled() { return false; }
-		@Override public int getCommandSpamThresholdSeconds() { return 0; }
-		@Override public int getChatSpamThresholdSeconds() { return 0; }
 		@Override public SystemReport fillServerSystemReport(SystemReport report) { return report; }
 		@Override public boolean isDedicatedServer() { return false; }
 		@Override public int getRateLimitPacketsPerSecond() { return 0; }

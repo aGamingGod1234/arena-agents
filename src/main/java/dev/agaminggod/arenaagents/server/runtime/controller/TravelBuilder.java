@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.server.runtime.controller;
 
+import dev.agaminggod.arenaagents.compat.McBlocks;
+
 import dev.agaminggod.arenaagents.server.runtime.ArmSwing;
 import dev.agaminggod.arenaagents.client.navigation.GridPosition;
 import dev.agaminggod.arenaagents.client.navigation.WalkabilityView;
@@ -44,7 +46,7 @@ final class TravelBuilder {
 	private static final Set<Block> KEPT_BLOCKS = Set.of(Blocks.OBSIDIAN, Blocks.CRYING_OBSIDIAN, Blocks.ANCIENT_DEBRIS,
 			Blocks.GOLD_BLOCK, Blocks.IRON_BLOCK, Blocks.DIAMOND_BLOCK, Blocks.EMERALD_BLOCK, Blocks.NETHERITE_BLOCK,
 			Blocks.LAPIS_BLOCK, Blocks.REDSTONE_BLOCK, Blocks.COAL_BLOCK, Blocks.RAW_IRON_BLOCK, Blocks.RAW_GOLD_BLOCK,
-			Blocks.RAW_COPPER_BLOCK, Blocks.COPPER_BLOCK.weathering().unaffected(), Blocks.MAGMA_BLOCK, Blocks.TNT, Blocks.GLOWSTONE, Blocks.SHROOMLIGHT,
+			Blocks.RAW_COPPER_BLOCK, McBlocks.COPPER_BLOCK, Blocks.MAGMA_BLOCK, Blocks.TNT, Blocks.GLOWSTONE, Blocks.SHROOMLIGHT,
 			Blocks.CRAFTING_TABLE, Blocks.FURNACE, Blocks.BEACON, Blocks.BUDDING_AMETHYST, Blocks.RESPAWN_ANCHOR,
 			Blocks.SLIME_BLOCK, Blocks.HONEY_BLOCK, Blocks.ICE, Blocks.PACKED_ICE, Blocks.BLUE_ICE, Blocks.SOUL_SAND);
 	/** Blocks a tunnel never mines. */
@@ -205,6 +207,10 @@ final class TravelBuilder {
 	/** Whether a tunnel may mine this block: no bedrock or portal frames, nothing holding items, nothing too slow. */
 	static String unmineable(BlockState state) {
 		if (UNMINED.contains(state.getBlock())) return "it is " + net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(state.getBlock());
+		// A player opens a door or gate rather than mining through it (and through someone's house).
+		if (state.getBlock() instanceof net.minecraft.world.level.block.DoorBlock || state.getBlock() instanceof net.minecraft.world.level.block.FenceGateBlock
+				|| state.getBlock() instanceof net.minecraft.world.level.block.TrapDoorBlock)
+			return "it is a door or gate (" + net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(state.getBlock()) + "): open it rather than mine it";
 		if (state.getBlock() instanceof EntityBlock) return "it holds a block entity (" + net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(state.getBlock()) + ")";
 		if (state.getDestroySpeed(net.minecraft.world.level.EmptyBlockGetter.INSTANCE, BlockPos.ZERO) < 0) return "it is unbreakable";
 		return null;

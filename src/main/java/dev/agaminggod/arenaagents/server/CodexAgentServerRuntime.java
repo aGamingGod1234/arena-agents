@@ -524,7 +524,9 @@ public final class CodexAgentServerRuntime {
 			return "Automation is offline. Bridge and voice secret paths must point to the prepared runtime secret.";
 		}
 		if ("COORDINATOR_RESTART_EXHAUSTED".equals(code)) {
-			return "Automation is offline. The coordinator stopped repeatedly; check the coordinator error log and restart Minecraft.";
+			return "Automation is offline. Coordinator stopped repeatedly; retrying every "
+					+ CoordinatorLaunchPolicy.EXHAUSTED_RETRY_MS / 60_000L
+					+ " minutes. Check the coordinator error log and runtime/config, or restart Minecraft.";
 		}
 		return "Automation is offline. Restart Minecraft after checking the coordinator setup.";
 	}
@@ -895,7 +897,8 @@ public final class CodexAgentServerRuntime {
 
 	static final class BridgeRetry {
 		private final LongSupplier clock;
-		private final CoordinatorLaunchPolicy.RestartBudget budget = new CoordinatorLaunchPolicy.RestartBudget();
+		// A loopback bind attempt is cheap, so the Java bridge keeps the capped delays without the coordinator's restart budget.
+		private int failures;
 		private long nextRetryEpochMs;
 		private String failureCode;
 		private String failureMessage;
@@ -909,15 +912,15 @@ public final class CodexAgentServerRuntime {
 		}
 
 		synchronized void recordSuccess() {
-			budget.resetAfterStability();
+			failures = 0;
 			nextRetryEpochMs = 0L;
 			failureCode = null;
 			failureMessage = null;
 		}
 
 		synchronized void recordFailure(String code, String message) {
-			budget.recordUnexpectedExit();
-			nextRetryEpochMs = clock.getAsLong() + budget.nextDelayMs();
+			if (failures < Integer.MAX_VALUE) failures++;
+			nextRetryEpochMs = clock.getAsLong() + CoordinatorLaunchPolicy.restartDelayMs(failures);
 			failureCode = code == null || code.isBlank() ? "JAVA_BRIDGE_START_FAILED" : code;
 			failureMessage = message;
 		}

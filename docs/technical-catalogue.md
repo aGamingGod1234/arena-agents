@@ -1504,3 +1504,107 @@ Full npm: 4,531 passed, 3 skipped, zero failed/cancelled, 109.05 s. Final Deskto
 - **Problem:** Recorded Nether deaths include a walking body stepping onto hanging vines above an unknown drop, lava escape rising in place toward a remembered cliff-top landing, and fire exits reporting success while the body still overlaps a neighbouring flame.
 - **Solution:** Check unknown drops while moving and distinguish hanging handholds from landings. Armed lava escape can retrace recently walked dry footing and swims toward shore; armed fire escape walks fully into its exit cell, checks contact again, and reports remaining burning.
 - **Result:** Build and core verification passed 2,577,419 assertions; contracts passed 639 checks. The coordinator suite has the 11 known platform-dependent failures. These are software gates, not survival measurements. Paired Minecraft replays, travel pace and four 90-minute Sol games remain unverified while awaiting Mini PC live slots. Desktop work was stopped at the orchestrator's request.
+
+## Fewer wasted model turns and a body that saves itself (claude/vigilant-mayer-hi0kh6, Nov 1)
+
+### The agent's own fight kept interrupting itself
+- **Problem:** Every hit during a fight the model had chosen cut that fight short and forced a fresh model call, every two seconds, even when the hit came from the very mob it was fighting. Each call re-read the agent's whole context.
+- **Solution:** A fight now absorbs hits from the mob it is fighting. Anything new still interrupts it: another attacker, lava or fire, an arrow, a swelling creeper, or health falling past 14, 10 or 6. The model still receives every hit with its next update.
+- **Result:** Fights cut short in a provider-free replay through the real coalescer and decision code (measured, `fight-steer-benchmark.mjs`): one zombie for 20 s, 12 -> 2 and 14 -> 3; three zombies for 30 s, 17 -> 3. A skeleton shooting into a zombie fight still interrupts every time (12 -> 12). At the 60-100k cached tokens a call re-reads in this project, that is roughly 0.6-1.4M cached input tokens saved per 20-30 s fight (estimated, not measured live).
+
+### An idle model was woken by noise
+- **Problem:** With no action running, any change at all in the heartbeat woke the model for a paid turn: a cow drifting 20 m away, the view turning, saturation draining, a tenth of a block of drift.
+- **Solution:** The "did anything change" check compares where things stand by block, ignores view direction, body velocity and saturation, and counts mobs beyond 16 blocks only when they arrive or leave. Threats keep their own full tracking.
+- **Result:** Over 120 noise heartbeats against the real coordinator with a fake planner (measured, `scripts/idle-wake-benchmark.mjs`), the model was woken 100 -> 2 times; the 2 are mobs first coming into view. Walking a block or losing hunger still wakes it on every heartbeat (20/20 before and after).
+
+### Survival reflexes for dangers faster than a model
+- **Problem:** A model decision takes 5-17 s and the measured first flee came 4.0-4.2 s after a threat, but a creeper fuse lasts 1.5 s, an arrow under a second, and a body could stand idle at low health after a fight bailed out. Only lava, fire, air and edges had a default reflex.
+- **Solution:** Six more default rules the model can switch off: sprint away from a swelling creeper (vanilla cancels the fuse past 7 blocks), dig out when suffocating, deflect a ghast fireball, raise a held shield at an incoming arrow, run at 3 hearts with a hostile in reach (this is also what takes the body when a fight bails out), and eat when hungry with no hostile within 8. Rules that need an item sleep until the body holds it, so they never fire empty-handed.
+- **Result:** Dangers with a default response: 4 -> 10 (measured, rule count). A reflex acts within one tick (50 ms) against the 4.0-4.2 s measured model response (from `docs/live-qa/2026-10-17-reflex.md`); live survival rates are not yet measured.
+
+### The eat reflex ate poison
+- **Problem:** The eat reflex took the hotbar food with the most hunger points, so rotten flesh beat a carrot, an offhand pufferfish beat steak, and golden apples were eaten as ordinary food.
+- **Solution:** Food is scored by how much of the hunger gap it fills plus its saturation, minus waste. Harmful foods are a last resort and golden apples are kept for low health.
+- **Result:** Poor picks across 8 hotbars with vanilla food values (measured, Java verification): 5 -> 0.
+
+### One mod for every Minecraft 26.x release
+- **Problem:** The mod only ran on Minecraft 26.3, one of the five 26.x releases (26.1, 26.1.1, 26.1.2, 26.2, 26.3). Each drop renamed or moved APIs the mod leans on: entity types, coloured and copper blocks, the GUI's screen and HUD classes, the item-icon atlas, sign text, swing timing and fuel. Each one also needed a different Fabric API, Carpet and Voice Chat build. A mixin aimed at a renamed method still compiles, then crashes the game when it loads.
+- **Solution:** One source tree and one build flag (`-Pmc=26.1|26.2|26.3`). Every API that moved goes through a small per-version shim layer, and the mixins that only one drop needs live beside it. A static checker reads each mixin's targets against that drop's real classes before the game starts. CI then builds and fully tests all three targets and uploads a JAR for each.
+- **Result:** Versions the mod runs on: 1 -> 5 of 5 released (measured). Fabric loaded each version and the full suites ran against it: 26.1, 26.1.1, 26.1.2, 26.2 and 26.3 each passed all 2,577,629 core assertions, the camera checks (20) and the POV mixins (46-47 classes). The first 26.1 compile had 135 errors across 39 server files (measured, javac), and the finished port has 0. The shim layer is about 1,100 lines per version against 124,431 shared lines (under 1%, measured). The static checker caught 15 of 313 mixin targets that would have crashed 26.1 at startup, before any game launch (measured). One more, the in-bed screen moving from the HUD to the main client class, only showed when the mixins were really applied under Fabric. On 26.2, the agent's strategy data (pickaxe table, barter odds, cookable foods) came out identical to 26.3's. The 26.3 map block catalogue has 3,357 states 26.2 lacks (measured), and no shipped map uses them.
+
+### Secrets on command lines
+- **Problem:** On Windows, every provider launch packed all API keys and OAuth tokens into the PowerShell wrapper's command line, which Windows auditing and security tools log. Claude Code's tool-server password was on its command line too, where any local program could read it and take control of the agent's body.
+- **Solution:** No secret goes on a command line now. The wrapper gets the environment through its own environment and deletes it before starting anything. Claude Code reads its config from an owner-only file in a directory secured once per agent.
+- **Result:** Secrets in a spawned command line went from yes to no for both the keys and the tool token (measured by tests that decode every argument). The Windows wrapper's command line got about 30% shorter, 331 to 234 characters (measured). A first version secured the file on every launch and cost about 2.5 s each on Windows, breaking standby handoffs. Windows CI caught it, and securing the directory once fixed it.
+
+### One slow command froze every agent
+- **Problem:** Listing a provider's models ran a command that blocked the coordinator, and with it the game bridge, tools, voice and all agents, for up to 15 s at startup and on every rescan.
+- **Solution:** The command, and the matching Windows Codex lookup, run in the background with the same timeouts and errors.
+- **Result:** With a fake 1 s command, timer ticks that ran went from 0 of about 100 to 97 of 101, worst gap 17 ms (measured).
+
+### Agents that eventually could not act
+- **Problem:** Every cancelled or unsent action was kept as an "unknown outcome" forever. After 1,024 of them, the agent's memory refused every new action.
+- **Solution:** Actions that provably never left the coordinator are recorded as settled. Past the limit, the oldest stale unknowns are forgotten and counted instead of blocking.
+- **Result:** Before, the agent was blocked at cancellation 1,025. After 5,000 cancellations, 0 entries are unresolved (measured).
+
+### Scripts that crashed on quiet moments
+- **Problem:** Optional facts like "standing in lava" only exist while they are true, so a guard script that checked them crashed on every quiet moment. `"health " + 20` was also a crash, and the model was only told "execution failed".
+- **Solution:** A missing fact reads as null, strings join with numbers, and every runtime error names its code, line and cause.
+- **Result:** On 513 recorded game moments, 10 common guard checks errored on 87% of evaluations (4,461 of 5,130) before. After, none of their reads error (measured).
+
+### Copying every game sample three times
+- **Problem:** Each game sample was copied, validated and frozen two or three times before scripts could read it. With 8 agents that was about a third of the coordinator's CPU.
+- **Solution:** Copy each sample once, trust our own validated copy, and reuse the parts that did not change.
+- **Result:** A fact build went from 5-6.6 ms to 1.7 ms. With 8 agents the median program-step handoff went from 126 to 73 ms and observation ingest from 11.9 to 6.1 ms, with byte-identical results (measured).
+
+### A bow that scanned 128 blocks every tick
+- **Problem:** While an agent held a drawn bow waiting for a target to leave cover, every tick it scanned every entity within 128 blocks and solved an arrow arc to each one. That built a hint shown only if the wait timed out.
+- **Solution:** The hold remembers that a hint is owed and builds it once, at the timeout.
+- **Result:** With 16 nearby mobs, a held tick fell from about 680 µs and 480 KB allocated to 20-45 µs and about 22 KB (measured, 100k ticks).
+
+### The body stood still while the model thought
+- **Problem:** Every action ended with the body standing still for the 3-17 s the model needed to decide its next step. A start-and-return mode existed, but the model had no way to queue the next step, so it saved nothing.
+- **Solution:** The model can send its next step while the current one runs, and it starts the instant the current one succeeds. Exploring and tunnelling legs can also repeat until the model replies.
+- **Result:** In a deterministic replay on the real runtime at 4 s per decision, a 6-step chain went from 98.5 to 81 s (-18%) and six completed tunnel legs from 96 to 76 s (-21%). The tunnel also dispatches a seventh speculative dig, cancelled after 50 ms, followed by a stop reply that completes at 76.1 s. These simulated occupancy and completion times use no provider and do not measure live digging cost. The body's idle share fell from about 25% to 5-8% in this synthetic workload.
+
+### Danger alerts padded with trivia
+- **Problem:** At 9 HP against a zombie, the model's 17 KB alert spent a quarter of its bytes on block trivia like "sniffer_diggable_block", far snow blocks, footstep sounds and 16-decimal coordinates. The danger summary sat behind 14 KB of world facts.
+- **Solution:** Danger wakes lead with the danger, the threats and the current intent. They keep only the facts a fight-or-flee decision uses and say what was left out.
+- **Result:** Over 59 recorded danger wakes, total bytes fell 16%. The zombie bail-out went from 17.2 to 11.9 KB, about 4,290 to 2,970 tokens at bytes/4, with no threat, block, item or result fact lost (measured).
+
+### A real server found a crash the tests could not
+- **Problem:** The headless suites call Minecraft's code directly, but never run a server with Carpet fake players ticking in a world.
+- **Solution:** A live check boots the real dedicated server for each 26.x version, with the full mod set. It spawns fake players, drops one 10 blocks, and stops the server cleanly. CI runs it for every version.
+- **Result:** On 26.1 the server died with a StackOverflowError the moment a fake player's fall was checked: Carpet 26.1's fall override and our fall-damage fix kept calling each other. After the fix, all three versions pass, with 16 of 20 health after the drop (measured live).
+
+### Measuring the reflexes in a live world, with no model
+- **Problem:** The new default reflexes had only been checked in unit tests. Nobody knew how they changed survival in a real world.
+- **Solution:** A benchmark connects to a real server as the coordinator, summons a body and stages dangers with server commands. Trials alternate the 4 original default reflexes with the 10 current ones.
+- **Result:** The historical 26.3 run contains 6 trials per arm, but its arm comparisons are invalid. Terrain was not restored after explosions, and one zombie trial started dead while others began below the promised 6 HP. All 48 observations and aggregate numbers remain in `reports/live-body-benchmark-26.3-2026-11-01.json`, explicitly marked invalid as controlled comparison evidence. The old 6.1 s versus 3.5 s survival and 10.8 versus 2.3 food figures do not establish improvements. Missing reflex events after death also limit diagnosis from that run.
+
+  The harness now validates staging, restores terrain and retains received trial events through death. Resets remove old threats and loot, then confirm that prior reflex inputs have stopped before rebuilding the arena. New paired live trials are required before publishing corrected comparisons. Creeper sprint timeouts and shield behavior remain follow-ups; this review did not measure their cause or resolution.
+
+### The body picks its own pickaxe
+- **Problem:** Every block that needed a different tool cost two model calls, one to switch and one to mine. An ore mined with too weak a pick was destroyed and dropped nothing.
+- **Solution:** Mining now chooses the fastest carried tool that can harvest the block. It keeps an enchanted tool that already works, and refuses an ore no carried tool can harvest before swinging.
+- **Result:** Blocks that needed a tool switch go from 2 calls to 1 (by design). On fixture inventories, wrong-pick ore loss went to 0, with a stone pick picked for iron and diamond refused with only stone (measured, 22 assertions).
+
+### One call fells a tree
+- **Problem:** Gathering 8 logs took 182-222 s (measured in the audit), because each log was its own model decision.
+- **Solution:** A new `mine_vein` action cuts a tree from beside and then inside its trunk, or mines an ore vein from where the body stands. It refuses any tree whose seen logs it can't all reach, so it never leaves logs floating, and it stops on lava, damage, nearby hostiles or a full inventory.
+- **Result:** A 6-log oak went from 6-7 model calls to 1 (fixture, measured). The body's own time is about 10-15 s per tree (estimated from vanilla break times, not measured live).
+
+### Night trips without the stutter
+- **Problem:** Every hostile within 16 blocks and every berry-bush scratch handed a trip back to the model for a fresh decision.
+- **Solution:** Travel now stops only for mobs that are coming at the body, or ranged mobs aiming at it. It shrugs off small terrain damage while health stays above the trip's floor.
+- **Result:** A night trip with 7 hostiles and 3 scratches went from 10 hand-backs to 2 (synthetic fixture, measured).
+
+### Travel goes down, and through doors
+- **Problem:** A target underground ended in NO_ROUTE, a ledge over deep water counted as a wall, buildings were sealed to navigation, and tunnels could mine through a door.
+- **Solution:** Travel digs a staircase down toward a target below it, and steps off ledges of up to 12 blocks into water at least 2 deep. The walker opens wooden doors and gates and shuts doors behind it, and tunnels never break doors, gates or trapdoors.
+- **Result:** An 11-block drop into a pool went from no path to a single step. A corridor behind a door went from no path to a route through the doorway (fixtures, measured). The calls saved per descent or building visit are estimated, not measured live.
+
+### Stopping the server after Gradle detaches
+- **Problem:** A timed-out live check could leave the server running because Gradle's daemon detached from the launcher's process group. Killing that group did not reach the server.
+- **Solution:** On Linux a subreaper retains and reaps detached descendants. Windows uses the existing retained job wrapper so ownership lasts after the launcher exits.
+- **Result:** An actual cached Gradle daemon and its child survived the original cleanup and are both reaped after the correction. The independent review also passed 60 shutdown stress cases (measured on Linux). Native Windows execution remains unverified.

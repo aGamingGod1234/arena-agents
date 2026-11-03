@@ -509,13 +509,13 @@ public final class AgentControlScreen extends Screen {
 			setFeedback("No usable model CLI found on the server machine yet. Open Create and press Rescan.", true);
 			return;
 		}
-		if (parent instanceof ScenarioSetupScreen setup) minecraft.gui.setScreen(setup);
-		else minecraft.gui.setScreen(new ScenarioSetupScreen());
+		if (parent instanceof ScenarioSetupScreen setup) dev.agaminggod.arenaagents.client.compat.McClientCompat.setScreen(minecraft, setup);
+		else dev.agaminggod.arenaagents.client.compat.McClientCompat.setScreen(minecraft, new ScenarioSetupScreen());
 	}
 
 	@Override
 	public void onClose() {
-		if (minecraft != null && parent != null) minecraft.gui.setScreen(parent);
+		if (minecraft != null && parent != null) dev.agaminggod.arenaagents.client.compat.McClientCompat.setScreen(minecraft, parent);
 		else super.onClose();
 	}
 
@@ -899,7 +899,7 @@ public final class AgentControlScreen extends Screen {
 	}
 
 	private void openDirector() {
-		if (minecraft != null) minecraft.gui.setScreen(new SkitDirectorScreen(this));
+		if (minecraft != null) dev.agaminggod.arenaagents.client.compat.McClientCompat.setScreen(minecraft, new SkitDirectorScreen(this));
 	}
 
 	private void initLive() {

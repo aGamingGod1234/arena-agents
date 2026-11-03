@@ -204,7 +204,7 @@ final class EndActionVerification {
 	private static final class World extends ServerLevel {
 		// 26.3 entities take their ID from the level, and ServerLevel asks its (absent) chunk source.
 		private int fixtureEntityIds = 100_000;
-		@Override public int getNextEntityId() { return ++fixtureEntityIds; }
+		public int getNextEntityId() { return ++fixtureEntityIds; }
 		MinecraftServer server; boolean loaded; long tick;
 		World() { super(null,null,null,null,null,null,false,0,List.of(),false); }
 		@Override public MinecraftServer getServer() { return server; }

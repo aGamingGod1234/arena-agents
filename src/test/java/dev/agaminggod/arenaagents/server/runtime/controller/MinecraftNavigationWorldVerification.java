@@ -24,7 +24,7 @@ public final class MinecraftNavigationWorldVerification {
 				"farmland is real walkable support");
 		assertEquals(WalkabilityView.Cell.SAFE_SUPPORT, classify(Blocks.DIRT_PATH.defaultBlockState(), false),
 				"dirt paths are real walkable support");
-		assertEquals(WalkabilityView.Cell.SAFE_SUPPORT, classify(Blocks.CARPET.white().defaultBlockState(), false),
+		assertEquals(WalkabilityView.Cell.SAFE_SUPPORT, classify(dev.agaminggod.arenaagents.compat.McBlocks.WHITE_CARPET.defaultBlockState(), false),
 				"carpet support comes from actual collision instead of a block-name allowlist");
 		assertEquals(WalkabilityView.Cell.SAFE_SUPPORT, classify(Blocks.SOUL_SAND.defaultBlockState(), false),
 				"soul sand supports the player at its actual collision height");

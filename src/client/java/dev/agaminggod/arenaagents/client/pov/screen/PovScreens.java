@@ -96,7 +96,7 @@ public final class PovScreens {
 			showDeath(client, session, death);
 			return;
 		}
-		if (client.gui.screen() instanceof AgentPovDeathScreen) client.gui.setScreen(null);
+		if (dev.agaminggod.arenaagents.client.compat.McClientCompat.screen(client) instanceof AgentPovDeathScreen) dev.agaminggod.arenaagents.client.compat.McClientCompat.setScreen(client, null);
 		PovMenu menu = state.menu().orElse(null);
 		if (menu == null) {
 			// The agent has no screen open: close whichever mirror is showing, including its inventory.
@@ -128,7 +128,7 @@ public final class PovScreens {
 		syncMirror(client);
 		lastMenu = menu;
 		if (mirrorScreen == null && menu.containerId() == INVENTORY_CONTAINER_ID && inventoryRequestPending()
-				&& screenFree(client) && !(client.gui.screen() instanceof AgentPovDeathScreen)) {
+				&& screenFree(client) && !(dev.agaminggod.arenaagents.client.compat.McClientCompat.screen(client) instanceof AgentPovDeathScreen)) {
 			openInventory(client);
 		}
 		if (mirrorMenu != null && mirrorContainerId == menu.containerId()) PovContainerScreens.fill(mirrorMenu, menu);
@@ -136,7 +136,7 @@ public final class PovScreens {
 
 	public static void closeAll() {
 		Minecraft client = Minecraft.getInstance();
-		boolean povScreen = isPovScreen(client.gui.screen());
+		boolean povScreen = isPovScreen(dev.agaminggod.arenaagents.client.compat.McClientCompat.screen(client));
 		clearMirror();
 		dismissedContainerId = NONE;
 		inventoryRequested = false;
@@ -144,7 +144,7 @@ public final class PovScreens {
 		lastOffers = null;
 		agentBookSlot = NONE;
 		session = null;
-		if (povScreen) client.gui.setScreen(null);
+		if (povScreen) dev.agaminggod.arenaagents.client.compat.McClientCompat.setScreen(client, null);
 	}
 
 	public static boolean isPovScreen(Screen screen) {
@@ -160,18 +160,18 @@ public final class PovScreens {
 
 	/** LocalPlayer.closeContainer for a mirrored screen: close locally, tell the server only in takeover. */
 	public static boolean interceptCloseContainer(Minecraft client) {
-		Screen screen = client.gui.screen();
+		Screen screen = dev.agaminggod.arenaagents.client.compat.McClientCompat.screen(client);
 		if (screen == null || screen != mirrorScreen) return false;
 		int containerId = mirrorContainerId;
 		clearMirror();
 		dismissedContainerId = containerId;
 		if (PovClient.isTakeover()) OperatorInputSender.sendAction(OperatorAction.CLOSE_MENU, containerId, 0, 0);
-		client.gui.setScreen(null);
+		dev.agaminggod.arenaagents.client.compat.McClientCompat.setScreen(client, null);
 		return true;
 	}
 
 	public static boolean interceptContainerInput(int containerId, int slot, int button, ContainerInput input) {
-		Screen screen = Minecraft.getInstance().gui.screen();
+		Screen screen = dev.agaminggod.arenaagents.client.compat.McClientCompat.screen(Minecraft.getInstance());
 		if (!isPovScreen(screen)) return false;
 		if (screen == mirrorScreen && containerId == mirrorContainerId && PovClient.isTakeover()) {
 			OperatorInputSender.sendAction(OperatorAction.MENU_CLICK, slot, button, input.ordinal());
@@ -180,7 +180,7 @@ public final class PovScreens {
 	}
 
 	public static boolean interceptButtonClick(int containerId, int buttonId) {
-		Screen screen = Minecraft.getInstance().gui.screen();
+		Screen screen = dev.agaminggod.arenaagents.client.compat.McClientCompat.screen(Minecraft.getInstance());
 		if (!isPovScreen(screen)) return false;
 		if (screen == mirrorScreen && containerId == mirrorContainerId && PovClient.isTakeover()) {
 			OperatorInputSender.sendAction(OperatorAction.MENU_BUTTON, buttonId, 0, 0);
@@ -190,7 +190,7 @@ public final class PovScreens {
 
 	/** True while a mirrored screen is showing; its menu packets are relayed (takeover) or dropped (spectate). */
 	public static boolean blocksVanillaMenuPackets() {
-		return isPovScreen(Minecraft.getInstance().gui.screen());
+		return isPovScreen(dev.agaminggod.arenaagents.client.compat.McClientCompat.screen(Minecraft.getInstance()));
 	}
 
 	/**
@@ -218,7 +218,7 @@ public final class PovScreens {
 	public static boolean acceptGhostRecipe(ClientboundPlaceGhostRecipePacket packet) {
 		if (!PovClient.isTakeover() || mirrorScreen == null) return false;
 		Minecraft client = Minecraft.getInstance();
-		if (client.gui.screen() == mirrorScreen && mirrorContainerId == packet.containerId()
+		if (dev.agaminggod.arenaagents.client.compat.McClientCompat.screen(client) == mirrorScreen && mirrorContainerId == packet.containerId()
 				&& mirrorScreen instanceof RecipeUpdateListener listener) {
 			listener.fillGhostRecipe(packet.recipeDisplay());
 		}
@@ -227,12 +227,12 @@ public final class PovScreens {
 
 	/** The container id of the mirrored screen on display, or {@code fallback} when none is showing. */
 	public static int mirrorContainerId(int fallback) {
-		return mirrorScreen != null && Minecraft.getInstance().gui.screen() == mirrorScreen ? mirrorContainerId : fallback;
+		return mirrorScreen != null && dev.agaminggod.arenaagents.client.compat.McClientCompat.screen(Minecraft.getInstance()) == mirrorScreen ? mirrorContainerId : fallback;
 	}
 
 	/** The inventory the recipe book counts: the agent's items while a mirrored screen is open. */
 	public static Inventory recipeInventory(Inventory fallback) {
-		if (mirrorScreen == null || Minecraft.getInstance().gui.screen() != mirrorScreen) return fallback;
+		if (mirrorScreen == null || dev.agaminggod.arenaagents.client.compat.McClientCompat.screen(Minecraft.getInstance()) != mirrorScreen) return fallback;
 		Inventory proxy = proxyInventory.get();
 		return proxy == null ? fallback : proxy;
 	}
@@ -252,11 +252,11 @@ public final class PovScreens {
 			agentBookSlot = payload.slot();
 			// The agent signs it, so the signing screen previews the agent as author; the slot comes from the payload.
 			Player agent = PovClient.agentPlayer();
-			client.gui.setScreen(new BookEditScreen(agent != null ? agent : client.player, payload.book(), payload.hand(), writable));
+			dev.agaminggod.arenaagents.client.compat.McClientCompat.setScreen(client, new BookEditScreen(agent != null ? agent : client.player, payload.book(), payload.hand(), writable));
 			return;
 		}
 		BookViewScreen.BookAccess access = BookViewScreen.BookAccess.fromItem(payload.book());
-		if (access != null) client.gui.setScreen(new BookViewScreen(access));
+		if (access != null) dev.agaminggod.arenaagents.client.compat.McClientCompat.setScreen(client, new BookViewScreen(access));
 	}
 
 	/** The mirrored inventory shows the agent's body instead of the operator's; null hides the model. */
@@ -277,13 +277,13 @@ public final class PovScreens {
 	}
 
 	private static void showDeath(Minecraft client, PovClientSession current, PovDeath death) {
-		if (client.gui.screen() instanceof AgentPovDeathScreen screen) {
+		if (dev.agaminggod.arenaagents.client.compat.McClientCompat.screen(client) instanceof AgentPovDeathScreen screen) {
 			screen.update(death, current.takeover());
 			return;
 		}
 		if (!screenFree(client)) return;
 		clearMirror();
-		client.gui.setScreen(new AgentPovDeathScreen(current.agentName(), death, current.takeover()));
+		dev.agaminggod.arenaagents.client.compat.McClientCompat.setScreen(client, new AgentPovDeathScreen(current.agentName(), death, current.takeover()));
 	}
 
 	private static void openContainer(Minecraft client, MenuType<?> type, PovMenu menu) {
@@ -298,7 +298,7 @@ public final class PovScreens {
 		setMirror(screen, access.getMenu(), menu.containerId(), type);
 		// Vanilla sends the offers right after opening, usually before this mirror exists.
 		if (lastOffers != null) applyOffers(lastOffers);
-		client.gui.setScreen(screen);
+		dev.agaminggod.arenaagents.client.compat.McClientCompat.setScreen(client, screen);
 		AgentPovMenuPayload contents = lastMenu;
 		if (contents != null && contents.containerId() == menu.containerId() && mirrorMenu != null) {
 			PovContainerScreens.fill(mirrorMenu, contents);
@@ -312,7 +312,7 @@ public final class PovScreens {
 		InventoryScreen screen = new InventoryScreen(owner);
 		inventoryRequested = false;
 		setMirror(screen, owner.inventoryMenu, INVENTORY_CONTAINER_ID, null);
-		client.gui.setScreen(screen);
+		dev.agaminggod.arenaagents.client.compat.McClientCompat.setScreen(client, screen);
 	}
 
 	private static boolean inventoryRequestPending() {
@@ -321,7 +321,7 @@ public final class PovScreens {
 	}
 
 	private static boolean screenFree(Minecraft client) {
-		return client.gui.screen() == null || isPovScreen(client.gui.screen());
+		return dev.agaminggod.arenaagents.client.compat.McClientCompat.screen(client) == null || isPovScreen(dev.agaminggod.arenaagents.client.compat.McClientCompat.screen(client));
 	}
 
 	private static void setMirror(Screen screen, AbstractContainerMenu menu, int containerId, MenuType<?> type) {
@@ -348,13 +348,13 @@ public final class PovScreens {
 
 	/** Forget a mirror that something else (a vanilla screen, a server close packet) already replaced. */
 	private static void syncMirror(Minecraft client) {
-		if (mirrorScreen != null && client.gui.screen() != mirrorScreen) clearMirror();
+		if (mirrorScreen != null && dev.agaminggod.arenaagents.client.compat.McClientCompat.screen(client) != mirrorScreen) clearMirror();
 	}
 
 	private static void closeMirrorLocally(Minecraft client) {
 		Screen screen = mirrorScreen;
 		clearMirror();
-		if (screen != null && client.gui.screen() == screen) client.gui.setScreen(null);
+		if (screen != null && dev.agaminggod.arenaagents.client.compat.McClientCompat.screen(client) == screen) dev.agaminggod.arenaagents.client.compat.McClientCompat.setScreen(client, null);
 	}
 
 	private static void clearMirror() {

@@ -1,5 +1,5 @@
 import { repairActionArguments } from '../action-argument-repairs.mjs';
-import { ArenaScriptError, executionError } from './errors.mjs';
+import { ArenaScriptError, boundedDiagnosticText, executionError } from './errors.mjs';
 import { types as nodeTypes } from 'node:util';
 import { DEFAULT_ARENA_SCRIPT_LIMITS, normalizeArenaScriptLimits } from './limits.mjs';
 import { PLAYER_MEMBER_PRIMITIVES, MATH_METHODS } from './minecraft-api.mjs';
@@ -35,6 +35,22 @@ const COMPOUND_ACTIONS = new Set(['control_sequence', 'edit_book']);
 const COMPOUND_ACTION_BYTES = 32_768;
 const CANONICAL_LIMITS = Object.freeze({ depth: 256, nodes: 4_096, keys: 4_096, stringBytes: 16_384, factBytes: MAX_LINE_BYTES * 2, arrayLength: 256, outputBytes: 4_096, resultBytes: 4_096, watcherIdBytes: 128 });
 const IDLE_YIELD = frozenRecord({ kind: 'idle' });
+const LOCATED_ERRORS = new WeakSet();
+const ARENA_FUNCTIONS = new WeakSet();
+const TRY_RESULT_FUNCTION = frozenRecord({ builtin: 'tryResult' });
+
+/** Names the code and authored line:column in the message itself, since that text is what reaches the model. */
+function locatedError(error, fallback) {
+	if (LOCATED_ERRORS.has(error)) return error;
+	LOCATED_ERRORS.add(error);
+	error.location ??= fallback;
+	const prefix = `ArenaScript ${error.code}:`;
+	const where = Number.isSafeInteger(error.location?.line) ? ` at ${error.location.line}:${error.location.column}` : '';
+	if (error.message.startsWith(prefix)) error.message = `ArenaScript ${error.code}${where}:${error.message.slice(prefix.length)}`;
+	else if (!error.message.startsWith('ArenaScript ')) error.message = `ArenaScript ${error.code}${where}: ${error.message}`;
+	else if (where !== '') error.message = `${error.message} (${where.trim()})`;
+	return error;
+}
 
 /** Deterministically executes a compiled ArenaScript AST without evaluating source JavaScript. */
 export class ArenaScriptInterpreter {
@@ -64,6 +80,7 @@ export class ArenaScriptInterpreter {
 	#deterministicFailure = null;
 	#failureStreak = 0;
 	#repeats = new Map();
+	#lastNode = null;
 
 	/** Read-only usage of the per-version budget that physical commands and world queries share. */
 	budget() {
@@ -364,12 +381,16 @@ export class ArenaScriptInterpreter {
 			this.#yield = null;
 			this.#terminal = true;
 			this.#lifecycle = 'PAUSED';
-			if (error instanceof ArenaScriptError) throw error;
-			throw executionError('EXECUTION_ERROR', 'ArenaScript EXECUTION_ERROR: execution failed', null, { cause: error });
+			// The model reads only the message, so it names what failed and where (line:column, as compiler diagnostics do).
+			const location = this.#lastNode === null ? null : this.#compiled.stepLocations.get(stepIdFor(this.#lastNode)) ?? null;
+			if (error instanceof ArenaScriptError) throw locatedError(error, location);
+			const detail = boundedDiagnosticText(typeof error?.message === 'string' && error.message.length > 0 ? error.message : 'execution failed', 240);
+			throw locatedError(executionError('EXECUTION_ERROR', `ArenaScript EXECUTION_ERROR: ${detail}`, null, { cause: error }), location);
 		}
 	}
 
 	#dispatch(frame) {
+		if (frame.node !== undefined) this.#lastNode = frame.node;
 		switch (frame.type) {
 			case 'statements': return this.#runStatements(frame);
 			case 'after-statement': return this.#afterStatement(frame);
@@ -529,8 +550,15 @@ export class ArenaScriptInterpreter {
 			if (!CAPABILITY_MEMBERS[object.capability].has(name)) throw this.#error('UNSAFE_MEMBER_ACCESS', `ArenaScript UNSAFE_MEMBER_ACCESS: member ${name} is not available`, node);
 			return this.#values.push(Object.freeze(Object.assign(Object.create(null), { capability: object.capability, member: name })));
 		}
-		if (object === null || typeof object !== 'object' || !Object.hasOwn(object, name)) throw this.#error('UNKNOWN_MEMBER', `ArenaScript UNKNOWN_MEMBER: ${name}`, node);
-		this.#values.push(object[name]);
+		if (object === null || typeof object !== 'object') {
+			throw this.#error('UNKNOWN_MEMBER', `ArenaScript UNKNOWN_MEMBER: cannot read ${name} of ${operandKind(object)}${subjectText(node.object, ' (', ')')}${object === null ? '; a fact this sample lacks reads null, so test it first' : ''}`, node);
+		}
+		// A function value is opaque: its closure record is interpreter state, not data.
+		if (isArenaFunction(object) || object === TRY_RESULT_FUNCTION) throw this.#error('UNKNOWN_MEMBER', `ArenaScript UNKNOWN_MEMBER: functions have no member ${name}`, node);
+		if (Object.hasOwn(object, name)) return this.#values.push(object[name]);
+		// A key this record lacks reads null, as JavaScript reads undefined: optional facts (hazard, fire, lavaFlow)
+		// appear only while they apply, so a guard over them must not end the program on a quiet sample.
+		this.#values.push(null);
 	}
 
 	#afterUnary({ operator, node }) {
@@ -555,7 +583,7 @@ export class ArenaScriptInterpreter {
 	#afterBinaryRight({ node, left }) {
 		const right = this.#values.pop();
 		if (node.type === 'LogicalExpression') return this.#values.push(right);
-		this.#values.push(applyBinary(node.operator, left, right, (code, message) => this.#error(code, message, node)));
+		this.#values.push(applyBinary(node.operator, left, right, (code, message) => this.#error(code, message, node), node));
 	}
 
 	#afterConditional({ node, environment }) {
@@ -578,7 +606,7 @@ export class ArenaScriptInterpreter {
 
 	#assignmentSet({ environment, name, operator = null, left, node }) {
 		const right = this.#values.pop();
-		const value = operator ? applyBinary(operator, left, right, (code, message) => this.#error(code, message, node)) : right;
+		const value = operator ? applyBinary(operator, left, right, (code, message) => this.#error(code, message, node), node) : right;
 		environment.set(name, value, node?.left);
 		this.#values.push(value);
 	}
@@ -626,7 +654,9 @@ export class ArenaScriptInterpreter {
 		const callPath = path.join('.');
 		if (path[0] === 'math') {
 			const [operation, minimum, maximum = minimum] = MATH_METHODS[path[1]];
-			if (args.length < minimum || args.length > maximum || args.some((value) => !Number.isFinite(value))) throw this.#error('INVALID_ARGUMENT', 'math calls require a bounded number of finite numeric arguments', node);
+			if (args.length < minimum || args.length > maximum || args.some((value) => !Number.isFinite(value))) {
+				throw this.#error('INVALID_ARGUMENT', `ArenaScript INVALID_ARGUMENT: ${callPath} takes ${minimum === maximum ? minimum : `${minimum} to ${maximum}`} finite numbers, got ${args.length === 0 ? 'none' : args.map(operandKind).join(', ')}`, node);
+			}
 			const result = operation(...args);
 			if (!Number.isFinite(result)) throw this.#error('INVALID_OPERAND', 'math result must be finite', node);
 			return this.#values.push(result);
@@ -650,11 +680,11 @@ export class ArenaScriptInterpreter {
 			case 'world.queryMemory': return this.#yieldQuery('queryMemory', args, node, environment);
 			case 'world.taskMemory': return this.#yieldQuery('taskMemory', args, node, environment);
 			case 'inventory.state': return this.#values.push(this.#context.facts.inventory.state);
-			case 'inventory.slots': return this.#values.push(filterObserved(this.#context.facts.inventory.items, args[0]));
-			case 'world.items': return this.#values.push(filterObserved(this.#context.facts.world.items, args[0]));
-			case 'world.entities': return this.#values.push(filterObserved(this.#context.facts.world.entities, args[0]));
-			case 'world.blocks': return this.#values.push(filterObserved(this.#context.facts.world.blocks, args[0]));
-			case 'world.nearest': return this.#values.push(nearestFromCurrent(args[0], args[1] ?? this.#context.facts.player, [this.#context.facts.world.items, this.#context.facts.world.entities, this.#context.facts.world.blocks]));
+			case 'inventory.slots': return this.#values.push(this.#factQuery(callPath, node, () => filterObserved(this.#context.facts.inventory.items, args[0])));
+			case 'world.items': return this.#values.push(this.#factQuery(callPath, node, () => filterObserved(this.#context.facts.world.items, args[0])));
+			case 'world.entities': return this.#values.push(this.#factQuery(callPath, node, () => filterObserved(this.#context.facts.world.entities, args[0])));
+			case 'world.blocks': return this.#values.push(this.#factQuery(callPath, node, () => filterObserved(this.#context.facts.world.blocks, args[0])));
+			case 'world.nearest': return this.#values.push(this.#factQuery(callPath, node, () => nearestFromCurrent(args[0], args[1] ?? this.#context.facts.player, [this.#context.facts.world.items, this.#context.facts.world.entities, this.#context.facts.world.blocks])));
 			case 'inventory.count':
 				if (typeof args[0] !== 'string') throw this.#error('INVALID_ARGUMENT', 'ArenaScript INVALID_ARGUMENT: inventory item id must be a string', node);
 				return this.#values.push(this.#context.facts.inventory.items.reduce((total, item) => total + (item.itemId === args[0] && Number.isSafeInteger(item.count) ? item.count : 0), 0));
@@ -662,6 +692,15 @@ export class ArenaScriptInterpreter {
 				if (typeof args[0] !== 'string') throw this.#error('INVALID_ARGUMENT', 'ArenaScript INVALID_ARGUMENT: inventory tag must be a string', node);
 				return this.#values.push(this.#context.facts.inventory.tagCounts[args[0]] ?? 0);
 			default: return this.#yieldCommand(callPath, args, node, environment);
+		}
+	}
+
+	/** The fact helpers reject bad criteria or origins with a TypeError; name the call and its reason as an argument error. */
+	#factQuery(callPath, node, query) {
+		try { return query(); }
+		catch (error) {
+			if (!(error instanceof TypeError)) throw error;
+			throw this.#error('INVALID_ARGUMENT', `ArenaScript INVALID_ARGUMENT: ${callPath}: ${boundedDiagnosticText(error.message, 200)}`, node, { cause: error });
 		}
 	}
 
@@ -957,7 +996,7 @@ export class ArenaScriptInterpreter {
 
 	#forEachStart(frame) {
 		const source = this.#values.pop();
-		if (!Array.isArray(source) || !Object.isFrozen(source) || source.length > CANONICAL_LIMITS.arrayLength) throw this.#error('INVALID_ITERABLE', 'ArenaScript INVALID_ITERABLE: for-of requires a bounded immutable array', frame.node);
+		if (!Array.isArray(source) || !Object.isFrozen(source) || source.length > CANONICAL_LIMITS.arrayLength) throw this.#error('INVALID_ITERABLE', `ArenaScript INVALID_ITERABLE: for-of requires a bounded immutable array, got ${operandKind(source)}${subjectText(frame.node.right, ' from ')}`, frame.node);
 		frame.values = source;
 		this.#frames.push({ type: 'for-each-next', frame });
 	}
@@ -994,8 +1033,8 @@ export class ArenaScriptInterpreter {
 		this.#loopIterations += 1;
 	}
 
-	#error(code, message, node = null) {
-		return executionError(code, message, node ? this.#compiled.stepLocations.get(stepIdFor(node)) ?? null : null);
+	#error(code, message, node = null, options = undefined) {
+		return executionError(code, message, node ? this.#compiled.stepLocations.get(stepIdFor(node)) ?? null : null, options);
 	}
 }
 
@@ -1051,7 +1090,7 @@ class Environment {
 function createRootEnvironment(bindings, context) {
 	const environment = new Environment(null, context);
 	for (const name of CAPABILITY_NAMES) environment.define(name, Object.freeze(Object.assign(Object.create(null), { capability: name })), 'const');
-	environment.define('tryResult', Object.freeze(Object.assign(Object.create(null), { builtin: 'tryResult' })), 'const');
+	environment.define('tryResult', TRY_RESULT_FUNCTION, 'const');
 	environment.define('undefined', undefined, 'const');
 	environment.define('NaN', NaN, 'const');
 	environment.define('Infinity', Infinity, 'const');
@@ -1144,8 +1183,12 @@ function countedIterations(node) {
 function expressionListFrame(nodes, environment) { return { type: 'expressions', nodes, environment, index: 0 }; }
 function normalCompletion() { return { kind: 'normal' }; }
 function isCapability(value) { return value && typeof value === 'object' && typeof value.capability === 'string'; }
-function isArenaFunction(value) { return value && typeof value === 'object' && value.kind === 'arena-function'; }
-function createFunction(node, environment) { return Object.freeze(Object.assign(Object.create(null), { kind: 'arena-function', node, environment })); }
+function isArenaFunction(value) { return ARENA_FUNCTIONS.has(value); }
+function createFunction(node, environment) {
+	const fn = Object.freeze(Object.assign(Object.create(null), { kind: 'arena-function', node, environment }));
+	ARENA_FUNCTIONS.add(fn);
+	return fn;
+}
 // Direct player.mine accepts autoAim like the bare mine alias; lower it the same way so autoAim never reaches break_block.
 function isDirectMineWithAutoAim(path, args) {
 	return path?.length === 2 && path[0] === 'player' && path[1] === 'mine' && args.length === 1
@@ -1173,46 +1216,93 @@ function propertyKey(property) {
 	throw executionError('UNSAFE_MEMBER_ACCESS', 'ArenaScript UNSAFE_MEMBER_ACCESS: object keys must be safe identifiers');
 }
 
-function applyBinary(operator, left, right, fail) {
+function applyBinary(operator, left, right, fail, node = null) {
 	switch (operator) {
 		case '==': return left === right;
 		case '!=': return left !== right;
 		case '===': return left === right;
 		case '!==': return left !== right;
 	}
-	if (!isSafeOperand(left) || !isSafeOperand(right)) throw fail('INVALID_OPERAND', 'ArenaScript INVALID_OPERAND: binary operators require primitive values');
+	if (operator === '+' && (typeof left === 'string' || typeof right === 'string')) return addOperands(left, right, fail, node);
+	if (!isSafeOperand(left) || !isSafeOperand(right)) throw fail('INVALID_OPERAND', `ArenaScript INVALID_OPERAND: ${operator} requires primitive values, got ${operandPair(left, right, node)}`);
 	switch (operator) {
-		case '<': return compareOperands(left, right, fail, '<');
-		case '<=': return compareOperands(left, right, fail, '<=');
-		case '>': return compareOperands(left, right, fail, '>');
-		case '>=': return compareOperands(left, right, fail, '>=');
-		case '+': return addOperands(left, right, fail);
-		case '-': return numericOperands(left, right, fail, (a, b) => a - b);
-		case '*': return numericOperands(left, right, fail, (a, b) => a * b);
-		case '/': return numericOperands(left, right, fail, (a, b) => a / b);
-		case '%': return numericOperands(left, right, fail, (a, b) => a % b);
-		case '**': return numericOperands(left, right, fail, (a, b) => a ** b);
-		case '|': return numericOperands(left, right, fail, (a, b) => a | b);
-		case '&': return numericOperands(left, right, fail, (a, b) => a & b);
-		case '^': return numericOperands(left, right, fail, (a, b) => a ^ b);
-		case '<<': return numericOperands(left, right, fail, (a, b) => a << b);
-		case '>>': return numericOperands(left, right, fail, (a, b) => a >> b);
-		case '>>>': return numericOperands(left, right, fail, (a, b) => a >>> b);
+		case '<': return compareOperands(left, right, fail, '<', node);
+		case '<=': return compareOperands(left, right, fail, '<=', node);
+		case '>': return compareOperands(left, right, fail, '>', node);
+		case '>=': return compareOperands(left, right, fail, '>=', node);
+		case '+': return addOperands(left, right, fail, node);
+		case '-': return numericOperands(left, right, fail, (a, b) => a - b, operator, node);
+		case '*': return numericOperands(left, right, fail, (a, b) => a * b, operator, node);
+		case '/': return numericOperands(left, right, fail, (a, b) => a / b, operator, node);
+		case '%': return numericOperands(left, right, fail, (a, b) => a % b, operator, node);
+		case '**': return numericOperands(left, right, fail, (a, b) => a ** b, operator, node);
+		case '|': return numericOperands(left, right, fail, (a, b) => a | b, operator, node);
+		case '&': return numericOperands(left, right, fail, (a, b) => a & b, operator, node);
+		case '^': return numericOperands(left, right, fail, (a, b) => a ^ b, operator, node);
+		case '<<': return numericOperands(left, right, fail, (a, b) => a << b, operator, node);
+		case '>>': return numericOperands(left, right, fail, (a, b) => a >> b, operator, node);
+		case '>>>': return numericOperands(left, right, fail, (a, b) => a >>> b, operator, node);
 		default: throw fail('UNSUPPORTED_SYNTAX', `ArenaScript UNSUPPORTED_SYNTAX: binary ${operator}`);
 	}
 }
 
 function isSafeOperand(value) { return value === null || value === undefined || typeof value === 'boolean' || typeof value === 'string' || (typeof value === 'number' && Number.isFinite(value)); }
 function assertFiniteNumber(value, fail) { if (typeof value !== 'number' || !Number.isFinite(value)) throw fail(); }
-function numericOperands(left, right, fail, operation) { assertFiniteNumber(left, () => fail('INVALID_OPERAND', 'ArenaScript INVALID_OPERAND: arithmetic requires finite numbers')); assertFiniteNumber(right, () => fail('INVALID_OPERAND', 'ArenaScript INVALID_OPERAND: arithmetic requires finite numbers')); return operation(left, right); }
-function addOperands(left, right, fail) {
-	if (typeof left === 'string' && typeof right === 'string') {
-		if (Buffer.byteLength(left, 'utf8') + Buffer.byteLength(right, 'utf8') > CANONICAL_LIMITS.outputBytes) throw fail('OUTPUT_LIMIT', 'ArenaScript OUTPUT_LIMIT: model string exceeds the output limit');
-		return left + right;
+function numericOperands(left, right, fail, operation, operator = 'arithmetic', node = null) {
+	if (typeof left !== 'number' || !Number.isFinite(left) || typeof right !== 'number' || !Number.isFinite(right)) {
+		throw fail('INVALID_OPERAND', `ArenaScript INVALID_OPERAND: ${operator} requires finite numbers, got ${operandPair(left, right, node)}`);
 	}
-	return numericOperands(left, right, fail, (a, b) => a + b);
+	return operation(left, right);
 }
-function compareOperands(left, right, fail, operator) { if (typeof left !== typeof right || !['number', 'string'].includes(typeof left)) throw fail('INVALID_OPERAND', 'ArenaScript INVALID_OPERAND: comparisons require matching strings or finite numbers'); if (operator === '<') return left < right; if (operator === '<=') return left <= right; if (operator === '>') return left > right; return left >= right; }
+// + joins a string with a string, finite number, boolean or null, as JavaScript would print it ("health " + 20).
+function addOperands(left, right, fail, node = null) {
+	if (typeof left === 'string' || typeof right === 'string') {
+		if (!concatenable(left) || !concatenable(right)) throw fail('INVALID_OPERAND', `ArenaScript INVALID_OPERAND: + joins a string only with a string, finite number, boolean or null, got ${operandPair(left, right, node)}`);
+		const text = String(left) + String(right);
+		if (Buffer.byteLength(text, 'utf8') > CANONICAL_LIMITS.outputBytes) throw fail('OUTPUT_LIMIT', 'ArenaScript OUTPUT_LIMIT: model string exceeds the output limit');
+		return text;
+	}
+	return numericOperands(left, right, fail, (a, b) => a + b, '+', node);
+}
+function concatenable(value) { return value === null || typeof value === 'string' || typeof value === 'boolean' || (typeof value === 'number' && Number.isFinite(value)); }
+function compareOperands(left, right, fail, operator, node = null) {
+	if (typeof left !== typeof right || !['number', 'string'].includes(typeof left)) throw fail('INVALID_OPERAND', `ArenaScript INVALID_OPERAND: ${operator} compares two finite numbers or two strings, got ${operandPair(left, right, node)}`);
+	if (operator === '<') return left < right; if (operator === '<=') return left <= right; if (operator === '>') return left > right; return left >= right;
+}
+
+/** Operand kinds for a diagnostic, naming the authored expression of each side and hinting when a missing fact read null. */
+function operandPair(left, right, node) {
+	const describe = (value, side) => `${operandKind(value)}${side?.type === 'Literal' ? '' : subjectText(side, ' from ')}`;
+	const text = `${describe(left, node?.left)} and ${describe(right, node?.right)}`;
+	return left === null || right === null ? `${text}; a fact this sample lacks reads null` : text;
+}
+function operandKind(value) {
+	if (value === null) return 'null';
+	if (Array.isArray(value)) return 'an array';
+	if (typeof value === 'number') return Number.isFinite(value) ? 'number' : String(value);
+	if (typeof value === 'object') return isArenaFunction(value) ? 'a function' : 'a record';
+	return typeof value;
+}
+const SUBJECT_TEXT_BYTES = 96;
+/** A short source rendering of a plain read (player.state().harm, count, "text"), or empty for anything more complex. */
+function subjectText(node, before = '', after = '') {
+	const text = subjectSource(node, 0);
+	return text === null || text.length === 0 || text.length > SUBJECT_TEXT_BYTES ? '' : `${before}${text}${after}`;
+}
+function subjectSource(node, depth) {
+	if (!node || depth > 8) return null;
+	if (node.type === 'Identifier') return node.name;
+	if (node.type === 'Literal') return typeof node.value === 'string' ? JSON.stringify(node.value.slice(0, 24)) : String(node.value);
+	if (node.type === 'MemberExpression' && !node.computed && node.property?.type === 'Identifier') {
+		const object = subjectSource(node.object, depth + 1);
+		return object === null ? null : `${object}.${node.property.name}`;
+	}
+	if (node.type === 'CallExpression') {
+		const callee = subjectSource(node.callee, depth + 1);
+		return callee === null ? null : `${callee}(${node.arguments.length === 0 ? '' : '...'})`;
+	}
+	return null;
+}
 
 function actionBinding(bindings, path) {
 	const [root, member] = path.split('.');
@@ -1319,7 +1409,18 @@ function hoistFunctionDeclarations(statements, environment) {
 	for (const statement of statements) if (statement.type === 'FunctionDeclaration' && !environment.hasOwn(statement.id.name)) environment.define(statement.id.name, createFunction(statement, environment), 'const');
 }
 
+// Bindings are validated deeply frozen records, so one validation per bindings object holds for its lifetime.
+const NORMALIZED_BINDINGS = new WeakMap();
+
 function normalizeBindings(bindings) {
+	const cached = bindings !== null && typeof bindings === 'object' ? NORMALIZED_BINDINGS.get(bindings) : undefined;
+	if (cached !== undefined) return cached;
+	const normalized = normalizeBindingsOnce(bindings);
+	NORMALIZED_BINDINGS.set(bindings, normalized);
+	return normalized;
+}
+
+function normalizeBindingsOnce(bindings) {
 	const root = exactOwnDataRecord(bindings, 'bindings', ['player'], { requireNullPrototype: true, requireFrozen: true, errorCode: 'INVALID_BINDINGS' });
 	const player = ownDataEntries(root.player, 'bindings.player', { requireNullPrototype: true, requireFrozen: true, errorCode: 'INVALID_BINDINGS' });
 	const normalizedPlayer = Object.create(null);

@@ -94,6 +94,27 @@ test('legacy 4 MB recovery state drains with large escaped evidence without losi
 	}
 });
 
+test('4 MB of unknown outcomes makes room by forgetting the oldest unknown, never a pending dispatch', async t => {
+	const directory = await fixture(t), disk = new AtomicAgentStore({ directory, namespace: 'notebook' });
+	const state = capacityState('recovery');
+	// The oldest half became unknown (a disconnect); the newer half are still pending write-ahead dispatches.
+	state.recovery = state.recovery.map((entry, index) => index % 2 === 1 ? entry : { ...entry, source: 'coordinator_uncertain', state: 'UNKNOWN', reasonCode: 'RUNTIME_DISCONNECTED' });
+	state.recovery[0] = { ...state.recovery[0], source: 'coordinator_dispatch', state: 'DISPATCHED', reasonCode: 'AWAITING_AUTHORITATIVE_RESULT' };
+	await disk.write('a', state);
+	const notebook = new ModelNotebook({ directory });
+	const admitted = await notebook.recordDispatch('a', book('admitted'));
+	assert.equal(admitted.state, 'DISPATCHED');
+	const page = await notebook.query('a', { ...query, kind: 'unresolved' });
+	assert.ok(page.evictedUnresolved >= 1, 'the forgotten unknowns are counted');
+	assert.equal(page.total, 125 - page.evictedUnresolved);
+	assert.equal((await notebook.findReceipt('a', { actionId: 'book-0' })).state, 'DISPATCHED', 'the oldest entry is pending, so it is kept');
+	assert.equal(await notebook.findReceipt('a', { actionId: 'book-2' }), null, 'the oldest unknown is the one forgotten');
+	for (const [index, action] of state.recovery.entries()) {
+		if (action.source === 'coordinator_dispatch') assert.equal((await notebook.findReceipt('a', { actionId: action.actionId })).state, 'DISPATCHED', `pending ${index} kept`);
+	}
+	assert.ok(byteLength(await new NotebookActionJournal({ directory }).read('a')) <= 4_000_000);
+});
+
 test('small retention budgets cannot prevent full terminal enrichment or erase it on restart', async t => {
 	const directory = await fixture(t), options = { directory, maximumBytes: 4096 };
 	const notebook = new ModelNotebook(options), action = book('enriched');

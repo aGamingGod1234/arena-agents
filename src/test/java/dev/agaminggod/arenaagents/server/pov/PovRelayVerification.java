@@ -95,7 +95,7 @@ public final class PovRelayVerification {
 	}
 
 	private static int verifyForwarding() {
-		check(PovUiForwarder.forwarded(new ClientboundOpenSignEditorPacket(BlockPos.ZERO, net.minecraft.world.level.block.entity.SignTextSlot.FRONT)), "the sign editor is forwarded");
+		check(PovUiForwarder.forwarded(dev.agaminggod.arenaagents.compat.TestCompat.openSignEditor(BlockPos.ZERO, true)), "the sign editor is forwarded");
 		check(!PovUiForwarder.forwarded(new ClientboundSetChunkCacheRadiusPacket(8)), "unrelated packets are not");
 		check(PovUiForwarder.bookSlot(InteractionHand.MAIN_HAND, 5) == 5, "a main-hand book names the selected slot");
 		check(PovUiForwarder.bookSlot(InteractionHand.OFF_HAND, 5) == PovUiForwarder.OFFHAND_SLOT, "an off-hand book names slot 40");

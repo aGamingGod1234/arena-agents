@@ -1,13 +1,16 @@
 [CmdletBinding()]
 param(
 	[string] $ProjectRoot,
+	# Minecraft target: 26.1, 26.2 or 26.3; empty is the default in gradle.properties (as ./gradlew -Pmc=<target>).
+	[string] $Target,
 	[string] $TemplateSource,
 	[string] $TemplatePath,
 	[string] $JavaPath,
 	[string] $InstallerPath,
 	[string] $InstallerSha256 = '61E035BF7BF70153E127440CE34DE47C9036F0A2D0C65D1529454BD35CEEFE4F',
 	[string] $FabricApiPath,
-	[string] $FabricApiSha256 = '18442E2AD466D6EF41C37DBB4CB68495E6CA6658B1F1EE9BE76143D155EF2C88',
+	# Defaults to the target's pinned fabric_api_sha256.
+	[string] $FabricApiSha256,
 	[switch] $SkipBuild,
 	[switch] $AcceptMinecraftEula
 )
@@ -17,10 +20,16 @@ $ErrorActionPreference = 'Stop'
 . (Join-Path $PSScriptRoot 'offline-server-policy.ps1')
 . (Join-Path $PSScriptRoot 'project-metadata.ps1')
 
-$MinecraftVersion = '26.3'
-$FabricLoaderVersion = '0.20.1'
+if ([string]::IsNullOrWhiteSpace($ProjectRoot)) { $ProjectRoot = Split-Path -Parent $PSScriptRoot }
+$null = Use-ArenaMinecraftTarget $ProjectRoot $Target
+$MinecraftVersion = Get-ArenaGradleProperty $ProjectRoot 'minecraft_version'
+$FabricLoaderVersion = Get-ArenaGradleProperty $ProjectRoot 'loader_version'
 $FabricInstallerVersion = '1.1.2'
-$FabricApiVersion = '0.165.0+26.3'
+$FabricApiVersion = Get-ArenaGradleProperty $ProjectRoot 'fabric_api_version'
+if ([string]::IsNullOrWhiteSpace($FabricApiSha256)) { $FabricApiSha256 = Get-ArenaGradleProperty $ProjectRoot 'fabric_api_sha256' }
+foreach ($version in @($MinecraftVersion, $FabricLoaderVersion, $FabricApiVersion, $FabricApiSha256)) {
+	if ([string]::IsNullOrWhiteSpace($version)) { throw "Could not read the target's Minecraft, Loader and Fabric API versions from $ProjectRoot\gradle.properties" }
+}
 $FabricInstallerUri = "https://maven.fabricmc.net/net/fabricmc/fabric-installer/$FabricInstallerVersion/fabric-installer-$FabricInstallerVersion.jar"
 $FabricApiUri = "https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api/$FabricApiVersion/fabric-api-$FabricApiVersion.jar"
 $utf8 = [Text.UTF8Encoding]::new($false)
@@ -115,7 +124,7 @@ if (-not $SkipBuild) {
 	$env:JAVA_HOME = Split-Path -Parent (Split-Path -Parent $java)
 	Push-Location $project
 	try {
-		& $gradle build --no-daemon --console=plain
+		& $gradle @(Get-ArenaGradleTargetArguments) build --no-daemon --console=plain
 		if ($LASTEXITCODE -ne 0) { throw "Gradle build failed with exit code $LASTEXITCODE" }
 	} finally {
 		Pop-Location

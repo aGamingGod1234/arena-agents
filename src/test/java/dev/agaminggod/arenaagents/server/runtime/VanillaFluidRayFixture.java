@@ -60,7 +60,7 @@ final class VanillaFluidRayFixture {
 	private static final class World extends ServerLevel {
 		// 26.3 entities take their ID from the level, and ServerLevel asks its (absent) chunk source.
 		private int fixtureEntityIds = 100_000;
-		@Override public int getNextEntityId() { return ++fixtureEntityIds; }
+		public int getNextEntityId() { return ++fixtureEntityIds; }
 		BlockGetter blocks;
 		private World() { super(null, null, null, null, null, null, false, 0, java.util.List.of(), false); }
 		@Override public BlockState getBlockState(BlockPos pos) { return blocks.getBlockState(pos); }

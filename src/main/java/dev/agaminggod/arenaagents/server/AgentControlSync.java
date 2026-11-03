@@ -7,6 +7,7 @@ import dev.agaminggod.arenaagents.control.DirectorCommandResultPayload;
 import dev.agaminggod.arenaagents.control.AgentControlRequestPayload;
 import dev.agaminggod.arenaagents.control.AgentControlGroup;
 import dev.agaminggod.arenaagents.control.AgentControlModelOption;
+import dev.agaminggod.arenaagents.control.AgentControlRedaction;
 import dev.agaminggod.arenaagents.control.AgentControlSnapshot;
 import dev.agaminggod.arenaagents.agent.AgentId;
 import dev.agaminggod.arenaagents.agent.AgentRecord;
@@ -50,6 +51,7 @@ import org.slf4j.LoggerFactory;
 public final class AgentControlSync {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AgentControlSync.class);
 	private static final Map<MinecraftServer, SpectatorPublication> SPECTATOR_PUBLICATIONS = new WeakHashMap<>();
+	private static final SnapshotRequestLimiter SNAPSHOT_REQUESTS = new SnapshotRequestLimiter();
 	private static boolean registered;
 
 	private AgentControlSync() {
@@ -128,7 +130,7 @@ public final class AgentControlSync {
 		);
 		boolean receiverRegistered = ServerPlayNetworking.registerGlobalReceiver(
 				AgentControlRequestPayload.TYPE,
-				(payload, context) -> context.server().execute(() -> sendSnapshot(context.player()))
+				(payload, context) -> context.server().execute(() -> requestSnapshot(context.player()))
 		);
 		if (!receiverRegistered) {
 			throw new IllegalStateException("Arena Agents control snapshot receiver is already registered");
@@ -178,12 +180,37 @@ public final class AgentControlSync {
 		}
 		ServerTickEvents.END_SERVER_TICK.register(AgentControlSync::publishSpectatorSnapshot);
 		ServerTickEvents.END_SERVER_TICK.register(AgentControlSync::publishBuildProgress);
+		ServerTickEvents.END_SERVER_TICK.register(AgentControlSync::sendDeferredSnapshots);
 		registered = true;
 	}
 
 	private static void publishControlDenial(ServerPlayer player, String message) {
 		player.sendSystemMessage(Component.literal(message));
-		sendSnapshot(player);
+		requestSnapshot(player);
+	}
+
+	/** A snapshot asked for by a client, within that player's request rate. */
+	static void requestSnapshot(ServerPlayer player) {
+		switch (SNAPSHOT_REQUESTS.request(player.getUUID(), monotonicMillis())) {
+			case SEND -> sendSnapshot(player);
+			case DEFERRED -> { }
+			case DROPPED -> LOGGER.debug("Dropped an over-rate control snapshot request from {}", player.getScoreboardName());
+		}
+	}
+
+	private static void sendDeferredSnapshots(MinecraftServer server) {
+		Map<UUID, Integer> due = SNAPSHOT_REQUESTS.due(monotonicMillis());
+		if (due.isEmpty() && SNAPSHOT_REQUESTS.tracked() == 0) return;
+		Set<UUID> connected = new HashSet<>();
+		for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+			connected.add(player.getUUID());
+			for (int sent = 0; sent < due.getOrDefault(player.getUUID(), 0); sent++) sendSnapshot(player);
+		}
+		SNAPSHOT_REQUESTS.retain(connected);
+	}
+
+	private static long monotonicMillis() {
+		return System.nanoTime() / 1_000_000L;
 	}
 
 	private static void sendCurrentBuildProgress(ServerPlayer player) {
@@ -391,12 +418,13 @@ public final class AgentControlSync {
 		try {
 			var server = player.level().getServer();
 			if (ServerPlayNetworking.canSend(player, DirectorSnapshotPayload.TYPE)) {
-				var actors = SkitActors.records(server).stream().map(actor -> new DirectorSnapshotPayload.Actor(
+				boolean mayDirect = GoalControl.mayControl(player.createCommandSourceStack());
+				var actors = SkitActors.records(server).stream().map(actor -> directorActor(new DirectorSnapshotPayload.Actor(
 						actor.agentId().toString(), actor.name(), dev.agaminggod.arenaagents.agent.AgentIdentity.playerName(actor.agentId(), actor.profile()),
 						actor.appearance(), actor.dead(), SkitActors.find(server, actor.agentId()).filter(ServerPlayer::isAlive).isPresent(),
 						dev.agaminggod.arenaagents.server.voice.VoiceDirector.status(server, actor.agentId()),
-						dev.agaminggod.arenaagents.server.voice.VoiceDirectorSavedData.get(server).profile(actor.agentId()))).toList();
-				ServerPlayNetworking.send(player, new DirectorSnapshotPayload(SkitModeRuntime.enabled(server), GoalControl.mayControl(player.createCommandSourceStack()), actors));
+						dev.agaminggod.arenaagents.server.voice.VoiceDirectorSavedData.get(server).profile(actor.agentId())), mayDirect)).toList();
+				ServerPlayNetworking.send(player, new DirectorSnapshotPayload(SkitModeRuntime.enabled(server), mayDirect, actors));
 			}
 			boolean canControl = GoalControl.mayControl(player.createCommandSourceStack());
 			CodexAgentManager manager = CodexAgentManager.get(player.level().getServer());
@@ -428,8 +456,15 @@ public final class AgentControlSync {
 			List<AgentRecord> records, List<AgentControlGroup> groups, List<AgentControlModelOption> catalog,
 			Function<AgentId, Optional<ServerPlayer>> findPlayer
 	) {
-		return AgentControlSnapshot.fromRecords(canControl, automationAvailable, automationStatus, revision,
-				records, groups, catalog, dev.agaminggod.arenaagents.control.AgentControlCatalog.providerRows(), id -> findPlayer.apply(id).filter(ServerPlayer::isAlive).isPresent());
+		return AgentControlRedaction.forViewer(AgentControlSnapshot.fromRecords(canControl, automationAvailable, automationStatus, revision,
+				records, groups, catalog, dev.agaminggod.arenaagents.control.AgentControlCatalog.providerRows(), id -> findPlayer.apply(id).filter(ServerPlayer::isAlive).isPresent()));
+	}
+
+	/** A Director cast row as its requester may see it: scrubbed speech status, and no voice settings without control. */
+	static DirectorSnapshotPayload.Actor directorActor(DirectorSnapshotPayload.Actor actor, boolean canControl) {
+		return new DirectorSnapshotPayload.Actor(actor.id(), actor.name(), actor.playerName(), actor.appearance(), actor.dead(), actor.present(),
+				AgentControlRedaction.redactText(actor.speechStatus(), 512),
+				canControl ? actor.voiceProfile() : dev.agaminggod.arenaagents.server.voice.VoiceProfile.defaults());
 	}
 
 	private static synchronized long nextControlRevision(MinecraftServer server) {

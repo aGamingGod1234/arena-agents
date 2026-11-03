@@ -22,7 +22,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityEquipment;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
+import dev.agaminggod.arenaagents.compat.McEntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Abilities;
 import net.minecraft.world.entity.player.Inventory;
@@ -536,7 +536,7 @@ public final class CombatResultContractVerification {
 			set(player, Player.class, "inventory", new Inventory(player, equipment));
 			set(player, LivingEntity.class, "equipment", equipment);
 			set(player, Entity.class, "uuid", UUID.randomUUID());
-			set(player, Entity.class, "type", EntityTypes.PLAYER);
+			set(player, Entity.class, "type", McEntityTypes.PLAYER);
 			set(player, Entity.class, "eyeHeight", 1.62F);
 			move(player, position);
 			return player;
@@ -611,7 +611,7 @@ public final class CombatResultContractVerification {
 	private static final class FixtureLevel extends ServerLevel {
 		// 26.3 entities take their ID from the level, and ServerLevel asks its (absent) chunk source.
 		private int fixtureEntityIds = 100_000;
-		@Override public int getNextEntityId() { return ++fixtureEntityIds; }
+		public int getNextEntityId() { return ++fixtureEntityIds; }
 		List<LivingEntity> entities;
 		RegistryAccess registries;
 		long gameTime;

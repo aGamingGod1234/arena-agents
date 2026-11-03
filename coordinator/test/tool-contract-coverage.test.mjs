@@ -45,14 +45,17 @@ test('model-facing contract bytes remain within the pinned baseline budgets', ()
 	// d41-cast-barter: cast_obsidian and barter_until (actionType enums, signatures, one act sentence each): exactly +673 tool bytes.
 	// d41-fight-count: fight_target/use_ranged untilItem?/untilCount? (+roof? on fight_target, fight_until) and one act sentence: exactly +245 tool bytes.
 	// d41-blaze-survive: fight_target/use_ranged single? and the plan-count act sentence: exactly +128 tool bytes.
-	assert.ok(Buffer.byteLength(JSON.stringify(MINECRAFT_DYNAMIC_TOOLS)) <= 32_863);
+	// 2026-11-01 overlap: act/startAction after and keepGoing (schemas plus one startAction and one act sentence): exactly +545 tool bytes.
+	// 2026-11-01 body skills (mine tool choice +97, mine_vein +276, travel stops +128, travel descent +102, doors +62): exactly +665 tool bytes.
+	assert.ok(Buffer.byteLength(JSON.stringify(MINECRAFT_DYNAMIC_TOOLS)) <= 34_073);
 	assert.ok(Buffer.byteLength(NATIVE_AGENT_INSTRUCTIONS) <= 1_500);
 	// 14,586 -> 14,695: the generated player.travelTo signature.
 	// 14,813 -> 14,847: player.useItem and player.interactBlock signatures gain acceptLavaRisk? (d41-portal).
 	// 14,847 -> 15,028: player.useRanged gains timeoutMs?/untilDead?/fleeAtHealth?/collect? and player.fightTarget collect? (d41-ranged-loop); +15: travelTo fightThrough? (d41-resume); +118: player.fightUntil (d41-fight-until); +118: castObsidian/barterUntil (d41-cast-barter).
 	// +64: fightTarget/useRanged untilItem?/untilCount?, fightTarget/fightUntil roof? (d41-fight-count).
 	// +18: fightTarget/useRanged single? (d41-blaze-survive).
-	assert.ok(Buffer.byteLength(ARENA_SCRIPT_API_REFERENCE) <= 15_228);
+	// +178: absent facts read null, + joins strings with numbers/booleans/null, runtime errors name code, line:column and cause.
+	assert.ok(Buffer.byteLength(ARENA_SCRIPT_API_REFERENCE) <= 15_459); // +53: player.mineVein (2026-11-01 body skills)
 });
 
 test('every model-facing contract change requires its reviewed claim-table entry to change', () => {

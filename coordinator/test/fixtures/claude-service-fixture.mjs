@@ -1,4 +1,5 @@
 import { EventEmitter } from 'node:events';
+import { readFileSync } from 'node:fs';
 import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -27,7 +28,9 @@ class FakeClaudeCode extends EventEmitter {
 		this.stdin.end = (text) => { if (typeof text === 'string') this.oneShotPrompt = text; };
 		this.script = script;
 		const configIndex = args.indexOf('--mcp-config');
-		this.mcp = configIndex < 0 ? null : JSON.parse(args[configIndex + 1]).mcpServers.minecraft;
+		// Claude Code reads --mcp-config at startup; the coordinator passes a private file path.
+		this.mcpConfigFile = configIndex < 0 ? null : args[configIndex + 1];
+		this.mcp = configIndex < 0 ? null : JSON.parse(readFileSync(this.mcpConfigFile, 'utf8')).mcpServers.minecraft;
 		if (script.rejectPartialMessages === true && args.includes('--include-partial-messages')) {
 			queueMicrotask(() => { this.stderr.emit('data', "error: unknown option '--include-partial-messages'"); this.exit(1); });
 			return;
@@ -90,6 +93,7 @@ async function harness(script = {}, overrides = {}, dependencies = {}) {
 			return child;
 		},
 		terminate: dependencies.terminate ?? (async (child) => { if (child.exitCode === null) child.exit(0); }),
+		...(dependencies.preparePrivateArtifact ? { preparePrivateArtifact: dependencies.preparePrivateArtifact } : {}),
 		toolServer,
 		minecraftWorkspace: {
 			root,

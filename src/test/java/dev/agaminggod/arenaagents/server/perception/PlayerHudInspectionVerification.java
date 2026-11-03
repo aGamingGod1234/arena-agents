@@ -11,7 +11,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
+import dev.agaminggod.arenaagents.compat.McEntityTypes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.AABB;
@@ -100,7 +100,7 @@ public final class PlayerHudInspectionVerification {
 		set(player, "bb", box);
 		set(player, "eyeHeight", 1.62F);
 		set(player, "uuid", UUID.randomUUID());
-		set(player, "type", EntityTypes.PLAYER);
+		set(player, "type", McEntityTypes.PLAYER);
 		return player;
 	}
 
@@ -125,7 +125,7 @@ public final class PlayerHudInspectionVerification {
 	private static final class FixtureLevel extends ServerLevel {
 		// 26.3 entities take their ID from the level, and ServerLevel asks its (absent) chunk source.
 		private int fixtureEntityIds = 100_000;
-		@Override public int getNextEntityId() { return ++fixtureEntityIds; }
+		public int getNextEntityId() { return ++fixtureEntityIds; }
 		Entity candidate;
 		FixtureLevel() { super(null, null, null, null, null, null, false, 0L, List.of(), false); }
 		@Override public List<Entity> getEntities(Entity source, AABB area, Predicate<? super Entity> predicate) { return predicate.test(candidate) ? List.of(candidate) : List.of(); }

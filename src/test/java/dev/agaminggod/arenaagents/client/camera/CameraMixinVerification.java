@@ -23,7 +23,7 @@ public final class CameraMixinVerification {
 			throw new AssertionError("Fabric did not apply the Director chat-name mixin");
 		}
 		target.loadClass("net.minecraft.client.renderer.entity.player.AvatarRenderer");
-		target.loadClass("net.minecraft.client.gui.contextualbar.LocatorBar");
+		target.loadClass(dev.agaminggod.arenaagents.compat.TestCompat.LOCATOR_BAR_CLASS);
 		Class<?> gameRenderer = target.loadClass("net.minecraft.client.renderer.GameRenderer");
 		if (java.util.Arrays.stream(gameRenderer.getDeclaredMethods()).noneMatch(method -> method.getName().contains("arenaagents$planItemIcons")))
 			throw new AssertionError("Fabric did not apply the render-thread plan icon hook");

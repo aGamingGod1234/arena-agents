@@ -1,9 +1,34 @@
-import contextlib
-import importlib.util
-import json
-from pathlib import Path
 import sys
+import time
+
+
+_DIAGNOSTIC_STDERR = sys.stderr
+_STARTED = time.monotonic()
+
+
+def phase(name):
+    _DIAGNOSTIC_STDERR.write(
+        f"ARENA_VOICE_CONDITIONING_PHASE {time.monotonic() - _STARTED:.3f}s {name}\n"
+    )
+    _DIAGNOSTIC_STDERR.flush()
+
+
+phase(f"bootstrap executable={sys.executable!r} version={sys.version!r}")
+phase("import contextlib")
+import contextlib
+phase("import contextlib complete")
+phase("import importlib.util")
+import importlib.util
+phase("import importlib.util complete")
+phase("import json")
+import json
+phase("import json complete")
+phase("import pathlib")
+from pathlib import Path
+phase("import pathlib complete")
+phase("import types")
 import types
+phase("import types complete")
 
 
 class FakeTensor:
@@ -55,6 +80,7 @@ def load_worker():
 
 
 def main():
+    phase("parse voice ids and install fake dependencies")
     voice_ids = json.loads(sys.argv[1])
     assert isinstance(voice_ids, list) and len(voice_ids) == 16
     assert len(set(voice_ids)) == 16
@@ -64,13 +90,17 @@ def main():
     torch.inference_mode = contextlib.nullcontext
     sys.modules["torch"] = torch
 
+    phase("load worker")
     worker = load_worker()
+    phase("worker loaded; check voice conditioning")
     model = CapturingTtsModel()
     worker._load_tts = lambda: model
     for voice_id in voice_ids:
         worker._tts({"text": "voice identity check", "voiceId": voice_id, "speed": 1})
 
+    phase("emit result")
     print(json.dumps(model.conditioning, separators=(",", ":")))
+    phase("complete")
 
 
 if __name__ == "__main__":

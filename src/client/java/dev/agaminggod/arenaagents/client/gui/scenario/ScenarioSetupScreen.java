@@ -893,15 +893,15 @@ public final class ScenarioSetupScreen extends Screen {
 	}
 
 	private void openAgents() {
-		if (minecraft != null) minecraft.gui.setScreen(new AgentControlScreen(this));
+		if (minecraft != null) dev.agaminggod.arenaagents.client.compat.McClientCompat.setScreen(minecraft, new AgentControlScreen(this));
 	}
 
 	private void openGroup() {
-		if (minecraft != null) minecraft.gui.setScreen(AgentControlScreen.group(this));
+		if (minecraft != null) dev.agaminggod.arenaagents.client.compat.McClientCompat.setScreen(minecraft, AgentControlScreen.group(this));
 	}
 
 	private void openLiveArena() {
-		if (minecraft != null) minecraft.gui.setScreen(AgentControlScreen.live(this));
+		if (minecraft != null) dev.agaminggod.arenaagents.client.compat.McClientCompat.setScreen(minecraft, AgentControlScreen.live(this));
 	}
 
 	public void acceptBuildProgress() {

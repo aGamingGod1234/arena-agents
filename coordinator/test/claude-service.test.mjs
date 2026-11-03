@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { parseArenaScript } from '../src/arena-script/parser.mjs';
 import { decodeModelFacts } from '../src/model-fact-encoding.mjs';
-import { readFile } from 'node:fs/promises';
+import { readFile, readdir, stat } from 'node:fs/promises';
 import path from 'node:path';
 import test from 'node:test';
 
@@ -61,6 +61,53 @@ test('Claude launches in the shared Minecraft workspace with the same instructio
 		assert.equal(agent.executionSettings.effective.model, 'claude-sonnet-5-5');
 		assert.equal(agent.executionSettings.evidence.model, 'provider_reported');
 	} finally { await close(); }
+});
+
+test('the MCP bearer token reaches Claude Code through an owner-only file, never argv, and the file is removed once connected', async () => {
+	let whileConnecting = null;
+	const { service, children, root, close } = await harness({
+		async beforeToolsListed(child) {
+			const file = await stat(child.mcpConfigFile);
+			const directory = await stat(path.dirname(child.mcpConfigFile));
+			whileConnecting = { fileMode: file.mode & 0o777, directoryMode: directory.mode & 0o777 };
+		},
+	});
+	try {
+		const agent = await service.createAgent(profile(), { controlProtocol: 'native_tools' });
+		await agent.prewarm();
+		const [child] = children;
+		const token = child.mcp.headers.Authorization.replace(/^Bearer /, '');
+		assert.match(token, /^[0-9a-f]{32,}$/, 'the fake read a real route token from the config file');
+		const argv = [child.command, ...child.args].join('\n');
+		assert.equal(argv.includes(token), false, 'the bearer token appeared in the Claude Code argv');
+		assert.equal(/Bearer|Authorization/i.test(argv), false);
+		assert.equal(child.args[child.args.indexOf('--mcp-config') + 1], child.mcpConfigFile);
+		assert.equal(path.dirname(child.mcpConfigFile).startsWith(path.join(root, 'claude')), true, 'config lives in the Claude runtime directory');
+		if (process.platform !== 'win32') assert.deepEqual(whileConnecting, { fileMode: 0o600, directoryMode: 0o700 });
+		const deadline = performance.now() + 2_000;
+		while (performance.now() < deadline && (await readdir(path.dirname(child.mcpConfigFile))).some((name) => name.startsWith('mcp-config-'))) await new Promise((resolve) => setTimeout(resolve, 10));
+		assert.deepEqual((await readdir(path.dirname(child.mcpConfigFile))).filter((name) => name.startsWith('mcp-config-')), [], 'the config file is deleted after Claude Code connected');
+	} finally { await close(); }
+});
+
+test('a Claude Code launch that fails to spawn leaves no MCP config file behind', async () => {
+	const { root, close } = await harness();
+	const runtimeRoot = path.join(root, 'claude-spawn-failure');
+	const toolServer = new ClaudeToolServer();
+	const service = new ClaudeProviderService({ provider: 'claude', cwd: root, runtimeRoot, environment: { PATH: 'test' } }, {
+		spawn() { throw new Error('spawn refused'); },
+		toolServer,
+	});
+	try {
+		const agent = await service.createAgent(profile(), { controlProtocol: 'native_tools' });
+		await assert.rejects(agent.prewarm(), (error) => error.code === 'SPAWN_FAILED');
+		const files = (await readdir(runtimeRoot, { recursive: true })).filter((name) => path.basename(name).startsWith('mcp-config-'));
+		assert.deepEqual(files, []);
+	} finally {
+		await service.stop();
+		await toolServer.stop();
+		await close();
+	}
 });
 
 test('a Claude process that confirms a different model is rejected before any Minecraft tool runs', async () => {
@@ -469,7 +516,7 @@ test('Claude goal translation is a one-shot JSON decision without tools', async 
 
 test('buildClaudeLaunch keeps the bridge secret out of the child and disables auto-memory', () => {
 	const launch = buildClaudeLaunch(profile(), { executable: 'claude', environment: { PATH: 'p', CUSTOM_SECRET: 'x', ANTHROPIC_BASE_URL: 'https://example.invalid' }, bridgeSecretEnvironmentVariable: 'CUSTOM_SECRET' }, {
-		cwd: 'C:\\workspace', systemPromptFile: 'C:\\prompt.md', mcpConfig: null, streaming: false,
+		cwd: 'C:\\workspace', systemPromptFile: 'C:\\prompt.md', mcpConfigFile: null, streaming: false,
 	});
 	assert.equal(launch.options.env.CUSTOM_SECRET, undefined);
 	assert.equal(launch.options.env.ANTHROPIC_BASE_URL, 'https://example.invalid');
@@ -479,7 +526,7 @@ test('buildClaudeLaunch keeps the bridge secret out of the child and disables au
 
 test('buildClaudeLaunch requests Claude fast mode only for the priority tier when the config opts in', () => {
 	const settingsOf = (config, overrides) => {
-		const { args } = buildClaudeLaunch(profile(overrides), { executable: 'claude', ...config }, { cwd: 'C:\\workspace', systemPromptFile: 'C:\\prompt.md', mcpConfig: null, streaming: true });
+		const { args } = buildClaudeLaunch(profile(overrides), { executable: 'claude', ...config }, { cwd: 'C:\\workspace', systemPromptFile: 'C:\\prompt.md', mcpConfigFile: null, streaming: true });
 		return args.includes('--settings') ? args[args.indexOf('--settings') + 1] : null;
 	};
 	assert.equal(settingsOf({ fastMode: true }), '{"fastMode":true}');
@@ -658,6 +705,35 @@ test('stopping the Claude tool server during listener startup leaves no live rou
 			body: JSON.stringify({ jsonrpc: '2.0', id: 2, method: 'tools/list' }),
 		});
 		assert.equal(response.status, 200, 'a deliberate restart opens a new listener');
+	} finally { await server.stop(); }
+});
+
+test('the Claude tool server answers JSON-RPC errors with the request id and the matching code', async () => {
+	const server = new ClaudeToolServer();
+	const route = await server.register({ callTool: async (name) => { throw new Error(`body lost while running ${name}`); } });
+	const post = async (body) => {
+		const response = await fetch(route.url, { method: 'POST', headers: { 'content-type': 'application/json', authorization: `Bearer ${route.token}` }, body });
+		return { status: response.status, body: response.status === 200 ? await response.json() : null };
+	};
+	const rpc = (message) => post(JSON.stringify({ jsonrpc: '2.0', ...message }));
+	const error = ({ body }) => ({ id: body.id, code: body.error?.code });
+	try {
+		// Only a body that cannot be parsed, or carries no usable id, gets a null id.
+		assert.deepEqual(error(await post('{"jsonrpc":"2.0","id":1,')), { id: null, code: -32700 });
+		assert.deepEqual(error(await post('[]')), { id: null, code: -32600 });
+		assert.deepEqual(error(await rpc({ id: { nested: true }, method: 'ping' })), { id: null, code: -32600 });
+		assert.deepEqual(error(await post(JSON.stringify({ jsonrpc: '1.0', id: 4, method: 'ping' }))), { id: 4, code: -32600 });
+		assert.deepEqual(error(await rpc({ id: 5, method: 42 })), { id: 5, code: -32600 });
+		assert.deepEqual(error(await rpc({ id: 'unknown-6', method: 'resources/list' })), { id: 'unknown-6', code: -32601 });
+		assert.deepEqual(error(await rpc({ id: 7, method: 'tools/list', params: 'all' })), { id: 7, code: -32602 });
+		assert.deepEqual(error(await rpc({ id: 8, method: 'tools/call', params: { arguments: {} } })), { id: 8, code: -32602 });
+		assert.deepEqual(error(await rpc({ id: 9, method: 'tools/call', params: { name: 'say', arguments: 'hello' } })), { id: 9, code: -32602 });
+		// A tool that throws used to come back as a null-id parse error, which Claude Code cannot match to its call.
+		const failed = await rpc({ id: 'call-10', method: 'tools/call', params: { name: 'say', arguments: { message: 'hi' } } });
+		assert.deepEqual(error(failed), { id: 'call-10', code: -32603 });
+		assert.match(failed.body.error.message, /body lost while running say/);
+		assert.deepEqual((await rpc({ id: 11, method: 'ping' })).body, { jsonrpc: '2.0', id: 11, result: {} });
+		assert.equal((await rpc({ method: 'notifications/initialized' })).status, 202);
 	} finally { await server.stop(); }
 });
 
@@ -1279,6 +1355,34 @@ const scriptedLongTurn = (scripts, { onTool = () => {} } = {}) => ({
 		}
 		child.emitLine({ type: 'result', subtype: 'success', is_error: false, result: 'done', session_id: `session-${index + 1}` });
 	},
+});
+
+test('a slow private-directory repair runs once at agent creation, never on a Claude Code start or standby warm-up', async () => {
+	// On Windows the private-artifact helper starts whoami and PowerShell twice, seconds on a CI host.
+	const prepared = [];
+	const slowWindowsAcl = async (file) => { prepared.push(file); await settle(600); };
+	let toolExecutions = 0;
+	const { service, children, close } = await harness({
+		async onUser(child, content) {
+			if (content.startsWith('Mid-turn continuation')) {
+				child.emitLine({ type: 'result', subtype: 'success', is_error: false, result: 'continued', session_id: `session-${children.indexOf(child) + 1}` });
+				return;
+			}
+			usageLine(child, `long-${children.indexOf(child)}-${child.lines.length}`, 85_000);
+			await child.rpc('tools/call', { name: 'say', arguments: { message: 'continue' }, _meta: { 'claudecode/toolUseId': `toolu_${children.indexOf(child)}` } });
+			child.emitLine({ type: 'result', subtype: 'success', is_error: false, result: 'continued', session_id: `session-${children.indexOf(child) + 1}` });
+		},
+	}, { contextRotationTokens: 80_000 }, { preparePrivateArtifact: slowWindowsAcl });
+	try {
+		const agent = await service.createAgent(profile(), { controlProtocol: 'native_tools' });
+		assert.equal(prepared.length, 1, 'the agent directory is secured before createAgent resolves');
+		await agent.act('First long turn.', { goalRevision: 0, executeTool: async () => { toolExecutions += 1; return { state: 'SUCCEEDED' }; } });
+		await agent.act('Second long turn.', { goalRevision: 0, executeTool: async () => { toolExecutions += 1; return { state: 'SUCCEEDED' }; } });
+		assert.equal(toolExecutions, 2);
+		assert.equal(children.length, 3, 'both standbys warmed inside their deadline');
+		assert.deepEqual(prepared.map((file) => path.basename(file)), ['system-prompt-1.md'], 'three process starts, one directory repair');
+		for (const child of children) assert.equal(path.dirname(child.mcpConfigFile), path.dirname(prepared[0]), 'every MCP config lands in the secured directory');
+	} finally { await close(); }
 });
 
 test('one long Claude turn repeats funded handoffs, each result reaching the model once', async () => {

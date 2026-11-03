@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.server.pov;
 
+import dev.agaminggod.arenaagents.compat.McCompat;
+
 import dev.agaminggod.arenaagents.mixin.AbstractContainerMenuAccessor;
 import dev.agaminggod.arenaagents.pov.AgentPovPosePayload;
 import dev.agaminggod.arenaagents.pov.PovInventory;
@@ -270,12 +272,12 @@ public record PovAgentSnapshot(
 	}
 
 	private static net.minecraft.world.item.component.BundleContents wireBundle(net.minecraft.world.item.component.BundleContents bundle) {
-		List<net.minecraft.world.item.ItemStackTemplate> entries = bundle.itemCopies()
+		List<net.minecraft.world.item.ItemStackTemplate> entries = McCompat.bundleItemCopies(bundle)
 				.map(PovAgentSnapshot::wireStack)
 				.filter(entry -> !entry.isEmpty())
 				.map(net.minecraft.world.item.ItemStackTemplate::fromNonEmptyStack)
 				.toList();
-		var stripped = new net.minecraft.world.item.component.BundleContents(entries).asMutable();
+		var stripped = McCompat.mutableBundle(new net.minecraft.world.item.component.BundleContents(entries));
 		int selected = bundle.getSelectedItemIndex();
 		if (selected >= 0 && selected < entries.size()) stripped.toggleSelectedItem(selected);
 		return stripped.toImmutable();

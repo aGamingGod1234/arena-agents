@@ -670,9 +670,35 @@ export function pearlHuntLine({ observation = null, position = null, open = '' }
 	const others = near.length - 1;
 	// c3 123456789-2: the model let a running travel_to carry it past endermen 6-9 m away; the walk is part of the fact.
 	const action = observation.currentAction?.active === true ? observation.currentAction.actionType : null;
+	const unready = angry ? null : endermanGearGap(observation);
 	return `enderman ${Math.round(target.distance)} m, ${dy === 0 ? 'level' : dy > 0 ? `${dy} up` : `${-dy} down`}, ${angry ? 'angry at you' : 'calm'}`
 		+ `${others > 0 ? `, ${others} more within ${HUNT_RANGE} m` : ''}; pearls ${held}/${needed} open`
-		+ `${/^(travel_to|navigate_to)$/.test(action ?? '') ? `; your ${action} is still running and does not stop for it` : ''}`;
+		+ `${/^(travel_to|navigate_to)$/.test(action ?? '') ? `; your ${action} is still running and does not stop for it` : ''}`
+		+ (unready === null ? '' : `; not geared for it (${unready}): it hits for 7 and has 40 health, so leave a calm one calm and do not look at it until you are`);
+}
+
+const SWORD_TIERS = Object.freeze({ wooden: 1, golden: 1, stone: 2, copper: 2, iron: 3, diamond: 4, netherite: 5 });
+// Armour points at which a stone weapon is enough: an enderman's 7 falls to about 4 through iron (AGENTS.md fight facts).
+const ENDERMAN_ARMOR_POINTS = 10;
+const ENDERMAN_HUNT_HEALTH = 14;
+
+/**
+ * What the body lacks to take a calm enderman on (null when geared): an iron-or-better sword or axe, or a stone one
+ * with 10+ armour points, and 14+ health. An unarmoured body dies to three hits; a wooden sword needs about ten.
+ */
+export function endermanGearGap(observation) {
+	const items = observation?.inventory?.items ?? [];
+	let tier = 0;
+	for (const item of items) {
+		const match = /^minecraft:(\w+?)_(sword|axe)$/.exec(item?.itemId ?? '');
+		if (match && item.count > 0) tier = Math.max(tier, SWORD_TIERS[match[1]] ?? 0);
+	}
+	const armor = Number.isFinite(observation?.player?.armor) ? observation.player.armor : 0;
+	const health = observation?.player?.health;
+	const gaps = [];
+	if (tier < 3 && !(tier >= 2 && armor >= ENDERMAN_ARMOR_POINTS)) gaps.push(tier === 0 ? 'no sword or axe' : tier < 2 ? 'only a wooden or golden weapon' : `stone weapon with ${armor} armour`);
+	if (Number.isFinite(health) && health < ENDERMAN_HUNT_HEALTH) gaps.push(`health ${Math.round(health)}`);
+	return gaps.length === 0 ? null : gaps.join(', ');
 }
 
 /** A pearl source to act on now: an enderman in view, or a calm adult piglin within 48 while gold is held. */

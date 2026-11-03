@@ -8,7 +8,6 @@ import net.minecraft.network.protocol.game.ServerboundRenameItemPacket;
 import net.minecraft.network.protocol.game.ServerboundSelectTradePacket;
 import net.minecraft.network.protocol.game.ServerboundSetCreativeModeSlotPacket;
 import net.minecraft.network.protocol.game.ServerboundSignUpdatePacket;
-import net.minecraft.network.protocol.game.ServerboundPunchPacket;
 import net.minecraft.world.InteractionHand;
 
 /** Which vanilla screen packets a takeover relays to the agent, and which a spectator's mirror drops. */
@@ -22,12 +21,12 @@ public final class PovOutgoingRelayVerification {
 
 	public static int verify() {
 		check(PovOutgoingRelay.relayable(new ServerboundRenameItemPacket("x")), "anvil names are relayed");
-		check(PovOutgoingRelay.relayable(new ServerboundSignUpdatePacket(BlockPos.ZERO, java.util.List.of("a", "b", "c", "d"), net.minecraft.world.level.block.entity.SignTextSlot.FRONT)), "sign text is relayed");
+		check(PovOutgoingRelay.relayable(dev.agaminggod.arenaagents.compat.McCompat.signUpdatePacket(BlockPos.ZERO, java.util.List.of("a", "b", "c", "d"), true)), "sign text is relayed");
 		check(PovOutgoingRelay.relayable(new ServerboundEditBookPacket(0, List.of("p"), Optional.empty())), "book text is relayed");
 		check(PovOutgoingRelay.relayable(new ServerboundSelectTradePacket(0)), "trade selection is relayed");
-		check(!PovOutgoingRelay.relayable(ServerboundPunchPacket.INSTANCE), "unrelated packets stay the operator's");
+		check(!PovOutgoingRelay.relayable(net.minecraft.network.protocol.game.ServerboundClientTickEndPacket.INSTANCE), "unrelated packets stay the operator's");
 		check(PovOutgoingRelay.menuPacket(new ServerboundSelectTradePacket(0))
-				&& !PovOutgoingRelay.menuPacket(new ServerboundSignUpdatePacket(BlockPos.ZERO, java.util.List.of("", "", "", ""), net.minecraft.world.level.block.entity.SignTextSlot.FRONT)),
+				&& !PovOutgoingRelay.menuPacket(dev.agaminggod.arenaagents.compat.McCompat.signUpdatePacket(BlockPos.ZERO, java.util.List.of("", "", "", ""), true)),
 				"only menu packets are dropped for spectators");
 		check(PovOutgoingRelay.relayable(new ServerboundSetCreativeModeSlotPacket(36, net.minecraft.world.item.ItemStack.EMPTY))
 				&& !PovOutgoingRelay.menuPacket(new ServerboundSetCreativeModeSlotPacket(36, net.minecraft.world.item.ItemStack.EMPTY)),

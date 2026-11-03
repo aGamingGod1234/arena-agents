@@ -266,6 +266,9 @@ public final class ReflexEngine {
 				if (found == null && reading.focus() != null) found = reading.focus();
 				if (point == null && reading.point() != null) point = reading.point();
 			}
+			// A default rule sleeps while its action needs an item the body does not hold (no shield, no food), so a
+			// default shield or eat rule costs nothing and reports no failure until the item is there.
+			if (truth && sleepsWithoutItem(rule, ReflexActions.lacks(player, rule.action()))) truth = false;
 			boolean until = !rule.until().isEmpty();
 			for (ReflexSpec.Condition condition : rule.until()) {
 				if (!until) break;
@@ -509,5 +512,10 @@ public final class ReflexEngine {
 	private long now() {
 		MinecraftServer server = manager.server();
 		return server == null ? 0L : server.getTickCount();
+	}
+
+	/** A coordinator default rule whose action lacks its item (ReflexActions.lacks) does not fire; a model rule does. */
+	static boolean sleepsWithoutItem(ReflexSpec.Rule rule, String lacks) {
+		return rule.sleepsWithoutItem(lacks);
 	}
 }

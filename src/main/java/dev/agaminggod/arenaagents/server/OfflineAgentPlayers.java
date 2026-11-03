@@ -39,7 +39,7 @@ import net.minecraft.stats.StatType;
 import net.minecraft.world.scores.ScoreAccess;
 import net.minecraft.world.scores.ScoreHolder;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
+import dev.agaminggod.arenaagents.compat.McEntityTypes;
 import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.RespawnAnchorBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -533,7 +533,7 @@ public final class OfflineAgentPlayers {
 				if (state.getBlock() instanceof RespawnAnchorBlock
 						&& (forced || state.getValue(RespawnAnchorBlock.CHARGE) > 0)
 						&& RespawnAnchorBlock.canSetSpawn(configured, pos)) {
-					Optional<Vec3> stand = RespawnAnchorBlock.findStandUpPosition(EntityTypes.PLAYER, configured, pos);
+					Optional<Vec3> stand = RespawnAnchorBlock.findStandUpPosition(McEntityTypes.PLAYER, configured, pos);
 					if (stand.isPresent()) {
 						float anchorYaw = calculateRespawnYaw(stand.orElseThrow(), pos);
 						Optional<AnchorCharge> anchor = forced ? Optional.empty() : Optional.of(new AnchorCharge(configured, pos, state));
@@ -543,7 +543,7 @@ public final class OfflineAgentPlayers {
 				if (state.getBlock() instanceof BedBlock
 						&& configured.environmentAttributes().getValue(EnvironmentAttributes.BED_RULE, pos).canSetSpawn(configured)) {
 					Direction facing = state.getValue(BedBlock.FACING);
-					Optional<Vec3> stand = BedBlock.findStandUpPosition(EntityTypes.PLAYER, configured, pos, facing, yaw);
+					Optional<Vec3> stand = BedBlock.findStandUpPosition(McEntityTypes.PLAYER, configured, pos, facing, yaw);
 					if (stand.isPresent()) {
 						float respawnYaw = calculateRespawnYaw(stand.orElseThrow(), pos);
 						return new VanillaRespawnTarget(configured, stand.orElseThrow(), respawnYaw, 0.0F, gameMode, false, Optional.empty());

@@ -1,15 +1,16 @@
 package dev.agaminggod.arenaagents.server.runtime.reflex;
 
+import dev.agaminggod.arenaagents.compat.McCompat;
+
 import dev.agaminggod.arenaagents.server.runtime.ArmSwing;
 import carpet.script.utils.Tracer;
 import dev.agaminggod.arenaagents.client.navigation.GridPosition;
-import dev.agaminggod.arenaagents.mixin.LivingEntitySwingStateAccessor;
-import dev.agaminggod.arenaagents.mixin.SwingStateAccessor;
 import dev.agaminggod.arenaagents.server.perception.LavaSpread;
 import dev.agaminggod.arenaagents.server.perception.ThreatPerception;
 import dev.agaminggod.arenaagents.server.perception.WaterAirFacts;
 import dev.agaminggod.arenaagents.server.runtime.controller.CombatPlanning;
 import dev.agaminggod.arenaagents.server.runtime.controller.HazardExits;
+import dev.agaminggod.arenaagents.server.runtime.controller.HotbarWeapons;
 import dev.agaminggod.arenaagents.server.runtime.controller.SafeStep;
 import dev.agaminggod.arenaagents.server.runtime.controller.ServerNavigationController;
 import dev.agaminggod.arenaagents.server.runtime.controller.SwimPlanning;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -398,10 +400,9 @@ final class ReflexActions {
 		}
 
 		/** Hostile mobs within {@link #GUARD_RANGE} that the player can see, nearest first. */
-		/** Old swinging && swingTime <= 1: swingTime started at -1 and rose each tick, 26.3 ticks start at 0. */
+		/** A swing that began this tick or the last (each target counts swing ticks its own way; see McCompat). */
 		private static boolean swingJustStarted(Mob mob) {
-			LivingEntity.SwingState swing = ((LivingEntitySwingStateAccessor) mob).arenaagents$swingState();
-			return mob.isSwinging() && ((SwingStateAccessor) swing).arenaagents$ticks() <= 2;
+			return McCompat.swingJustStarted(mob);
 		}
 
 		private static List<Mob> attackers(ServerPlayer player) {
@@ -447,6 +448,8 @@ final class ReflexActions {
 		private static final int APPROACH_TICKS = 20;
 		private int hits;
 		private int waited;
+		/** The hotbar weapon a player swaps to before swinging (sword over axe over tool), chosen once per firing. */
+		private int weapon = -1;
 
 		@Override
 		public Step tick(Context context, Consumer<AgentInputState> input) {
@@ -454,6 +457,7 @@ final class ReflexActions {
 			if (!(context.focus() instanceof LivingEntity target) || !target.isAlive()) {
 				return hits > 0 ? Step.done(hits + " hit(s)") : Step.failed("no target in reach");
 			}
+			if (weapon < 0) weapon = CombatPlanning.bestWeaponSlot(HotbarWeapons.candidates(player), player.getInventory().getSelectedSlot());
 			var range = player.getAttackRangeWith(player.getMainHandItem());
 			// The dragon's root is not pickable: a player hits it through a part, the head taking full damage.
 			Entity aim = target instanceof EnderDragon dragon ? dragonPart(player, dragon) : target;
@@ -461,12 +465,14 @@ final class ReflexActions {
 				if (hits > 0) return Step.done(hits + " hit(s)");
 				if (++waited > APPROACH_TICKS || player.distanceTo(aim) > range.effectiveMaxRange(player) + 2.0D) return Step.failed("target out of reach");
 				input.accept(look(player, aim.getBoundingBox().getCenter(), 0.0F, 0.0F, false, false,
-						player.getInventory().getSelectedSlot(), InteractionHand.MAIN_HAND));
+						weapon, InteractionHand.MAIN_HAND));
 				return Step.running("facing " + type(target));
 			}
 			input.accept(look(player, aim.getBoundingBox().getCenter(), 0.0F, 0.0F, false, false,
-					player.getInventory().getSelectedSlot(), InteractionHand.MAIN_HAND));
-			boolean ready = player.getAttackStrengthScale(0.5F) >= CombatPlanning.READY_ATTACK_STRENGTH && !player.isUsingItem();
+					weapon, InteractionHand.MAIN_HAND));
+			// The swap lands on the next tick; the swing waits for it (and for the charge it resets, as a player's does).
+			boolean ready = player.getInventory().getSelectedSlot() == weapon
+					&& player.getAttackStrengthScale(0.5F) >= CombatPlanning.READY_ATTACK_STRENGTH && !player.isUsingItem();
 			if (ready && Tracer.rayTrace(player, 1.0F, range.effectiveMaxRange(player), false) instanceof EntityHitResult hit
 					&& (hit.getEntity() == target || hit.getEntity() instanceof EnderDragonPart part && part.parentMob == target)) {
 				player.attack(hit.getEntity());
@@ -544,7 +550,12 @@ final class ReflexActions {
 		}
 	}
 
-	/** Eat the most nourishing food that can be eaten now, from the offhand or the hotbar. */
+	/**
+	 * Eat the food a player would pick now, from the offhand or the hotbar: the one that fills the hunger gap best with
+	 * the most saturation and the least waste. Foods with a harmful effect (rotten flesh, spider eyes, poisonous potatoes,
+	 * pufferfish, suspicious stew) or a side effect (chorus fruit teleports) are eaten only when nothing else is held,
+	 * and golden apples are kept for low health ({@link #bestFood}).
+	 */
 	static final class Eat implements Behaviour {
 		private int slot = -2;
 		private InteractionHand hand;
@@ -555,23 +566,13 @@ final class ReflexActions {
 		public Step tick(Context context, Consumer<AgentInputState> input) {
 			ServerPlayer player = context.player();
 			if (slot == -2) {
-				if (edible(player, player.getOffhandItem()) != null) {
-					hand = InteractionHand.OFF_HAND;
-					slot = player.getInventory().getSelectedSlot();
-				} else {
-					int best = -1;
-					int nutrition = -1;
-					for (int index = 0; index < 9; index++) {
-						FoodProperties food = edible(player, player.getInventory().getItem(index));
-						if (food != null && food.nutrition() > nutrition) {
-							nutrition = food.nutrition();
-							best = index;
-						}
-					}
-					if (best < 0) return Step.failed(anyFood(player) ? "hunger is full" : "no food in hotbar or offhand");
-					hand = InteractionHand.MAIN_HAND;
-					slot = best;
-				}
+				List<FoodOption> options = new ArrayList<>(10);
+				for (int index = 0; index < 9; index++) options.add(FoodOption.of(player, player.getInventory().getItem(index)));
+				options.add(FoodOption.of(player, player.getOffhandItem()));
+				int best = bestFood(options, 20 - player.getFoodData().getFoodLevel(), player.getHealth());
+				if (best < 0) return Step.failed(anyFood(player) ? "hunger is full" : "no food in hotbar or offhand");
+				hand = best == 9 ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
+				slot = best == 9 ? player.getInventory().getSelectedSlot() : best;
 				ItemStack stack = hand == InteractionHand.OFF_HAND ? player.getOffhandItem() : player.getInventory().getItem(slot);
 				item = BuiltInRegistries.ITEM.getKey(stack.getItem()).toString();
 				count = stack.getCount();
@@ -585,9 +586,50 @@ final class ReflexActions {
 			return Step.running("eating " + item);
 		}
 
-		private static FoodProperties edible(ServerPlayer player, ItemStack stack) {
-			FoodProperties food = stack.isEmpty() ? null : stack.get(DataComponents.FOOD);
-			return food != null && player.canEat(food.canAlwaysEat()) ? food : null;
+		private static boolean edible(ServerPlayer player, FoodProperties food) {
+			return food != null && player.canEat(food.canAlwaysEat());
+		}
+
+		/** Foods whose effect hurts (poison, nausea, hunger, a random stew) or moves the body (chorus fruit). */
+		static final Set<String> LAST_RESORT_FOODS = Set.of("minecraft:rotten_flesh", "minecraft:spider_eye", "minecraft:poisonous_potato",
+				"minecraft:pufferfish", "minecraft:suspicious_stew", "minecraft:chorus_fruit", "minecraft:chicken");
+		/** Kept for healing: their absorption and regeneration are worth far more than their hunger points. */
+		static final Set<String> HEALING_FOODS = Set.of("minecraft:golden_apple", "minecraft:enchanted_golden_apple");
+		/** At or below this health a golden apple is the right thing to eat. */
+		static final float HEALING_FOOD_HEALTH = 8.0F;
+
+		/** One hand or hotbar slot as the food choice reads it; {@link #NONE} when it holds nothing edible now. */
+		record FoodOption(String id, int nutrition, float saturation) {
+			static final FoodOption NONE = new FoodOption(null, 0, 0.0F);
+
+			static FoodOption of(ServerPlayer player, ItemStack stack) {
+				FoodProperties food = stack.isEmpty() ? null : stack.get(DataComponents.FOOD);
+				return edible(player, food) ? new FoodOption(BuiltInRegistries.ITEM.getKey(stack.getItem()).toString(), food.nutrition(), food.saturation()) : NONE;
+			}
+		}
+
+		/**
+		 * The index of the food to eat among hotbar slots 0..8 and the offhand (9), or -1 for none. Ordinary food scores
+		 * the hunger it fills plus its saturation minus half the hunger it wastes; healing foods come next (first at low
+		 * health), and last-resort foods only when nothing else is held. Ties keep the offhand, then the lower slot.
+		 */
+		static int bestFood(List<FoodOption> options, int hungerGap, float health) {
+			int best = -1;
+			double bestScore = Double.NEGATIVE_INFINITY;
+			for (int index = 0; index < options.size(); index++) {
+				FoodOption food = options.get(index);
+				if (food == null || food.id() == null) continue;
+				double fill = Math.min(food.nutrition(), Math.max(0, hungerGap));
+				double score = fill + food.saturation() - 0.5D * Math.max(0, food.nutrition() - Math.max(0, hungerGap));
+				if (HEALING_FOODS.contains(food.id())) score += health <= HEALING_FOOD_HEALTH ? 1_000.0D : -500.0D;
+				else if (LAST_RESORT_FOODS.contains(food.id())) score -= 1_000.0D;
+				if (index == 9) score += 0.01D;
+				if (score > bestScore) {
+					bestScore = score;
+					best = index;
+				}
+			}
+			return best;
 		}
 
 		private static boolean anyFood(ServerPlayer player) {
@@ -1948,6 +1990,18 @@ final class ReflexActions {
 		private GridPosition exit;
 		/** The exit was chosen out of the seen flow's way (not the cell it reaches last). */
 		private boolean exitOut;
+		/** The water-bucket douse of a burn held out of the flames, tried once per firing. */
+		private Place douse;
+		private boolean doused;
+		static final String WATER_BUCKET = "minecraft:water_bucket";
+
+		/** A water bucket in the hotbar or offhand, and water that stays where it is placed (not the Nether). */
+		static boolean canDouse(ServerPlayer player) {
+			if (player.level().environmentAttributes().getValue(net.minecraft.world.attribute.EnvironmentAttributes.WATER_EVAPORATES, player.blockPosition())) return false;
+			if (player.getOffhandItem().is(net.minecraft.world.item.Items.WATER_BUCKET)) return true;
+			for (int index = 0; index < 9; index++) if (player.getInventory().getItem(index).is(net.minecraft.world.item.Items.WATER_BUCKET)) return true;
+			return false;
+		}
 		private String hazard;
 		private int sinceChoice;
 		/** Out of the hazard on safe footing with the body still burning: what the result says until the burn ends. */
@@ -1988,8 +2042,9 @@ final class ReflexActions {
 			}
 			if (afterburn != null) {
 				if (safeFooting(player)) {
-					if (!player.isOnFire()) return Step.done(afterburn + "; no longer burning");
-					return holdBurning(afterburn, player, input);
+					// Water extinguishes before Place finishes aiming and scooping its source back.
+					if (douse == null && !player.isOnFire()) return Step.done(afterburn + "; no longer burning");
+					return holdBurning(afterburn, context, player, input);
 				}
 				// Shoved or slid off it, or the flow came on: get out again.
 				afterburn = null;
@@ -2011,7 +2066,7 @@ final class ReflexActions {
 				if (contact == null && !flowing) {
 					// Out of the hazard but still in the air (jumped out over a drop): landing is part of getting out.
 					if (!player.onGround() && !player.isInWater() && hazard != null) return Step.running("landing out of " + hazard);
-					if (hazard != null && player.isOnFire() && safeFooting(player)) return holdBurning("out of " + hazard, player, input);
+					if (hazard != null && player.isOnFire() && safeFooting(player)) return holdBurning("out of " + hazard, context, player, input);
 					return Step.done("not touching fire or lava" + burnRemaining(player));
 				}
 				hazard = contact != null ? contact.wire : HazardExits.Contact.LAVA.wire;
@@ -2085,7 +2140,7 @@ final class ReflexActions {
 				return Step.running("not clear of " + hazard + " yet; checking footing");
 			}
 			String out = "out of " + hazard + " at " + exit.x() + "," + exit.y() + "," + exit.z();
-			if (player.isOnFire() && safeFooting(player)) return holdBurning(out, player, input);
+			if (player.isOnFire() && safeFooting(player)) return holdBurning(out, context, player, input);
 			return Step.done(out + burnRemaining(player));
 		}
 
@@ -2100,8 +2155,20 @@ final class ReflexActions {
 		}
 
 		/** Out on safe footing and still burning: stand there, running, until the fire is out (see {@link #settled}). */
-		private Step holdBurning(String out, ServerPlayer player, Consumer<AgentInputState> input) {
+		private Step holdBurning(String out, Context context, ServerPlayer player, Consumer<AgentInputState> input) {
 			afterburn = out;
+			// A player out of the flames with a water bucket douses the burn instead of standing in it: water at the feet
+			// puts the fire out at once and the source is scooped back (Place's clutch finish). Not where water evaporates.
+			if (douse == null && !doused && canDouse(player)) {
+				douse = new Place(WATER_BUCKET, "below");
+				doused = true;
+			}
+			if (douse != null) {
+				Step step = douse.tick(context, input);
+				if (step.status() == ReflexScheduler.ActionStatus.RUNNING) return Step.running(out + "; dousing the burn with water: " + step.detail());
+				douse = null;
+				if (!player.isOnFire()) return Step.done(out + "; doused with water: " + step.detail());
+			}
 			input.accept(new AgentInputState(0.0F, 0.0F, false, false, false, false, false,
 					player.getYRot(), player.getXRot(), player.getInventory().getSelectedSlot(), InteractionHand.MAIN_HAND));
 			return Step.running(out + burnRemaining(player) + "; holding this footing until the fire is out");

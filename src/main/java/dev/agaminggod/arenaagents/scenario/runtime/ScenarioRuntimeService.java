@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.scenario.runtime;
 
+import dev.agaminggod.arenaagents.compat.McCompat;
+
 import dev.agaminggod.arenaagents.agent.AgentDomainException;
 import dev.agaminggod.arenaagents.agent.AgentIdentity;
 import dev.agaminggod.arenaagents.agent.AgentLifecycleState;
@@ -901,7 +903,7 @@ public final class ScenarioRuntimeService {
 			);
 		}
 		ScenarioRosterActivator activator = new ScenarioRosterActivator();
-		activator.protect(readyPlayers.values().stream().toList(), player -> player.setPermanentlyInvulnerable(true));
+		activator.protect(readyPlayers.values().stream().toList(), player -> McCompat.setPermanentlyInvulnerable(player, true));
 		ScenarioPreflight.Verdict preflight = ScenarioPreflight.assess(new ScenarioPreflight.Input(
 				CoordinatorStatusStore.latest(activation.level.getServer()),
 				activation.contestants.stream().map(contestant -> new ScenarioPreflight.RequiredProfile(
@@ -953,7 +955,7 @@ public final class ScenarioRuntimeService {
 			ScenarioLoadoutService loadouts = new ScenarioLoadoutService();
 			activator.activate(
 					ready,
-					contestant -> contestant.player.setPermanentlyInvulnerable(false),
+					contestant -> McCompat.setPermanentlyInvulnerable(contestant.player, false),
 					contestant -> loadouts.apply(
 							contestant.player,
 							activation.config.preset().category(),
@@ -1388,7 +1390,7 @@ public final class ScenarioRuntimeService {
 		if (wireName == null) return ScenarioAgentEvent.ActionFamily.OTHER;
 		return switch (wireName) {
 			case "control", "move_to", "navigate_to", "travel_to", "follow_entity", "look_at" -> ScenarioAgentEvent.ActionFamily.MOVEMENT;
-			case "break_block", "pick_up_item" -> ScenarioAgentEvent.ActionFamily.HARVEST;
+			case "break_block", "mine_vein", "pick_up_item" -> ScenarioAgentEvent.ActionFamily.HARVEST;
 			case "place_block" -> ScenarioAgentEvent.ActionFamily.BUILD;
 			case "craft_inventory", "craft_table", "furnace_transaction", "transfer_container",
 					"equip_item", "select_tool", "select_item" -> ScenarioAgentEvent.ActionFamily.CRAFT;

@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.server.runtime;
 
+import dev.agaminggod.arenaagents.compat.McCompat;
+
 import dev.agaminggod.arenaagents.server.perception.ObservationVisibility;
 import dev.agaminggod.arenaagents.server.perception.ThreatPerception;
 import dev.agaminggod.arenaagents.server.runtime.controller.ServerController;
@@ -20,7 +22,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
+import dev.agaminggod.arenaagents.compat.McEntityTypes;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
@@ -177,7 +179,7 @@ public final class ServerBarterController implements ServerController {
 		turnTicks = 0;
 		int selected = player.getInventory().getSelectedSlot();
 		ItemStack one = player.getInventory().removeItem(selected, 1);
-		if (one.isEmpty() || player.drop(one, true, net.minecraft.util.Prediction.PREDICTED) == null) return stop(player, "ITEM_DROP_REJECTED", "The gold ingot could not be thrown");
+		if (one.isEmpty() || McCompat.drop(player, one, true, true) == null) return stop(player, "ITEM_DROP_REJECTED", "The gold ingot could not be thrown");
 		ArmSwing.use(player, InteractionHand.MAIN_HAND);
 		thrown++;
 		lastThrowMs = nowEpochMs;
@@ -242,7 +244,7 @@ public final class ServerBarterController implements ServerController {
 
 	private List<Piglin> visiblePiglins(ServerPlayer player) {
 		return player.level().getEntitiesOfClass(Piglin.class, player.getBoundingBox().inflate(PIGLIN_RANGE),
-				p -> p.isAlive() && p.getType() == EntityTypes.PIGLIN && !p.isBaby() && player.distanceTo(p) <= PIGLIN_RANGE
+				p -> p.isAlive() && p.getType() == McEntityTypes.PIGLIN && !p.isBaby() && player.distanceTo(p) <= PIGLIN_RANGE
 						&& ObservationVisibility.canSeeEntity(player, p));
 	}
 

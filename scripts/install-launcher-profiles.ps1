@@ -1,6 +1,8 @@
 [CmdletBinding()]
 param(
     [string] $ProjectRoot,
+    # Minecraft target: 26.1, 26.2 or 26.3; empty is the default in gradle.properties (as ./gradlew -Pmc=<target>).
+    [string] $Target,
     [string] $LauncherProfiles = (Join-Path $env:APPDATA '.minecraft\launcher_profiles.json')
 )
 
@@ -8,8 +10,13 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 if ([string]::IsNullOrWhiteSpace($ProjectRoot)) { $ProjectRoot = Split-Path -Parent $PSScriptRoot }
 
-$MinecraftVersion = '26.3'
-$LoaderVersion = '0.20.1'
+. (Join-Path $PSScriptRoot 'project-metadata.ps1')
+$null = Use-ArenaMinecraftTarget $ProjectRoot $Target
+$MinecraftVersion = Get-ArenaGradleProperty $ProjectRoot 'minecraft_version'
+$LoaderVersion = Get-ArenaGradleProperty $ProjectRoot 'loader_version'
+foreach ($version in @($MinecraftVersion, $LoaderVersion)) {
+    if ([string]::IsNullOrWhiteSpace($version)) { throw "Could not read the target's versions from $ProjectRoot\gradle.properties" }
+}
 $VersionId = "fabric-loader-$LoaderVersion-$MinecraftVersion"
 $Utf8NoBom = [Text.UTF8Encoding]::new($false)
 $Project = [IO.Path]::GetFullPath($ProjectRoot)

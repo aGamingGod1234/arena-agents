@@ -410,6 +410,7 @@ export class DynamicCoordinator extends EventEmitter {
 			// dispatch and unknown-receipt durability still use the real notebook.
 			notebook: {
 				...Object.fromEntries(['writeNote', 'query', 'listUnresolved', 'recordDispatch', 'recordUnknown', 'findReceipt'].map((method) => [method, this.#playerMemory.notebook[method].bind(this.#playerMemory.notebook)])),
+				...(typeof this.#playerMemory.notebook.recordNotSent === 'function' ? { recordNotSent: this.#playerMemory.notebook.recordNotSent.bind(this.#playerMemory.notebook) } : {}),
 				recordReceipt: async () => {},
 			},
 			memoryOperation: (record, operation) => this.#playerMemory.execute(record, operation),
@@ -2389,7 +2390,7 @@ export class DynamicCoordinator extends EventEmitter {
 	#deliverNativeSteer(work, request, { toolBoundary = false } = {}) {
 		if (this.#reissueMidCallTurnForHazard(work, request, toolBoundary) || this.#reissueUnawareSurvivalTurn(work, request, toolBoundary)) return;
 		work.steerQueued = mergePlannerRequest(work.steerQueued, request);
-		const interruption = nativeSteerInterruption(request);
+		const interruption = this.#steerInterruptionFor(work, request);
 		if (work.steerPromise !== null) {
 			if (interruption) this.#interruptForSteer(work);
 			return;
@@ -2471,7 +2472,7 @@ export class DynamicCoordinator extends EventEmitter {
 			work.steerQueued = null;
 			work.steerRequest = request;
 			const steerStartedAt = performance.now();
-			const interruption = nativeSteerInterruption(request);
+			const interruption = this.#steerInterruptionFor(work, request);
 			let deliveryRequest = request;
 			try {
 				const record = this.#registry.get(work.agentId);
@@ -2556,7 +2557,20 @@ export class DynamicCoordinator extends EventEmitter {
 	 * a tool boundary, so while its call is still generating, the blocking tool it issues next was chosen without the
 	 * danger: that tool starts already interrupted (its action keeps running, the model decides what follows).
 	 */
+	/** nativeSteerInterruption, except that hits from the mob a running fight is fighting do not cut that fight short. */
+	#steerInterruptionFor(work, request) {
+		const record = this.#registry.get(work.agentId);
+		const authored = record === null ? null : this.#nativeRuntime.runningAction?.(record) ?? null;
+		const running = authored === null ? null : { ...authored, startHealth: this.#runningActions.get(work.agentId)?.health ?? null };
+		const decision = fightSteerDecision(request, running, work.fightSteerState ?? null);
+		work.fightSteerCut = decision.cut;
+		if (decision.absorbed) this.#writeTrace('native_steer_absorbed_by_fight', { agentId: work.agentId, goalRevision: work.goalRevision, traceId: work.traceId, actionType: running.actionType });
+		return decision.interruption;
+	}
+
 	#interruptForSteer(work) {
+		// The band reference moves only when a fight is really cut short.
+		if (work.fightSteerCut != null) work.fightSteerState = work.fightSteerCut;
 		const armNext = TOOL_BOUNDARY_STEER_PROVIDERS.includes(this.#registry.get(work.agentId)?.provider);
 		return this.#nativeRuntime.interruptBlockingTool(work.agentId, armNext ? { armNext } : undefined);
 	}
@@ -6417,14 +6431,16 @@ export function lavaFlowLine(observation) {
 		+ `Before then: ${step}, dam its inflow ${inflow.join()} with a block, or arm lava_flowing -> leave_lava/place_block, faster than a reply.`;
 }
 
-export function nativeSteerInterruption(request) {
+export function nativeSteerInterruption(request) { return steerInterruption(request, true); }
+
+function steerInterruption(request, countHits) {
 	const event = request?.nativeEvent;
 	// Undelivered danger keeps its original facts even if the newest observation no longer shows it.
-	if (event?.mergedEvents?.some(nativeEvent => nativeSteerInterruption({ nativeEvent }) === 'danger')) return 'danger';
+	if (event?.mergedEvents?.some(nativeEvent => steerInterruption({ nativeEvent }, countHits) === 'danger')) return 'danger';
 	const trigger = event?.event === 'program_attention'
 		? event.status?.decision?.trigger ?? event.trigger ?? request?.trigger
 		: event?.trigger ?? request?.trigger;
-	if (trigger === 'damage' || request?.dangerSummary?.hitsSinceLastUpdate > 0) return 'danger';
+	if (countHits && (trigger === 'damage' || request?.dangerSummary?.hitsSinceLastUpdate > 0)) return 'danger';
 	if (['lava', LAVA_FLOW_TRIGGER, 'fire', 'drowning', 'suffocation', 'fall', 'cloud'].includes(trigger)) return 'danger';
 	const observation = event?.observation ?? request?.observation ?? {};
 	const flights = observation?.player?.incomingProjectiles ?? observation?.incomingProjectiles ?? [];
@@ -6439,6 +6455,75 @@ export function nativeSteerInterruption(request) {
 		return signals.includes('imminent') || trigger === 'threat' && signals.includes('ranged_aiming')
 			|| creeper && (threat.swelling === true || signals.includes('swelling') || signals.includes('creeper_close'));
 	}) ? 'danger' : null;
+}
+
+const FIGHT_ACTION_TYPES = new Set(['fight_target', 'fight_until']);
+// The same bands the danger coalescer reports at: crossing one changes what a sensible choice is.
+const FIGHT_STEER_HEALTH_BANDS = Object.freeze([14, 10, 6]);
+
+function steerAttackers(request) {
+	const attackers = [], types = new Set();
+	const add = (event, fallbackTrigger) => {
+		const attacker = event?.observation?.player?.lastAttacker;
+		const trigger = event?.status?.decision?.trigger ?? event?.trigger ?? fallbackTrigger;
+		if (attacker != null || trigger === 'damage') {
+			attackers.push(attacker ?? {});
+			types.add(attacker?.type);
+		}
+		const merged = event?.mergedEvents ?? [];
+		const retainedHits = merged.reduce((count, entry) => count + add(entry), 0);
+		// The current envelope also appears in mergedEvents; count original damage events only once.
+		return merged.length > 0 ? retainedHits : trigger === 'damage' ? 1 : 0;
+	};
+	const retainedHits = add(request?.nativeEvent ?? request, request?.trigger);
+	for (const type of request?.dangerSummary?.attackers ?? []) if (typeof type === 'string') types.add(type);
+	// A type-only summary cannot establish which individuals caused hits missing from the retained history.
+	const identitiesComplete = !(request?.dangerSummary?.hitsSinceLastUpdate > retainedHits)
+		&& [...types].every(type => attackers.some(attacker => attacker.type === type));
+	return { attackers, types, identitiesComplete };
+}
+
+function steerHealth(request) {
+	const summary = request?.dangerSummary?.healthNow;
+	if (Number.isFinite(summary)) return summary;
+	const health = (request?.nativeEvent?.observation ?? request?.observation)?.player?.health;
+	return Number.isFinite(health) ? health : null;
+}
+
+/**
+ * Whether a danger steer should cut the agent's running fight short. A fight the model chose already answers hits
+ * from the mob it is fighting, so those hits reach the model with the next steer instead of interrupting the fight
+ * every two seconds. Anything new still interrupts: hazards, projectiles, escalating threats, an attacker outside the
+ * fight, an unknown attacker, or health falling into a lower band (14, 10, 6) since the fight started or last cut.
+ * Pure: returns { interruption, absorbed, cut }. The caller stores `cut` as the new reference only when it actually
+ * interrupts, so evaluating the same steer twice gives the same answer.
+ */
+export function fightSteerDecision(request, running, state = null) {
+	const interruption = nativeSteerInterruption(request);
+	if (interruption !== 'danger' || !FIGHT_ACTION_TYPES.has(running?.actionType)) return { interruption, absorbed: false, cut: null };
+	const health = steerHealth(request);
+	const reference = state?.actionId === running.actionId ? state.health : running.startHealth ?? health;
+	const cut = { interruption, absorbed: false, cut: { actionId: running.actionId, health } };
+	if (steerInterruption(request, false) === 'danger') return cut;
+	// Standing in lava or fire, or burning, is never the fight's business, whatever trigger carried it.
+	const player = (request?.nativeEvent?.observation ?? request?.observation)?.player ?? {};
+	if (player.inLava === true || player.onFire === true || player.hazard != null) return cut;
+	const band = (value) => FIGHT_STEER_HEALTH_BANDS.filter(threshold => value <= threshold).length;
+	if (health === null || reference == null || band(health) > band(reference)) return cut;
+	const { attackers, types, identitiesComplete } = steerAttackers(request);
+	if (types.size === 0) return cut;
+	const args = running.arguments ?? {};
+	// A fight that follows through on attackers handles any hostile mob attacker itself; players stay the model's call.
+	const takesAttackers = running.actionType === 'fight_target' && (args.continueWithAttackers === true
+		|| ['nearest_attacker', 'highest_risk'].includes(args.targetPolicy));
+	const mob = (type) => typeof type === 'string' && type !== 'minecraft:player';
+	const covered = [...types].every(mob) && (takesAttackers
+		|| (running.actionType === 'fight_until'
+			? [...types].every(type => args.mob === type || args.mob === type.replace(/^minecraft:/, ''))
+			: identitiesComplete && typeof args.targetId === 'string' && args.targetId.length > 0
+				&& attackers.every(attacker => attacker.uuid === args.targetId)));
+	if (!covered) return cut;
+	return { interruption: null, absorbed: true, cut: null };
 }
 
 function finiteCount(value) { return Number.isSafeInteger(value) && value >= 0 ? value : null; }
@@ -6509,18 +6594,23 @@ export function buildNativeEventInput(record, { event, trigger, programId, statu
 	const landmarkSource = Array.isArray(observation.landmarks) ? observation.landmarks : null;
 	const nearbyContainerSource = Array.isArray(observation.nearbyContainers) ? observation.nearbyContainers : null;
 	const optionSource = Array.isArray(observation.options) ? observation.options : null;
-	const inventoryRows = boundedEventArray(inventorySource, 32);
-	const itemRows = boundedEventArray(itemSource, 16);
+	const dangerTrigger = normalizedEvent === 'program_attention' ? status?.decision?.trigger ?? trigger : trigger;
+	// A danger wake is read for one decision (fight, flee, cover, eat): it carries the facts for that decision and leaves
+	// world detail (tag lists, distant landmarks, routine sounds, hit boxes) to observe/inspect (audit 2026-11-01 #9).
+	const leanDanger = normalizedEvent !== 'program_planning_due' && isLeanDangerWake({ trigger: dangerTrigger, status, observation, conversationOnly, dangerWake });
+	const inventoryRows = boundedEventArray(leanDanger ? inventorySource.map(leanDangerItemTags) : inventorySource, 32);
+	const itemRows = boundedEventArray(leanDanger ? itemSource.map(leanDangerItemTags) : itemSource, 16);
 	// Hostile or hunting mobs (including ones only heard behind the agent) survive the nearest-16 cut.
-	const entityRows = boundedEventArray(entitySource, 16, isHazardousEventFact);
+	const entityRows = boundedEventArray(leanDanger ? entitySource.map(leanDangerEntity) : entitySource, 16, isHazardousEventFact);
 	// Pay for landing/burn danger facts with terrain detail. The full observation stays
 	// queryable; coverage below names the omitted rows, and threat/inventory detail keeps its existing budget.
-	const dangerTrigger = normalizedEvent === 'program_attention' ? status?.decision?.trigger ?? trigger : trigger;
 	const burningOrContact = (DANGER_DECISION_TRIGGERS.has(dangerTrigger) || dangerTrigger === 'low_health')
 		&& (inHazardContact(observation.player) || burnFacts(observation.player) !== null);
-	const blockRows = boundedEventArray(blockSource, burningOrContact ? 12 : 32,
+	const blockRows = boundedEventArray(leanDanger ? blockSource.map(leanDangerBlockTags) : blockSource, burningOrContact ? 12 : 32,
 		burningOrContact ? row => isHazardousEventFact(row) || row?.blockId === 'minecraft:water' : isHazardousEventFact);
-	const landmarkRows = landmarkSource === null ? null : boundedEventArray(landmarkSource, 32);
+	// Danger keeps the landmarks that change an escape (lava, fire, water); the rest are coverage-counted as omitted.
+	const landmarkRows = landmarkSource === null ? null : boundedEventArray(leanDanger
+		? landmarkSource.filter((row) => isHazardousEventFact(row) || LEAN_DANGER_LANDMARK_BLOCKS.has(row?.blockId)).map(leanDangerBlockTags) : landmarkSource, 32);
 	const nearbyContainerRows = nearbyContainerSource === null ? null : boundedEventArray(nearbyContainerSource, 16);
 	const optionRows = optionSource === null ? null : boundedEventArray(optionSource, 4);
 	const compactObservation = {
@@ -6532,12 +6622,12 @@ export function buildNativeEventInput(record, { event, trigger, programId, statu
 		...(observation.ready === undefined ? {} : { ready: observation.ready }),
 		...(observation.status === undefined ? {} : { status: observation.status }),
 		...(observation.velocity === undefined ? {} : { velocity: observation.velocity }),
-		player: visibleObservation(observation).player ?? {},
+		player: leanDanger ? leanDangerPlayer(visibleObservation(observation).player ?? {}) : visibleObservation(observation).player ?? {},
 		inventory: {
 			items: inventoryRows.values,
 			...(observation.inventory?.selectedSlot === undefined ? {} : { selectedSlot: observation.inventory.selectedSlot }),
 			...(observation.inventory?.selectedItem === undefined ? {} : { selectedItem: observation.inventory.selectedItem }),
-			...(observation.inventory?.tagCounts === undefined ? {} : { tagCounts: observation.inventory.tagCounts }),
+			...(observation.inventory?.tagCounts === undefined ? {} : { tagCounts: leanDanger ? leanDangerTagCounts(observation.inventory.tagCounts) : observation.inventory.tagCounts }),
 		},
 		items: itemRows.values,
 		entities: entityRows.values,
@@ -6568,6 +6658,7 @@ export function buildNativeEventInput(record, { event, trigger, programId, statu
 			...(nearbyContainerRows === null ? {} : { nearbyContainers: eventArrayCoverage(nearbyContainerSource, nearbyContainerRows.values) }),
 			...(optionRows === null ? {} : { options: eventArrayCoverage(optionSource, optionRows.values) }),
 		},
+		...(leanDanger ? { omittedForDanger: LEAN_DANGER_NOTE } : {}),
 	};
 	const conversationEntries = Array.isArray(conversation) ? conversation : (Array.isArray(conversation?.entries) ? conversation.entries : []);
 	// recipientId is always this agent and goalRevision is bookkeeping; the sender's name and operator flag stay.
@@ -7748,6 +7839,66 @@ function compactEventRows(value) {
 	});
 }
 
+/**
+ * The wakes read for one survival decision: a danger trigger, low health, hazard contact or burning, a program's urgent
+ * danger decision, a fight that bailed out on low health, and the no-task danger wake.
+ */
+export function isLeanDangerWake({ trigger, status, observation = {}, conversationOnly = false, dangerWake = false } = {}) {
+	if (conversationOnly === true) return dangerWake === true;
+	if (DANGER_DECISION_TRIGGERS.has(trigger) || trigger === 'low_health') return true;
+	if (status?.decision?.priority === 'urgent' && DANGER_DECISION_TRIGGERS.has(status.decision.trigger)) return true;
+	if (inHazardContact(observation.player) || observation.player?.onFire === true || burnFacts(observation.player) !== null) return true;
+	return observation.currentAction?.active !== true && observation.lastResult?.reasonCode === 'LOW_HEALTH_BAILOUT';
+}
+
+export const LEAN_DANGER_NOTE = 'Danger wake: block and item tags other than mining, tool, weapon, food and armour tags, landmarks other than hazards and water, routine sound rows and entity bounds are left out; coordinates are rounded to 0.1. observe or inspect returns them.';
+// Tags a defence or escape can turn on: what digs or places where, and what is a weapon, tool, food or armour.
+const LEAN_DANGER_BLOCK_TAG = /^#minecraft:(mineable\/|needs_|logs$|logs_that_burn$|planks$|replaceable$|climbable$|fire$|campfires$|leaves$|dirt$|sand$)/;
+const LEAN_DANGER_ITEM_TAG = /^#c:(foods|tools|armors|shields)(\/|$)|^#minecraft:(swords|axes|pickaxes|shovels|hoes|planks|logs|arrows|head_armor|chest_armor|leg_armor|foot_armor|meat|fishes)$/;
+const LEAN_DANGER_LANDMARK_BLOCKS = new Set(['minecraft:water', 'minecraft:lava', 'minecraft:fire', 'minecraft:soul_fire', 'minecraft:magma_block', 'minecraft:powder_snow']);
+// Sounds of the fight itself and of footsteps: the threat rows already carry the mobs that made them.
+const LEAN_DANGER_ROUTINE_SOUND = /^entity\.[a-z_]+\.(hurt|step|death|ambient|attack|swim|splash|eat|burp)(\.|$)|^entity\.player\.|^block\.[a-z_]+\.(step|break|place|hit|fall)$/;
+
+function leanDangerBlockTags(row) {
+	if (row === null || typeof row !== 'object' || !Array.isArray(row.tags)) return row;
+	return { ...row, tags: row.tags.filter((tag) => typeof tag !== 'string' || LEAN_DANGER_BLOCK_TAG.test(tag)) };
+}
+
+function leanDangerItemTags(row) {
+	if (row === null || typeof row !== 'object' || !Array.isArray(row.tags)) return row;
+	return { ...row, tags: row.tags.filter((tag) => typeof tag !== 'string' || LEAN_DANGER_ITEM_TAG.test(tag)) };
+}
+
+function leanDangerTagCounts(tagCounts) {
+	if (tagCounts === null || typeof tagCounts !== 'object' || Array.isArray(tagCounts)) return tagCounts;
+	return Object.fromEntries(Object.entries(tagCounts).filter(([tag]) => LEAN_DANGER_ITEM_TAG.test(tag)));
+}
+
+const roundTenth = (value) => typeof value === 'number' && Number.isFinite(value) ? Math.round(value * 10) / 10 : value;
+const roundHundredth = (value) => typeof value === 'number' && Number.isFinite(value) ? Math.round(value * 100) / 100 : value;
+
+function leanDangerEntity(row) {
+	if (row === null || typeof row !== 'object' || Array.isArray(row)) return row;
+	const { bounds: _bounds, ...lean } = row;
+	for (const axis of ['x', 'y', 'z']) if (axis in lean) lean[axis] = roundTenth(lean[axis]);
+	if (lean.velocity !== null && typeof lean.velocity === 'object' && !Array.isArray(lean.velocity)) {
+		lean.velocity = Object.fromEntries(Object.entries(lean.velocity).map(([axis, value]) => [axis, roundHundredth(value)]));
+	}
+	return lean;
+}
+
+function leanDangerPlayer(player) {
+	if (player === null || typeof player !== 'object') return player;
+	const lean = { ...player };
+	for (const axis of ['x', 'y', 'z']) if (axis in lean) lean[axis] = roundTenth(lean[axis]);
+	if (Array.isArray(lean.heard)) {
+		const heard = lean.heard.filter((row) => typeof row?.sound !== 'string' || !LEAN_DANGER_ROUTINE_SOUND.test(row.sound));
+		if (heard.length === 0) delete lean.heard;
+		else lean.heard = heard;
+	}
+	return lean;
+}
+
 function isHazardousEventFact(value) {
 	if (value === null || typeof value !== 'object') return false;
 	if (value.hostile === true && value.alive !== false) return true;
@@ -7832,6 +7983,22 @@ export function nativeObservationSignature(observation) {
 	return createHash('sha256').update(JSON.stringify(sortFactualValue(nativeActionableObservationProjection(observation)))).digest('hex');
 }
 
+// Beyond this range an entity's arrival or departure is a change, its wandering is not. Threats that target or
+// approach the body are tracked separately in player.threats, which keeps every signal.
+const SIGNATURE_ENTITY_DETAIL_RANGE = 16;
+
+function nativeSignatureEntity({ distance, velocity, ...entity }) {
+	if (Number.isFinite(distance) && distance > SIGNATURE_ENTITY_DETAIL_RANGE) {
+		return { stableId: entity.stableId, type: entity.type, distant: true };
+	}
+	const block = { ...entity };
+	for (const axis of ['x', 'y', 'z']) if (Number.isFinite(block[axis])) block[axis] = Math.floor(block[axis]);
+	if (block.position && typeof block.position === 'object') {
+		block.position = Object.fromEntries(Object.entries(block.position).map(([axis, value]) => [axis, Number.isFinite(value) ? Math.floor(value) : value]));
+	}
+	return block;
+}
+
 function nativeActionableObservationProjection(observation) {
 	const projection = { ...observation };
 	// Receipt/sample identity remains in raw facts, but is not a changed world fact.
@@ -7846,8 +8013,17 @@ function nativeActionableObservationProjection(observation) {
 	delete projection.failureClass;
 	delete projection.continuity;
 	delete projection.lastLiveInventory;
+	// Motion and view direction are not world facts: every heartbeat of a standing body jitters them.
+	delete projection.velocity;
+	delete projection.view;
 	if (observation.player !== undefined) {
 		projection.player = { ...observation.player };
+		// Where the body stands, by block. Sub-block drift and where it looks change nothing a player would act on.
+		for (const axis of ['x', 'y', 'z']) if (Number.isFinite(projection.player[axis])) projection.player[axis] = Math.floor(projection.player[axis]);
+		delete projection.player.yaw;
+		delete projection.player.pitch;
+		// Saturation drains on its own; hunger (foodLevel) and health carry the change that matters.
+		delete projection.player.saturation;
 		if (observation.player.effects !== undefined) {
 			projection.player.effects = observation.player.effects.map(({ duration, ...effect }) => effect);
 		}
@@ -7866,7 +8042,7 @@ function nativeActionableObservationProjection(observation) {
 		}
 	}
 	if (Array.isArray(observation.items)) projection.items = observation.items.map(({ distance, ...item }) => item);
-	if (Array.isArray(observation.entities)) projection.entities = observation.entities.map(({ distance, ...entity }) => entity);
+	if (Array.isArray(observation.entities)) projection.entities = observation.entities.map(nativeSignatureEntity);
 	if (Array.isArray(observation.furnaces)) {
 		projection.furnaces = observation.furnaces.map(({ observedAtEpochMs, estimatedReadyAtEpochMs, ...furnace }) => furnace);
 	}

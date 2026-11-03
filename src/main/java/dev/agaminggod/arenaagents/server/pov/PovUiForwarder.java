@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.server.pov;
 
+import dev.agaminggod.arenaagents.compat.McCompat;
+
 import carpet.patches.EntityPlayerMPFake;
 import dev.agaminggod.arenaagents.pov.AgentPovBookPayload;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -51,7 +53,7 @@ public final class PovUiForwarder {
 		PovSessionRuntime.takeoverOf(player).ifPresent(session -> {
 			ServerPlayer operator = server.getPlayerList().getPlayer(session.operatorId());
 			if (operator == null || operator.hasDisconnected()) return;
-			if (packet instanceof ClientboundOpenSignEditorPacket editor) sendSign(operator, player, editor.pos());
+			if (packet instanceof ClientboundOpenSignEditorPacket editor) sendSign(operator, player, McCompat.signEditorPosition(editor));
 			operator.connection.send(packet);
 		});
 	}

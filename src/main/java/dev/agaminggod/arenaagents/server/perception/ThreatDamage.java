@@ -20,8 +20,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.entity.monster.cubemob.Slime;
-import net.minecraft.world.entity.monster.cubemob.MagmaCube;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.CrossbowItem;
@@ -155,8 +153,8 @@ public final class ThreatDamage {
 			DamageSource source, boolean player) {
 		AttributeInstance attack = attacker.getAttribute(Attributes.ATTACK_DAMAGE);
 		double base = attack == null ? 0.0D : attack.getValue();
-		if (attacker instanceof net.minecraft.world.entity.monster.cubemob.AbstractCubeMob cube && (cube instanceof Slime || cube instanceof MagmaCube)) {
-			return slimeContactDamage(base, cube instanceof MagmaCube, cube.isTiny());
+		if (dev.agaminggod.arenaagents.compat.McCompat.isSlimeOrMagmaCube(attacker)) {
+			return slimeContactDamage(base, dev.agaminggod.arenaagents.compat.McCompat.isMagmaCube(attacker), dev.agaminggod.arenaagents.compat.McCompat.cubeIsTiny(attacker));
 		}
 		if (base <= 0.0D) return 0.0D;
 		float damage = EnchantmentHelper.modifyDamage(level, weapon, agent, source, (float) base);

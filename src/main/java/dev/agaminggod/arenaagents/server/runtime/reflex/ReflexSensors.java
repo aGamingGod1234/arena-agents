@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.server.runtime.reflex;
 
+import dev.agaminggod.arenaagents.compat.McCompat;
+
 import dev.agaminggod.arenaagents.client.navigation.GridPosition;
 import dev.agaminggod.arenaagents.mixin.AbstractArrowInvoker;
 import dev.agaminggod.arenaagents.server.perception.ObservationVisibility;
@@ -24,7 +26,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.item.ItemEntity;
 import dev.agaminggod.arenaagents.server.runtime.InventoryRoom;
 import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.entity.monster.Enderman;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.entity.projectile.hurtingprojectile.AbstractHurtingProjectile;
@@ -480,13 +482,13 @@ public final class ReflexSensors {
 	 */
 	private static Reading enderman(ServerPlayer player, double within, ObservationVisibility.Frame frame, boolean gaze) {
 		if (gaze && !LivingEntity.PLAYER_NOT_WEARING_DISGUISE_ITEM.test(player)) return Reading.FALSE;
-		Enderman nearest = null;
+		Monster nearest = null;
 		double best = Double.POSITIVE_INFINITY;
-		for (Enderman enderman : player.level().getEntitiesOfClass(Enderman.class, player.getBoundingBox().inflate(within), Enderman::isAlive)) {
+		for (Monster enderman : player.level().getEntitiesOfClass(McCompat.ENDERMAN, player.getBoundingBox().inflate(within), Monster::isAlive)) {
 			double distance = player.distanceTo(enderman);
 			if (distance > within || distance >= best) continue;
 			if (gaze ? enderman.getTarget() == player || !enderman.isLookingAtMe(player, GAZE_TOLERANCE, true, false, enderman.getEyeY())
-					: !enderman.isCreepy() || !frame.hasLineOfSight(enderman) && distance > 16.0D) continue;
+					: !McCompat.endermanCreepy(enderman) || !frame.hasLineOfSight(enderman) && distance > 16.0D) continue;
 			best = distance;
 			nearest = enderman;
 		}

@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.server.perception;
 
+import dev.agaminggod.arenaagents.compat.McCompat;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import java.util.ArrayDeque;
@@ -77,7 +79,7 @@ public final class PlayerObservationEvents {
 			}
 		} else if (packet instanceof ClientboundPlayerChatPacket chat) {
 			Component text = chat.filterMask().isEmpty()
-					? chat.unsignedContent().orElseGet(() -> Component.literal(chat.body().content()))
+					? java.util.Objects.requireNonNullElseGet(McCompat.unsignedContent(chat), () -> Component.literal(chat.body().content()))
 					: chat.filterMask().applyWithFormatting(chat.body().content());
 			if (text != null) stream.publicChat(chat.sender().toString(), chat.chatType().decorate(text).getString(), tick, dimension);
 		} else if (packet instanceof ClientboundDisguisedChatPacket chat) {

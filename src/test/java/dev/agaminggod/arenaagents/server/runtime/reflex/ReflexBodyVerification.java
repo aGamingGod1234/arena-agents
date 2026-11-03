@@ -4,6 +4,7 @@ import com.google.gson.JsonParser;
 import dev.agaminggod.arenaagents.client.navigation.GridPosition;
 import dev.agaminggod.arenaagents.client.navigation.WalkabilityView;
 import dev.agaminggod.arenaagents.server.runtime.controller.SafeStep;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,9 @@ public final class ReflexBodyVerification {
 		heldTriggerFiresOnceReleased();
 		breathThreshold();
 		armedWithoutItem();
+		defaultsSleepWithoutTheirItem();
+		foodChoice();
+		coordinatorDefaultsParse();
 		return assertions;
 	}
 
@@ -167,6 +171,95 @@ public final class ReflexBodyVerification {
 		check(ReflexActions.lacks(parsed.get(4).action(), inventory, 0, none) == null, "select reaches the main inventory");
 		slots.put(9, held("minecraft:water_bucket"));
 		check(ReflexActions.lacks(parsed.get(0).action(), inventory, 0, none) != null, "a bucket in the main inventory is not in reach of a clutch");
+	}
+
+	/** The coordinator's item-dependent defaults (reflexes.mjs) sleep without their item; the same rule of the model's own fires. */
+	private static void defaultsSleepWithoutTheirItem() {
+		List<ReflexSpec.Rule> parsed = rules("""
+				[{"id":"default-arrow","coordinatorDefault":true,"when":{"type":"incoming_projectile","withinS":0.6},"do":{"type":"shield"},"ttlMs":3600000},
+				 {"id":"default-eat","coordinatorDefault":true,"priority":3,"when":[{"type":"hunger_below","value":14},{"type":"hostile_near","within":8,"not":true}],"do":{"type":"eat"},"cooldownMs":20000,"ttlMs":3600000},
+				 {"id":"default-creeper","coordinatorDefault":true,"priority":9,"when":{"type":"creeper_fusing","within":5},"do":{"type":"sprint_away","blocks":8},"ttlMs":3600000},
+				 {"id":"my-arrow","when":{"type":"incoming_projectile","withinS":0.6},"do":{"type":"shield"}}]""");
+		ReflexActions.Held none = ReflexActions.Held.EMPTY;
+		java.util.function.IntFunction<ReflexActions.Held> empty = index -> none;
+		check(ReflexEngine.sleepsWithoutItem(parsed.get(0), ReflexActions.lacks(parsed.get(0).action(), empty, 0, none)), "no shield: the default arrow rule sleeps");
+		check(ReflexEngine.sleepsWithoutItem(parsed.get(1), ReflexActions.lacks(parsed.get(1).action(), empty, 0, none)), "no food: the default eat rule sleeps");
+		check(!ReflexEngine.sleepsWithoutItem(parsed.get(2), ReflexActions.lacks(parsed.get(2).action(), empty, 0, none)), "sprinting away needs nothing");
+		check(!ReflexEngine.sleepsWithoutItem(parsed.get(3), ReflexActions.lacks(parsed.get(3).action(), empty, 0, none)), "the model's own rule still fires and reports");
+		check(!ReflexEngine.sleepsWithoutItem(parsed.get(0), ReflexActions.lacks(parsed.get(0).action(), empty, 0, held("minecraft:shield"))), "an offhand shield wakes it");
+		java.util.function.IntFunction<ReflexActions.Held> bread = index -> index == 2 ? new ReflexActions.Held("minecraft:bread", true, false) : none;
+		check(!ReflexEngine.sleepsWithoutItem(parsed.get(1), ReflexActions.lacks(parsed.get(1).action(), bread, 0, none)), "hotbar food wakes it");
+		check(ReflexSpec.MAX_RULES == 22, "the mod holds the model's 12 rules plus the 10 defaults");
+	}
+
+	/** Vanilla food values (nutrition, saturation) for the choice below. */
+	private static ReflexActions.Eat.FoodOption food(String id, int nutrition, double saturation) {
+		return new ReflexActions.Eat.FoodOption("minecraft:" + id, nutrition, (float) saturation);
+	}
+
+	/** The rule this replaced: the offhand if edible, else the hotbar food with the most nutrition (first on a tie). */
+	private static int oldFoodChoice(List<ReflexActions.Eat.FoodOption> options) {
+		if (options.get(9).id() != null) return 9;
+		int best = -1, nutrition = -1;
+		for (int index = 0; index < 9; index++) if (options.get(index).id() != null && options.get(index).nutrition() > nutrition) { nutrition = options.get(index).nutrition(); best = index; }
+		return best;
+	}
+
+	private static List<ReflexActions.Eat.FoodOption> hotbar(ReflexActions.Eat.FoodOption offhand, ReflexActions.Eat.FoodOption... slots) {
+		List<ReflexActions.Eat.FoodOption> options = new ArrayList<>();
+		for (int index = 0; index < 9; index++) options.add(index < slots.length ? slots[index] : ReflexActions.Eat.FoodOption.NONE);
+		options.add(offhand == null ? ReflexActions.Eat.FoodOption.NONE : offhand);
+		return options;
+	}
+
+	/** The eat reflex picks what a player would: never poison while real food is held, golden apples only to heal. */
+	private static void foodChoice() {
+		record Case(String name, List<ReflexActions.Eat.FoodOption> options, int gap, float health, String wanted) {}
+		List<Case> cases = List.of(
+				new Case("raw chicken beside safe offhand berries at hunger 12", hotbar(food("sweet_berries", 2, 0.4), food("chicken", 2, 1.2)), 8, 20.0F, "minecraft:sweet_berries"),
+				new Case("offhand raw chicken beside safe berries", hotbar(food("chicken", 2, 1.2), food("sweet_berries", 2, 0.4)), 8, 20.0F, "minecraft:sweet_berries"),
+				new Case("only raw chicken while starving", hotbar(null, food("chicken", 2, 1.2)), 10, 20.0F, "minecraft:chicken"),
+				new Case("cooked chicken beside offhand berries", hotbar(food("sweet_berries", 2, 0.4), food("cooked_chicken", 6, 7.2)), 8, 20.0F, "minecraft:cooked_chicken"),
+				new Case("golden apple at healing threshold beside raw chicken", hotbar(null, food("chicken", 2, 1.2), food("bread", 5, 6.0), food("golden_apple", 4, 9.6)), 8, 8.0F, "minecraft:golden_apple"),
+				new Case("golden apple above healing threshold beside raw chicken", hotbar(null, food("chicken", 2, 1.2), food("bread", 5, 6.0), food("golden_apple", 4, 9.6)), 8, 8.01F, "minecraft:bread"),
+				new Case("rotten flesh beside a carrot", hotbar(null, food("rotten_flesh", 4, 0.8), food("carrot", 3, 3.6)), 6, 20.0F, "minecraft:carrot"),
+				new Case("golden apple beside an apple at full health", hotbar(null, food("golden_apple", 4, 9.6), food("apple", 4, 2.4)), 8, 20.0F, "minecraft:apple"),
+				new Case("offhand pufferfish beside steak", hotbar(food("pufferfish", 1, 0.2), food("cooked_beef", 8, 12.8)), 10, 20.0F, "minecraft:cooked_beef"),
+				new Case("golden apple at 6 health", hotbar(null, food("bread", 5, 6.0), food("golden_apple", 4, 9.6)), 4, 6.0F, "minecraft:golden_apple"),
+				new Case("spider eye beside sweet berries", hotbar(null, food("spider_eye", 2, 3.2), food("sweet_berries", 2, 0.4)), 4, 20.0F, "minecraft:sweet_berries"),
+				new Case("chorus fruit beside a baked potato", hotbar(null, food("chorus_fruit", 4, 2.4), food("baked_potato", 5, 6.0)), 6, 20.0F, "minecraft:baked_potato"),
+				new Case("steak or berries with 2 hunger missing", hotbar(null, food("cooked_beef", 8, 12.8), food("sweet_berries", 2, 0.4)), 2, 20.0F, "minecraft:cooked_beef"),
+				new Case("only rotten flesh while starving", hotbar(null, food("rotten_flesh", 4, 0.8)), 10, 20.0F, "minecraft:rotten_flesh"));
+		int oldPoor = 0, newPoor = 0;
+		for (Case entry : cases) {
+			int chosen = ReflexActions.Eat.bestFood(entry.options(), entry.gap(), entry.health());
+			String picked = chosen < 0 ? null : entry.options().get(chosen).id();
+			check(entry.wanted().equals(picked), entry.name() + ": eats " + entry.wanted() + ", not " + picked);
+			if (!entry.wanted().equals(picked)) newPoor++;
+			int old = oldFoodChoice(entry.options());
+			if (old < 0 || !entry.wanted().equals(entry.options().get(old).id())) oldPoor++;
+		}
+		check(ReflexActions.Eat.bestFood(hotbar(null), 10, 20.0F) == -1, "nothing edible: no choice");
+		System.out.println("PASS: eat reflex food choice, poor picks in " + cases.size() + " vanilla hotbars: before " + oldPoor + ", after " + newPoor);
+	}
+
+	/** The exact default set the coordinator sends (fixture kept equal by default-reflexes.test.mjs) parses beside 12 model rules. */
+	private static void coordinatorDefaultsParse() {
+		String json;
+		try (var input = ReflexBodyVerification.class.getResourceAsStream("/default-reflex-rules.json")) {
+			check(input != null, "the default reflex fixture is on the test classpath");
+			json = new String(input.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
+		} catch (java.io.IOException error) {
+			throw new IllegalStateException(error);
+		}
+		var defaults = JsonParser.parseString(json).getAsJsonArray();
+		List<ReflexSpec.Rule> parsed = ReflexSpec.parseRules(defaults);
+		check(parsed.size() == defaults.size() && parsed.stream().allMatch(rule -> rule.id().startsWith(ReflexSpec.DEFAULT_RULE_PREFIX)), "every coordinator default parses as a default rule");
+		var full = defaults.deepCopy();
+		for (int index = 0; index < 12; index++) {
+			full.add(JsonParser.parseString("{\"id\":\"own-" + index + "\",\"when\":{\"type\":\"on_fire\"},\"do\":{\"type\":\"leave_fire\"}}"));
+		}
+		check(ReflexSpec.parseRules(full).size() == ReflexSpec.MAX_RULES, "the defaults and a full set of 12 model rules fit the mod's limit exactly");
 	}
 
 	private static ReflexActions.Held held(String id) {

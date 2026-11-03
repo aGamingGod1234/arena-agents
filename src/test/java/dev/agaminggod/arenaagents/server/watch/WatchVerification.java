@@ -4,9 +4,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -31,7 +33,50 @@ public final class WatchVerification {
 		schema();
 		isolation();
 		harmUnderAnotherCommand();
+		offUnlessOptedIn();
 		return assertions;
+	}
+
+	/**
+	 * A player's server pays nothing for the Watcher: without {@code -Darenaagents.watch=true} it registers no tick,
+	 * damage, death or bridge handler. The harness launchers whose reports read arena-watch files opt in explicitly.
+	 */
+	private static void offUnlessOptedIn() {
+		String previous = System.getProperty(Watcher.ENABLE_PROPERTY);
+		try {
+			System.clearProperty(Watcher.ENABLE_PROPERTY);
+			check(!Watcher.enabled(), "the Watcher is off when nothing opts in");
+			for (String off : List.of("false", "", "1", "yes", "on")) {
+				System.setProperty(Watcher.ENABLE_PROPERTY, off);
+				check(!Watcher.enabled(), "only true opts in, not '" + off + "'");
+			}
+			for (String on : List.of("true", "TRUE", " true ")) {
+				System.setProperty(Watcher.ENABLE_PROPERTY, on);
+				check(Watcher.enabled(), "'" + on + "' opts in");
+			}
+			System.clearProperty(Watcher.ENABLE_PROPERTY);
+			Field registered = Watcher.class.getDeclaredField("registered");
+			registered.setAccessible(true);
+			boolean before = registered.getBoolean(null);
+			Watcher.register();
+			check(registered.getBoolean(null) == before, "registering without the opt-in adds no handlers");
+		} catch (ReflectiveOperationException failure) {
+			throw new AssertionError("WatchVerification: Watcher registration state is unreadable", failure);
+		} finally {
+			if (previous == null) System.clearProperty(Watcher.ENABLE_PROPERTY);
+			else System.setProperty(Watcher.ENABLE_PROPERTY, previous);
+		}
+		Map<String, Integer> launchers = Map.of("scripts/run-headless-provider-matrix.mjs", 1,
+				"scripts/run-headless-provider-matrix.ps1", 2, "scripts/quality/test-progress-live.mjs", 1);
+		launchers.forEach((file, servers) -> {
+			try {
+				String text = Files.readString(Path.of(file));
+				check(text.split("-Darenaagents\\.watch=true", -1).length - 1 == servers,
+						file + " opts each server it starts into the Watcher its reports read");
+			} catch (IOException failure) {
+				throw new UncheckedIOException(failure);
+			}
+		});
 	}
 
 	private static void check(boolean condition, String message) {

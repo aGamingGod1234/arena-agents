@@ -5,6 +5,11 @@ import { MAX_ACTION_ARGUMENT_BYTES, validateAction } from './schema.mjs';
 import { isDeepStrictEqual, types as nodeTypes } from 'node:util';
 import { performance } from 'node:perf_hooks';
 const TERMINAL_STATES = new Set(['SUCCEEDED', 'FAILED', 'CANCELLED', 'TIMED_OUT']);
+// Reason codes the coordinator records only when it never handed the action to the bridge, with the terminal state each implies.
+const NOT_SENT_STATES = new Map([['CANCELLED_BEFORE_DISPATCH', 'CANCELLED'], ['DISPATCH_NOT_SENT', 'FAILED']]);
+// Unresolved entries (pending dispatches plus unknown outcomes) kept for reconciliation. Far above real concurrency
+// (one action and one chat per native agent, 256 dispatches per memory context), so the oldest past it is stale.
+const MAX_UNRESOLVED = 1024;
 const MAX_NOTEBOOK_BYTES = 4_000_000;
 const MAX_ACTION_OBSERVATION_BYTES = 16_384;
 const RECEIPT_TEXT_LIMITS = { worldId: 256, actionId: 256, actionType: 128, dimension: 128, reasonCode: 128 };
@@ -51,6 +56,12 @@ export class ModelNotebook {
 	recordUnknown(agentId, receipt) {
 		return this.#recordAction(agentId, actionRecord(receipt, 'coordinator_uncertain', 'UNKNOWN', receipt.reasonCode ?? 'AUTHORITATIVE_RESULT_UNKNOWN'));
 	}
+	/** Terminal record for an action the coordinator provably never sent, so it is history, not an unknown outcome to reconcile. */
+	recordNotSent(agentId, receipt) {
+		const state = NOT_SENT_STATES.get(receipt.reasonCode);
+		if (state === undefined) throw new TypeError(`reasonCode must be one of ${[...NOT_SENT_STATES.keys()].join(', ')}`);
+		return this.#recordAction(agentId, actionRecord(receipt, 'coordinator_not_sent', state, receipt.reasonCode));
+	}
 	async findReceipt(agentId, { actionId, worldId } = {}) {
 		actionId = text(actionId, 'actionId', 256);
 		if (worldId !== undefined) worldId = text(worldId, 'worldId', 256);
@@ -80,6 +91,8 @@ export class ModelNotebook {
 					if (['arguments', 'executionStarted', 'physicalAttempted', 'actionObservation'].every((field) => existing[field] !== undefined || record[field] === undefined)) return existing;
 				}
 				if (existing.source === 'coordinator_uncertain' && record.source === 'coordinator_dispatch') return existing;
+				// A late write-ahead intent cannot reopen an action already settled as never sent; the sender checks it first.
+				if (existing.source === 'coordinator_not_sent' && record.source === 'coordinator_dispatch') return existing;
 				const { revision: _revision, ...merged } = { ...existing, ...record };
 				if (samePayload(existing, merged)) return existing;
 			}
@@ -98,11 +111,13 @@ export class ModelNotebook {
 		const state = await this.#committed(agentId);
 		const normalizedKind = kind.replace(/s$/, '');
 		const matchesKind = (entry) => kind === 'all' || (kind === 'unresolved'
-			? entry.kind === 'receipt' && entry.source !== 'server_action_result'
+			? entry.kind === 'receipt' && unresolved(entry)
 			: entry.kind === normalizedKind);
 		const searchText = search.toLowerCase();
 		const entries = [...state.notes, ...state.receipts, ...(kind === 'unresolved' ? state.recovery : [])].filter((entry) => entry.worldId === worldId && matchesKind(entry) && JSON.stringify(entry).toLowerCase().includes(searchText)).sort((left, right) => right.revision - left.revision);
-		return { worldId, revision: state.revision, offset, total: entries.length, entries: structuredClone(entries.slice(offset, offset + limit)), nextOffset: offset + limit < entries.length ? offset + limit : null, evictedReceipts: state.evictedReceipts, evictedNotes: state.evictedNotes };
+		return { worldId, revision: state.revision, offset, total: entries.length, entries: structuredClone(entries.slice(offset, offset + limit)), nextOffset: offset + limit < entries.length ? offset + limit : null, evictedReceipts: state.evictedReceipts, evictedNotes: state.evictedNotes,
+			// Stale unknowns dropped to stay bounded: their outcome is still unknown, only no longer listed.
+			...(state.evictedUnresolved > 0 ? { evictedUnresolved: state.evictedUnresolved } : {}) };
 	}
 	clear(agentId, { worldId, key } = {}) {
 		worldId = text(worldId, 'worldId', 256);
@@ -191,11 +206,13 @@ export class ModelNotebook {
 		if (!pending) {
 			pending = this.#disk.read(agentId).then(async (saved) => {
 				const state = saved === null ? emptyNotebook() : validateSaved(saved);
-				const previousEvictions = state.evictedNotes + state.evictedReceipts;
+				const resolvedLegacy = resolveLegacyNotSent(state);
+				const evictions = (value) => value.evictedNotes + value.evictedReceipts + (value.evictedUnresolved ?? 0);
+				const previousEvictions = evictions(state);
 				this.#bound(state);
-				// A changed retention setting is a materialized migration, not an
-				// unlogged baseline for subsequent deltas.
-				if (state.evictedNotes + state.evictedReceipts !== previousEvictions) await this.#disk.checkpoint(agentId, state);
+				// A changed retention setting (or a resolved legacy entry) is a materialized
+				// migration, not an unlogged baseline for subsequent deltas.
+				if (resolvedLegacy || evictions(state) !== previousEvictions) await this.#disk.checkpoint(agentId, state);
 				this.#agents.set(agentId, state);
 				return state;
 			});
@@ -207,7 +224,20 @@ export class ModelNotebook {
 		const evictReceipt = receipt => {
 			state.receipts.splice(state.receipts.indexOf(receipt), 1); state.evictedReceipts++;
 			// History retention must never erase an obligation to reconcile a send.
-			if (receipt.source !== 'server_action_result') state.recovery.push(receipt);
+			if (unresolved(receipt)) state.recovery.push(receipt);
+		};
+		// Recovery holds unresolved entries pushed out of the receipt history, all older than what remains there.
+		// Past a bound the oldest matching one is forgotten and counted instead of refusing every later action:
+		// its outcome stays unknown (never treated as not having happened), and the count stays visible.
+		const evictOldestRecovery = (matches = () => true) => {
+			let oldest = -1;
+			for (let index = 0; index < state.recovery.length; index++) {
+				if (matches(state.recovery[index]) && (oldest === -1 || state.recovery[index].revision < state.recovery[oldest].revision)) oldest = index;
+			}
+			if (oldest === -1) return false;
+			state.recovery.splice(oldest, 1);
+			state.evictedUnresolved = (state.evictedUnresolved ?? 0) + 1;
+			return true;
 		};
 		while (state.notes.length > this.#maximumNotes) { state.notes.shift(); state.evictedNotes++; }
 		while (state.receipts.length > this.#maximumReceipts) evictReceipt(state.receipts[0]);
@@ -218,7 +248,7 @@ export class ModelNotebook {
 				evictReceipt(receipt);
 			} else if (note) {
 				state.notes.splice(state.notes.indexOf(note), 1); state.evictedNotes++;
-			} else if (retained?.source === 'server_action_result') {
+			} else if (retained !== null && resolved(retained)) {
 				// An admitted action must remain reconcilable even when its full
 				// terminal evidence exceeds the configured history retention budget.
 				break;
@@ -226,16 +256,19 @@ export class ModelNotebook {
 		}
 		// Admission and notes cannot consume the reconciliation slot. One slot
 		// suffices: mutations are serialized and older terminal history is evictable.
-		// Pending records (including legacy states at exactly 4 MB) are never dropped.
-		const maximumBytes = MAX_NOTEBOOK_BYTES + (retained === null || retained.source === 'server_action_result' ? TERMINAL_RESERVE_BYTES : 0);
+		// Pending dispatches (including legacy states at exactly 4 MB) are never dropped for size.
+		const maximumBytes = MAX_NOTEBOOK_BYTES + (retained === null || resolved(retained) ? TERMINAL_RESERVE_BYTES : 0);
 		while (serializedBytes(state, true) > maximumBytes) {
-			const receipt = state.receipts.find(entry => entry !== retained && entry.source === 'server_action_result');
+			const receipt = state.receipts.find(entry => entry !== retained && resolved(entry));
 			const note = state.notes.find(entry => entry !== retained);
 			if (receipt && (!note || receipt.revision <= note.revision)) evictReceipt(receipt);
 			else if (note) { state.notes.splice(state.notes.indexOf(note), 1); state.evictedNotes++; }
-			else throw recoveryLimit();
+			// Bytes alone do not make an entry stale: give up only outcomes already declared unknown. Pending
+			// write-ahead dispatches may be running now, so if only those remain, admission is refused.
+			else if (!evictOldestRecovery((entry) => entry.source === 'coordinator_uncertain')) throw recoveryLimit();
 		}
-		if (state.recovery.length + state.receipts.filter(entry => entry.source !== 'server_action_result').length > 1024) throw recoveryLimit();
+		// The receipt history holds at most 1024 entries, so trimming recovery always reaches the bound.
+		while (state.recovery.length + state.receipts.filter(unresolved).length > MAX_UNRESOLVED) evictOldestRecovery();
 	}
 }
 
@@ -255,6 +288,25 @@ export function serializedBytes(state, includeRecovery) {
 		for (const entry of list) total += entryBytes(entry);
 	}
 	return total;
+}
+/** Server results and provably unsent actions are settled history; anything else may still have happened. */
+function resolved(entry) { return entry.source === 'server_action_result' || entry.source === 'coordinator_not_sent'; }
+function unresolved(entry) { return entry.kind === 'receipt' && !resolved(entry); }
+/**
+ * Older builds journaled actions that never reached the bridge as unknown outcomes. They are settled: rewrite them
+ * as not-sent history, and drop the ones that had already aged out of history into recovery. True when any changed.
+ */
+function resolveLegacyNotSent(state) {
+	const legacy = (entry) => entry.source === 'coordinator_uncertain' && NOT_SENT_STATES.has(entry.reasonCode);
+	const recovery = state.recovery.filter((entry) => !legacy(entry));
+	let changed = recovery.length !== state.recovery.length;
+	state.recovery = recovery;
+	state.receipts = state.receipts.map((entry) => {
+		if (!legacy(entry)) return entry;
+		changed = true;
+		return { ...entry, source: 'coordinator_not_sent', state: NOT_SENT_STATES.get(entry.reasonCode) };
+	});
+	return changed;
 }
 function recoveryLimit() { return Object.assign(new Error('RECEIPT_RECOVERY_LIMIT'), { code: 'RECEIPT_RECOVERY_LIMIT' }); }
 function samePayload(existing, next) { const { revision: _revision, ...payload } = existing; return isDeepStrictEqual(payload, next); }
@@ -365,6 +417,7 @@ function validateSaved(saved) {
 	const notes = saved.notes.map((note) => ({ kind: 'note', source: 'model_authored', worldId: text(note.worldId, 'worldId', 256), key: text(note.key, 'key', 128), text: text(note.text, 'text', 2048), ...optionalInteger(note, 'goalRevision'), ...noteProvenance(note), ...optionalInteger(note, 'revision') }));
 	const validateReceipt = (receipt) => {
 		const valid = receipt.source === 'server_action_result' && TERMINAL_STATES.has(receipt.state)
+			|| receipt.source === 'coordinator_not_sent' && NOT_SENT_STATES.get(receipt.reasonCode) === receipt.state
 			|| receipt.source === 'coordinator_dispatch' && receipt.state === 'DISPATCHED'
 			|| receipt.source === 'coordinator_uncertain' && receipt.state === 'UNKNOWN';
 		if (!valid) throw new Error('INVALID_NOTEBOOK_RECEIPT');
@@ -373,6 +426,8 @@ function validateSaved(saved) {
 	const receipts = saved.receipts.map(validateReceipt);
 	if (saved.recovery !== undefined && !Array.isArray(saved.recovery)) throw new Error('INVALID_NOTEBOOK');
 	const recovery = (saved.recovery ?? []).map(validateReceipt);
-	if (recovery.some(entry => entry.source === 'server_action_result')) throw new Error('INVALID_NOTEBOOK_RECOVERY');
-	return { version: 1, revision: saved.revision, notes, receipts, recovery, evictedReceipts: Number.isSafeInteger(saved.evictedReceipts) && saved.evictedReceipts >= 0 ? saved.evictedReceipts : 0, evictedNotes: Number.isSafeInteger(saved.evictedNotes) && saved.evictedNotes >= 0 ? saved.evictedNotes : 0 };
+	if (recovery.some(resolved)) throw new Error('INVALID_NOTEBOOK_RECOVERY');
+	const counter = (field) => Number.isSafeInteger(saved[field]) && saved[field] >= 0 ? saved[field] : 0;
+	return { version: 1, revision: saved.revision, notes, receipts, recovery, evictedReceipts: counter('evictedReceipts'), evictedNotes: counter('evictedNotes'),
+		...(counter('evictedUnresolved') > 0 ? { evictedUnresolved: counter('evictedUnresolved') } : {}) };
 }

@@ -26,7 +26,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
+import dev.agaminggod.arenaagents.compat.McEntityTypes;
 import net.minecraft.world.entity.Marker;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.flag.FeatureFlags;
@@ -66,7 +66,7 @@ public final class CameraPathVerification {
 
     private static int verifyTripodCapture() throws Exception {
         try (Fixture fixture = new Fixture()) {
-            var rig = new dev.agaminggod.arenaagents.camera.CameraRig(EntityTypes.MARKER, fixture.level);
+            var rig = new dev.agaminggod.arenaagents.camera.CameraRig(McEntityTypes.MARKER, fixture.level);
             rig.setPos(10, 64, 20);
             rig.lensHeight(-10); assertEquals(0.7f, rig.lensHeight(), "tripod cannot lower its lens through the floor");
             rig.lensHeight(100); assertEquals(2.5f, rig.lensHeight(), "tripod has a bounded telescoping range");
@@ -226,7 +226,7 @@ public final class CameraPathVerification {
 			assertTrue(state("recording") == take, "failed GUI save retains the unsaved take for retry");
 			assertTrue(fixture.paths.get("intro") == original, "failed replacement keeps the old in-memory path");
 			assertTrue(Files.readString(fixture.storage()).equals(stored), "failed replacement keeps the old file");
-			assertTrue(!fixture.gui.message.startsWith("Saved camera path"), "failed GUI save never reports success");
+			assertTrue(!fixture.overlayMessage.get().startsWith("Saved camera path"), "failed GUI save never reports success");
 			assertEquals(0, fixture.command("stopRecording"), "failed command save returns failure");
 			assertTrue(state("recording") == take && fixture.paths.get("intro") == original, "failed command save preserves both takes");
 			Files.delete(blocked);
@@ -298,7 +298,7 @@ public final class CameraPathVerification {
 				if (command) assertEquals(0, fixture.command("recordKeyframe"), "command rejects a backwards clock capture");
 				else {
 					CameraDirectorClient.recordKeyframeFromGui();
-					assertTrue(fixture.gui.message.contains("clock moved backwards"), "GUI explains why the backwards clock capture was rejected");
+					assertTrue(fixture.overlayMessage.get().contains("clock moved backwards"), "GUI explains why the backwards clock capture was rejected");
 				}
 				fixture.level.gameTime = 120;
 				CameraDirectorClient.recordKeyframeFromGui();
@@ -373,7 +373,7 @@ public final class CameraPathVerification {
 	private static int verifyAnchorAndPerspective() throws Exception {
 		try (Fixture fixture = new Fixture()) {
 			fixture.paths.put("intro", savedPath("intro"));
-			Marker original = new Marker(EntityTypes.MARKER, fixture.level);
+			Marker original = new Marker(McEntityTypes.MARKER, fixture.level);
 			fixture.client.camera = original;
 			fixture.client.options.setCameraType(CameraType.THIRD_PERSON_FRONT);
 			assertEquals(1, fixture.command("play", "intro", true), "command playback starts");
@@ -518,7 +518,7 @@ public final class CameraPathVerification {
 		private final Map<String, CameraPath> previousPaths;
 		private final Minecraft previousClient;
 		private final HeadlessClient client;
-		private final HeadlessHud gui;
+		private final java.util.function.Supplier<String> overlayMessage;
 		private final HeadlessCamera renderCamera;
 		private HeadlessLevel level;
 
@@ -538,12 +538,9 @@ public final class CameraPathVerification {
 			}
 			paths.clear();
 			client = allocate(HeadlessClient.class);
-			gui = allocate(HeadlessHud.class);
-			Gui shell = allocate(HeadlessGui.class);
-			setField(shell, Gui.class, "hud", gui);
 			setField(client, Minecraft.class, "gameDirectory", directory.toFile());
 			setField(client, Minecraft.class, "options", allocate(Options.class));
-			setField(client, Minecraft.class, "gui", shell);
+			overlayMessage = dev.agaminggod.arenaagents.compat.TestHud.install(client);
 			setField(null, Minecraft.class, "instance", client);
 			renderCamera = new HeadlessCamera();
 			GameRenderer renderer = allocate(GameRenderer.class);
@@ -599,7 +596,7 @@ public final class CameraPathVerification {
 		@Override public Entity getCameraEntity() { return camera; }
 		@Override public void setCameraEntity(Entity entity) {
 			camera = entity;
-			gameRenderer.mainCamera().setEntity(entity);
+			dev.agaminggod.arenaagents.client.compat.McClientCompat.mainCamera(this).setEntity(entity);
 			if (entity instanceof Marker) {
 				initialPoseReady = entity.getX() == 100 && entity.xo == entity.getX()
 						&& entity.yo == entity.getY() && entity.zo == entity.getZ()
@@ -627,17 +624,6 @@ public final class CameraPathVerification {
 		@Override public long getGameTime() { return gameTime; }
 		@Override public FeatureFlagSet enabledFeatures() { return FeatureFlags.DEFAULT_FLAGS; }
 		@Override public boolean addFreshEntity(Entity entity) { return true; }
-	}
-
-	private static final class HeadlessGui extends Gui {
-		private HeadlessGui() { super(null, null, null); }
-	}
-
-	/** 26.3 moved the overlay message from Gui to its Hud. */
-	private static final class HeadlessHud extends net.minecraft.client.gui.Hud {
-		private String message = "";
-		private HeadlessHud() { super(null); }
-		@Override public void setOverlayMessage(Component message, boolean animateColor) { this.message = message.getString(); }
 	}
 
 	private static void assertThrows(Runnable action, String label) {

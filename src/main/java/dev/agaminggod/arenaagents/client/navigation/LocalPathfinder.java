@@ -17,6 +17,11 @@ public final class LocalPathfinder implements PathPlanner {
 	public static final int MAX_EXPANDED_NODES = 8_192;
 	public static final long MAX_PLANNING_TIME_NANOS = TimeUnit.MILLISECONDS.toNanos(40L);
 	public static final int MAX_DROP_BLOCKS = 3;
+	/**
+	 * The deepest drop taken into water at least two blocks deep: entering water ends a fall with no damage, so a player
+	 * steps off a ledge over a deep pool or river instead of looking for stairs down to it.
+	 */
+	public static final int MAX_WATER_DROP_BLOCKS = 12;
 	public static final int MAX_RETAINED_NODES = 32_768;
 	public static final int MAX_EXPANDED_NODES_PER_SLICE = 512;
 	/**
@@ -547,7 +552,7 @@ public final class LocalPathfinder implements PathPlanner {
 	}
 
 	private static Neighbor resolveDrop(WalkabilityView view, GridPosition current, GridPosition sameLevel) {
-		for (int drop = 1; drop <= MAX_DROP_BLOCKS; drop++) {
+		for (int drop = 1; drop <= MAX_WATER_DROP_BLOCKS; drop++) {
 			GridPosition landing;
 			try {
 				landing = sameLevel.below(drop);
@@ -558,6 +563,8 @@ public final class LocalPathfinder implements PathPlanner {
 			if (landingTraversal == null) {
 				continue;
 			}
+			// Past the dry drop limit only deep water breaks the fall.
+			if (drop > MAX_DROP_BLOCKS && !deepWater(view, landing)) return null;
 			if (isClearDropShaft(view, landing, current.y())) {
 				return new Neighbor(
 						landing,
@@ -568,6 +575,16 @@ public final class LocalPathfinder implements PathPlanner {
 			}
 		}
 		return null;
+	}
+
+	/** A water cell with water under it too: a landing pool two or more blocks deep. */
+	static boolean deepWater(WalkabilityView view, GridPosition landing) {
+		if (view.traversalAt(landing) != TraversalType.SWIM || view.cellAt(landing) != WalkabilityView.Cell.WATER) return false;
+		try {
+			return view.cellAt(landing.below()) == WalkabilityView.Cell.WATER;
+		} catch (ArithmeticException exception) {
+			return false;
+		}
 	}
 
 	private static boolean isClearDropShaft(

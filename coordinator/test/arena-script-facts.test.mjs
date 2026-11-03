@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
+import { readFileSync, readdirSync } from 'node:fs';
 import test from 'node:test';
 
+import { adaptObservation } from '../src/observation-adapter.mjs';
 import {
 	changedInterpreterFactDomains,
 	createFactView,
@@ -226,4 +228,76 @@ test('programs read the seen portal frame from world.state().portalFrames, empty
 	const facts = createFactView(observation({ world: { dimension: 'minecraft:overworld' }, sighted: { portalFrames: [frame] } }));
 	assert.deepEqual(facts.world.state().portalFrames[0].missing[0], [112, 67, 693, 'air']);
 	assert.deepEqual(createFactView(observation({ world: { dimension: 'minecraft:overworld' } })).world.state().portalFrames, []);
+});
+
+// Fact-copy cost (agent performance audit 2026-11-01): the trees are copied once and unchanged domains keep their
+// projection. These pin that the shortcuts give the same facts a fresh, unshared build gives.
+function recordedObservations() {
+	const files = (dir) => readdirSync(dir, { withFileTypes: true }).flatMap((entry) => entry.isDirectory()
+		? files(new URL(`${entry.name}/`, dir)) : entry.name.endsWith('.json') ? [new URL(entry.name, dir)] : []);
+	return files(new URL('fixtures/decision-eval/', import.meta.url))
+		.flatMap((file) => (JSON.parse(readFileSync(file, 'utf8')).cases ?? []).map((entry) => entry.state?.observation))
+		.filter((wire) => wire?.ready === true)
+		.flatMap((wire) => { try { return [adaptObservation(wire)]; } catch { return []; } });
+}
+function withoutClock(facts) {
+	const { worldTick: _worldTick, ...state } = facts.world.state;
+	return { ...facts, world: { ...facts.world, state } };
+}
+function assertDeepFrozen(value, path = 'facts') {
+	if (value === null || typeof value !== 'object') return;
+	assert.ok(Object.isFrozen(value), `${path} is frozen`);
+	if (!Array.isArray(value)) assert.equal(Object.getPrototypeOf(value), null, `${path} has no prototype`);
+	for (const key of Object.keys(value)) assertDeepFrozen(value[key], `${path}.${key}`);
+}
+
+test('facts chained to the previous sample equal a fresh build for every recorded replay observation', () => {
+	const samples = recordedObservations();
+	assert.ok(samples.length > 100, 'the replay fixtures supply real observations');
+	let previous = null;
+	for (const [index, sample] of samples.entries()) {
+		const chained = createInterpreterFacts(sample, previous);
+		const fresh = createInterpreterFacts(sample);
+		assert.deepStrictEqual(withoutClock(chained), withoutClock(fresh), `sample ${index}`);
+		assert.equal(isTrustedInterpreterFacts(chained), true);
+		if (index % 50 === 0) assertDeepFrozen(chained);
+		// An unchanged heartbeat in new objects is the same facts.
+		assert.equal(createInterpreterFacts(structuredClone(sample), chained), chained, `heartbeat ${index}`);
+		previous = chained;
+	}
+});
+
+test('a sample that changes one domain keeps every other domain and its projection', () => {
+	const base = observation({
+		blocks: [{ stableId: 'b', blockId: 'minecraft:oak_log', x: 1, y: 64, z: 0, tags: ['#minecraft:logs'] }],
+		items: [{ stableId: 'i', itemId: 'minecraft:stick', count: 2, x: 1.23456, y: 64, z: 0.5 }],
+		inventory: { items: [{ slot: 0, itemId: 'minecraft:oak_log', count: 3 }], tagCounts: { '#minecraft:logs': 3 } },
+	});
+	const first = createInterpreterFacts(base);
+	const hurt = createInterpreterFacts({ ...structuredClone(base), player: { ...base.player, health: 12 } }, first);
+	assert.equal(hurt.player.health, 12);
+	assert.equal(hurt.world.blocks, first.world.blocks);
+	assert.equal(hurt.world.items, first.world.items);
+	assert.equal(hurt.world.items[0].x, 1.235, 'the kept projection is the rounded one');
+	assert.equal(hurt.inventory.items, first.inventory.items);
+	assert.equal(changedInterpreterFactDomains(first, hurt), FACT_DOMAIN.player);
+	const moved = createInterpreterFacts({ ...structuredClone(base), player: { ...base.player, health: 12 }, items: [{ ...base.items[0], x: 2 }] }, hurt);
+	assert.equal(moved.world.items[0].x, 2);
+	assert.equal(changedInterpreterFactDomains(hurt, moved), FACT_DOMAIN.worldItems);
+});
+
+test('the depth limit and its message are those of a whole-tree copy, for every domain', () => {
+	const nested = (levels) => { let value = { leaf: 1 }; for (let index = 1; index < levels; index += 1) value = { a: value }; return value; };
+	const cases = [
+		['player', 255, (value) => observation({ player: { x: 0, y: 64, z: 0, extension: value } }), 'interpreter facts.player.extension'],
+		['world state', 254, (value) => observation({ world: { extension: value } }), 'interpreter facts.world.state.extension'],
+		['item row', 253, (value) => observation({ items: [{ stableId: 'i', itemId: 'minecraft:stick', count: 1, x: 0, y: 64, z: 0, extension: value }] }), 'interpreter facts.world.items.extension'],
+		['menu', 255, (value) => observation({ menu: value }), 'interpreter facts.world.menu'],
+		['inventory slot', 253, (value) => observation({ inventory: { items: [{ slot: 0, itemId: 'minecraft:stick', count: 1, extension: value }], tagCounts: {} } }), 'interpreter facts.inventory.items.extension'],
+	];
+	for (const [name, deepest, build, label] of cases) {
+		assert.equal(isTrustedInterpreterFacts(createInterpreterFacts(build(nested(deepest)))), true, `${name} at the limit`);
+		assert.throws(() => createInterpreterFacts(build(nested(deepest + 1))), (error) => error instanceof TypeError
+			&& error.message.startsWith(`${label}.a.a`) && error.message.endsWith(' exceeds the depth limit or contains a cycle'), `${name} past the limit`);
+	}
 });

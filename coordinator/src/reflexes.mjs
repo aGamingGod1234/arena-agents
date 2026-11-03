@@ -22,6 +22,19 @@ export const DEFAULT_REFLEXES = Object.freeze([
 	{ id: 'default-fire', kind: 'trigger', priority: 8, when: [{ type: 'in_fire' }], do: { type: 'leave_fire' }, ttlMs: 3_600_000 },
 	{ id: 'default-air', kind: 'trigger', priority: 8, when: [{ type: 'air_below', bubbles: 3 }], do: { type: 'swim_up' }, ttlMs: 3_600_000 },
 	{ id: 'default-edge', kind: 'stance', priority: 7, when: [{ type: 'edge_near', within: 2, direction: 'any', drop: 4 }], do: { type: 'brace' }, ttlMs: 3_600_000 },
+	// Dangers that kill inside one model round: a lit fuse is 1.5 s, an arrow under a second, a falling block at once.
+	// Vanilla cancels a fuse once the creeper is more than 7 blocks away, so 8 blocks of sprint ends it.
+	{ id: 'default-creeper', kind: 'trigger', priority: 9, when: [{ type: 'creeper_fusing', within: 5 }], do: { type: 'sprint_away', blocks: 8 }, ttlMs: 3_600_000 },
+	{ id: 'default-suffocate', kind: 'trigger', priority: 9, when: [{ type: 'suffocating' }], do: { type: 'dig_out' }, ttlMs: 3_600_000 },
+	{ id: 'default-fireball', kind: 'trigger', priority: 8, when: [{ type: 'fireball_incoming', withinS: 1.5, deflectable: true }], do: { type: 'deflect' }, ttlMs: 3_600_000 },
+	// Item-dependent defaults sleep while the item is missing (ReflexEngine), so they never fire empty-handed.
+	{ id: 'default-arrow', kind: 'trigger', priority: 7, when: [{ type: 'incoming_projectile', withinS: 0.6 }], do: { type: 'shield' }, ttlMs: 3_600_000 },
+	// A fight with no fleeAtHealth fights to the death, and LOW_HEALTH_BAILOUT used to leave the body idle beside its
+	// attackers: at 3 hearts with a hostile in reach, run. Rules that hold fire at once when an action bails out.
+	// Air and fire must interrupt a retreat already in progress: only a strictly higher priority preempts.
+	{ id: 'default-retreat', kind: 'trigger', priority: 7, when: [{ type: 'health_below', value: 7 }, { type: 'hostile_near', within: 6 }], do: { type: 'sprint_away', blocks: 10 }, cooldownMs: 5_000, ttlMs: 3_600_000 },
+	// Each firing eats one item. A stance retries after cooldown while hungry and releases if a hostile comes within 8 blocks.
+	{ id: 'default-eat', kind: 'stance', priority: 3, when: [{ type: 'hunger_below', value: 14 }, { type: 'hostile_near', within: 8, not: true }], do: { type: 'eat' }, cooldownMs: 20_000, ttlMs: 3_600_000 },
 ].map((rule) => Object.freeze(rule)));
 export const DEFAULT_REFLEX_IDS = Object.freeze(new Set(DEFAULT_REFLEXES.map((rule) => rule.id)));
 export const MAX_REFLEX_CONDITIONS = 4;
@@ -404,7 +417,12 @@ export class ReflexBook {
 		agent.sentAtMs = this.#now();
 		// The mod knows ttlMs only: a rule scoped to a context gets the longest ttl unless it set its own; the coordinator
 		// ends it when the context ends.
-		const rules = [...agent.rules.values()].map(({ lasts, ...rule }) => (lasts !== undefined && rule.ttlMs === undefined ? { ...rule, ttlMs: MAX_REFLEX_TTL_MS } : rule));
+		const rules = [...agent.rules.values()].map(({ lasts, ...rule }) => ({
+			...rule,
+			...(lasts !== undefined && rule.ttlMs === undefined ? { ttlMs: MAX_REFLEX_TTL_MS } : {}),
+			// Ownership is bookkeeping, not an id convention: a replacement belongs to the model.
+			...(agent.defaults.has(rule.id) ? { coordinatorDefault: true } : {}),
+		}));
 		return { revision: agent.revision, rules: structuredClone(rules), yield: yieldFiring };
 	}
 

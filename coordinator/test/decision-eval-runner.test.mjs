@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { EventEmitter } from 'node:events';
+import { readFileSync } from 'node:fs';
 import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -36,7 +37,7 @@ class FakeClaudeCode extends EventEmitter {
 		this.stdin.write = (text) => { for (const line of String(text).split('\n').filter(Boolean)) this.#onLine(JSON.parse(line)); return true; };
 		this.stdin.end = () => {};
 		this.script = script;
-		this.mcp = JSON.parse(args[args.indexOf('--mcp-config') + 1]).mcpServers.minecraft;
+		this.mcp = JSON.parse(readFileSync(args[args.indexOf('--mcp-config') + 1], 'utf8')).mcpServers.minecraft;
 		this.systemPromptFile = args[args.indexOf('--system-prompt-file') + 1];
 		queueMicrotask(() => { this.connected = this.#connect(); });
 	}

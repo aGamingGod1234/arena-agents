@@ -5,6 +5,8 @@ dist/
 out/
 classes/
 bin/
+# Mixin class dumps (Carpet 26.2 ships a mixin with @Debug(export = true))
+.mixin.out/
 
 # IDE metadata
 .idea/

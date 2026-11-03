@@ -1,13 +1,47 @@
-import base64
-import contextlib
-import faulthandler
-import importlib.util
-import json
-from pathlib import Path
 import sys
-import threading
 import time
+import faulthandler
+
+
+# Use the original stderr even while the worker temporarily redirects stdout.
+_DIAGNOSTIC_STDERR = sys.stderr
+_STARTED = time.monotonic()
+
+
+def phase(name):
+    _DIAGNOSTIC_STDERR.write(
+        f"ARENA_CONCURRENCY_PHASE {time.monotonic() - _STARTED:.3f}s {name}\n"
+    )
+    _DIAGNOSTIC_STDERR.flush()
+
+
+phase(f"bootstrap executable={sys.executable!r} version={sys.version!r}")
+# Distinguish watchdog startup from stdlib imports if native startup stalls.
+phase("arm watchdog")
+faulthandler.dump_traceback_later(8, file=_DIAGNOSTIC_STDERR)
+phase("watchdog armed")
+
+phase("import base64")
+import base64
+phase("import base64 complete")
+phase("import contextlib")
+import contextlib
+phase("import contextlib complete")
+phase("import importlib.util")
+import importlib.util
+phase("import importlib.util complete")
+phase("import json")
+import json
+phase("import json complete")
+phase("import pathlib")
+from pathlib import Path
+phase("import pathlib complete")
+phase("import threading")
+import threading
+phase("import threading complete")
+phase("import types")
 import types
+phase("import types complete")
 
 
 class InferenceTracker:
@@ -120,8 +154,11 @@ def load_worker():
 
 
 def main():
+    phase("install fake dependencies")
     install_fake_dependencies()
+    phase("load worker")
     worker = load_worker()
+    phase("worker loaded")
     tracker = InferenceTracker()
     worker._load_tts = lambda: FakeTtsModel(tracker)
     worker._load_stt = lambda: FakeSttModel(tracker)
@@ -145,15 +182,21 @@ def main():
             errors.append(error)
 
     threads = [
-        threading.Thread(target=synthesize if index % 2 == 0 else transcribe)
+        threading.Thread(
+            target=synthesize if index % 2 == 0 else transcribe,
+            name=f"inference-{index}",
+        )
         for index in range(request_count)
     ]
+    phase("inference: start threads and wait for barrier")
     for thread in threads:
         thread.start()
     start.wait()
+    phase("inference: barrier released; join threads")
     for thread in threads:
         thread.join(timeout=5)
 
+    phase(f"inference: joined; alive={[t.name for t in threads if t.is_alive()]}")
     assert not any(thread.is_alive() for thread in threads), "concurrent inference did not finish"
     assert not errors, repr(errors)
     assert tracker.maximum == 1, f"local model inference overlapped {tracker.maximum} calls"
@@ -189,17 +232,20 @@ def main():
         warmup_results.append(worker._warmup())
 
     warmup_threads = [
-        threading.Thread(target=run, args=(warmup,)),
-        threading.Thread(target=run, args=(warmup,)),
+        threading.Thread(target=run, args=(warmup,), name="warmup-1"),
+        threading.Thread(target=run, args=(warmup,), name="warmup-2"),
         threading.Thread(target=run, args=(lambda: worker._tts({"text": "hello", "voiceId": "test", "speed": 1}),)),
         threading.Thread(target=run, args=(lambda: worker._stt({"pcmBase64": base64.b64encode(b"\x01\x00").decode("ascii")}),)),
     ]
+    phase("warmup: start threads and wait for barrier")
     for thread in warmup_threads:
         thread.start()
     warmup_start.wait()
+    phase("warmup: barrier released; join threads")
     for thread in warmup_threads:
         thread.join(timeout=5)
 
+    phase(f"warmup: joined; alive={[t.name for t in warmup_threads if t.is_alive()]}")
     assert not any(thread.is_alive() for thread in warmup_threads), "warmup and live inference did not finish"
     assert not warmup_errors, repr(warmup_errors)
     assert warmup_results == [
@@ -218,6 +264,7 @@ def main():
     def fail_tts_warmup():
         raise RuntimeError("Chatterbox unavailable")
 
+    phase("warmup: channel failure and retry assertions")
     worker._load_tts = fail_tts_warmup
     assert worker._warmup() == {"sttReady": True, "ttsReady": False}
 
@@ -226,6 +273,7 @@ def main():
         "a transient channel warmup failure must be retried in the same worker"
     )
 
+    phase("weighted queue assertions")
     priority_queue = worker._WeightedRequestQueue(maximum_stt_burst=3)
     for value, operation in (
         ("tts-1", "tts"), ("tts-2", "tts"),
@@ -235,6 +283,7 @@ def main():
     weighted_order = [priority_queue.take() for _ in range(6)]
     priority_queue.close()
 
+    phase("emit result")
     print(json.dumps({
         "requests": request_count,
         "warmupRequests": len(warmup_results),
@@ -245,9 +294,11 @@ def main():
 
 
 if __name__ == "__main__":
-    # Preserve the blocked threads if the parent test's ten-second deadline fires.
-    faulthandler.dump_traceback_later(8)
     try:
         main()
-    finally:
+    except BaseException:
+        phase("failed; retain watchdog for any threads blocking interpreter shutdown")
+        raise
+    else:
+        phase("complete")
         faulthandler.cancel_dump_traceback_later()

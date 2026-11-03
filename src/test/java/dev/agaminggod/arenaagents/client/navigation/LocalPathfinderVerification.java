@@ -24,6 +24,7 @@ public final class LocalPathfinderVerification {
 		assertions += verifySafeThreeBlockDrop();
 		assertions += verifyWallHasNoPath();
 		assertions += verifyUnsafeDropHasNoPath();
+		assertions += verifyDeepWaterDrop();
 		assertions += verifyLimitsAreExplicit();
 		assertions += verifyTieBreakIsDeterministic();
 		assertions += verifyStartEqualsGoal();
@@ -603,6 +604,38 @@ public final class LocalPathfinderVerification {
 		);
 		assertEquals(PathOutcome.INVALID, hazardousPlan.outcome(), "hazardous destination is invalid");
 		return 2;
+	}
+
+	/**
+	 * A ledge 11 blocks over a two-deep pool: before, the drop cap (3) left no path and travel had to look for stairs;
+	 * now the body steps off into the water. One block of water is still no landing past three blocks.
+	 */
+	private static int verifyDeepWaterDrop() {
+		GridPosition start = position(0, 80, 0);
+		GridPosition surface = position(1, 69, 0);
+		TestWorld world = new TestWorld().standable(start);
+		for (int y = 70; y <= 81; y++) world.cell(position(1, y, 0), WalkabilityView.Cell.CLEAR);
+		world.cell(surface, WalkabilityView.Cell.WATER);
+		world.cell(surface.below(), WalkabilityView.Cell.WATER);
+		world.cell(surface.below(2), WalkabilityView.Cell.SAFE_SUPPORT);
+		PathPlan plan = find(world, start, surface);
+		assertEquals(PathOutcome.FOUND, plan.outcome(), "an 11-block drop into a two-deep pool is a route");
+		assertEquals(List.of(new PathNode(start, TraversalType.START), new PathNode(surface, TraversalType.SWIM)), plan.nodes(),
+				"the route steps straight off the ledge into the water");
+
+		TestWorld shallow = new TestWorld().standable(start);
+		for (int y = 70; y <= 81; y++) shallow.cell(position(1, y, 0), WalkabilityView.Cell.CLEAR);
+		shallow.cell(surface, WalkabilityView.Cell.WATER);
+		shallow.cell(surface.below(), WalkabilityView.Cell.SAFE_SUPPORT);
+		assertEquals(PathOutcome.NO_PATH, find(shallow, start, surface).outcome(), "one block of water under an 11-block drop is no landing");
+
+		TestWorld tooDeep = new TestWorld().standable(position(0, 84, 0));
+		for (int y = 70; y <= 85; y++) tooDeep.cell(position(1, y, 0), WalkabilityView.Cell.CLEAR);
+		tooDeep.cell(surface, WalkabilityView.Cell.WATER);
+		tooDeep.cell(surface.below(), WalkabilityView.Cell.WATER);
+		tooDeep.cell(surface.below(2), WalkabilityView.Cell.SAFE_SUPPORT);
+		assertEquals(PathOutcome.NO_PATH, find(tooDeep, position(0, 84, 0), surface).outcome(), "a drop past 12 blocks is not taken even into water");
+		return 4;
 	}
 
 	private static int verifyLimitsAreExplicit() {

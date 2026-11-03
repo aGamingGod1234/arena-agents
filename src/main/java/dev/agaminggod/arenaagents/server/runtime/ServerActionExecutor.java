@@ -106,7 +106,7 @@ public final class ServerActionExecutor {
 		}
 	}
 	private static final Set<ActionType> ARENA_SCRIPT_PRIMITIVES = Set.of(
-			ActionType.MOVE_TO, ActionType.NAVIGATE_TO, ActionType.TRAVEL_TO, ActionType.DIG_TO, ActionType.BUILD_SHELTER, ActionType.CAST_OBSIDIAN, ActionType.BARTER_UNTIL, ActionType.CONTROL, ActionType.CONTROL_SEQUENCE, ActionType.LOOK_AT, ActionType.ATTACK,
+			ActionType.MOVE_TO, ActionType.NAVIGATE_TO, ActionType.TRAVEL_TO, ActionType.DIG_TO, ActionType.MINE_VEIN, ActionType.BUILD_SHELTER, ActionType.CAST_OBSIDIAN, ActionType.BARTER_UNTIL, ActionType.CONTROL, ActionType.CONTROL_SEQUENCE, ActionType.LOOK_AT, ActionType.ATTACK,
 			ActionType.SELECT_ITEM, ActionType.USE_ITEM, ActionType.BREAK_BLOCK, ActionType.PLACE_BLOCK,
 			ActionType.CHAT, ActionType.WAIT, ActionType.SET_DOOR, ActionType.PICK_UP_ITEM, ActionType.DROP_ITEM,
 			ActionType.TRANSFER_CONTAINER, ActionType.CRAFT_INVENTORY, ActionType.CRAFT_TABLE,
@@ -865,9 +865,25 @@ public final class ServerActionExecutor {
 						nullableString(arguments, "stopWhenSeen"),
 						arguments.has("minHealth") ? (float) number(arguments, "minHealth") : null,
 						(body, cell) -> protection.mayModifyBlock(body, body.level(), cell),
-						System.currentTimeMillis()).fightThrough(arguments.has("fightThrough") && bool(arguments, "fightThrough")));
+						System.currentTimeMillis()).fightThrough(arguments.has("fightThrough") && bool(arguments, "fightThrough"))
+						.descend((y, x, z, digTimeoutMs) -> {
+							JsonObject stairs = new JsonObject();
+							stairs.addProperty("pattern", "stairs_down");
+							stairs.addProperty("y", y);
+							stairs.addProperty("x", x);
+							stairs.addProperty("z", z);
+							stairs.addProperty("timeoutMs", digTimeoutMs);
+							return digController(stairs);
+						}));
 			}
 			case DIG_TO -> ActiveAction.controller(request, player, digController(arguments));
+			case MINE_VEIN -> {
+				BlockPos at = blockPosition(arguments);
+				int maxBlocks = arguments.has("maxBlocks") ? integer(arguments, "maxBlocks")
+						: dev.agaminggod.arenaagents.server.runtime.controller.VeinPlan.DEFAULT_MAX_BLOCKS;
+				yield ActiveAction.controller(request, player, new dev.agaminggod.arenaagents.server.runtime.controller.ServerVeinController(
+						at, maxBlocks, integer(arguments, "timeoutMs"), System.currentTimeMillis(), (body, cell, timeoutMs) -> veinBreak(request, body, cell, timeoutMs)));
+			}
 			case BUILD_SHELTER -> ActiveAction.controller(request, player, shelterController(request, arguments));
 			// Model-chosen goal skills: the model picks the site or item and the count; the body repeats the clicks.
 			case CAST_OBSIDIAN -> ActiveAction.controller(request, player, new ServerCastObsidianController(
@@ -975,6 +991,8 @@ public final class ServerActionExecutor {
 				}
 				String unseen = arguments.has("acceptLavaRisk") && bool(arguments, "acceptLavaRisk") ? null : unseenDropUnderFeet(player, position);
 				if (unseen != null) throw new AgentDomainException("UNSEEN_BELOW", unseen + " Not swung; acceptLavaRisk:true breaks it anyway");
+				String wasted = wastedOre(player, position);
+				if (wasted != null) throw new AgentDomainException("NO_TOOL", wasted);
 				ActiveAction action = ActiveAction.breakBlock(
 						request, player, position, integer(arguments, "timeoutMs"), target.blockId(), expectedBlockId, target.aim());
 				action.plantProtection = at -> {
@@ -985,6 +1003,7 @@ public final class ServerActionExecutor {
 					}
 				};
 				action.breakNamesBlock = requestedExpectation == null || requestedExpectation.startsWith("#");
+				action.selectsBreakTool = true;
 				yield action;
 			}
 			case PLACE_BLOCK -> {
@@ -1915,6 +1934,47 @@ public final class ServerActionExecutor {
 		};
 	}
 
+	/**
+	 * One break_block for mine_vein, through break_block's own admission gates (sight, reach, lava behind, an unseen
+	 * drop under the feet, a wasted ore, protection) and its own tool choice. Refusals are thrown to the controller.
+	 */
+	private ServerController veinBreak(ServerActionRequest parent, ServerPlayer body, BlockPos at, long timeoutMs) {
+		if (!protection.mayModifyBlock(body, body.level(), at) || !body.level().mayInteract(body, at)
+				|| body.level().getServer().isUnderSpawnProtection(body.level(), at, body))
+			throw new AgentDomainException("PROTECTION_DENIED", "Breaking " + coordinates(at) + " was denied");
+		BreakTarget target = validateBreakTarget(body, at, null);
+		String lava = lavaBehind(body, at);
+		if (lava != null) throw new AgentDomainException("LAVA_BEHIND", "Lava is " + lava + "; breaking " + target.blockId() + " at " + coordinates(at) + " may let it flow in");
+		String unseen = unseenDropUnderFeet(body, at);
+		if (unseen != null) throw new AgentDomainException("UNSEEN_BELOW", unseen);
+		String wasted = wastedOre(body, at);
+		if (wasted != null) throw new AgentDomainException("NO_TOOL", wasted);
+		JsonObject args = new JsonObject();
+		args.addProperty("x", at.getX()); args.addProperty("y", at.getY()); args.addProperty("z", at.getZ());
+		args.addProperty("timeoutMs", timeoutMs); args.addProperty("expectedBlockId", target.blockId());
+		ServerActionRequest internal = new ServerActionRequest(parent.agentId(), parent.goalRevision(), parent.actionId(),
+				ActionType.BREAK_BLOCK, args, parent.provenance(), parent.traceId());
+		ActiveAction mine = ActiveAction.breakBlock(internal, body, at, timeoutMs, target.blockId(), target.blockId(), target.aim());
+		// Hold the final tool before mine_vein checks its drops and pickup capacity.
+		mine.breakToolNote = selectBreakTool(body, body.level().getBlockState(at));
+		mine.breakNamesBlock = true;
+		mine.plantProtection = cell -> {
+			if (!protection.mayModifyBlock(body, body.level(), cell) || !body.level().mayInteract(body, cell)
+					|| body.level().getServer().isUnderSpawnProtection(body.level(), cell, body))
+				throw new AgentDomainException("PROTECTION_DENIED", "Clearing the obstructing plant was denied");
+		};
+		return new ServerController() {
+			public TickResult tick(ServerPlayer player, long now) {
+				ServerActionResult result = mine.tick(now);
+				if (result == null) return TickResult.running(0.0D);
+				mine.cleanup();
+				return result.state() == ServerActionState.SUCCEEDED ? TickResult.succeeded(result.reasonCode(), result.message())
+						: TickResult.failed(result.reasonCode(), result.message(), 0.0D);
+			}
+			public void cancel(ServerPlayer player) { mine.cancel("mine_vein ended"); }
+		};
+	}
+
 	private ServerDigController digController(JsonObject arguments) {
 		Integer y = arguments.has("y") ? (int) Math.floor(number(arguments, "y")) : null;
 		Integer x = arguments.has("x") ? (int) Math.floor(number(arguments, "x")) : null;
@@ -2353,6 +2413,41 @@ public final class ServerActionExecutor {
 	}
 
 	/** A break request's current block id and the point the crosshair turns to. */
+	/**
+	 * An ore whose drop needs a tier no carried item has (diamond ore with a stone pickaxe): breaking it destroys the
+	 * ore for nothing, so it is not swung. Null when a carried tool harvests it, or for any other block.
+	 */
+	static String wastedOre(ServerPlayer player, BlockPos position) {
+		if (player.isCreative()) return null;
+		BlockState state = player.level().getBlockState(position);
+		if (!dev.agaminggod.arenaagents.server.runtime.controller.MiningTools.wastesOre(player.getInventory(), state)) return null;
+		String required = BreakOutcomeEvidence.requiredTool(state);
+		return blockId(state) + " at " + coordinates(position) + " needs " + (required == null ? "a better tool" : "a " + required)
+				+ " and no carried item harvests it: breaking it would drop nothing. Not swung";
+	}
+
+	/**
+	 * Holds the carried tool dig_to would pick for this block (the fastest that harvests it; a held enchanted one stays),
+	 * swapping it from the main inventory when needed. Returns the result note, or null when the hand already fits.
+	 */
+	static String selectBreakTool(ServerPlayer player, BlockState state) {
+		if (player.isCreative()) return null;
+		net.minecraft.world.entity.player.Inventory inventory = player.getInventory();
+		var choice = dev.agaminggod.arenaagents.server.runtime.controller.MiningTools.forBreak(inventory, state);
+		if (!choice.changes(inventory)) return null;
+		String name = choice.itemName(inventory);
+		int hotbar = choice.slot();
+		if (hotbar >= 9) {
+			if (player.containerMenu != player.inventoryMenu) player.closeContainer();
+			hotbar = placementHotbarSlot(player);
+			// A refused swap keeps the hand; the speed note still names the faster tool.
+			if (AdvancedInteractionService.swapIntoHotbar(player, choice.slot(), hotbar) != null) return null;
+		}
+		inventory.setSelectedSlot(hotbar);
+		return "took " + name + (choice.slot() >= 9 ? " from inventory slot " + choice.slot() + " into hotbar " + hotbar : " (hotbar " + hotbar + ")")
+				+ (choice.worn() ? ", its last uses" : "");
+	}
+
 	private record BreakTarget(String blockId, Vec3 aim, BlockPos plant, String plantId) {
 		BreakTarget(String blockId, Vec3 aim) { this(blockId, aim, null, null); }
 	}
@@ -2973,11 +3068,14 @@ public final class ServerActionExecutor {
 		private boolean breakSneak;
 		/** Set when the inventory holds a strictly faster tool for this block; appended to the success message. */
 		private String breakSpeedNote;
+		private String breakToolNote;
 		private BreakOutcomeEvidence.Tool breakTool;
 		/** Structured break evidence for programs and scripts; the message carries the same facts for the model. */
 		private BreakOutcomeEvidence.Summary breakSummary;
 		/** The break expectation was omitted or a tag, so the result names the block that was actually broken. */
 		private boolean breakNamesBlock;
+		/** A model break_block picks its own tool; internal breaks (shelter clearing) keep the hand their caller chose. */
+		private boolean selectsBreakTool;
 		private final BreakOutcomeEvidence.Tally controlBreaks = new BreakOutcomeEvidence.Tally();
 		private BlockBreakReceipt controlReceiptSeen;
 		private boolean controlReceiptPrimed;
@@ -3298,6 +3396,7 @@ public final class ServerActionExecutor {
 					}
 					case BREAK -> {
 						configureBreakTarget(validateBreakTarget(player, block, expectedBlockId));
+						if (selectsBreakTool) breakToolNote = selectBreakTool(player, player.level().getBlockState(block));
 						breakReceiptBaseline = ((BlockBreakReceiptAccess) (Object) player.gameMode).arenaagents$getBlockBreakReceipt();
 						physicalAttempted = true;
 					}
@@ -3488,6 +3587,7 @@ public final class ServerActionExecutor {
 						tally.add(receipt.outcome());
 						breakSummary = tally.summary(BreakOutcomeEvidence.itemId(player.getMainHandItem()));
 					}
+					if (breakToolNote != null) broken += "; " + breakToolNote;
 					String opened = lavaOpened(player, block);
 					if (opened != null) broken += "; " + opened;
 					else if (dev.agaminggod.arenaagents.server.perception.HearingPerception.lavaHeardNear(player, block, 2.5D)) {

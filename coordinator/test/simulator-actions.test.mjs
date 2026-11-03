@@ -430,6 +430,7 @@ test('every production action type is implemented or terminates with an explicit
 		navigate_to: { x: 1, y: 1, z: 0, tolerance: 0.1, sprint: false, timeoutMs: 1_000 },
 		build_shelter: { x: 0, y: 1, z: 0, opening: 'east', itemId: 'minecraft:cobblestone', timeoutMs: 1_000 },
 		dig_to: { pattern: 'stairs_down', y: -10, timeoutMs: 1_000 },
+		mine_vein: { x: 1, y: 1, z: 0, timeoutMs: 1_000 },
 		cast_obsidian: { x: 0, y: 1, z: 0, frame: true, timeoutMs: 1_000 },
 		barter_until: { itemId: 'minecraft:ender_pearl', count: 1, timeoutMs: 1_000 },
 		travel_to: { x: 1, z: 0, tolerance: 1, timeoutMs: 1_000 },

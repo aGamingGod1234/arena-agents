@@ -174,7 +174,7 @@ public final class CloudDangerVerification {
 	private static final class CloudLevel extends net.minecraft.server.level.ServerLevel {
 		// 26.3 entities take their ID from the level, and ServerLevel asks its (absent) chunk source.
 		private int fixtureEntityIds = 100_000;
-		@Override public int getNextEntityId() { return ++fixtureEntityIds; }
+		public int getNextEntityId() { return ++fixtureEntityIds; }
 		VisibleCloud cloud;
 		long tick; int queries;
 		CloudLevel() { super(null, null, null, null, null, null, false, 0, java.util.List.of(), false); }
@@ -197,7 +197,7 @@ public final class CloudDangerVerification {
 	private static final class VisibleCloud extends net.minecraft.world.entity.AreaEffectCloud {
 		boolean lingering, waiting;
 		@Override public boolean isWaiting() { return waiting; }
-		VisibleCloud() { super(net.minecraft.world.entity.EntityTypes.AREA_EFFECT_CLOUD, null); }
+		VisibleCloud() { super(dev.agaminggod.arenaagents.compat.McEntityTypes.AREA_EFFECT_CLOUD, null); }
 		@Override public net.minecraft.core.particles.ParticleOptions getParticle() {
 			return lingering ? net.minecraft.core.particles.ParticleTypes.SMOKE : net.minecraft.core.particles.PowerParticleOption.create(net.minecraft.core.particles.ParticleTypes.DRAGON_BREATH, 1);
 		}

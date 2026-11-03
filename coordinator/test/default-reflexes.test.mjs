@@ -12,25 +12,26 @@ test('the default survival rules arm at spawn as canonical rules the mod accepts
 	const book = new ReflexBook();
 	assert.equal(book.observeContext('a', { ready: false }), false, 'no arming before a live sample');
 	assert.equal(book.observeContext('a', live()), true, 'spawn arms them');
-	assert.deepEqual(ids(book), ['default-lava*', 'default-fire*', 'default-air*', 'default-edge*']);
+	assert.deepEqual(ids(book), ['default-lava*', 'default-fire*', 'default-air*', 'default-edge*', 'default-creeper*', 'default-suffocate*', 'default-fireball*', 'default-arrow*', 'default-retreat*', 'default-eat*']);
 	const sent = book.payload('a');
 	assert.equal(sent.revision, 1);
 	// The defaults pass the same validation as a model's rules.
-	assert.deepEqual(sent.rules, normalizeReflexEntries(DEFAULT_REFLEXES.map(({ ttlMs, ...rule }) => ({ ...rule, ttlS: ttlMs / 1_000 }))));
+	assert.deepEqual(sent.rules.map(({ coordinatorDefault, ...rule }) => rule), normalizeReflexEntries(DEFAULT_REFLEXES.map(({ ttlMs, cooldownMs, ...rule }) => ({ ...rule, ttlS: ttlMs / 1_000, ...(cooldownMs === undefined ? {} : { cooldownS: cooldownMs / 1_000 }) }))));
 	assert.equal(book.observeContext('a', live()), false, 'an unchanged context sends nothing');
-	assert.match(book.takeReport('a'), /^armed default-lava, default-fire, default-air, default-edge\(stance\)$/, 'the wake lists them by id, without their definitions');
+	assert.match(book.takeReport('a'), /^armed default-lava, default-fire, default-air, default-edge\(stance\), default-creeper, default-suffocate, default-fireball, default-arrow, default-retreat, default-eat\(stance\)$/, 'the wake lists them by id, without their definitions');
 });
 
 test('the model switches a default off by id until the next respawn or dimension change; "*" removes only its own rules', () => {
 	const book = new ReflexBook();
 	book.observeContext('a', live());
 	book.apply('a', normalizeReflexEntries([{ id: 'default-edge', remove: true }, FIRE]));
-	assert.deepEqual(ids(book), ['default-lava*', 'default-fire*', 'default-air*', 'burn']);
+	assert.deepEqual(ids(book), ['default-lava*', 'default-fire*', 'default-air*', 'default-creeper*', 'default-suffocate*', 'default-fireball*', 'default-arrow*', 'default-retreat*', 'default-eat*', 'burn']);
 	assert.equal(book.observeContext('a', live()), false, 'switched off stays off in the same context');
 	book.apply('a', normalizeReflexEntries([{ id: '*', remove: true }]));
-	assert.deepEqual(ids(book), ['default-lava*', 'default-fire*', 'default-air*'], '"*" leaves the defaults');
+	assert.deepEqual(ids(book), ['default-lava*', 'default-fire*', 'default-air*', 'default-creeper*', 'default-suffocate*', 'default-fireball*', 'default-arrow*', 'default-retreat*', 'default-eat*'], '"*" leaves the defaults');
 	assert.equal(book.observeContext('a', live(NETHER)), true, 'a dimension change arms the defaults again');
-	assert.deepEqual(ids(book), ['default-lava*', 'default-fire*', 'default-air*', 'default-edge*']);
+	// A default switched off earlier is armed again after the others.
+	assert.deepEqual(ids(book), ['default-lava*', 'default-fire*', 'default-air*', 'default-creeper*', 'default-suffocate*', 'default-fireball*', 'default-arrow*', 'default-retreat*', 'default-eat*', 'default-edge*']);
 	book.apply('a', normalizeReflexEntries([{ id: 'default-air', remove: true }]));
 	assert.equal(book.observeContext('a', dead()), false);
 	assert.equal(book.observeContext('a', live(NETHER)), true, 'a respawn arms the defaults again');
@@ -47,7 +48,7 @@ test('a default the model replaces by id is its own rule and is not overwritten;
 	assert.equal(book.list('a').find((row) => row.id === 'default-lava').default, undefined);
 	// default-lava is now the model's own: 11 more fill its 12.
 	book.apply('a', normalizeReflexEntries(Array.from({ length: MAX_REFLEXES - 1 }, (_, index) => ({ ...FIRE, id: `own-${index}` }))));
-	assert.equal(book.payload('a').rules.length, MAX_REFLEXES + 3);
+	assert.equal(book.payload('a').rules.length, MAX_REFLEXES + DEFAULT_REFLEXES.length - 1);
 	assert.throws(() => book.apply('a', normalizeReflexEntries([{ ...FIRE, id: 'one-more' }])), /At most 12 reflexes of your own besides the default rules/);
 });
 
@@ -60,4 +61,12 @@ test('a default the mod reports expired is armed again on the next sample', () =
 	assert.ok(!ids(book).includes('default-lava*'));
 	assert.equal(book.observeContext('a', live()), true);
 	assert.ok(ids(book).includes('default-lava*'));
+});
+
+test('the shared fixture the mod parses is exactly the default payload the coordinator sends', async () => {
+	const { readFile } = await import('node:fs/promises');
+	const fixture = JSON.parse(await readFile(new URL('../../src/test/resources/default-reflex-rules.json', import.meta.url), 'utf8'));
+	const book = new ReflexBook();
+	book.observeContext('a', live());
+	assert.deepEqual(fixture, book.payload('a').rules, 'regenerate src/test/resources/default-reflex-rules.json from ReflexBook.payload');
 });

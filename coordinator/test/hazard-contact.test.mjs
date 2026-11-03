@@ -139,7 +139,8 @@ test('mine accepts acceptLavaRisk without growing its schema', () => {
 	assert.throws(() => validateAction({ type: 'break_block', x: 1, y: 70, z: 0, expectedBlockId: 'minecraft:netherrack', timeoutMs: 15_000, acceptLavaRisk: 'yes' }));
 	const mine = MINECRAFT_DYNAMIC_TOOLS.find((tool) => tool.name === 'mine');
 	// Measured on main c6327e81: 1,090 bytes. The new field is paid for by trimming the description.
-	assert.ok(Buffer.byteLength(JSON.stringify(mine)) <= 1_090, 'mine schema bytes must not grow');
+	// 1,081 -> 1,271: vein:true and maxBlocks (mine_vein), a whole tree or ore vein in one call instead of one per block.
+	assert.ok(Buffer.byteLength(JSON.stringify(mine)) <= 1_271, 'mine schema bytes must not grow');
 });
 
 function hazardPlanner(registry, { holdToolInFirstTurn = false } = {}) {

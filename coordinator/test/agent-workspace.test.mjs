@@ -442,13 +442,16 @@ test('on Windows the real default adapter leaves the credential home and auth fi
 	await writeFile(path.join(sourceCodexHome, 'auth.json'), '{"tokens":"synthetic-real-dacl"}\n', 'utf8');
 	const prepared = await new MinecraftAgentWorkspace({ root: path.join(root, 'agent-root'), templateRoot }, { sourceCodexHome }).prepare();
 	// Read the ACLs back independently of the code that set them.
+	// Under a pwsh parent (GitHub's default Windows shell) Windows PowerShell inherits pwsh's PSModulePath, cannot load
+	// Get-Acl's module, and with errors non-terminating printed an all-null ACL. Drop that path and stop on any error.
+	const { windowsPowerShellEnv } = await import('../src/benchmark/windows-powershell-env.mjs');
 	const read = async (target) => JSON.parse((await run('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command',
-		'$ProgressPreference = "SilentlyContinue"; $acl = Get-Acl -LiteralPath $env:ACL_TARGET; '
+		'$ErrorActionPreference = "Stop"; $ProgressPreference = "SilentlyContinue"; $acl = Get-Acl -LiteralPath $env:ACL_TARGET; '
 		+ '[pscustomobject]@{ protected = $acl.AreAccessRulesProtected; owner = $acl.Owner; '
 		+ 'entries = @($acl.Access | ForEach-Object { $_.IdentityReference.Translate([Security.Principal.SecurityIdentifier]).Value }) } | ConvertTo-Json -Compress'],
-	{ env: { ...process.env, ACL_TARGET: target }, windowsHide: true })).stdout);
+	{ env: windowsPowerShellEnv('powershell.exe', { ...process.env, ACL_TARGET: target }), windowsHide: true })).stdout);
 	const user = (await run('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command',
-		'[Security.Principal.WindowsIdentity]::GetCurrent().User.Value'], { windowsHide: true })).stdout.trim();
+		'[Security.Principal.WindowsIdentity]::GetCurrent().User.Value'], { env: windowsPowerShellEnv(), windowsHide: true })).stdout.trim();
 	for (const target of [prepared.codexHome, path.join(prepared.codexHome, 'auth.json'), path.join(prepared.codexHome, 'config.toml')]) {
 		const acl = await read(target);
 		const entries = [].concat(acl.entries);

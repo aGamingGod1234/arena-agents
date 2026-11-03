@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.HexFormat;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -58,6 +59,7 @@ public final class CoordinatorStartupSmokeVerification {
 		String oldVoiceUrl = System.getProperty("arenaagents.voiceUrl");
 		String oldVoiceRequestTimeout = System.getProperty("arenaagents.voiceRequestTimeoutMs");
 		CoordinatorProcessSupervisor supervisor = null;
+		Throwable primaryFailure = null;
 		try {
 			int cleanupAssertions = verifyFixtureCleanup(packageRoot);
 			int trustBoundaryAssertions = verifyPathRejectedBeforeSecretRead(
@@ -140,37 +142,132 @@ public final class CoordinatorStartupSmokeVerification {
 				throw new AssertionError("staged coordinator did not reach the catalog-ready boundary: "
 						+ supervisor.failureCode() + "\n" + errorDetail);
 			}
+		} catch (Exception | Error failure) {
+			primaryFailure = failure;
+			throw failure;
 		} finally {
-			AssertionError ownershipFailure = null;
-			try {
-				if (supervisor != null) {
-					supervisor.close();
-					try {
-						long ownershipDeadline = System.currentTimeMillis() + 5_000L;
-						while (Files.exists(CoordinatorProcessOwnership.ownershipFile(packageRoot))
-								&& System.currentTimeMillis() < ownershipDeadline) {
-							Thread.sleep(25L);
+			// Capture before close clears ownership and deletion removes the logs and runtime image.
+			CleanupEvidence evidence = cleanupEvidence(packageRoot);
+			String logs = coordinatorLogTails(packageRoot);
+			CoordinatorProcessSupervisor closingSupervisor = supervisor;
+			finishCleanup(primaryFailure,
+					() -> { if (closingSupervisor != null) closingSupervisor.close(); },
+					() -> {
+						if (closingSupervisor == null) return;
+						try {
+							long ownershipDeadline = System.currentTimeMillis() + 5_000L;
+							while (Files.exists(CoordinatorProcessOwnership.ownershipFile(packageRoot))
+									&& System.currentTimeMillis() < ownershipDeadline) Thread.sleep(25L);
+							assertTrue(!Files.exists(CoordinatorProcessOwnership.ownershipFile(packageRoot)),
+									"coordinator close clears the ownership record");
+						} catch (InterruptedException interrupted) {
+							Thread.currentThread().interrupt();
+							throw new AssertionError("ownership cleanup wait was interrupted", interrupted);
 						}
-						assertTrue(!Files.exists(CoordinatorProcessOwnership.ownershipFile(packageRoot)),
-							"coordinator close clears the ownership record");
-					} catch (AssertionError failure) {
-						ownershipFailure = failure;
-					} catch (InterruptedException interrupted) {
-						Thread.currentThread().interrupt();
-						ownershipFailure = new AssertionError("ownership cleanup wait was interrupted", interrupted);
-					}
-				}
-			} finally {
-				restoreProperty("arenaagents.packageRoot", oldPackageRoot);
-				restoreProperty(NodeRuntimeLocator.PROPERTY, oldNodePath);
-				restoreProperty("arenaagents.bridgeSecretFile", oldBridgeSecret);
-				restoreProperty("arenaagents.voiceSecretFile", oldVoiceSecret);
-				restoreProperty("arenaagents.voiceUrl", oldVoiceUrl);
-				restoreProperty("arenaagents.voiceRequestTimeoutMs", oldVoiceRequestTimeout);
-				deleteTree(packageRoot);
-			}
-			if (ownershipFailure != null) throw ownershipFailure;
+					},
+					() -> {
+						restoreProperty("arenaagents.packageRoot", oldPackageRoot);
+						restoreProperty(NodeRuntimeLocator.PROPERTY, oldNodePath);
+						restoreProperty("arenaagents.bridgeSecretFile", oldBridgeSecret);
+						restoreProperty("arenaagents.voiceSecretFile", oldVoiceSecret);
+						restoreProperty("arenaagents.voiceUrl", oldVoiceUrl);
+						restoreProperty("arenaagents.voiceRequestTimeoutMs", oldVoiceRequestTimeout);
+					},
+					() -> {
+						try {
+							deleteTree(packageRoot);
+						} catch (Exception | Error failure) {
+							try {
+								failure.addSuppressed(new IOException("Startup smoke cleanup evidence (observations, not lock ownership):\n"
+										+ evidence + "\nObserved identities still alive: "
+										+ evidence.identities().stream().filter(CoordinatorProcessOwnership.ProcessIdentity::isAlive).toList()
+										+ "\nAt deletion failure: " + cleanupEvidence(packageRoot) + "\n" + logs));
+							} catch (Exception diagnosticFailure) {
+								failure.addSuppressed(diagnosticFailure);
+							}
+							throw failure;
+						}
+					});
 		}
+	}
+
+	@FunctionalInterface
+	private interface CleanupAction {
+		void run() throws Exception;
+	}
+
+	/** Like try-with-resources: keep the primary failure and still attempt every cleanup action. */
+	private static void finishCleanup(Throwable primary, CleanupAction... actions) throws Exception {
+		Throwable failure = primary;
+		for (CleanupAction action : actions) {
+			try {
+				action.run();
+			} catch (Exception | Error cleanupFailure) {
+				if (failure == null) failure = cleanupFailure;
+				else failure.addSuppressed(cleanupFailure);
+			}
+		}
+		if (primary == null) {
+			if (failure instanceof Exception exception) throw exception;
+			if (failure instanceof Error error) throw error;
+		}
+	}
+
+	private record CleanupEvidence(String observations, List<CoordinatorProcessOwnership.ProcessIdentity> identities) {
+	}
+
+	private static CleanupEvidence cleanupEvidence(Path root) {
+		StringBuilder observations = new StringBuilder();
+		List<CoordinatorProcessOwnership.ProcessIdentity> identities = new ArrayList<>();
+		try {
+			Path ownership = CoordinatorProcessOwnership.ownershipFile(root);
+			observations.append("ownershipRecordPresent=").append(Files.exists(ownership)).append('\n');
+			if (Files.exists(ownership)) {
+				Properties record = new Properties();
+				try (var reader = Files.newBufferedReader(ownership, StandardCharsets.UTF_8)) { record.load(reader); }
+				var identity = new CoordinatorProcessOwnership.ProcessIdentity(
+						Long.parseLong(record.getProperty("pid")), Long.parseLong(record.getProperty("startedAtEpochMs")));
+				observations.append("recorded root=").append(identity).append(" alive=").append(identity.isAlive()).append('\n');
+				identities.add(identity);
+				identity.resolve().ifPresent(process -> {
+					observeProcess(process, "recorded-root", observations, identities);
+					try (var descendants = process.descendants()) {
+						descendants.forEach(child -> observeProcess(child, "observed-root-descendant", observations, identities));
+					}
+				});
+			}
+			Path node = isWindows() ? root.resolve("runtime/toolchains/node/node.exe")
+					: root.resolve("runtime/toolchains/node/bin/node");
+			if (Files.exists(node)) {
+				Path hostNode = findHostNode();
+				observations.append("stagedNode=").append(node).append(" hostNode=").append(hostNode)
+						.append(" sameFile=").append(Files.isSameFile(node, hostNode)).append('\n');
+			}
+			// A hardlink can share its image with unrelated host Node processes. Never terminate these candidates.
+			try (var processes = ProcessHandle.allProcesses()) {
+				processes.forEach(process -> process.info().command().ifPresent(command -> {
+					try {
+						if (Files.isSameFile(node, Path.of(command))) {
+							observeProcess(process, "same-runtime-image-candidate", observations, identities);
+						}
+					} catch (IOException | RuntimeException ignored) {
+						// Processes can exit or deny image access during enumeration.
+					}
+				}));
+			}
+		} catch (Exception unavailable) {
+			observations.append("process evidence unavailable: ").append(unavailable);
+		}
+		return new CleanupEvidence(observations.toString(), List.copyOf(identities));
+	}
+
+	private static void observeProcess(ProcessHandle process, String relationship, StringBuilder observations,
+			List<CoordinatorProcessOwnership.ProcessIdentity> identities) {
+		var info = process.info();
+		CoordinatorProcessOwnership.ProcessIdentity.from(process).ifPresent(identities::add);
+		observations.append(relationship).append(" pid=").append(process.pid())
+				.append(" start=").append(info.startInstant()).append(" command=").append(info.command())
+				.append(" parentPid=").append(process.parent().map(ProcessHandle::pid)).append('\n');
 	}
 
 	/** The last 4 KB of each coordinator log, so a CI-only startup failure explains itself. */
@@ -548,7 +645,8 @@ public final class CoordinatorStartupSmokeVerification {
 	}
 
 	private static int verifyFixtureCleanup(Path root) throws Exception {
-		if (!isWindows()) return 0;
+		int assertions = verifyCleanupFailurePreservation();
+		if (!isWindows()) return assertions;
 		Path locked = Files.createTempFile(root, "cleanup-sharing-", ".tmp");
 		try (RandomAccessFile handle = new RandomAccessFile(locked.toFile(), "rw")) {
 			var release = new java.util.concurrent.FutureTask<Void>(() -> {
@@ -564,7 +662,30 @@ public final class CoordinatorStartupSmokeVerification {
 				release.get(5L, java.util.concurrent.TimeUnit.SECONDS);
 			}
 		}
-		return 1;
+		return assertions + 1;
+	}
+
+	private static int verifyCleanupFailurePreservation() throws Exception {
+		AssertionError startup = new AssertionError("original startup failure");
+		AssertionError ownership = new AssertionError("ownership failure");
+		IOException deletion = new IOException("deletion failure");
+		boolean[] restored = { false };
+		finishCleanup(startup, () -> { throw ownership; }, () -> restored[0] = true, () -> { throw deletion; });
+		assertTrue(restored[0], "property restoration runs after an ownership failure");
+		assertEquals(List.of(ownership, deletion), List.of(startup.getSuppressed()),
+				"startup failure retains both ownership and deletion failures");
+		IOException cleanupOnly = new IOException("cleanup-only failure");
+		try {
+			finishCleanup(null, () -> { throw cleanupOnly; }, () -> { throw ownership; });
+			throw new AssertionError("cleanup-only failure must fail the smoke test");
+		} catch (IOException failure) {
+			assertTrue(failure == cleanupOnly, "cleanup-only failure is propagated unchanged");
+			assertEquals(List.of(ownership), List.of(failure.getSuppressed()),
+					"later cleanup failures remain visible without a startup failure");
+		}
+		finishCleanup(null, () -> restored[0] = false);
+		assertTrue(!restored[0], "successful cleanup completes normally");
+		return 5;
 	}
 
 	private static void deleteEventually(Path path) throws IOException {

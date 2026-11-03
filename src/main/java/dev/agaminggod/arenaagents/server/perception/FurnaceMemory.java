@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.server.perception;
 
+import dev.agaminggod.arenaagents.compat.McCompat;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import dev.agaminggod.arenaagents.mixin.AbstractFurnaceBlockEntityAccessor;
@@ -69,16 +71,13 @@ public final class FurnaceMemory {
 		Entry(Sample sample, long now) { this.sample = sample; observedAt = lastWorkAt = now; }
 	}
 
-	/** Vanilla burn ticks of a fuel: 26.3 moved fuel to the cooking_fuel item component, resolved by the furnace. */
+	/** Vanilla burn ticks of a fuel (26.3 resolves it through the furnace's cooking_fuel component; see McCompat). */
 	private static int burnDuration(net.minecraft.server.level.ServerLevel level, BlockPos position, ItemStack fuel) {
 		return burnDuration(level, level.getBlockEntity(position) instanceof AbstractFurnaceBlockEntity furnace ? furnace : null, fuel);
 	}
 
 	private static int burnDuration(net.minecraft.server.level.ServerLevel level, AbstractFurnaceBlockEntity furnace, ItemStack fuel) {
-		net.minecraft.world.item.component.CookingFuel component = fuel.get(net.minecraft.core.component.DataComponents.COOKING_FUEL);
-		if (component == null) return 0;
-		if (furnace != null) return ((AbstractFurnaceBlockEntityAccessor) furnace).arenaagents$burnDuration(level, fuel);
-		return component.burnTime() instanceof net.minecraft.world.level.storage.loot.providers.number.ints.ResolvableInt.Constant constant ? constant.value() : 0;
+		return McCompat.burnDuration(level, furnace, fuel);
 	}
 
 	public synchronized void remember(ServerPlayer player, BlockPos position, AbstractFurnaceMenu menu, boolean loaded) {

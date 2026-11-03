@@ -282,7 +282,8 @@ public final class ServerDigController implements ServerController {
 			started = true;
 			startY = player.blockPosition().getY();
 			lastHealth = player.getHealth();
-			if (heading == null && targetX == null && targetZ == null) heading = player.getDirection();
+			// A same-column x/z goal has no bearing; plan() still steers toward any horizontal displacement.
+			if (heading == null) heading = player.getDirection();
 			// Already falling when the call starts (a drop the last call began): the landing is not this call's surprise.
 			if (!player.onGround() && player.fallDistance > 0.0F) plannedFall = player.getHealth();
 			// A shaft drops the body through every floor it breaks; a player digs one only with water in hand for the fall
@@ -1462,28 +1463,7 @@ public final class ServerDigController implements ServerController {
 	 * tool). -1 keeps the hand; -2 no hotbar item can harvest it; -3 the only fitting tools are worn out.
 	 */
 	static int toolSlot(ServerPlayer player, BlockState state) {
-		int best = -1;
-		float bestSpeed = 1.0F;
-		boolean worn = false;
-		for (int slot = 0; slot < 9; slot++) {
-			ItemStack stack = player.getInventory().getItem(slot);
-			if (stack.isEmpty()) continue;
-			float speed = stack.getDestroySpeed(state);
-			boolean harvests = !state.requiresCorrectToolForDrops() || stack.isCorrectToolForDrops(state);
-			if (!harvests || speed <= 1.0F) continue;
-			if (stack.isDamageableItem() && stack.getMaxDamage() - stack.getDamageValue() <= WORN_USES) {
-				worn = true;
-				continue;
-			}
-			if (speed > bestSpeed) {
-				bestSpeed = speed;
-				best = slot;
-			}
-		}
-		if (best >= 0) return best;
-		// Snow and the like break by hand in a moment with no drop: a player digging through does not stop for a shovel.
-		if (state.requiresCorrectToolForDrops() && state.getBlock().defaultDestroyTime() > HAND_BREAKS) return worn ? -3 : -2;
-		return -1;
+		return MiningTools.slot(player.getInventory(), state, 9, -1, false);
 	}
 
 	private static String toolHint(ServerPlayer player, BlockState state) {

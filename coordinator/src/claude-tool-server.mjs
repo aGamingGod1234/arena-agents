@@ -7,6 +7,12 @@ const MCP_PATH = '/mcp';
 const MAX_REQUEST_BYTES = 1_024 * 1_024;
 const SERVER_INFO = Object.freeze({ name: 'minecraft', title: 'Arena Agents Minecraft tools', version: '1.0.0' });
 const FALLBACK_PROTOCOL_VERSION = '2025-06-18';
+// JSON-RPC 2.0 error codes.
+const PARSE_ERROR = -32700;
+const INVALID_REQUEST = -32600;
+const METHOD_NOT_FOUND = -32601;
+const INVALID_PARAMS = -32602;
+const INTERNAL_ERROR = -32603;
 
 /**
  * Serves the exact native Minecraft tool set to Claude Code over loopback MCP
@@ -78,20 +84,37 @@ export class ClaudeToolServer {
 	}
 
 	async #handle(request, response) {
+		// Every error after the id is known echoes it: Claude Code matches responses by id, and an unmatched
+		// error leaves the call hanging until MCP_TOOL_TIMEOUT. Only an unreadable body or one without a
+		// usable id is answered with a null id.
+		let id = null;
 		try {
 			if (new URL(request.url ?? '/', 'http://127.0.0.1').pathname !== MCP_PATH) return send(response, 404);
 			const route = this.#routes.get(bearerToken(request.headers.authorization));
 			if (route === undefined) return send(response, 401);
 			// The JSON-response flavour of Streamable HTTP has no server-initiated stream.
 			if (request.method !== 'POST') return send(response, 405, null, { allow: 'POST' });
-			const message = await readJson(request);
+			const body = await readBody(request);
+			if (body === null) return sendJson(response, rpcError(null, INVALID_REQUEST, 'MCP request exceeded the size limit'));
+			let message;
+			try { message = JSON.parse(body); } catch { return sendJson(response, rpcError(null, PARSE_ERROR, 'Parse error')); }
 			if (message === null || typeof message !== 'object' || Array.isArray(message)) {
-				return sendJson(response, rpcError(null, -32600, 'Expected one JSON-RPC message'));
+				return sendJson(response, rpcError(null, INVALID_REQUEST, 'Expected one JSON-RPC message'));
 			}
 			if (message.id === undefined || message.id === null) return send(response, 202);
+			if (typeof message.id !== 'string' && typeof message.id !== 'number') {
+				return sendJson(response, rpcError(null, INVALID_REQUEST, 'JSON-RPC id must be a string or number'));
+			}
+			id = message.id;
+			if (message.jsonrpc !== '2.0' || typeof message.method !== 'string') {
+				return sendJson(response, rpcError(id, INVALID_REQUEST, 'Expected a JSON-RPC 2.0 request with a method'));
+			}
+			if (message.params !== undefined && (message.params === null || typeof message.params !== 'object')) {
+				return sendJson(response, rpcError(id, INVALID_PARAMS, 'params must be an object or array'));
+			}
 			sendJson(response, await this.#dispatch(route, message, response));
 		} catch (error) {
-			if (!response.headersSent) sendJson(response, rpcError(null, -32700, String(error?.message ?? error).slice(0, 256)));
+			if (!response.headersSent) sendJson(response, rpcError(id, INTERNAL_ERROR, String(error?.message ?? error).slice(0, 256)));
 		}
 	}
 
@@ -109,7 +132,10 @@ export class ClaudeToolServer {
 				try { route.onToolsListed(); } catch { /* readiness reporting cannot fail discovery */ }
 				return rpcResult(id, { tools: this.#tools });
 			case 'tools/call': {
-				if (typeof params?.name !== 'string') return rpcError(id, -32602, 'tools/call requires a tool name');
+				if (typeof params?.name !== 'string') return rpcError(id, INVALID_PARAMS, 'tools/call requires a tool name');
+				if (params.arguments !== undefined && (params.arguments === null || typeof params.arguments !== 'object' || Array.isArray(params.arguments))) {
+					return rpcError(id, INVALID_PARAMS, 'tools/call arguments must be an object');
+				}
 				const toolUseId = typeof params?._meta?.['claudecode/toolUseId'] === 'string' ? params._meta['claudecode/toolUseId'] : null;
 				const result = await route.callTool(params.name, params.arguments ?? {}, { toolUseId });
 				// 'finish' fires once the tool result has been handed to the operating system, the last point this process controls.
@@ -117,7 +143,7 @@ export class ClaudeToolServer {
 				return rpcResult(id, result);
 			}
 			default:
-				return rpcError(id, -32601, `Method not found: ${String(method).slice(0, 64)}`);
+				return rpcError(id, METHOD_NOT_FOUND, `Method not found: ${String(method).slice(0, 64)}`);
 		}
 	}
 }
@@ -131,15 +157,16 @@ function bearerToken(header) {
 	return match === null ? null : match[1];
 }
 
-async function readJson(request) {
+/** Returns the request body as text, or null when it exceeds the size limit. */
+async function readBody(request) {
 	const chunks = [];
 	let size = 0;
 	for await (const chunk of request) {
 		size += chunk.length;
-		if (size > MAX_REQUEST_BYTES) throw new Error('MCP request exceeded the size limit');
+		if (size > MAX_REQUEST_BYTES) return null;
 		chunks.push(chunk);
 	}
-	return JSON.parse(Buffer.concat(chunks).toString('utf8'));
+	return Buffer.concat(chunks).toString('utf8');
 }
 
 function rpcResult(id, result) { return { jsonrpc: '2.0', id, result }; }

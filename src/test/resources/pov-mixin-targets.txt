@@ -6,8 +6,6 @@ net.minecraft.client.Camera
 net.minecraft.client.Minecraft
 net.minecraft.client.MouseHandler
 net.minecraft.client.gui.Gui
-net.minecraft.client.gui.Hud
-net.minecraft.client.gui.contextualbar.ExperienceBar
 net.minecraft.client.gui.screens.debug.GameModeSwitcherScreen
 net.minecraft.client.gui.screens.InBedChatScreen
 net.minecraft.client.gui.screens.MenuScreens
@@ -20,9 +18,6 @@ net.minecraft.client.player.KeyboardInput
 net.minecraft.client.player.LocalPlayer
 net.minecraft.client.gui.screens.recipebook.RecipeBookComponent
 net.minecraft.client.renderer.GameRenderer
-net.minecraft.client.player.FirstPersonHandsAndItems
-net.minecraft.client.renderer.FirstPersonHandsAndItemsRenderer
-net.minecraft.client.renderer.extract.LevelExtractor
 net.minecraft.client.renderer.LevelRenderer
 net.minecraft.client.renderer.ScreenEffectRenderer
 net.minecraft.client.renderer.entity.EntityRenderer

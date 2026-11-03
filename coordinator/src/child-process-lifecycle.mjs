@@ -7,15 +7,22 @@ const ownedPreparation = new WeakMap();
 
 export const DEFAULT_CHILD_STOP_TIMEOUT_MS = 2_000;
 const windowsJobLauncher = fileURLToPath(new URL('./owned-windows-job.ps1', import.meta.url));
+// The wrapper reads the command's exact environment from this variable and removes it before starting anything.
+export const OWNED_JOB_ENVIRONMENT_VARIABLE = 'ARENA_OWNED_JOB_ENVIRONMENT';
+// Windows caps one environment variable value at 32,767 characters, the same cap the command line has.
+const WINDOWS_ENVIRONMENT_VALUE_LIMIT = 32_767;
 
 // The wrapper joins a kill-on-close job before starting the requested command.
 // Its ChildProcess handle owns the job lifetime, including descendants after the command exits.
+// The provider environment holds API keys and OAuth tokens, so it never goes on the wrapper's command line:
+// event 4688, Sysmon, EDR and any local process listing record command lines. It rides in the wrapper's own
+// environment instead, which only the owning user can read.
 export function spawnOwnedProcess(command, args, options = {}, { platform = process.platform, spawn = nodeSpawn } = {}) {
 	const { ownedJobEvidencePath, ...spawnOptions } = options;
 	if (ownedJobEvidencePath && platform !== 'win32') throw new Error('owned job completion evidence requires Windows');
 	if (platform !== 'win32') return spawn(command, args, spawnOptions);
 	const environment = spawnOptions.env ? windowsEnvironmentBlock(spawnOptions.env) : null;
-	const commandJson = Buffer.from(JSON.stringify({ command, args, ...(environment ? { env: environment } : {}) }), 'utf8').toString('base64');
+	const commandJson = Buffer.from(JSON.stringify({ command, args }), 'utf8').toString('base64');
 	const child = spawn(windowsPowerShellExecutable(), ['-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-File', windowsJobLauncher, '-CommandJson', commandJson, ...(ownedJobEvidencePath ? ['-EvidencePath', ownedJobEvidencePath] : [])], {
 		...spawnOptions, ...(environment ? { env: windowsWrapperEnvironment(environment) } : {}), windowsHide: true,
 	});
@@ -62,7 +69,9 @@ function windowsEnvironmentBlock(environment) {
 }
 
 function windowsWrapperEnvironment(environment, source = process.env) {
-	const wrapper = { ...environment };
+	const environmentJson = JSON.stringify(environment);
+	if (environmentJson.length > WINDOWS_ENVIRONMENT_VALUE_LIMIT) throw new Error(`owned process environment is ${environmentJson.length} characters; Windows allows ${WINDOWS_ENVIRONMENT_VALUE_LIMIT}`);
+	const wrapper = { ...environment, [OWNED_JOB_ENVIRONMENT_VARIABLE]: environmentJson };
 	const present = new Set(Object.keys(wrapper).map((name) => name.toUpperCase()));
 	for (const [name, value] of Object.entries(source)) {
 		const upper = name.toUpperCase();

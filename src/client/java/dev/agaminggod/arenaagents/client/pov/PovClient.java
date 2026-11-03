@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.client.pov;
 
+import dev.agaminggod.arenaagents.client.compat.McClientCompat;
+
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.agaminggod.arenaagents.agent.AgentIdentity;
 import dev.agaminggod.arenaagents.client.camera.CameraDirectorClient;
@@ -30,7 +32,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
+import dev.agaminggod.arenaagents.compat.McEntityTypes;
 import net.minecraft.world.entity.Marker;
 import net.minecraft.world.entity.player.Player;
 import org.slf4j.Logger;
@@ -42,7 +44,7 @@ public final class PovClient {
 	// Category is a record, so an equal id joins AgentControlClient's registered "Arena Agents" group.
 	private static final KeyMapping EXIT_VIEW = new KeyMapping(
 			"key.arenaagents.exit_agent_view",
-			InputConstants.Type.KEYBOARD,
+			McClientCompat.KEYBOARD,
 			InputConstants.UNKNOWN.getValue(),
 			new KeyMapping.Category(Identifier.fromNamespaceAndPath("arenaagents", "controls"))
 	);
@@ -206,7 +208,7 @@ public final class PovClient {
 	 */
 	public static void updateFreeLook(Minecraft client) {
 		PovClientSession current = TRACKER.session().orElse(null);
-		boolean wanted = current != null && !current.takeover() && client.gui.screen() == null && client.options.keyShift.isDown();
+		boolean wanted = current != null && !current.takeover() && McClientCompat.screen(client) == null && client.options.keyShift.isDown();
 		PovFreeLook.hold(wanted, System.nanoTime());
 	}
 
@@ -276,7 +278,7 @@ public final class PovClient {
 		if (!TRACKER.acceptStop(payload.sessionId())) return;
 		endLocal(client);
 		if (client.gui != null && payload.reason() != null && !payload.reason().isBlank())
-			client.gui.hud.setOverlayMessage(Component.literal(payload.reason()), false);
+			McClientCompat.overlayMessage(client, Component.literal(payload.reason()), false);
 	}
 
 	// Entry for a new session or a switch to another agent; camera ownership is captured only once.
@@ -383,7 +385,7 @@ public final class PovClient {
 	}
 
 	private static void overlay(Minecraft client, Component message) {
-		if (client.gui != null) client.gui.hud.setOverlayMessage(message, false);
+		if (client.gui != null) McClientCompat.overlayMessage(client, message, false);
 	}
 
 	private static Player bindCamera(Minecraft client, PovClientSession current) {
@@ -431,7 +433,7 @@ public final class PovClient {
 		if (!hasLastPosition || client.level == null) return null;
 		if (signalAnchor != null && !signalAnchor.isRemoved() && signalAnchor.level() == client.level) return signalAnchor;
 		discardAnchor();
-		Marker created = EntityTypes.MARKER.create(client.level, EntitySpawnReason.COMMAND);
+		Marker created = McEntityTypes.MARKER.create(client.level, EntitySpawnReason.COMMAND);
 		if (created == null) return null;
 		created.snapTo(lastX, lastEyeY, lastZ, PovView.currentYaw(), PovView.currentPitch());
 		client.level.addFreshEntity(created);
@@ -447,7 +449,7 @@ public final class PovClient {
 
 	private static void setCamera(Minecraft client, Entity entity) {
 		client.setCameraEntity(entity);
-		CameraEyeHeightAccessor camera = (CameraEyeHeightAccessor) client.gameRenderer.mainCamera();
+		CameraEyeHeightAccessor camera = (CameraEyeHeightAccessor) McClientCompat.mainCamera(client);
 		float height = entity == null ? 0.0F : entity.getEyeHeight();
 		camera.arenaagents$setEyeHeight(height);
 		camera.arenaagents$setEyeHeightOld(height);

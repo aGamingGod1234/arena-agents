@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.server.runtime.controller;
 
+import dev.agaminggod.arenaagents.compat.McCompat;
+
 import com.google.gson.JsonObject;
 import dev.agaminggod.arenaagents.agent.AgentDomainException;
 import dev.agaminggod.arenaagents.server.perception.ObservationVisibility;
@@ -207,6 +209,23 @@ public final class ServerRangedUseController implements ServerTransactionAdapter
 
 	/** The visible body point the arrow should reach; names the first block in the way when none is open to an arrow. */
 	private static net.minecraft.world.phys.Vec3 visibleRangedPoint(ServerPlayer player, Entity target) {
+		try { return rangedPoint(player, target); }
+		catch (ObstructedSight obstructed) {
+			throw new AgentDomainException("TARGET_OBSTRUCTED", obstructed.getMessage() + RangedShotCheck.clearTargets(player));
+		}
+	}
+
+	/**
+	 * A held draw's blocked line, named without the list of other clear targets. That list scans every entity within 128
+	 * blocks and solves an arc to each, so a draw held behind cover builds it once, for the timeout report that uses it,
+	 * instead of on every tick it waits.
+	 */
+	private static final class ObstructedSight extends RuntimeException {
+		ObstructedSight(String message) { super(message, null, false, false); }
+	}
+
+	/** {@link #visibleRangedPoint}, but a named blocker is thrown as {@link ObstructedSight}, without the clear-target list. */
+	private static net.minecraft.world.phys.Vec3 rangedPoint(ServerPlayer player, Entity target) {
 		try {
 			return visibleCentre(player, target, dev.agaminggod.arenaagents.server.runtime.TargetSightline.rangedEntity(player, target));
 		} catch (AgentDomainException exception) {
@@ -227,9 +246,9 @@ public final class ServerRangedUseController implements ServerTransactionAdapter
 			if (named == null) throw exception;
 			String block = net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(player.level().getBlockState(named).getBlock()).toString();
 			String advice = RangedShotCheck.advice(player, target, named);
-			throw new AgentDomainException("TARGET_OBSTRUCTED", "No line from this eye reaches the target unblocked; arrows stop at " + block
+			throw new ObstructedSight("No line from this eye reaches the target unblocked; arrows stop at " + block
 					+ " at " + named.getX() + "," + named.getY() + "," + named.getZ() + (seeThrough ? " (you can see through it, but arrows cannot pass)" : "")
-					+ (advice.isEmpty() ? "" : ". " + advice) + RangedShotCheck.clearTargets(player));
+					+ (advice.isEmpty() ? "" : ". " + advice));
 		}
 	}
 
@@ -282,7 +301,7 @@ public final class ServerRangedUseController implements ServerTransactionAdapter
 		net.minecraft.world.phys.Vec3 motion = net.minecraft.world.phys.Vec3.ZERO;
 		if (trackTarget || follow) {
 			motion = observedMotion(target);
-			point = visibleRangedPoint(player, target);
+			point = rangedPoint(player, target);
 		}
 		if (point == null) return lastAim != null ? lastAim : aimPoint;
 		// Bow power follows the game ticks the draw has been held; release comes at the planned draw or later.
@@ -306,7 +325,8 @@ public final class ServerRangedUseController implements ServerTransactionAdapter
 		}
 		if (elapsed >= timeoutMs) {
 			if (!released && holdCode != null) {
-				return finish(ServerTransactionAdapter.TickResult.failed(holdCode, holdMessage + String.format(java.util.Locale.ROOT,
+				return finish(ServerTransactionAdapter.TickResult.failed(holdCode, holdMessage
+						+ (holdListsClearTargets ? RangedShotCheck.clearTargets(player) : "") + String.format(java.util.Locale.ROOT,
 						"; held the draw %.1f s to the timeout waiting for a clear shot", (elapsed - holdSinceMs) / 1000.0D) + redrawNote()));
 			}
 			return finish(ServerTransactionAdapter.TickResult.timedOut(
@@ -319,10 +339,12 @@ public final class ServerRangedUseController implements ServerTransactionAdapter
 		// waited for with the bow held, as a player holds the draw until it shows again; the timeout ends the wait.
 		boolean holding = false;
 		if (!released && !ObservationVisibility.frame(player.level(), player).hasLineOfSight(target)) {
-			String code = "TARGET_NOT_VISIBLE", message = null;
-			try { visibleRangedPoint(player, target); }
-			catch (AgentDomainException blocked) { code = blocked.code(); message = blocked.getMessage(); }
-			hold(code, message != null ? message : "Lost sight of the ranged target before release" + RangedShotCheck.clearTargets(player), elapsed);
+			String code = "TARGET_NOT_VISIBLE", message = "Lost sight of the ranged target before release";
+			boolean listClearTargets = true;
+			try { rangedPoint(player, target); }
+			catch (ObstructedSight obstructed) { code = "TARGET_OBSTRUCTED"; message = obstructed.getMessage(); }
+			catch (AgentDomainException blocked) { code = blocked.code(); message = blocked.getMessage(); listClearTargets = false; }
+			hold(code, message, listClearTargets, elapsed);
 			holding = true;
 		}
 		if (!released && !holding) {
@@ -330,12 +352,13 @@ public final class ServerRangedUseController implements ServerTransactionAdapter
 			// ballistic aim is re-solved each tick for the power the draw will have at release.
 			net.minecraft.world.phys.Vec3 aim = null;
 			try { aim = currentAim(nowEpochMs); }
-			catch (AgentDomainException blocked) { hold(blocked.code(), blocked.getMessage(), elapsed); holding = true; }
+			catch (ObstructedSight obstructed) { hold("TARGET_OBSTRUCTED", obstructed.getMessage(), true, elapsed); holding = true; }
+			catch (AgentDomainException blocked) { hold(blocked.code(), blocked.getMessage(), false, elapsed); holding = true; }
 			if (!holding) {
 				var point = lastTargetPoint != null ? lastTargetPoint : target.getBoundingBox().getCenter();
 				var block = RangedShotCheck.blockBefore(player, target, point, explicitAim ? null : lastLead, aim, BowBallistics.speed(drawTicks));
 				if (block != null) {
-					hold("TARGET_OBSTRUCTED", RangedShotCheck.obstruction(player, target, block, explicitAim) + RangedShotCheck.clearTargets(player), elapsed);
+					hold("TARGET_OBSTRUCTED", RangedShotCheck.obstruction(player, target, block, explicitAim), true, elapsed);
 					holding = true;
 				} else {
 					holdCode = null;
@@ -428,7 +451,7 @@ public final class ServerRangedUseController implements ServerTransactionAdapter
 				() -> {
 					ItemStack carried = player.containerMenu.getCarried();
 					player.containerMenu.setCarried(ItemStack.EMPTY);
-					if (!carried.isEmpty()) player.getInventory().placeItemBackInInventory(carried, net.minecraft.util.Prediction.SERVER_ONLY);
+					if (!carried.isEmpty()) McCompat.placeItemBackInInventory(player.getInventory(), carried);
 				}
 		));
 	}
@@ -472,12 +495,15 @@ public final class ServerRangedUseController implements ServerTransactionAdapter
 	/** Why the drawn bow is being held instead of loosed, and since when (transaction ms); null while the shot is clear. */
 	private String holdCode;
 	private String holdMessage;
+	/** Whether the timeout report adds the other targets with a clear arrow line, built only then (see {@link ObstructedSight}). */
+	private boolean holdListsClearTargets;
 	private long holdSinceMs;
 
-	private void hold(String code, String message, long elapsed) {
+	private void hold(String code, String message, boolean listClearTargets, long elapsed) {
 		if (holdCode == null) holdSinceMs = elapsed;
 		holdCode = code;
 		holdMessage = message;
+		holdListsClearTargets = listClearTargets;
 	}
 
 	/** Says when a reflex-raised shield ended earlier draws of this shot, so the time spent is explained. */

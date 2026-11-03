@@ -494,7 +494,7 @@ public final class InspectionContractTruthVerification {
 	private static final class FixtureLevel extends ServerLevel {
 		// 26.3 entities take their ID from the level, and ServerLevel asks its (absent) chunk source.
 		private int fixtureEntityIds = 100_000;
-		@Override public int getNextEntityId() { return ++fixtureEntityIds; }
+		public int getNextEntityId() { return ++fixtureEntityIds; }
 		SparseWorld world;
 		MinecraftServer server;
 		boolean loaded;

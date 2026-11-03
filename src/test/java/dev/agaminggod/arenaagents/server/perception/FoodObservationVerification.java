@@ -116,7 +116,7 @@ public final class FoodObservationVerification {
 	@SuppressWarnings("unchecked")
 	private static Map<Holder.Reference<Item>, DataComponentMap> bindVanillaItemComponents() {
 		Map<Holder.Reference<Item>, DataComponentMap> originals = new HashMap<>();
-		for (DataComponentInitializers.PendingComponents<?> pending : BuiltInRegistries.DATA_COMPONENT_INITIALIZERS.build(net.minecraft.data.registries.VanillaRegistries.createReloadableLookup(net.minecraft.data.registries.VanillaRegistries.createWorldLookup()))) {
+		for (DataComponentInitializers.PendingComponents<?> pending : BuiltInRegistries.DATA_COMPONENT_INITIALIZERS.build(dev.agaminggod.arenaagents.compat.TestCompat.vanillaDatapackLookup())) {
 			if (!pending.key().equals(Registries.ITEM)) continue;
 			((DataComponentInitializers.PendingComponents<Item>) pending).forEach((holder, components) -> {
 				originals.put(holder, boundComponents(holder));

@@ -5,7 +5,7 @@ import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
-import { spawnOwnedProcess, terminateChildProcess, prepareOwnedJobStop } from '../src/child-process-lifecycle.mjs';
+import { spawnOwnedProcess, terminateChildProcess, prepareOwnedJobStop, OWNED_JOB_ENVIRONMENT_VARIABLE } from '../src/child-process-lifecycle.mjs';
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 async function eventually(read, condition, describeFailure = async () => '') {
@@ -162,6 +162,22 @@ test('job witness promptly reports incomplete when launcher exits without a froz
 	}
 });
 
+test('the Windows job witness publishes every signal file by rename, so the wrapper never deletes a file still being written', async () => {
+	// The wrapper polls File.Exists(control + ".ready") and deletes the file at once. Written in place with
+	// File.WriteAllText, the name appears before the witness closes it, and that delete failed on Windows CI with
+	// "being used by another process": AttachWithEvidence threw, the command never ran, and the cleanup proof read
+	// INCOMPLETE with wrapperExited false.
+	const witness = await readFile(new URL('../src/owned-job-witness.ps1', import.meta.url), 'utf8');
+	const wrapper = await readFile(new URL('../src/owned-windows-job.ps1', import.meta.url), 'utf8');
+	assert.match(witness, /static void Publish\(string path,string text\) \{\s*File\.WriteAllText\(path\+"\.writing",text\);File\.Move\(path\+"\.writing",path\);/);
+	for (const signal of ['control+".ready"', 'evidence+".ready"']) assert.ok(witness.includes(`Publish(${signal},`), `${signal} is published by rename`);
+	assert.doesNotMatch(witness, /WriteAllText\((control|evidence)\+"\.ready"/, 'no polled signal is written in place');
+	// The wrapper's own control file is published the same way, and its cleanup of the witness's signal cannot fail the attach.
+	assert.match(wrapper, /File\.WriteAllText\(control \+ "\.writing",[^\n]*\n\s*File\.Move\(control \+ "\.writing", control\);/);
+	assert.match(wrapper, /try \{ File\.Delete\(control \+ "\.ready"\); \} catch \(IOException\) \{ \}/);
+	assert.equal(wrapper.match(/File\.Delete\(control \+ "\.ready"\)/g).length, 1, 'no unguarded delete of the ready signal');
+});
+
 test('the Windows job wrapper starts System32 PowerShell even when the provider PATH omits it', () => {
 	const calls = [];
 	spawnOwnedProcess('codex.cmd', ['app-server'], { env: { PATH: 'C:\fake-bin' } }, { platform: 'win32', spawn: (command, args, options) => { calls.push({ command, options }); return {}; } });
@@ -174,11 +190,32 @@ test('the Windows job wrapper gets system variables while the command keeps exac
 	const calls = [];
 	const env = { PATH: 'C:\\provider', Path: 'C:\\shadowed', ARENA_PROVIDER_ONLY: '1' };
 	spawnOwnedProcess('codex.cmd', ['app-server'], { env }, { platform: 'win32', spawn: (command, args, options) => { calls.push({ args, options }); return {}; } });
-	const invocation = JSON.parse(Buffer.from(calls[0].args[calls[0].args.indexOf('-CommandJson') + 1], 'base64').toString('utf8'));
+	const requested = JSON.parse(calls[0].options.env[OWNED_JOB_ENVIRONMENT_VARIABLE]);
 	// Node keeps the first name in sorted order for case-insensitive duplicates; the wrapper must match it.
-	assert.deepEqual(invocation.env, { ARENA_PROVIDER_ONLY: '1', PATH: 'C:\\provider' });
-	const added = Object.keys(calls[0].options.env).filter((name) => !Object.hasOwn(invocation.env, name));
+	assert.deepEqual(requested, { ARENA_PROVIDER_ONLY: '1', PATH: 'C:\\provider' });
+	const added = Object.keys(calls[0].options.env).filter((name) => !Object.hasOwn(requested, name) && name !== OWNED_JOB_ENVIRONMENT_VARIABLE);
 	for (const name of added) assert.match(name.toUpperCase(), /^(ALLUSERSPROFILE|COMMONPROGRAM.*|COMPUTERNAME|DRIVERDATA|LOGONSERVER|NUMBER_OF_PROCESSORS|OS|PROCESSOR_.*|PSMODULEPATH|PUBLIC|SESSIONNAME|USERDOMAIN.*|USERNAME)$/);
+});
+
+test('the Windows job wrapper never puts provider secrets on its command line', () => {
+	const calls = [];
+	const secrets = { ANTHROPIC_API_KEY: 'sk-ant-argv-canary-1', CLAUDE_CODE_OAUTH_TOKEN: 'oauth-argv-canary-2', OPENAI_API_KEY: 'sk-openai-argv-canary-3' };
+	spawnOwnedProcess('claude.exe', ['--print'], { env: { PATH: 'C:\\provider', ...secrets } }, { platform: 'win32', spawn: (command, args, options) => { calls.push({ command, args, options }); return {}; } });
+	const { command, args, options } = calls[0];
+	// Decode every argument as well: base64 hid the whole environment in -CommandJson before.
+	const argv = [command, ...args].flatMap((arg) => [arg, Buffer.from(arg, 'base64').toString('utf8')]).join('\n');
+	for (const [name, value] of Object.entries(secrets)) {
+		assert.equal(argv.includes(value), false, `${name} appeared in the wrapper argv`);
+		assert.equal(options.env[name], value, `${name} reaches the wrapper through its environment`);
+	}
+	const invocation = JSON.parse(Buffer.from(args[args.indexOf('-CommandJson') + 1], 'base64').toString('utf8'));
+	assert.deepEqual(invocation, { command: 'claude.exe', args: ['--print'] });
+	assert.deepEqual(JSON.parse(options.env[OWNED_JOB_ENVIRONMENT_VARIABLE]), { PATH: 'C:\\provider', ...secrets });
+});
+
+test('the Windows job wrapper refuses an environment Windows could not hold in one variable', () => {
+	const env = { PATH: 'C:\\provider', HUGE: 'x'.repeat(40_000) };
+	assert.throws(() => spawnOwnedProcess('codex.cmd', [], { env }, { platform: 'win32', spawn: () => { throw new Error('must not spawn'); } }), /Windows allows 32767/);
 });
 
 test('an owned child receives exactly the requested environment', { skip: process.platform !== 'win32' }, async () => {
@@ -191,6 +228,7 @@ test('an owned child receives exactly the requested environment', { skip: proces
 	const names = JSON.parse(stdout).map((name) => name.toUpperCase());
 	assert.ok(names.includes('ARENA_PROVIDER_ONLY'));
 	assert.equal(names.includes('PROCESSOR_ARCHITECTURE'), false, 'wrapper-only system variables stay out of the command');
+	assert.equal(names.includes(OWNED_JOB_ENVIRONMENT_VARIABLE), false, 'the environment hand-off variable stays out of the command');
 });
 
 test('an owned child answers a line-delimited request while stdin stays open', { skip: process.platform !== 'win32' }, async () => {

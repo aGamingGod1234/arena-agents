@@ -38,6 +38,8 @@ try {
 	$fakeJava = Join-Path $fixture 'fake-java.ps1'
 	$fakeJava21 = Join-Path $fixture 'fake-java-21.ps1'
 
+	# The script reads the target's versions from the project, as ./gradlew does.
+	Write-TestText (Join-Path $fixture 'gradle.properties') "mod_version=0.2.0`nmc_compat=26.3`nminecraft_version=26.3`nloader_version=0.20.1`nfabric_api_version=0.165.0+26.3`nfabric_api_sha256=18442e2ad466d6ef41c37dbb4cb68495e6ca6658b1f1ee9be76143d155ef2c88`ncarpet_version=26.3+v260915`n"
 	Write-TestText (Join-Path $source 'server.properties') "online-mode=false`nserver-ip=127.0.0.1`nserver-port=0`nenable-rcon=false`nlevel-name=headless-template-world`npause-when-empty-seconds=-1`n"
 	Write-TestText (Join-Path $source 'README.md') "Generated binaries are installed at setup time.`n"
 	Write-TestText $buildJar 'arena-mod-fixture'

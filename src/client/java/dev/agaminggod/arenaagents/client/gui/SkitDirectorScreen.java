@@ -811,7 +811,7 @@ public final class SkitDirectorScreen extends Screen {
 	public void onClose() {
 		if (minecraft != null && parent != null) {
 			if (parent instanceof AgentControlScreen console) AgentControlClient.snapshot().ifPresent(console::acceptSnapshot);
-			minecraft.gui.setScreen(parent);
+			dev.agaminggod.arenaagents.client.compat.McClientCompat.setScreen(minecraft, parent);
 		}
 		else super.onClose();
 	}

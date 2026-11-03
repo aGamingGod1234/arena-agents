@@ -49,11 +49,45 @@ test('local speech RPC responses use the original stdout outside global redirect
 	assert.doesNotMatch(source, /def _respond\(value\):\s+sys\.stdout\.write\(/);
 });
 
-test('local speech worker serializes concurrent TTS, STT, and warmup model work', async () => {
+async function runPythonFixture(label, fixture, args = []) {
 	const python = process.env.ARENA_AGENT_SPEECH_PYTHON
 		?? (process.platform === 'win32' ? 'python' : 'python3');
+	const timeoutMs = 10_000;
+	const started = performance.now();
+	let stdout;
+	try {
+		({ stdout } = await execFileAsync(python, [fixture, ...args], { timeout: timeoutMs, windowsHide: true }));
+	} catch (error) {
+		// node:test's TAP error omits execFile's child metadata and captured output.
+		// Keep the stack dump in the message itself, including when Windows kills Python.
+		// TAP truncates long error messages, so budget each JSON-encoded stream.
+		const tail = (value, budget) => {
+			let output = String(value ?? '').slice(-budget);
+			while (JSON.stringify(output).length > budget) output = output.slice(256);
+			return output;
+		};
+		throw new Error(`${label} fixture failed: ${JSON.stringify({
+			executable: python,
+			fixture,
+			timeoutMs,
+			elapsedMs: Math.round(performance.now() - started),
+			code: error.code ?? null,
+			killed: error.killed ?? false,
+			signal: error.signal ?? null,
+			stdoutTail: tail(error.stdout, 2_000),
+			stderrHead: tail(String(error.stderr ?? '').slice(0, 700), 1_000),
+			// Keep the latest phase even when a many-thread traceback fills the tail.
+			stderrProgress: tail(String(error.stderr ?? '').split('\n')
+				.filter(line => /^(ARENA_[A-Z_]+_PHASE |Timeout \()/.test(line)).join('\n'), 1_000),
+			stderrTail: tail(error.stderr, 4_500),
+		})}`, { cause: error });
+	}
+	return stdout;
+}
+
+test('local speech worker serializes concurrent TTS, STT, and warmup model work', async () => {
 	const fixture = fileURLToPath(new URL('../test-support/local-speech-inference-concurrency-check.py', import.meta.url));
-	const { stdout } = await execFileAsync(python, [fixture], { timeout: 10_000, windowsHide: true });
+	const stdout = await runPythonFixture('Local speech concurrency', fixture);
 	assert.deepEqual(JSON.parse(stdout.trim()), {
 		requests: 8,
 		warmupRequests: 2,
@@ -64,14 +98,9 @@ test('local speech worker serializes concurrent TTS, STT, and warmup model work'
 });
 
 test('all built-in profiles reach Chatterbox with distinct bounded conditioning', async () => {
-	const python = process.env.ARENA_AGENT_SPEECH_PYTHON
-		?? (process.platform === 'win32' ? 'python' : 'python3');
 	const fixture = fileURLToPath(new URL('../test-support/local-speech-voice-conditioning-check.py', import.meta.url));
 	const voiceIds = builtInVoiceProfiles().map(({ voiceId }) => voiceId);
-	const { stdout } = await execFileAsync(python, [fixture, JSON.stringify(voiceIds)], {
-		timeout: 10_000,
-		windowsHide: true,
-	});
+	const stdout = await runPythonFixture('Local speech voice conditioning', fixture, [JSON.stringify(voiceIds)]);
 	const received = JSON.parse(stdout.trim());
 	assert.equal(received.length, 16);
 	assert.equal(new Set(received.map((conditioning) => JSON.stringify(conditioning))).size, 16);

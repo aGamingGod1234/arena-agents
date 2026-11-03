@@ -1727,7 +1727,7 @@ test('bridge send rejection contains a model execution error and schedules activ
 	});
 	await manager.installDecision(registry.get('agent-a'), {
 		directive: 'replace',
-		source: 'program.onUnhandledAttention("continue_and_notify"); const result = await tryResult(player.wait(1)); const invalid = result.yaw; program.finish("done");',
+		source: 'program.onUnhandledAttention("continue_and_notify"); const result = await tryResult(player.wait(1)); const invalid = result.yaw.degrees; program.finish("done");',
 	}, { observation: observation(), eventSequence: 1 });
 	await new Promise((resolve) => setImmediate(resolve));
 	assert.equal(registry.get('agent-a').state, DynamicAgentState.ACTING);

@@ -21,8 +21,10 @@ import java.util.regex.Pattern;
  * {@link ReflexSensors} / {@link ReflexActions}.
  */
 public final class ReflexSpec {
-	/** The model's own 12 rules plus the coordinator's 4 default survival rules (Lucas, Oct 28 ruling 16). */
-	public static final int MAX_RULES = 16;
+	/** The model's own 12 rules plus the coordinator's 10 default survival rules (Lucas, Oct 28 ruling 16). */
+	public static final int MAX_RULES = 22;
+	/** Ids the coordinator's default survival rules carry (reflexes.mjs DEFAULT_REFLEXES). */
+	public static final String DEFAULT_RULE_PREFIX = "default-";
 	public static final int MAX_CONDITIONS = 4;
 	public static final int MAX_IDS = 8;
 	public static final int MIN_PRIORITY = 1;
@@ -241,7 +243,8 @@ public final class ReflexSpec {
 			long cooldownMs,
 			long ttlMs,
 			int maxFirings,
-			boolean wake
+			boolean wake,
+			boolean coordinatorDefault
 	) {
 		public Rule {
 			Objects.requireNonNull(id, "id must not be null");
@@ -249,6 +252,11 @@ public final class ReflexSpec {
 			when = List.copyOf(when);
 			Objects.requireNonNull(action, "action must not be null");
 			until = List.copyOf(until);
+		}
+
+		/** Only coordinator-owned defaults suppress a missing-item firing; model rules report the failure. */
+		public boolean sleepsWithoutItem(String lacks) {
+			return coordinatorDefault && lacks != null;
 		}
 	}
 
@@ -282,7 +290,7 @@ public final class ReflexSpec {
 	}
 
 	public static Rule parseRule(JsonObject value, String path) {
-		requireKeys(value, path, Set.of("id", "kind", "priority", "when", "do", "until", "maxMs", "cooldownMs", "ttlMs", "maxFirings", "wake"));
+		requireKeys(value, path, Set.of("id", "kind", "priority", "when", "do", "until", "maxMs", "cooldownMs", "ttlMs", "maxFirings", "wake", "coordinatorDefault"));
 		String id = string(value, "id", path);
 		if (!RULE_ID.matcher(id).matches()) throw invalid(path + ".id must be 1..32 letters, digits, _ or -");
 		String kindText = value.has("kind") ? string(value, "kind", path) : "trigger";
@@ -306,7 +314,8 @@ public final class ReflexSpec {
 		long ttlMs = longValue(value, "ttlMs", path, 1_000L, MAX_TTL_MS, DEFAULT_TTL_MS);
 		int maxFirings = (int) longValue(value, "maxFirings", path, 0, MAX_FIRINGS_LIMIT, 0);
 		boolean wake = value.has("wake") && bool(value, "wake", path);
-		return new Rule(id, kind, priority, when, action, until, maxMs, cooldownMs, ttlMs, maxFirings, wake);
+		return new Rule(id, kind, priority, when, action, until, maxMs, cooldownMs, ttlMs, maxFirings, wake,
+				value.has("coordinatorDefault") && bool(value, "coordinatorDefault", path));
 	}
 
 	private static List<Condition> conditions(JsonElement element, String path) {

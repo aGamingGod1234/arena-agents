@@ -19,6 +19,7 @@ public final class AgentActivityPresentation {
 			case CONTROL, CONTROL_SEQUENCE -> "Carrying out the next step";
 			case MOVE_TO, NAVIGATE_TO, TRAVEL_TO -> "Moving to the next position";
 			case DIG_TO -> "Digging toward a goal";
+			case MINE_VEIN -> "Felling a tree or mining a vein";
 			case BUILD_SHELTER -> "Building a shelter";
 			case CAST_OBSIDIAN -> "Casting obsidian";
 			case BARTER_UNTIL -> "Bartering with piglins";
@@ -162,6 +163,7 @@ public final class AgentActivityPresentation {
 			case MOVE_TO, NAVIGATE_TO, TRAVEL_TO -> "Destination reached.";
 			case LOOK_AT -> "Finished looking around.";
 			case BREAK_BLOCK -> "Block broken.";
+			case MINE_VEIN -> "Blocks mined.";
 			case PLACE_BLOCK -> "Block placed.";
 			case BUILD_SEQUENCE -> "Building steps complete.";
 			case PICK_UP_ITEM -> "Picked up the item.";
@@ -235,7 +237,7 @@ public final class AgentActivityPresentation {
 	private static String timeoutSubject(ActionType type) {
 		return switch (type) {
 			case MOVE_TO, NAVIGATE_TO, TRAVEL_TO -> "Movement";
-			case BREAK_BLOCK -> "Mining";
+			case BREAK_BLOCK, MINE_VEIN -> "Mining";
 			case PLACE_BLOCK -> "Block placement";
 			case BUILD_SEQUENCE -> "Building";
 			case CRAFT_INVENTORY, CRAFT_TABLE -> "Crafting";

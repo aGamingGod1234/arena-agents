@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.camera;
 
+import dev.agaminggod.arenaagents.compat.McCompat;
+
 import java.util.Comparator;
 import java.util.Optional;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
@@ -83,7 +85,7 @@ public final class CameraDolly {
                 entity.discard();
                 if (!player.getAbilities().instabuild) {
                     var recovered = new ItemStack(ITEM);
-                    if (!player.getInventory().add(recovered)) player.drop(recovered, false, net.minecraft.util.Prediction.SERVER_ONLY);
+                    if (!player.getInventory().add(recovered)) McCompat.drop(player, recovered, false, false);
                 }
             }
             return InteractionResult.SUCCESS;
@@ -94,7 +96,7 @@ public final class CameraDolly {
                 .then(Commands.literal("kit").executes(context -> {
                     var player = context.getSource().getPlayerOrException();
                     var stack = new ItemStack(ITEM);
-                    if (!player.getInventory().add(stack)) player.drop(stack, false, net.minecraft.util.Prediction.SERVER_ONLY);
+                    if (!player.getInventory().add(stack)) McCompat.drop(player, stack, false, false);
                     context.getSource().sendSuccess(() -> Component.literal("Camera ready. Place it on the floor, then right-click to open its controls."), false);
                     return 1;
                 }))
@@ -151,7 +153,7 @@ public final class CameraDolly {
         }
         if (cart == null) { source.sendFailure(Component.literal(selected == null ? "No camera dolly within 32 blocks." : "The selected camera is no longer loaded or is more than 128 blocks away.")); return 0; }
         cart.setDeltaMovement(stop ? net.minecraft.world.phys.Vec3.ZERO : net.minecraft.world.phys.Vec3.directionFromRotation(0, yaw).scale(0.2));
-        cart.syncVelocity = true;
+        McCompat.syncVelocity(cart);
         source.sendSuccess(() -> Component.literal(stop ? "Camera dolly braked. Turn off powered rails to keep it stopped." : "Camera dolly rolling in your facing direction. Powered rails keep it moving."), false);
         return 1;
     }

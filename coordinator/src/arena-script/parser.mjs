@@ -16,6 +16,7 @@ const ACTION_TOOL_DEFAULTS = Object.freeze({
 	move_to: Object.freeze({ tolerance: 1, sprint: true }),
 	navigate_to: Object.freeze({ tolerance: 1, sprint: true, timeoutMs: 30_000 }),
 	dig_to: Object.freeze({ timeoutMs: 300_000 }),
+	mine_vein: Object.freeze({ timeoutMs: 120_000 }),
 	build_shelter: Object.freeze({ timeoutMs: 120_000 }),
 	cast_obsidian: Object.freeze({ timeoutMs: 300_000 }),
 	barter_until: Object.freeze({ timeoutMs: 300_000 }),

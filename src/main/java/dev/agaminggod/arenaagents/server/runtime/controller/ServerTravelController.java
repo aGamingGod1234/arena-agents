@@ -75,7 +75,18 @@ public final class ServerTravelController implements ServerController {
 	private static final int SIGHT_YAWS = 13, SIGHT_PITCHES = 7;
 	private static final float SIGHT_YAW_SPAN = 120.0F, SIGHT_PITCH_SPAN = 60.0F;
 
-	private enum Phase { PLAN, LOOK, LEG, BUILD, WATCH, FIGHT }
+	private enum Phase { PLAN, LOOK, LEG, BUILD, WATCH, FIGHT, DIG }
+
+	/** A dig_to staircase toward a target below: the executor's own dig controller (every dig_to stop applies). */
+	public interface Descent {
+		ServerController dig(int y, int x, int z, long timeoutMs);
+	}
+
+	/** Staircases a trip digs at most before it hands back. */
+	static final int MAX_DIGS = 3;
+	private Descent descent;
+	private ServerController dig;
+	private int digs;
 
 	/** Longest single fight a fightThrough trip runs before the fight itself times out (the trip's own deadline still rules). */
 	static final long FIGHT_TIMEOUT_MS = 30_000L;
@@ -114,6 +125,13 @@ public final class ServerTravelController implements ServerController {
 	private float lastHealth, startHealth;
 	private int startFood;
 	private final Set<UUID> knownHostiles = new HashSet<>();
+	/** Each hostile's distance at its last sample, to tell one closing in from one falling behind. */
+	private final java.util.Map<UUID, Double> hostileDistances = new java.util.HashMap<>();
+	/** Hostiles in range that were passed because they were neither close nor coming for the body. */
+	private final Set<UUID> passedHostiles = new HashSet<>();
+	/** Terrain damage shrugged off on this trip (a berry bush, a cactus, a short drop), and how. */
+	private float shrugged;
+	private final java.util.List<String> shrugNotes = new java.util.ArrayList<>();
 	private final Set<GridPosition> refused = new HashSet<>();
 	private ServerNavigationController leg;
 	private TravelCheckpoints.WalkingSearch checkpointSearch;
@@ -121,7 +139,7 @@ public final class ServerTravelController implements ServerController {
 	private double legStartLeft;
 	private boolean legFinal;
 	private int legTicks;
-	private int failedLegs, legs, looks, bridged, pillared, tunnelled, ticks;
+	private int failedLegs, legs, looks, bridged, pillared, tunnelled, ticks, dugDown;
 	private double legAllowedBacktrack = BACKTRACK;
 	private String lastLegFailure, buildRefusal, buildRefusalCode;
 	private float lookYaw, lookPitch;
@@ -176,6 +194,21 @@ public final class ServerTravelController implements ServerController {
 	/** A remembered route leg needs its actual height, including a shaft's next standing level. */
  ServerTravelController routeLeg() { this.routeLeg=true; return this; }
 
+	/** Lets the trip dig down by a dig_to staircase when the target is below and no seen way down gets closer. */
+	public ServerTravelController descend(Descent descent) {
+		this.descent = descent;
+		return this;
+	}
+
+	/**
+	 * Whether a trip with nothing seen that gets closer digs down instead of building across: the target y lies more than
+	 * the arrival band (plus a block) below the feet. A player with a pickaxe digs a staircase down to a cave or ore level
+	 * rather than bridging or pillaring at the surface.
+	 */
+	static boolean digsDown(double feetY, double targetY, double heightTolerance) {
+		return Double.isFinite(targetY) && feetY - targetY > heightTolerance + 1.0D;
+	}
+
 	/** The model chose to fight hostiles on the route instead of stopping for them. */
 	public ServerTravelController fightThrough(boolean enabled) {
 		this.fightThrough = enabled;
@@ -215,6 +248,8 @@ public final class ServerTravelController implements ServerController {
 		if (nowEpochMs - startedAt >= timeoutMs) return finish(player, ServerController.State.TIMED_OUT, "TRAVEL_TIMEOUT", "The trip's timeoutMs ran out before arrival");
 		if (nowEpochMs - bestAt >= STALL_MS) return fail(player, buildRefusal == null ? "NO_ROUTE" : buildRefusalCode, "No closer to the target for " + STALL_MS / 1000 + " s"
 				+ (buildRefusal == null ? "" : "; building cannot continue: " + buildRefusal) + lastFailureText());
+		// The staircase has its own lava, water and cave rules; the walking lava guard would fight its keys.
+		if (phase == Phase.DIG) return digTick(player, nowEpochMs);
 		TickResult lava = lavaGuard(player, nowEpochMs);
 		if (lava != null) return lava;
 		return switch (phase) {
@@ -224,6 +259,7 @@ public final class ServerTravelController implements ServerController {
 			case BUILD -> buildTick(player, nowEpochMs);
 			case WATCH -> watchTick(player, nowEpochMs);
 			case FIGHT -> fightTick(player, nowEpochMs);
+			case DIG -> digTick(player, nowEpochMs);
 		};
 	}
 
@@ -263,7 +299,12 @@ public final class ServerTravelController implements ServerController {
 					&& attacker.distanceTo(player) <= HOSTILE_RANGE) {
 				return engage(player, attacker, String.format(Locale.ROOT, "hit you for %.1f (%s)", lastHealth - health, cause), nowEpochMs);
 			}
-			return fail(player, "TRAVEL_DAMAGED", String.format(Locale.ROOT, "Took %.1f damage (%s); health %.1f", lastHealth - health, cause, health));
+			float lost = lastHealth - health;
+			if (!TravelStops.shrugsOff(source == null ? null : source.getMsgId(), source != null && source.getEntity() != null, lost, shrugged, health, minHealth))
+				return fail(player, "TRAVEL_DAMAGED", String.format(Locale.ROOT, "Took %.1f damage (%s); health %.1f", lost, cause, health));
+			// A scratch from the terrain itself: a player keeps going.
+			shrugged += lost;
+			shrugNotes.add(String.format(Locale.ROOT, "%.1f (%s)", lost, cause));
 		}
 		lastHealth = health;
 		if (health <= minHealth && startHealth > minHealth) return fail(player, "LOW_HEALTH", "Health fell to " + format(health) + " (minHealth " + format(minHealth) + ")");
@@ -274,8 +315,16 @@ public final class ServerTravelController implements ServerController {
 				double distance = mob.distanceTo(player);
 				boolean targeting = mob.getTarget() == player;
 				boolean known = knownHostiles.contains(mob.getUUID());
+				Double previous = hostileDistances.put(mob.getUUID(), distance);
 				// One the model already had in view when it chose to travel stops the trip only up close (or by a hit).
 				if (known && distance > HOSTILE_CLOSE) continue;
+				// A new one stops it only when it is coming for the body: close, targeting and closing in, or a ranged
+				// mob targeting it. One that is not after the body, or falls behind the sprint, is passed.
+				if (!fightThrough && !TravelStops.stopsFor(false, distance, previous, targeting,
+						BuiltInRegistries.ENTITY_TYPE.getKey(mob.getType()).toString())) {
+					passedHostiles.add(mob.getUUID());
+					continue;
+				}
 				if (fightThrough) {
 					// Fought once it closes in or hits; until then it is only in view, as for one seen at the start.
 					if (distance > HOSTILE_CLOSE) { knownHostiles.add(mob.getUUID()); continue; }
@@ -349,6 +398,8 @@ public final class ServerTravelController implements ServerController {
 		else releaseInput();
 		if (!player.onGround() && !player.isInWater()) return TickResult.running(progress(player));
 		MinecraftNavigationWorld world = new MinecraftNavigationWorld(player.level(), player);
+		// Legs are walked by navigation, which opens wooden doors and gates: seen ground behind one is a leg's reach.
+		MinecraftNavigationWorld legs = new MinecraftNavigationWorld(player.level(), player).opensDoors();
   // The ordinary checkpoint picker accepts a height band; it would keep choosing this shaft's own floor forever.
   if(routeLeg && Double.isFinite(targetY) && targetY>player.getY()+0.6D && Math.hypot(targetX-player.getX(),targetZ-player.getZ())<0.8D) {
    if(!build) return fail(player,"NO_ROUTE","This remembered shaft needs blocks to pillar up; build is false");
@@ -362,10 +413,10 @@ public final class ServerTravelController implements ServerController {
 		if (buildNow || onMagma(player)) checkpointSearch = null;
 		else {
 			if (checkpointSearch != null && !checkpointSearch.origin.equals(feet(player))) checkpointSearch = null;
-			if (checkpointSearch == null) checkpointSearch = TravelCheckpoints.beginWalkingPick(world, player.getX(), player.getY(), player.getZ(),
+			if (checkpointSearch == null) checkpointSearch = TravelCheckpoints.beginWalkingPick(legs, player.getX(), player.getY(), player.getZ(),
 					targetX, targetY, targetZ, LEG_REACH, this::isRefused, sightedSpots(player));
 			if (checkpointSearch != null) {
-				next = checkpointSearch.advance(world);
+				next = checkpointSearch.advance(legs);
 				if (!checkpointSearch.finished()) return TickResult.running(progress(player));
 				checkpointSearch = null;
 			}
@@ -389,7 +440,7 @@ public final class ServerTravelController implements ServerController {
 			return look(player, nowEpochMs);
 		}
 		if (!onMagma(player) && failedLegs < MAX_FAILED_LEGS && (buildRefusal != null || !build)) {
-			GridPosition detour = TravelCheckpoints.detour(world, player.getX(), player.getY(), player.getZ(), targetX, targetZ, this::isRefused);
+			GridPosition detour = TravelCheckpoints.detour(legs, player.getX(), player.getY(), player.getZ(), targetX, targetZ, this::isRefused);
 			if (detour != null) {
 				refused.add(detour);
 				legFinal = false;
@@ -398,8 +449,37 @@ public final class ServerTravelController implements ServerController {
 			}
 		}
 		if (!build) return fail(player, "NO_ROUTE", "No seen standing spot ahead gets closer, and build is false" + lastFailureText());
+		if (descent != null && digs < MAX_DIGS && digsDown(player.getY(), targetY, heightTolerance())) return startDig(player, nowEpochMs);
 		if (buildRefusal != null) return fail(player, buildRefusalCode, "No seen way on toward the target, and building cannot continue: " + buildRefusal + lastFailureText());
 		return startBuild(player, world, nowEpochMs);
+	}
+
+	/** Down toward a target below: a stairs_down dig_to toward its x/z to its y, then walking legs again from there. */
+	private TickResult startDig(ServerPlayer player, long nowEpochMs) {
+		releaseInput();
+		try {
+			dig = descent.dig((int) Math.floor(targetY), (int) Math.floor(targetX), (int) Math.floor(targetZ), Math.max(1L, timeoutMs - (nowEpochMs - startedAt)));
+		} catch (dev.agaminggod.arenaagents.agent.AgentDomainException refused) {
+			return fail(player, refused.code(), "The target is below and no seen way down gets closer; digging down was refused: " + refused.getMessage());
+		}
+		digs++;
+		phase = Phase.DIG;
+		return digTick(player, nowEpochMs);
+	}
+
+	private TickResult digTick(ServerPlayer player, long nowEpochMs) {
+		TickResult result = dig.tick(player, nowEpochMs);
+		if (result.state() == State.RUNNING) return TickResult.running(progress(player));
+		dig = null;
+		dugDown++;
+		if (result.state() != State.SUCCEEDED) return fail(player, result.reasonCode(), "Digging down toward y " + (int) Math.floor(targetY) + ": " + result.message());
+		// At the target's level: walk or build the rest from here.
+		failedLegs = 0;
+		looks = 0;
+		refused.clear();
+		bestAt = nowEpochMs;
+		phase = Phase.PLAN;
+		return TickResult.running(progress(player));
 	}
 
 	private TickResult look(ServerPlayer player, long nowEpochMs) {
@@ -1221,6 +1301,8 @@ public final class ServerTravelController implements ServerController {
 	public void cancel(ServerPlayer player) {
 		if (leg != null) leg.cancel(player);
 		leg = null;
+		if (dig != null) dig.cancel(player);
+		dig = null;
 		if (fight != null) fight.cancel(player);
 		fight = null;
 		releaseInput();
@@ -1318,7 +1400,10 @@ public final class ServerTravelController implements ServerController {
 				at.x, at.y, at.z, left(at), bearing, Double.isFinite(targetY) ? String.format(Locale.ROOT, ", %.0f above", targetY - at.y) : "",
 				gained, seconds, gained / seconds * 60.0D, travelled, legs, bridged, pillared, tunnelled, TravelBuilder.blocksOnHotbar(player) + TravelBuilder.blocksOffHotbar(player))
 				+ (fightLog.isEmpty() ? "" : "; fought through " + String.join(", ", fightLog))
-				+ (reflexResumes == 0 ? "" : "; replanned after " + reflexResumes + " reflex firing(s)");
+				+ (reflexResumes == 0 ? "" : "; replanned after " + reflexResumes + " reflex firing(s)")
+				+ (passedHostiles.isEmpty() ? "" : "; passed " + passedHostiles.size() + " hostile(s) not coming for you")
+				+ (shrugNotes.isEmpty() ? "" : "; shrugged off " + String.join(", ", shrugNotes) + " damage")
+				+ (dugDown == 0 ? "" : "; dug down by " + dugDown + " dig_to staircase(s)");
 	}
 
 	private String lastFailureText() {

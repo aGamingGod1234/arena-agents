@@ -1,6 +1,6 @@
 # Local dependency provenance
 
-The two JARs below are not committed to this repository because they belong to their upstream projects. Run `scripts/fetch-libs.sh` (Git Bash on Windows) to download both and check them against `checksums.sha256` before building.
+The JARs below are not committed to this repository because they belong to their upstream projects. Run `scripts/fetch-libs.sh` (Git Bash on Windows) to download the default 26.3 pair and check them against `checksums.sha256` before building. `scripts/fetch-libs.sh 26.2` and `scripts/fetch-libs.sh 26.1` fetch the pairs for the other Minecraft targets and check them against `checksums-26.2.sha256` and `checksums-26.1.sha256`. Their URLs and Modrinth version ids are in `gradle/mc/<target>.properties`.
 
 `fabric-carpet-26.3+v260915.jar` comes from the upstream Fabric Carpet `v26.3` GitHub release:
 
@@ -23,3 +23,8 @@ Get-FileHash -Algorithm SHA256 -LiteralPath .\libs\voicechat-fabric-2.6.27+26.3.
 ```
 
 When updating Carpet or Simple Voice Chat, download an exact tagged release asset from the upstream project. Review its published digest, replace the JAR, and update `checksums.sha256` in the same change.
+
+Other Minecraft targets, with their checksums verified against GitHub's published release digest (Carpet) and Modrinth's published SHA-512 (Simple Voice Chat):
+
+- 26.2: `fabric-carpet-26.2+v260616.jar` (Carpet `v26.2` release) and `voicechat-fabric-2.6.27+26.2.jar` (Modrinth version `ul3tRpKz`).
+- 26.1.x: `fabric-carpet-26.1+v260402.jar` (Carpet `v26.1` release, declares Minecraft `>26.0`) and `voicechat-fabric-2.6.27+26.1.2.jar` (Modrinth version `PVub6ooe`, declares `26.1.x`).

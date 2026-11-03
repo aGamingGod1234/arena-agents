@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.server.perception;
 
+import dev.agaminggod.arenaagents.compat.McCompat;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import dev.agaminggod.arenaagents.agent.AgentDomainException;
@@ -239,7 +241,7 @@ public final class PlayerKnowledgeInspection {
 
 	/** 26.3 tag slot displays hold a HolderSet; recipes still name a tag, so this is its id. */
 	private static String tagId(net.minecraft.world.item.crafting.display.SlotDisplay.TagSlotDisplay display) {
-		return display.tag().unwrapKey().map(key -> key.location().toString()).orElse("");
+		return McCompat.tagId(display);
 	}
 
 	private static String boundedId(String value) {

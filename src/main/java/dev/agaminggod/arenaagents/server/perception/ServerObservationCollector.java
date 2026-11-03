@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.server.perception;
 
+import dev.agaminggod.arenaagents.compat.McCompat;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import dev.agaminggod.arenaagents.agent.AgentId;
@@ -319,7 +321,7 @@ public final class ServerObservationCollector {
 		// Dimension/time rules are player knowledge; nearby monsters remain unknown until bed use.
 		var bedRule = level.environmentAttributes().getValue(net.minecraft.world.attribute.EnvironmentAttributes.BED_RULE, agent.blockPosition());
 		JsonObject sleep = new JsonObject();
-		sleep.addProperty("bedExplodes", bedRule.destroyOnUse());
+		sleep.addProperty("bedExplodes", McCompat.bedExplodes(bedRule));
 		sleep.addProperty("timeAllowsSleep", bedRule.canSleep(level));
 		world.add("sleep", sleep);
 		// Sent to every client at login; dropped items age only in chunks within this many chunks of a player.
@@ -470,9 +472,9 @@ public final class ServerObservationCollector {
 				result = new JsonObject();
 				JsonObject block = blockDetails(agent, position);
 				if (agent.level().getBlockEntity(position) instanceof SignBlockEntity sign) {
-					var text = sign.getText(sign.getSlotPlayerIsFacing(agent));
+					var text = McCompat.signText(sign, McCompat.facingFrontText(sign, agent));
 					JsonArray lines = new JsonArray();
-					for (var line : text.getMessages(agent.isTextFilteringEnabled())) lines.add(ObservationDetails.bounded(line.getString(), 512));
+					for (var line : McCompat.signMessages(text, agent.isTextFilteringEnabled())) lines.add(ObservationDetails.bounded(line.getString(), 512));
 					block.add("text", lines);
 				}
 				result.add("block", block);

@@ -22,7 +22,7 @@ public final class SpectatorCameraAssistant {
 				client.getConnection() != null,
 				player != null && player.isAlive(),
 				player != null && player.isSpectator(),
-				client.gui.screen() != null,
+				dev.agaminggod.arenaagents.client.compat.McClientCompat.screen(client) != null,
 				currentTick
 		);
 		if (state.cameraDisabled()) {

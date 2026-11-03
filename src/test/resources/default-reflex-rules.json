@@ -1,0 +1,175 @@
+[
+	{
+		"coordinatorDefault": true,
+		"id": "default-lava",
+		"kind": "trigger",
+		"priority": 9,
+		"when": [
+			{
+				"type": "in_lava"
+			}
+		],
+		"do": {
+			"type": "leave_lava"
+		},
+		"ttlMs": 3600000
+	},
+	{
+		"coordinatorDefault": true,
+		"id": "default-fire",
+		"kind": "trigger",
+		"priority": 8,
+		"when": [
+			{
+				"type": "in_fire"
+			}
+		],
+		"do": {
+			"type": "leave_fire"
+		},
+		"ttlMs": 3600000
+	},
+	{
+		"coordinatorDefault": true,
+		"id": "default-air",
+		"kind": "trigger",
+		"priority": 8,
+		"when": [
+			{
+				"type": "air_below",
+				"bubbles": 3
+			}
+		],
+		"do": {
+			"type": "swim_up"
+		},
+		"ttlMs": 3600000
+	},
+	{
+		"coordinatorDefault": true,
+		"id": "default-edge",
+		"kind": "stance",
+		"priority": 7,
+		"when": [
+			{
+				"type": "edge_near",
+				"within": 2,
+				"direction": "any",
+				"drop": 4
+			}
+		],
+		"do": {
+			"type": "brace"
+		},
+		"ttlMs": 3600000
+	},
+	{
+		"coordinatorDefault": true,
+		"id": "default-creeper",
+		"kind": "trigger",
+		"priority": 9,
+		"when": [
+			{
+				"type": "creeper_fusing",
+				"within": 5
+			}
+		],
+		"do": {
+			"type": "sprint_away",
+			"blocks": 8
+		},
+		"ttlMs": 3600000
+	},
+	{
+		"coordinatorDefault": true,
+		"id": "default-suffocate",
+		"kind": "trigger",
+		"priority": 9,
+		"when": [
+			{
+				"type": "suffocating"
+			}
+		],
+		"do": {
+			"type": "dig_out"
+		},
+		"ttlMs": 3600000
+	},
+	{
+		"coordinatorDefault": true,
+		"id": "default-fireball",
+		"kind": "trigger",
+		"priority": 8,
+		"when": [
+			{
+				"type": "fireball_incoming",
+				"withinS": 1.5,
+				"deflectable": true
+			}
+		],
+		"do": {
+			"type": "deflect"
+		},
+		"ttlMs": 3600000
+	},
+	{
+		"coordinatorDefault": true,
+		"id": "default-arrow",
+		"kind": "trigger",
+		"priority": 7,
+		"when": [
+			{
+				"type": "incoming_projectile",
+				"withinS": 0.6
+			}
+		],
+		"do": {
+			"type": "shield"
+		},
+		"ttlMs": 3600000
+	},
+	{
+		"coordinatorDefault": true,
+		"id": "default-retreat",
+		"kind": "trigger",
+		"priority": 7,
+		"when": [
+			{
+				"type": "health_below",
+				"value": 7
+			},
+			{
+				"type": "hostile_near",
+				"within": 6
+			}
+		],
+		"do": {
+			"type": "sprint_away",
+			"blocks": 10
+		},
+		"cooldownMs": 5000,
+		"ttlMs": 3600000
+	},
+	{
+		"coordinatorDefault": true,
+		"id": "default-eat",
+		"kind": "stance",
+		"priority": 3,
+		"when": [
+			{
+				"type": "hunger_below",
+				"value": 14
+			},
+			{
+				"type": "hostile_near",
+				"within": 8,
+				"not": true
+			}
+		],
+		"do": {
+			"type": "eat"
+		},
+		"cooldownMs": 20000,
+		"ttlMs": 3600000
+	}
+]

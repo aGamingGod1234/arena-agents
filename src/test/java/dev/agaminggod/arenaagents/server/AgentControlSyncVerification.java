@@ -5,6 +5,7 @@ import dev.agaminggod.arenaagents.agent.AgentRegistry;
 import dev.agaminggod.arenaagents.control.AgentControlActions;
 import dev.agaminggod.arenaagents.control.AgentControlCatalog;
 import dev.agaminggod.arenaagents.control.AgentControlGroup;
+import dev.agaminggod.arenaagents.control.AgentControlRedaction;
 import dev.agaminggod.arenaagents.control.AgentControlSnapshotPayload;
 import dev.agaminggod.arenaagents.scenario.presentation.ScenarioBuildProgress;
 import dev.agaminggod.arenaagents.scenario.presentation.ScenarioPresentationExpiry;
@@ -73,7 +74,105 @@ public final class AgentControlSyncVerification {
 		publication.forgetBuild(playerId);
 		assertTrue(publication.directBuild(playerId, 500L).isEmpty(),
 				"build tombstone cleanup removes the direct rejection clock and payload");
-		return 14 + verifyObservedPresence();
+		return 14 + verifyObservedPresence() + verifySnapshotRequestLimit() + verifySnapshotRedaction();
+	}
+
+	private static int verifySnapshotRequestLimit() {
+		UUID spammer = UUID.fromString("00000000-0000-4000-8000-00000000000a");
+		UUID console = UUID.fromString("00000000-0000-4000-8000-00000000000b");
+		SnapshotRequestLimiter limiter = new SnapshotRequestLimiter();
+		// A modded client firing 1000 requests at once gets a burst now and the rest deferred or dropped.
+		int sent = 0, deferred = 0, dropped = 0;
+		for (int request = 0; request < 1000; request++) {
+			switch (limiter.request(spammer, 10_000L)) {
+				case SEND -> sent++;
+				case DEFERRED -> deferred++;
+				case DROPPED -> dropped++;
+			}
+		}
+		assertEquals(SnapshotRequestLimiter.BURST, sent, "a burst is answered at once");
+		assertEquals(SnapshotRequestLimiter.MAX_DEFERRED, deferred, "a bounded number wait for tokens");
+		assertEquals(1000 - SnapshotRequestLimiter.BURST - SnapshotRequestLimiter.MAX_DEFERRED, dropped, "the rest are dropped");
+		assertEquals(dropped, (int) limiter.dropped(spammer), "drops are counted per requester");
+		int builtInFirstSecond = sent;
+		for (long now = 10_000L; now <= 11_000L; now += 50L) builtInFirstSecond += limiter.due(now).getOrDefault(spammer, 0);
+		assertEquals(SnapshotRequestLimiter.BURST + 4, builtInFirstSecond, "1000 requests build 8 snapshots in their first second");
+		int lateAnswers = 0;
+		for (long now = 11_050L; now <= 13_000L; now += 50L) lateAnswers += limiter.due(now).getOrDefault(spammer, 0);
+		assertEquals(SnapshotRequestLimiter.MAX_DEFERRED - 4, lateAnswers, "every deferred request is answered once");
+
+		// The Field Console (one request a second, a few more after a command) is never deferred.
+		for (long now = 20_000L; now < 80_000L; now += 1_000L) {
+			assertEquals(SnapshotRequestLimiter.Decision.SEND, limiter.request(console, now), "periodic refresh is answered at once");
+			if (now % 10_000L == 0L) {
+				assertEquals(SnapshotRequestLimiter.Decision.SEND, limiter.request(console, now + 5L), "post-command refresh is answered at once");
+				assertEquals(SnapshotRequestLimiter.Decision.SEND, limiter.request(console, now + 10L), "director result refresh is answered at once");
+			}
+			assertEquals(0, (int) limiter.due(now + 20L).getOrDefault(console, 0), "nothing was deferred");
+		}
+		// A burst above the bucket is answered one for one, so the console's request/response pairing holds.
+		int answered = 0;
+		for (int request = 0; request < 6; request++) if (limiter.request(console, 90_000L) == SnapshotRequestLimiter.Decision.SEND) answered++;
+		for (long now = 90_000L; now <= 91_000L; now += 50L) answered += limiter.due(now).getOrDefault(console, 0);
+		assertEquals(6, answered, "an over-burst request is deferred, not lost");
+		assertEquals(0, (int) limiter.dropped(console), "the console never loses a request");
+		limiter.request(spammer, 100_000L);
+		limiter.retain(java.util.Set.of(console));
+		assertEquals(0, (int) limiter.dropped(spammer), "a disconnected requester is forgotten");
+		limiter.due(200_000L);
+		assertEquals(0, limiter.tracked(), "idle full buckets are forgotten");
+		return 6 + 60 * 2 + 6 * 2 + 4;
+	}
+
+	private static int verifySnapshotRedaction() {
+		int assertions = 0;
+		String secrets = "Run with OPENAI_API_KEY=sk-proj-abcdefghijklmnopqrstuvwx and Authorization: Bearer abcdefgh12345678"
+				+ " from /home/lucas/.codex/config.toml or C:\\Users\\Lucas\\AppData\\Roaming\\npm (token=hunter2xyz, AIzaSyA1234567890abcdefghijklmnopqrstuv)";
+		String redacted = AgentControlRedaction.redactText(secrets, 512);
+		for (String leaked : List.of("sk-proj", "abcdefgh12345678", "lucas", "Lucas", "hunter2", "AIzaSy")) {
+			assertTrue(!redacted.contains(leaked), "redacted text drops " + leaked + ": " + redacted);
+			assertions++;
+		}
+		for (String kept : List.of("OPENAI_API_KEY=[REDACTED]", "Bearer [REDACTED]", "~/.codex/config.toml", "~\\AppData\\Roaming\\npm", "token=[REDACTED]")) {
+			assertTrue(redacted.contains(kept), "redacted text keeps " + kept + ": " + redacted);
+			assertions++;
+		}
+		for (String ordinary : List.of("Mine 12 oak logs near 120 64 -30, then craft a table",
+				"Agent 01234567-89ab-cdef-0123-456789abcdef used tokens: 4096", "PATH not found", "https://example.com/home/page")) {
+			assertEquals(ordinary, AgentControlRedaction.redactText(ordinary, 512), "ordinary text is unchanged");
+			assertions++;
+		}
+		assertEquals(256, AgentControlRedaction.redactText("A_B=x ".repeat(100), 256).length(), "redaction stays within the field bound");
+		assertions++;
+
+		AgentRegistry registry = AgentRegistry.createDefault(() -> { }, ignored -> { });
+		var agent = registry.create("gpt-6.1-sol", "low", Optional.empty(), 100L);
+		registry.attachEntity(agent.agentId(), UUID.randomUUID(), AgentEntityLocation.exact("minecraft:the_nether", 7, -3, 115, 42, -40, 90, 5), 101L);
+		registry.start(agent.agentId(), "Build a base. Use GEMINI_API_KEY=AIzaSyA1234567890abcdefghijklmnopqrstuv from /home/lucas/keys", 102L);
+		var groups = List.<AgentControlGroup>of();
+		var catalog = AgentControlCatalog.currentOptions();
+		var operator = AgentControlSync.controlSnapshot(true, true, "Automation ready", 103L, registry.records(), groups, catalog, ignored -> Optional.empty()).agents().getFirst();
+		assertEquals("Build a base. Use GEMINI_API_KEY=[REDACTED] from ~/keys", operator.currentGoal(), "an operator sees the goal without secrets or home paths");
+		var viewer = AgentControlSync.controlSnapshot(false, true, "Automation ready", 104L, registry.records(), groups, catalog, ignored -> Optional.empty());
+		assertTrue(!viewer.canControl(), "a non-operator snapshot says so");
+		assertEquals("", viewer.agents().getFirst().currentGoal(), "a non-operator gets no goal text");
+		assertEquals("", viewer.agents().getFirst().lastSummary(), "a non-operator gets no summary text");
+		assertEquals("", viewer.agents().getFirst().lastError(), "a non-operator gets no error text");
+		assertEquals(operator.displayName(), viewer.agents().getFirst().displayName(), "a non-operator still sees the roster");
+		assertEquals(viewer, new AgentControlSnapshotPayload(AgentControlSnapshotPayload.fromSnapshot(viewer).encodedSnapshot()).snapshot(),
+				"the redacted snapshot survives the payload codec");
+		assertions += 7;
+
+		var voice = new dev.agaminggod.arenaagents.server.voice.VoiceProfile("voice.custom.lucas", "warm", 1.25D, 24);
+		var actor = new dev.agaminggod.arenaagents.control.DirectorSnapshotPayload.Actor(agent.agentId().toString(), "Sol", "Sol", "default", false, true,
+				"Speech failed: C:\\Users\\Lucas\\voice\\model.bin", voice);
+		var operatorActor = AgentControlSync.directorActor(actor, true);
+		assertEquals(voice, operatorActor.voiceProfile(), "an operator keeps the voice settings");
+		assertEquals("Speech failed: ~\\voice\\model.bin", operatorActor.speechStatus(), "speech status loses the home directory");
+		assertEquals(dev.agaminggod.arenaagents.server.voice.VoiceProfile.defaults(), AgentControlSync.directorActor(actor, false).voiceProfile(),
+				"a non-operator gets no voice settings");
+		assertions += 3;
+		return assertions;
 	}
 
 	private static int verifyObservedPresence() {

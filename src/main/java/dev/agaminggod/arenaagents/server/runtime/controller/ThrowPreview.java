@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.server.runtime.controller;
 
+import dev.agaminggod.arenaagents.compat.McCompat;
+
 import com.google.gson.JsonObject;
 import dev.agaminggod.arenaagents.server.perception.SeenTerrain;
 import net.minecraft.core.BlockPos;
@@ -92,7 +94,7 @@ public final class ThrowPreview {
 			row.addProperty("type", net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.getKey(mob.getType()).toString());
 			row.addProperty("distance", Math.round(mob.position().distanceTo(landing) * 10.0D) / 10.0D);
 			// Who is already after the thrower: an angry enderman's open jaw and shaking, or any mob's chase.
-			if (mob.getTarget() == player || mob instanceof net.minecraft.world.entity.monster.Enderman enderman && enderman.isCreepy()) {
+			if (mob.getTarget() == player || McCompat.endermanCreepy(mob)) {
 				row.addProperty("angry", true);
 				row.addProperty("id", mob.getStringUUID());
 			}

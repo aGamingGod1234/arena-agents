@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.client.control;
 
+import dev.agaminggod.arenaagents.client.compat.McClientCompat;
+
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.agaminggod.arenaagents.client.gui.AgentControlScreen;
 import dev.agaminggod.arenaagents.client.gui.scenario.ScenarioLaunchPlan;
@@ -53,13 +55,13 @@ public final class AgentControlClient {
 	);
 	private static final KeyMapping OPEN_CONTROL = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 			"key.arenaagents.open_controls",
-			InputConstants.Type.KEYBOARD,
+			McClientCompat.KEYBOARD,
 			InputConstants.KEY_G,
 			KEY_CATEGORY
 	));
 	private static final KeyMapping TOGGLE_CAMERA_ASSISTANT = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 			"key.arenaagents.toggle_camera_assistant",
-			InputConstants.Type.KEYBOARD,
+			McClientCompat.KEYBOARD,
 			InputConstants.KEY_H,
 			KEY_CATEGORY
 	));
@@ -91,22 +93,22 @@ public final class AgentControlClient {
 		ClientPlayNetworking.registerGlobalReceiver(dev.agaminggod.arenaagents.control.DirectorSnapshotPayload.TYPE,
 				(payload, context) -> context.client().execute(() -> {
 					if (!DirectorClientState.accept(payload)) return;
-					if (context.client().gui.screen() instanceof dev.agaminggod.arenaagents.client.gui.SkitDirectorScreen screen) screen.acceptCatalogUpdate();
+					if (McClientCompat.screen(context.client()) instanceof dev.agaminggod.arenaagents.client.gui.SkitDirectorScreen screen) screen.acceptCatalogUpdate();
 				}));
 		ClientPlayNetworking.registerGlobalReceiver(dev.agaminggod.arenaagents.control.DirectorTakePlaybackPayload.TYPE,
 				(payload, context) -> context.client().execute(() -> dev.agaminggod.arenaagents.client.camera.CameraDirectorClient.acceptTake(payload)));
 		ClientPlayNetworking.registerGlobalReceiver(dev.agaminggod.arenaagents.control.DirectorGenerationPayload.Result.TYPE,
 				(payload, context) -> context.client().execute(() -> {
 					if (DirectorClientState.acceptGeneration(payload) && context.client().gui != null)
-						context.client().gui.hud.setOverlayMessage(net.minecraft.network.chat.Component.literal(payload.message()), false);
+						McClientCompat.overlayMessage(context.client(), net.minecraft.network.chat.Component.literal(payload.message()), false);
 				}));
 		ClientPlayNetworking.registerGlobalReceiver(DirectorEditorPayload.Snapshot.TYPE,
 				(payload, context) -> context.client().execute(() -> {
-					if (context.client().gui.screen() instanceof dev.agaminggod.arenaagents.client.gui.SkitDirectorScreen screen) screen.acceptEditorSnapshot(payload);
+					if (McClientCompat.screen(context.client()) instanceof dev.agaminggod.arenaagents.client.gui.SkitDirectorScreen screen) screen.acceptEditorSnapshot(payload);
 				}));
 		if (!ClientPlayNetworking.registerGlobalReceiver(DirectorCommandResultPayload.TYPE,
 				(payload, context) -> context.client().execute(() -> {
-					if (context.client().gui.screen() instanceof dev.agaminggod.arenaagents.client.gui.SkitDirectorScreen screen) screen.acceptCommandResult(payload);
+					if (McClientCompat.screen(context.client()) instanceof dev.agaminggod.arenaagents.client.gui.SkitDirectorScreen screen) screen.acceptCommandResult(payload);
 					requestSnapshot();
 				}))) throw new IllegalStateException("Director command result receiver is already registered");
 		boolean receiverRegistered = ClientPlayNetworking.registerGlobalReceiver(
@@ -134,7 +136,7 @@ public final class AgentControlClient {
 				ScenarioBuildProgressPayload.TYPE,
 				(payload, context) -> context.client().execute(() -> {
 					if (!BUILD_PROGRESS_STATE.accept(payload)) return;
-					if (context.client().gui.screen() instanceof dev.agaminggod.arenaagents.client.gui.scenario.ScenarioSetupScreen screen) {
+					if (McClientCompat.screen(context.client()) instanceof dev.agaminggod.arenaagents.client.gui.scenario.ScenarioSetupScreen screen) {
 						screen.acceptBuildProgress();
 					}
 				})
@@ -146,7 +148,7 @@ public final class AgentControlClient {
 				ScenarioBuildProgressClearPayload.TYPE,
 				(payload, context) -> context.client().execute(() -> {
 					BUILD_PROGRESS_STATE.clear();
-					if (context.client().gui.screen() instanceof ScenarioSetupScreen screen) {
+					if (McClientCompat.screen(context.client()) instanceof ScenarioSetupScreen screen) {
 						screen.acceptBuildProgressClear();
 					}
 				})
@@ -315,8 +317,8 @@ public final class AgentControlClient {
 	private static void tick(Minecraft client) {
 		LiveAgentWindows.tick(client);
 		while (OPEN_CONTROL.consumeClick()) {
-			if (client.player != null && client.level != null && client.gui.screen() == null) {
-				client.gui.setScreen(new AgentControlScreen());
+			if (client.player != null && client.level != null && McClientCompat.screen(client) == null) {
+				McClientCompat.setScreen(client, new AgentControlScreen());
 				requestSnapshot();
 			}
 		}
@@ -329,16 +331,16 @@ public final class AgentControlClient {
 						.map(snapshot -> snapshot.elapsedTick())
 						.orElse(0L);
 				SPECTATOR_STATE.enableCamera(
-						client.gui.screen() == null && client.player != null && client.player.isSpectator(),
+						McClientCompat.screen(client) == null && client.player != null && client.player.isSpectator(),
 						currentTick
 				);
 				CAMERA_ASSISTANT.resetTracking();
 			}
 		}
 		boolean connected = client.player != null && client.level != null && client.getConnection() != null;
-		boolean controlsVisible = client.gui.screen() instanceof dev.agaminggod.arenaagents.client.gui.SkitDirectorScreen
-				|| client.gui.screen() instanceof AgentControlScreen
-				|| client.gui.screen() instanceof dev.agaminggod.arenaagents.client.gui.scenario.ScenarioSetupScreen;
+		boolean controlsVisible = McClientCompat.screen(client) instanceof dev.agaminggod.arenaagents.client.gui.SkitDirectorScreen
+				|| McClientCompat.screen(client) instanceof AgentControlScreen
+				|| McClientCompat.screen(client) instanceof dev.agaminggod.arenaagents.client.gui.scenario.ScenarioSetupScreen;
 		SnapshotRefreshPolicy.Tick refresh = SnapshotRefreshPolicy.advance(
 				refreshCountdown, connected, controlsVisible,
 				SNAPSHOT_REFRESH_TICKS, HIDDEN_SNAPSHOT_REFRESH_TICKS);
@@ -360,13 +362,13 @@ public final class AgentControlClient {
 		snapshotError = "";
 		boolean importCandidatesChanged = DirectorClientState.setImportCandidates(nextSnapshot.agents());
 		if (importCandidatesChanged
-				&& Minecraft.getInstance().gui.screen() instanceof dev.agaminggod.arenaagents.client.gui.SkitDirectorScreen director) director.acceptCatalogUpdate();
+				&& McClientCompat.screen(Minecraft.getInstance()) instanceof dev.agaminggod.arenaagents.client.gui.SkitDirectorScreen director) director.acceptCatalogUpdate();
 		boolean catalogChanged = !previousCatalog.equals(nextSnapshot.catalog())
 				|| previous == null || !previous.providers().equals(nextSnapshot.providers());
 		int nextContentHash = contentHash(nextSnapshot);
 		Minecraft client = Minecraft.getInstance();
 		if (previous != null && snapshotContentHash == nextContentHash && sameContent(previous, nextSnapshot)) {
-			if (client.gui.screen() instanceof AgentControlScreen screen) {
+			if (McClientCompat.screen(client) instanceof AgentControlScreen screen) {
 				screen.acceptSnapshot(nextSnapshot, acknowledgedMutationId, false);
 			}
 			return;
@@ -375,9 +377,9 @@ public final class AgentControlClient {
 		AgentControlCatalog.installRuntimeCatalog(nextSnapshot.catalog(), nextSnapshot.providers());
 		catalogAuthoritative = true;
 		normalizePreferences();
-		if (client.gui.screen() instanceof AgentControlScreen screen) {
+		if (McClientCompat.screen(client) instanceof AgentControlScreen screen) {
 			screen.acceptSnapshot(nextSnapshot, acknowledgedMutationId, true);
-		} else if (catalogChanged && client.gui.screen() instanceof ScenarioSetupScreen screen) {
+		} else if (catalogChanged && McClientCompat.screen(client) instanceof ScenarioSetupScreen screen) {
 			screen.acceptCatalogUpdate();
 		}
 	}
@@ -389,10 +391,10 @@ public final class AgentControlClient {
 	}
 
 	private static void showResultsIfAvailable(Minecraft client) {
-		if (client.gui.screen() != null || !SPECTATOR_STATE.resultsAvailable()) return;
+		if (McClientCompat.screen(client) != null || !SPECTATOR_STATE.resultsAvailable()) return;
 		SPECTATOR_STATE.snapshot()
 				.filter(snapshot -> snapshot.terminal())
-				.ifPresent(snapshot -> client.gui.setScreen(new ScenarioResultsScreen(
+				.ifPresent(snapshot -> McClientCompat.setScreen(client, new ScenarioResultsScreen(
 						snapshot,
 						SPECTATOR_STATE::dismissResults
 				)));

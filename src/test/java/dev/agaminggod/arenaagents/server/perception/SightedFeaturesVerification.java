@@ -191,7 +191,7 @@ public final class SightedFeaturesVerification {
 	 * reported the structure though nothing built was visible. Only built blocks identify one now.
 	 */
 	private static void onlyBuiltBlocksIdentifyStructures() {
-		for (var block : List.of(Blocks.SANDSTONE, Blocks.RED_SANDSTONE, Blocks.TERRACOTTA, Blocks.DYED_TERRACOTTA.orange(), Blocks.OAK_LOG,
+		for (var block : List.of(Blocks.SANDSTONE, Blocks.RED_SANDSTONE, Blocks.TERRACOTTA, dev.agaminggod.arenaagents.compat.McBlocks.ORANGE_TERRACOTTA, Blocks.OAK_LOG,
 				Blocks.OAK_LEAVES, Blocks.VINE, Blocks.SHORT_GRASS, Blocks.SNOW_BLOCK, Blocks.PACKED_ICE, Blocks.BLUE_ICE, Blocks.OBSIDIAN,
 				Blocks.MAGMA_BLOCK, Blocks.SCULK, Blocks.CRIMSON_NYLIUM, Blocks.STONE, Blocks.DEEPSLATE, Blocks.WATER, Blocks.IRON_ORE,
 				Blocks.SMOOTH_BASALT, Blocks.RAW_IRON_BLOCK, Blocks.COBWEB, Blocks.GRAVEL, Blocks.SAND)) {
@@ -200,8 +200,8 @@ public final class SightedFeaturesVerification {
 		for (var block : List.of(Blocks.CUT_SANDSTONE, Blocks.CHISELED_SANDSTONE, Blocks.SANDSTONE_STAIRS, Blocks.OAK_PLANKS,
 				Blocks.SPRUCE_FENCE, Blocks.STONE_BRICKS, Blocks.MOSSY_COBBLESTONE, Blocks.PRISMARINE_BRICKS, Blocks.DARK_PRISMARINE,
 				Blocks.NETHER_BRICKS, Blocks.POLISHED_BLACKSTONE_BRICKS, Blocks.GILDED_BLACKSTONE, Blocks.PURPUR_BLOCK,
-				Blocks.END_STONE_BRICKS, Blocks.DEEPSLATE_TILES, Blocks.TUFF_BRICKS, Blocks.CUT_COPPER.waxed().unaffected(), Blocks.MUD_BRICKS,
-				Blocks.CHEST, Blocks.RAIL, Blocks.GLASS_PANE, Blocks.WOOL.white(), Blocks.CRYING_OBSIDIAN, Blocks.HAY_BLOCK)) {
+				Blocks.END_STONE_BRICKS, Blocks.DEEPSLATE_TILES, Blocks.TUFF_BRICKS, dev.agaminggod.arenaagents.compat.McBlocks.WAXED_CUT_COPPER, Blocks.MUD_BRICKS,
+				Blocks.CHEST, Blocks.RAIL, Blocks.GLASS_PANE, dev.agaminggod.arenaagents.compat.McBlocks.WHITE_WOOL, Blocks.CRYING_OBSIDIAN, Blocks.HAY_BLOCK)) {
 			check(SightedFeatures.built(block.defaultBlockState(), "village"), block + " shows building");
 		}
 		check(SightedFeatures.built(Blocks.OBSIDIAN.defaultBlockState(), "ruined portal"), "a ruined portal is known by its obsidian frame");
@@ -487,7 +487,7 @@ public final class SightedFeaturesVerification {
 	private static final class StructureBoundaryLevel extends net.minecraft.server.level.ServerLevel {
 		// 26.3 entities take their ID from the level, and ServerLevel asks its (absent) chunk source.
 		private int fixtureEntityIds = 100_000;
-		@Override public int getNextEntityId() { return ++fixtureEntityIds; }
+		public int getNextEntityId() { return ++fixtureEntityIds; }
 		StructureBoundaryChunks chunks;
 		boolean obstructed;
 		/** Every chunk unloaded: reading a block would make the server load one. */
@@ -510,9 +510,9 @@ public final class SightedFeaturesVerification {
 		}
 	}
 
-	private static final class StructureBoundaryChunks extends net.minecraft.server.level.ServerChunkCache {
+	private static final class StructureBoundaryChunks extends dev.agaminggod.arenaagents.compat.TestChunkCacheBase {
 		StructureBoundaryLevel level;
-		private StructureBoundaryChunks() { super(null, null, null, null, null, null, 0, 0, false, null); }
+		private StructureBoundaryChunks() { super(); }
 		@Override public net.minecraft.world.level.chunk.LevelChunk getChunkNow(int x, int z) {
 			if (level.unloaded) return null;
 			StructureBoundaryChunk chunk = allocate(StructureBoundaryChunk.class);
@@ -793,7 +793,7 @@ public final class SightedFeaturesVerification {
 	private static final class ScanLevel extends net.minecraft.server.level.ServerLevel {
 		// 26.3 entities take their ID from the level, and ServerLevel asks its (absent) chunk source.
 		private int fixtureEntityIds = 100_000;
-		@Override public int getNextEntityId() { return ++fixtureEntityIds; }
+		public int getNextEntityId() { return ++fixtureEntityIds; }
 		ScanChunks chunks;
 		long tick;
 		private ScanLevel() { super(null, null, null, null, null, null, false, 0L, List.of(), false); }
@@ -825,9 +825,9 @@ public final class SightedFeaturesVerification {
 		@Override public long getGameTime() { return tick; }
 	}
 
-	private static final class ScanChunks extends net.minecraft.server.level.ServerChunkCache {
+	private static final class ScanChunks extends dev.agaminggod.arenaagents.compat.TestChunkCacheBase {
 		Map<Long, ScanChunk> loaded;
-		private ScanChunks() { super(null, null, null, null, null, null, 0, 0, false, null); }
+		private ScanChunks() { super(); }
 		@Override public net.minecraft.world.level.chunk.LevelChunk getChunkNow(int x, int z) { return loaded.get(net.minecraft.world.level.ChunkPos.pack(x, z)); }
 	}
 

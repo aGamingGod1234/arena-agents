@@ -68,6 +68,46 @@ test('contract: all factual APIs preserve observed values, coverage, menu and ch
 	assert.equal(absent.start(createInterpreterFacts({ player: observation.player })).summary, 'absent');
 });
 
+test('contract: a fact the sample lacks reads null, so an optional-fact guard runs instead of ending the program', () => {
+	// hazard, fire and lavaFlow are present only while they apply; the quiet fixture has none of them.
+	const quiet = createInterpreterFacts(observation);
+	const lava = createInterpreterFacts({ ...observation, player: { ...observation.player, hazard: 'lava', fire: true } });
+	assert.equal(Object.hasOwn(quiet.player, 'hazard'), false);
+	const run = vm(`
+		program.watch(() => player.state().hazard === "lava", { mode: "interrupt" }, async () => { await player.wait(1); });
+		await player.wait(2);
+		program.finish(player.state().lavaFlow === null && (player.state().fire ?? false) === false ? "quiet" : "burning " + player.state().hazard);
+	`);
+	const first = run.start(quiet);
+	assert.equal(first.call.arguments, 2, 'installing the watcher over an absent fact does not end the program');
+	assert.equal(run.evaluateWatcher('watcher-0', quiet), false);
+	assert.equal(run.evaluateWatcher('watcher-0', lava), true);
+	assert.equal(run.resume(done(first), quiet).summary, 'quiet');
+	const burning = vm('program.finish(player.state().fire ?? false ? "burning " + player.state().hazard : "quiet");');
+	assert.equal(burning.start(lava).summary, 'burning lava');
+	// Script records follow the same rule; functions and capabilities keep rejecting unknown members.
+	assert.equal(vm('const row = { a: 1 }; program.finish(row.b === null ? "null" : "other");').start(quiet).summary, 'null');
+	assert.throws(() => vm('const f = () => 1; const g = f.node;').start(quiet), error => error.code === 'UNKNOWN_MEMBER');
+	assert.throws(() => vm('const f = () => 1; const g = f.missing;').start(quiet), error => error.code === 'UNKNOWN_MEMBER');
+	assert.throws(() => vm('const g = player.missing;').start(quiet), error => error.code === 'UNSUPPORTED_SYNTAX');
+});
+
+test('contract: runtime errors name their code, line:column and cause', () => {
+	const facts = createInterpreterFacts(observation);
+	const failure = (body) => { try { vm(body).start(facts); } catch (error) { return error; } assert.fail(`no error: ${body}`); };
+	const throughNull = failure('\nconst rate = player.state().harm.hpLossPerSecond;');
+	assert.equal(throughNull.code, 'UNKNOWN_MEMBER');
+	assert.equal(throughNull.location.line, 2);
+	assert.equal(throughNull.message, `ArenaScript UNKNOWN_MEMBER at 2:${throughNull.location.column}: cannot read hpLossPerSecond of null (player.state().harm); a fact this sample lacks reads null, so test it first`);
+	const origin = failure('\n\nconst pig = world.nearest(world.entities(), { x: "a", y: 64, z: 0 });');
+	assert.equal(origin.code, 'INVALID_ARGUMENT');
+	assert.match(origin.message, /^ArenaScript INVALID_ARGUMENT at 3:\d+: world\.nearest: origin requires finite coordinates$/);
+	const comparison = failure('\nif (player.state().helth < 10) program.finish("low");');
+	assert.match(comparison.message, /^ArenaScript INVALID_OPERAND at 2:\d+: < compares two finite numbers or two strings, got null from player\.state\(\)\.helth and number; a fact this sample lacks reads null$/);
+	const criteria = failure('\nconst rows = inventory.slots(5);');
+	assert.match(criteria.message, /^ArenaScript INVALID_ARGUMENT at 2:\d+: inventory\.slots: criteria must be a plain data record$/);
+});
+
 test('contract: counts cover observed inventory only and omitted metadata does not become an item', () => {
 	const facts = createInterpreterFacts({ ...observation, inventory: { ...observation.inventory, resourceCount: 99 } });
 	const run = vm(`
@@ -77,7 +117,10 @@ test('contract: counts cover observed inventory only and omitted metadata does n
 			program.finish("observed count");
 	`);
 	assert.equal(run.start(facts).summary, 'observed count');
-	assert.throws(() => vm('await player.wait(player.state().missing + 1);').start(facts), error => error.code === 'UNKNOWN_MEMBER');
+	// A fact the sample lacks reads null; arithmetic on it still fails, naming the read and where it is.
+	assert.equal(vm('program.finish(player.state().missing === null ? "absent" : "present");').start(facts).summary, 'absent');
+	assert.throws(() => vm('await player.wait(player.state().missing + 1);').start(facts),
+		error => error.code === 'INVALID_OPERAND' && /^ArenaScript INVALID_OPERAND at 1:\d+: \+ requires finite numbers, got null from player\.state\(\)\.missing and number/.test(error.message));
 });
 
 test('contract: for-of retains its snapshot while new reads after an action see fresh facts', () => {
@@ -100,7 +143,7 @@ test('contract: for-of retains its snapshot while new reads after an action see 
 test('contract: stale observed candidates cannot supply nearest targets after a fresh action observation', () => {
 	const run = vm('const old = world.items(); await player.wait(1); const target = world.nearest(old);');
 	const first = run.start(createInterpreterFacts(observation));
-	assert.throws(() => run.resume(done(first), createInterpreterFacts({ ...observation, items: [] })), error => error.code === 'EXECUTION_ERROR' && /current observation/.test(error.cause?.message));
+	assert.throws(() => run.resume(done(first), createInterpreterFacts({ ...observation, items: [] })), error => error.code === 'INVALID_ARGUMENT' && /current observation/.test(error.message) && /current observation/.test(error.cause?.message));
 });
 
 test('contract: inspection and each memory operation yield a read request and preserve the real result', () => {
@@ -166,9 +209,14 @@ test('contract: default resume budgets enforce 128 iterations and 1024 operation
 	assert.throws(() => operations.start(createInterpreterFacts(observation)), error => error.code === 'OPERATION_LIMIT' && /1024/.test(error.message));
 });
 
-test('contract: concatenation accepts strings only and authored strings respect the 4 KiB byte limit', () => {
+test('contract: concatenation joins a string with a string, number, boolean or null and authored strings respect the 4 KiB byte limit', () => {
 	assert.equal(vm('program.finish("a" + "b");').start(createInterpreterFacts(observation)).summary, 'ab');
-	assert.throws(() => vm('program.finish("a" + 1);').start(createInterpreterFacts(observation)), error => error.code === 'INVALID_OPERAND');
+	assert.equal(vm('program.finish("a" + 1 + ", " + 2.5 + " " + true + " " + null);').start(createInterpreterFacts(observation)).summary, 'a1, 2.5 true null');
+	assert.equal(vm('let text = "n="; text += 3; program.finish(1 + 2 + text);').start(createInterpreterFacts(observation)).summary, '3n=3');
+	for (const body of ['program.finish("a" + undefined);', 'program.finish("a" + player.state());', 'program.finish("a" + world.items());']) {
+		assert.throws(() => vm(body).start(createInterpreterFacts(observation)), error => error.code === 'INVALID_OPERAND' && /\+ joins a string only with/.test(error.message), body);
+	}
+	assert.throws(() => vm(`program.finish("${'x'.repeat(4095)}" + 10);`).start(createInterpreterFacts(observation)), error => error.code === 'OUTPUT_LIMIT');
 	assert.equal(vm(`program.finish("${'x'.repeat(4096)}");`).start(createInterpreterFacts(observation)).summary.length, 4096);
 	assert.throws(() => vm(`program.finish("${'x'.repeat(4097)}");`).start(createInterpreterFacts(observation)), error => error.code === 'OUTPUT_LIMIT');
 	assert.throws(() => vm(`program.finish("${'😀'.repeat(1025)}");`).start(createInterpreterFacts(observation)), error => error.code === 'OUTPUT_LIMIT');

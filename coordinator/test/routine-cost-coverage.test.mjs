@@ -57,6 +57,8 @@ test('routine coverage transposes counts without losing routine or upstream cove
 
 test('ordinary wakes keep the same compact coverage and optional section counts are exact', () => {
  const source = wake();
+ // An ordinary update; a danger wake would leave the stone landmark out (lean-danger-wake.test.mjs).
+ source.trigger = 'attention';
  delete source.runningAction;
  delete source.runningActionStart;
  source.observation.world.dayTime = 6000;
@@ -72,6 +74,10 @@ test('ordinary wakes keep the same compact coverage and optional section counts 
  assert.equal(compact.snapshotCounts.nearbyContainers, 0);
  assert.equal(compact.snapshotCounts.options, 0);
  assert.equal(compact.omittedRows, undefined);
+ // The same rows on a damage wake: the landmark that changes no escape is counted as omitted, not dropped silently.
+ const danger = render({ ...source, trigger: 'damage' }).observation;
+ assert.equal(danger.snapshotCounts.landmarks, 1);
+ assert.deepEqual(danger.omittedRows, { landmarks: 1 });
 });
 
 test('overflow compaction reports final retained counts and preserves running facts', () => {

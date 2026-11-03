@@ -54,6 +54,11 @@ const GUARD_OVERRIDE_KINDS = new Set(['action', 'start_action', 'run_program', '
 // A direct model body command takes the body from a firing reflex. Starting a program does not: the program pauses under it.
 const REFLEX_YIELD_KINDS = new Set(['action', 'start_action', 'sequence', 'lookAround']);
 const STOOD_STILL_KINDS = new Set(['action', 'start_action', 'run_program', 'sequence', 'lookAround']);
+// keepGoing: at most this many legs in one chain, so a model that never replies still gets a completion wake.
+export const MAX_KEEP_GOING_LEGS = 8;
+// A leg that moved the body less than this is no progress (blocked heading), so the chain stops and hands back.
+const KEEP_GOING_MIN_PROGRESS_BLOCKS = 1;
+const RUNNING_ACTION_STATES = new Set(['RUNNING', 'PREPARING', 'CANCELLING', 'CANCELLATION_UNCONFIRMED']);
 // Body calls that may carry reflex rules to install before they act (run_program installs its own).
 const REFLEX_CARRIER_KINDS = new Set(['action', 'sequence', 'standing_order']);
 // Firing outcomes during which the reflex held the body (a paused program's action was not running).
@@ -144,6 +149,10 @@ export class NativeToolRuntime {
 	#failedRequests = new Map();
 	#executionEpochs = new Map();
 	#postResultSamples = new Map();
+	// keepGoing chains by agent: every leg's actionId names the chain, so the model's first handle stays usable.
+	#legChains = new Map();
+	// The chain the next model body action dispatched for this agent joins (set just before that dispatch).
+	#pendingLegChains = new Map();
 	#publicationStreaks = new Map();
 	#sequenceFinishReservations = new Map();
 	#blockingToolRuns = new Map();
@@ -805,6 +814,8 @@ export class NativeToolRuntime {
 			catch (error) { throw Object.assign(error, { reflexes }); }
 			return result !== null && typeof result === 'object' ? { ...result, reflexes } : result;
 		}
+		// Every leg's handle names its keepGoing chain, so status, cancel, replace and after reach the leg running now.
+		request = this.#withLegChainHandle(record, request);
 		if (GUARD_OVERRIDE_KINDS.has(request.tool.kind) && request.tool.actionType !== 'chat' && this.#programRuns.get(record.agentId)?.standingGuard === true) {
 			await this.#yieldStandingGuard(record);
 		}
@@ -850,10 +861,12 @@ export class NativeToolRuntime {
 		}
 		if (request.tool.kind === 'cancel_action') return this.#cancelAction(record, request.tool);
 		if (request.tool.kind === 'notebook' || request.tool.kind === 'query_memory' || request.tool.kind === 'task_memory') return this.#memory(request, record);
+		if (request.tool.after !== undefined) return this.#executeAfter(request, record, lifecycleGeneration);
 		if (request.tool.kind === 'action' && request.tool.actionType === 'chat') return this.#executeAction(request, record, request.tool);
 		if (request.tool.kind === 'replace_action') {
 			const rejected = this.#operationRejection(record, request.tool);
 			if (rejected !== null) throw codedError(rejected.code, rejected.message);
+			this.#answerLegChain(record, request.tool.actionId);
 			const pausedProgram = this.#programRuns.has(record.agentId);
 			const interrupted = pausedProgram ? this.#interruptedPausedDangerAction(record) : null;
 			if (interrupted !== null) return this.#withBlockingToolRun(record, run => this.#replaceInterruptedDangerAction(request, record, { ...request.tool, kind: 'action' }, interrupted, run, { pausedProgram }));
@@ -861,6 +874,14 @@ export class NativeToolRuntime {
 			if (previous !== null) return this.#startReplacementAsNewAction(request, record, previous, { pausedProgram });
 			return this.#withBlockingToolRun(record, run => this.#replaceAction(request, record, run));
 		}
+		// keepGoing runs until the model's reply: its next body call stops the running leg first, then runs as asked.
+		// Only an unanswered leg awaits here, so every other call keeps its exact dispatch timing.
+		const endedLeg = this.#legChainOwnsBody(record, request.tool) ? await this.#endLegChainForReply(record, request.tool) : null;
+		if (endedLeg !== null) {
+			const result = await this.#executeTool(request, record, lifecycleGeneration);
+			return result !== null && typeof result === 'object' ? { ...result, replacedAction: endedLeg } : result;
+		}
+		if (request.tool.keepGoing === true) return this.#executeKeepGoing(request, record, lifecycleGeneration);
 		if (this.#sequenceFinishReservations.has(record.agentId)) throw codedError('NATIVE_ACTION_IN_PROGRESS', 'A finishing native sequence owns the player until its fresh sample and goal verification settle');
 		if (this.#sweeps.has(record.agentId)) throw codedError('NATIVE_ACTION_IN_PROGRESS', 'A camera sweep owns this player until sampling completes');
 		if (this.#programRuns.has(record.agentId)) {
@@ -928,6 +949,169 @@ export class NativeToolRuntime {
 		return tool.actionType === 'chat'
 			? this.#executeAction(request, record, tool)
 			: this.#withBlockingToolRun(record, () => this.#executeAction(request, record, tool));
+	}
+
+	/** The request with any earlier keepGoing leg handle mapped to the leg running now (or the chain's last leg). */
+	#withLegChainHandle(record, request) {
+		const chain = this.#legChains.get(record.agentId);
+		if (chain === undefined || chain.goalRevision !== record.goalRevision) return request;
+		const tool = request.tool;
+		const field = tool.after !== undefined ? 'after' : ['action_status', 'cancel_action', 'replace_action'].includes(tool.kind) ? 'actionId' : null;
+		if (field === null || !chain.ids.has(tool[field])) return request;
+		return tool[field] === chain.currentId ? request : { ...request, tool: { ...tool, [field]: chain.currentId } };
+	}
+
+	/** Accepted controls stop continuation before any asynchronous cancellation or predecessor wait. */
+	#answerLegChain(record, actionId) {
+		const chain = this.#legChains.get(record.agentId);
+		if (chain?.goalRevision === record.goalRevision && chain.ids.has(actionId)) chain.replied = true;
+	}
+
+	/**
+	 * The model's next body call while its keepGoing leg runs: that leg stops (acknowledged) and the call runs as asked.
+	 * Returns the stopped leg's receipt, or null when no unanswered keepGoing leg owns the body.
+	 */
+	#legChainOwnsBody(record, tool) {
+		if (!STOOD_STILL_KINDS.has(tool.kind) || tool.actionType === 'chat') return false;
+		const active = this.#actions.get(record.agentId);
+		const chain = this.#legChains.get(record.agentId);
+		return active !== undefined && chain !== undefined && active.legChain === chain && !chain.replied && active.goalRevision === record.goalRevision;
+	}
+
+	async #endLegChainForReply(record, tool) {
+		if (!this.#legChainOwnsBody(record, tool)) return null;
+		const active = this.#actions.get(record.agentId);
+		const chain = this.#legChains.get(record.agentId);
+		chain.replied = true;
+		const expectedEpoch = this.#actionCancellationEpoch(record, active);
+		const cancelled = await this.#cancelAction(record, { actionId: active.actionId, goalRevision: record.goalRevision });
+		if (this.#executionEpoch(record.agentId) !== expectedEpoch) throw codedError('STALE_NATIVE_TOOL', 'Lifecycle changed while stopping the keepGoing leg');
+		if (!TERMINAL_ACTION_STATES.has(cancelled.state)) throw codedError('CANCEL_ACK_UNCONFIRMED', 'The keepGoing leg must stop before this call runs');
+		this.#trace('native_keep_going_replied', { agentId: record.agentId, goalRevision: record.goalRevision, actionId: active.actionId, legs: chain.legs, state: cancelled.state });
+		return replacementReceipt(cancelled, active.actionId);
+	}
+
+	/**
+	 * act/startAction with after: wait for that handle to end, then run this action only if it succeeded. The body
+	 * works while the model decides the next step; danger during the wait returns before anything starts.
+	 */
+	async #executeAfter(request, record, lifecycleGeneration) {
+		const expectedEpoch = this.#executionEpoch(record.agentId);
+		const { after, ...tool } = request.tool;
+		const active = this.#actions.get(record.agentId);
+		let predecessor;
+		let resolved = null;
+		if (active?.actionId === after && active.goalRevision === record.goalRevision) {
+			if (active.engineActionId !== undefined) throw codedError('STALE_ACTION', `after:${after} names a program action; queue work after a program with queueProgram`);
+			this.#answerLegChain(record, after);
+			const settled = await this.#awaitPredecessor(record, active);
+			if (settled.type === 'error') throw settled.error;
+			if (settled.type === 'interruption') {
+				const status = this.#actionStatus(record, after);
+				if (RUNNING_ACTION_STATES.has(status.state)) {
+					return { state: 'NOT_STARTED', reasonCode: 'AFTER_INTERRUPTED', interruptedBy: 'danger', predecessor: status,
+						recoveryHint: `${tool.actionType} did not start. replaceAction with actionId ${after} and your authored fight_target/flee_from switches now; cancelAction with the same actionId stops it.` };
+				}
+				predecessor = status;
+			} else {
+				resolved = settled.value;
+				predecessor = { actionId: after, actionType: active.actionType, ...settled.value };
+			}
+		} else {
+			const receipt = this.#terminalActionReceipt(record, after, record.goalRevision);
+			if (receipt === null) throw codedError('STALE_ACTION', `after:${after} is neither the running body action nor the latest ended one`);
+			this.#answerLegChain(record, after);
+			predecessor = structuredClone(receipt);
+		}
+		if (predecessor.state === 'SUCCEEDED') {
+			if (this.#executionEpoch(record.agentId) !== expectedEpoch) throw codedError('STALE_NATIVE_TOOL', 'Lifecycle changed while waiting for the predecessor');
+			const result = await this.#executeTool({ ...request, tool }, record, lifecycleGeneration);
+			const summary = { actionId: predecessor.actionId, actionType: predecessor.actionType, state: predecessor.state, reasonCode: predecessor.reasonCode,
+				...(predecessor.durationMs === undefined ? {} : { durationMs: predecessor.durationMs }) };
+			return result !== null && typeof result === 'object' ? { ...result, predecessor: summary } : result;
+		}
+		// The failure reaches the model here, with fresh facts, instead of as a later event.
+		if (isFailureResult(predecessor)) this.#markFailureDelivered(record, after);
+		this.#trace('native_after_not_started', { agentId: record.agentId, goalRevision: record.goalRevision, after, actionType: tool.actionType, predecessorState: predecessor.state, reasonCode: predecessor.reasonCode ?? null });
+		const { source: _source, ...receipt } = predecessor;
+		return this.#withPostAction(record, { state: 'NOT_STARTED', reasonCode: 'PREDECESSOR_NOT_SUCCEEDED', predecessor: receipt,
+			message: `${tool.actionType} was not started because ${after} ended ${predecessor.state}${predecessor.reasonCode ? ` ${predecessor.reasonCode}` : ''}; decide from these facts.` },
+		this.#executionEpoch(record.agentId), resolved);
+	}
+
+	/** The predecessor's terminal result, or a danger interruption of this wait (as a blocking body tool sees one). */
+	#awaitPredecessor(record, active) {
+		const settle = (interruption) => Promise.race([
+			active.result.then((value) => ({ type: 'result', value }), (error) => ({ type: 'error', error })),
+			interruption.then(() => ({ type: 'interruption' })),
+		]);
+		const existing = this.#blockingToolRuns.get(record.agentId);
+		return existing === undefined ? this.#withBlockingToolRun(record, (run) => settle(run.interruption)) : settle(existing.interruption);
+	}
+
+	/**
+	 * keepGoing: run the leg as asked; each time a leg succeeds with progress, the same leg starts again at once, so the
+	 * body keeps going while the model reads the result. The chain ends at the model's next body call, cancelAction,
+	 * replaceAction or after; at a leg that sees its requested target, fails, is interrupted or makes no progress;
+	 * or after MAX_KEEP_GOING_LEGS.
+	 */
+	async #executeKeepGoing(request, record, lifecycleGeneration) {
+		const { keepGoing: _keepGoing, ...tool } = request.tool;
+		const chain = { goalRevision: record.goalRevision, ids: new Set(), currentId: null, legs: 0, replied: false, ended: null, decision: Promise.resolve(),
+			record, request: { ...request, tool: { kind: 'action', actionType: tool.actionType, arguments: structuredClone(tool.arguments) } } };
+		this.#legChains.set(record.agentId, chain);
+		this.#pendingLegChains.set(record.agentId, chain);
+		let result;
+		try { result = await this.#executeTool({ ...request, tool }, record, lifecycleGeneration); }
+		finally { if (this.#pendingLegChains.get(record.agentId) === chain) this.#pendingLegChains.delete(record.agentId); }
+		if (chain.legs === 0) {
+			if (this.#legChains.get(record.agentId) === chain) this.#legChains.delete(record.agentId);
+			return result;
+		}
+		if (result === null || typeof result !== 'object' || RUNNING_ACTION_STATES.has(result.state)) return result;
+		await chain.decision;
+		const running = this.#actions.get(record.agentId);
+		if (running?.legChain === chain && running.actionId !== chain.firstId) {
+			return { ...result, continuing: { actionId: running.actionId, leg: chain.legs, note: 'The body keeps going: your next body call stops this leg and runs; cancelAction stops it.' } };
+		}
+		return chain.ended === null || ['FAILED', 'CANCELLED', 'TIMED_OUT', 'INTERRUPTED'].includes(chain.ended) ? result : { ...result, keepGoing: { stopped: chain.ended } };
+	}
+
+	/** A model body action that was dispatched as the next leg of a keepGoing chain. */
+	#joinLegChain(record, active, chain) {
+		active.legChain = chain;
+		if (chain.legs === 0) chain.firstId = active.actionId;
+		chain.ids.add(active.actionId);
+		chain.currentId = active.actionId;
+		chain.legs += 1;
+		active.result.then((outcome) => { chain.decision = this.#nextLeg(record, active, chain, outcome); }, () => {});
+	}
+
+	async #nextLeg(record, previous, chain, outcome) {
+		const { agentId } = record;
+		if (chain.replied || this.#legChains.get(agentId) !== chain) return;
+		const stop = (reason) => {
+			chain.ended = reason;
+			this.#trace('native_keep_going_stopped', { agentId, goalRevision: chain.goalRevision, actionId: previous.actionId, legs: chain.legs, reason });
+		};
+		if (outcome?.state !== 'SUCCEEDED') return stop(outcome?.state ?? 'UNKNOWN');
+		// Seeing the requested landmark completes the whole trip, even when this leg made progress.
+		if (outcome.reasonCode === 'TARGET_SEEN') return stop(outcome.reasonCode);
+		if (previous.interruptedBy !== undefined) return stop('INTERRUPTED');
+		if (chain.legs >= MAX_KEEP_GOING_LEGS) return stop('LEG_LIMIT');
+		const from = previous.startPosition?.position;
+		const ended = this.#bodyEnds.get(agentId);
+		const to = ended?.goalRevision === chain.goalRevision ? ended.position : null;
+		if (from == null || to == null || Math.hypot(to.x - from.x, to.y - from.y, to.z - from.z) < KEEP_GOING_MIN_PROGRESS_BLOCKS) return stop('NO_PROGRESS');
+		if (this.#actions.has(agentId) || this.#programRuns.has(agentId) || this.#completions.has(agentId) || this.#sequenceFinishReservations.has(agentId) || this.#sweeps.has(agentId)) return stop('BODY_BUSY');
+		const current = this.#registry?.get(agentId);
+		if (this.#registry !== null && current?.goalRevision !== chain.goalRevision) return stop('STALE_PLAN');
+		this.#pendingLegChains.set(agentId, chain);
+		try {
+			await this.#executeAction({ ...chain.request, callId: `${chain.request.callId ?? 'keep-going'}-leg${chain.legs + 1}` }, chain.record, chain.request.tool, null, false);
+			this.#trace('native_keep_going_leg_started', { agentId, goalRevision: chain.goalRevision, actionId: chain.currentId, leg: chain.legs });
+		} catch (error) { stop(error?.code ?? 'LEG_NOT_STARTED'); }
+		finally { if (this.#pendingLegChains.get(agentId) === chain) this.#pendingLegChains.delete(agentId); }
 	}
 
 	async #replaceAction(request, record, blockingRun) {
@@ -1906,6 +2090,12 @@ export class NativeToolRuntime {
 		return this.#notebook[method](agentId, { worldId: active.worldId, actionId: active.actionId, goalRevision: active.goalRevision, actionType: active.actionType, ...(active.dimension == null ? {} : { dimension: active.dimension }), ...details }, options);
 	}
 
+	// An action that never reached the bridge is settled history, not an unknown outcome to reconcile.
+	// Notebook adapters without recordNotSent keep the older unknown record.
+	#journalUnsent(agentId, active, reasonCode) {
+		return this.#journal(typeof this.#notebook?.recordNotSent === 'function' ? 'recordNotSent' : 'recordUnknown', agentId, active, { reasonCode });
+	}
+
 	#actionCancellationEpoch(record, active) {
 		const epoch = this.#executionEpoch(record.agentId);
 		const run = this.#programRuns.get(record.agentId);
@@ -1920,6 +2110,7 @@ export class NativeToolRuntime {
 		const active = actionMap?.get(record.agentId);
 		const rejected = this.#operationRejection(record, { ...tool, kind: 'cancel_action' });
 		if (rejected !== null) throw codedError(rejected.code, rejected.message);
+		this.#answerLegChain(record, tool.actionId);
 		active.cancelling = true;
 		active.cancellationUncertain = false;
 		// cancelAction and replaceAction both end what the model was waiting on; wakes held for it are released.
@@ -1937,7 +2128,7 @@ export class NativeToolRuntime {
 			const result = { state: 'CANCELLED', reasonCode: 'CANCELLED_BEFORE_DISPATCH', executionStarted: false, physicalAttempted: false, source: 'coordinator_before_dispatch' };
 			this.#retainReceipt(record, active, result);
 			active.resolve(result);
-			await this.#journal('recordUnknown', record.agentId, active, { reasonCode: 'CANCELLED_BEFORE_DISPATCH' });
+			await this.#journalUnsent(record.agentId, active, 'CANCELLED_BEFORE_DISPATCH');
 			return result;
 		}
 		let publication;
@@ -2182,7 +2373,7 @@ export class NativeToolRuntime {
 		if (!communication && bodyAction !== undefined) {
 			const message = tool.actionType === 'fight_target' && bodyAction.actionType === 'fight_target'
 				? `A fight_target owns the body as actionId ${bodyAction.actionId}; use replaceAction with that actionId and your authored fight_target to switch targets, or cancelAction with the same actionId to stop it.`
-				: `Body action ${bodyAction.actionId} is still running; use replaceAction with that actionId and your authored fight_target/flee_from to switch now, or cancelAction with the same actionId to stop it.`;
+				: `Body action ${bodyAction.actionId} is still running; use replaceAction with that actionId and your authored fight_target/flee_from to switch now, cancelAction with the same actionId to stop it, or send this call with after:"${bodyAction.actionId}" to start it once that action succeeds.`;
 			throw codedError('NATIVE_ACTION_IN_PROGRESS', message);
 		}
 		if (!communication && this.#completions.has(record.agentId)) throw codedError('NATIVE_COMPLETION_IN_PROGRESS', 'Goal completion verification is already running');
@@ -2237,6 +2428,13 @@ export class NativeToolRuntime {
 			void result.then(releaseWork, releaseWork);
 		}
 		actionMap.set(record.agentId, active);
+		if (!communication && programCommand === null && sequenceIndex === null) {
+			const chain = this.#pendingLegChains.get(record.agentId);
+			if (chain !== undefined && chain.goalRevision === record.goalRevision) {
+				this.#pendingLegChains.delete(record.agentId);
+				this.#joinLegChain(record, active, chain);
+			}
+		}
 		if (TRAVEL_ACTIONS.has(tool.actionType)) this.#occupancy.beginTravel?.(record.agentId);
 		const failPublication = async (error) => {
 			if (actionMap.get(record.agentId) === active) actionMap.delete(record.agentId);
@@ -2244,7 +2442,7 @@ export class NativeToolRuntime {
 			if (completed !== undefined) return;
 			const reasonCode = active.dispatched ? 'DISPATCH_RESULT_UNKNOWN' : 'DISPATCH_NOT_SENT';
 			this.#retainReceipt(record, active, { state: 'UNKNOWN', reasonCode, source: 'coordinator_uncertain', worldId: active.worldId });
-			try { await this.#journal('recordUnknown', record.agentId, active, { reasonCode }); }
+			try { await (active.dispatched ? this.#journal('recordUnknown', record.agentId, active, { reasonCode }) : this.#journalUnsent(record.agentId, active, reasonCode)); }
 			catch (journalError) { this.#trace('native_receipt_persistence_failed', { agentId: record.agentId, actionId, reasonCode: journalError?.code ?? 'MEMORY_WRITE_FAILED' }); }
 			Object.assign(error, { actionId, goalRevision: record.goalRevision });
 			active.publicationError = error;
@@ -2510,6 +2708,10 @@ export class NativeToolRuntime {
 		this.#blockingToolRuns.delete(agentId);
 		this.#armedDangerInterrupts.delete(agentId);
 		this.#sequenceFinishReservations.delete(agentId);
+		const chain = this.#legChains.get(agentId);
+		if (chain !== undefined) chain.stopped = true;
+		this.#legChains.delete(agentId);
+		this.#pendingLegChains.delete(agentId);
 		const program = this.#programRuns.get(agentId);
 		program?.releaseWork();
 		if (program?.state === 'PREPARING') this.#settleProgram(agentId, program, { state: 'CANCELLED', reasonCode: 'NATIVE_PROGRAM_CANCELLED' }, codedError('NATIVE_PROGRAM_CANCELLED', 'Program preparation outlived its lifecycle'));
@@ -2553,7 +2755,7 @@ export class NativeToolRuntime {
 				try { await this.#bridge.send('action_cancel', agentId, { goalRevision: running.goalRevision, actionId: running.actionId }); }
 				catch {}
 			}
-			try { await this.#journal('recordUnknown', agentId, running, { reasonCode: running.dispatched ? 'LIFECYCLE_ENDED_BEFORE_RESULT' : 'CANCELLED_BEFORE_DISPATCH' }); }
+			try { await (running.dispatched ? this.#journal('recordUnknown', agentId, running, { reasonCode: 'LIFECYCLE_ENDED_BEFORE_RESULT' }) : this.#journalUnsent(agentId, running, 'CANCELLED_BEFORE_DISPATCH')); }
 			catch (error) { this.#trace('native_receipt_persistence_failed', { agentId, actionId: running.actionId, reasonCode: error?.code ?? 'MEMORY_WRITE_FAILED' }); }
 		}
 		try { await this.#flushSpatial(agentId); }

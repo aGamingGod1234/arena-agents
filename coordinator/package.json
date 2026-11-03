@@ -14,6 +14,7 @@
 		"benchmark:latency:accept": "node src/benchmark/latency-acceptance-cli.mjs",
 		"benchmark:latency:instrumentation": "node src/benchmark/instrumentation-comparison-cli.mjs",
 		"benchmark:arena-script-canonicalization": "node src/benchmark/arena-script-canonicalization-benchmark.mjs",
+		"benchmark:arena-script-facts": "node src/benchmark/arena-script-facts-benchmark.mjs",
 		"benchmark:jsonl-fragmentation": "node src/benchmark/jsonl-fragmentation-benchmark.mjs",
 		"pretest": "node scripts/prepare-owned-job.mjs",
 		"test": "node --test --test-concurrency=4 --test-timeout=900000",

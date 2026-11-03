@@ -1,5 +1,7 @@
 package dev.agaminggod.arenaagents.server.runtime.input;
 
+import dev.agaminggod.arenaagents.compat.McCompat;
+
 import dev.agaminggod.arenaagents.server.runtime.ArmSwing;
 import carpet.helpers.EntityPlayerActionPack;
 import carpet.script.utils.Tracer;
@@ -252,7 +254,7 @@ public final class CarpetInputStateSink implements InputStateSink {
 			);
 			if (result instanceof InteractionResult.Success success) {
 				return ExactHandUseDriver.TargetAttempt.consumed(
-						success.swingSource() == InteractionResult.SwingSource.SERVER_ONLY
+						McCompat.serverSwing(success)
 				);
 			}
 			return ExactHandUseDriver.TargetAttempt.pass();

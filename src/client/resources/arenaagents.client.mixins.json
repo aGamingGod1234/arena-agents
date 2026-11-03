@@ -12,22 +12,15 @@
     "MinecraftFontManagerAccessor",
     "PlayerInfoMixin",
     "PlanItemIconsRenderMixin",
-    "GuiItemAtlasPlanIconsMixin",
     "SkinManagerMixin",
     "ClientCommonPacketListenerPovMixin",
     "ClientPacketListenerPovMixin",
     "RecipeBookComponentPovMixin",
     "PlayerInfiniteMaterialsPovMixin",
     "EntityPovRotationMixin",
-    "ExperienceBarRendererPovMixin",
     "GameModeSwitcherScreenPovMixin",
-    "GuiPovMixin",
-    "GuiInBedPovMixin",
-    "ItemInHandRendererPovMixin",
-    "FirstPersonHandsRendererPovMixin",
     "LivingEntityPovRotationMixin",
     "KeyboardInputPovMixin",
-    "LevelRendererPovMixin",
     "LocalPlayerPovMixin",
     "MinecraftPovMixin",
     "MouseHandlerPovMixin",
@@ -36,8 +29,7 @@
     "MenuScreensInvoker",
     "InBedChatScreenPovMixin",
     "InventoryScreenPovMixin",
-    "AbstractContainerScreenPovMixin",
-    "ScreenEffectRendererPovMixin"
+    "AbstractContainerScreenPovMixin"
   ],
   "injectors": {
     "defaultRequire": 1

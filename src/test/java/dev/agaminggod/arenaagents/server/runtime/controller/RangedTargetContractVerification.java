@@ -29,7 +29,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityEquipment;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
+import dev.agaminggod.arenaagents.compat.McEntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragonPart;
@@ -66,7 +66,7 @@ public final class RangedTargetContractVerification {
 			set(player, Player.class, "inventory", new Inventory(player, equipment));
 			set(player, LivingEntity.class, "equipment", equipment);
 			set(player, Entity.class, "uuid", UUID.randomUUID());
-			set(player, Entity.class, "type", EntityTypes.PLAYER);
+			set(player, Entity.class, "type", McEntityTypes.PLAYER);
 			set(player, Entity.class, "eyeHeight", 1.62F);
 			position(player, new Vec3(.5D, 64D, .5D), new AABB(.2D, 64D, .2D, .8D, 65.8D, .8D), level);
 			set(player, fakeType, "pack", new EntityPlayerActionPack(player) { @Override public void setSlot(int slot) { } });
@@ -74,7 +74,7 @@ public final class RangedTargetContractVerification {
 			dragon.setId(1017); // 26.3 assigns entity IDs in the constructor, which Unsafe allocation skips.
 			dragon.alive = true;
 			set(dragon, Entity.class, "uuid", UUID.randomUUID());
-			set(dragon, Entity.class, "type", EntityTypes.ENDER_DRAGON);
+			set(dragon, Entity.class, "type", McEntityTypes.ENDER_DRAGON);
 			position(dragon, new Vec3(.5D, 64D, 8.5D), new AABB(.2D, 64D, 8.2D, .8D, 65.8D, 8.8D), level);
 			verifyCurrentBodyAim(unsafe, player, dragon);
 			verifyInterruptedAndBlockedDraw(unsafe, player, dragon, level, fakeType);
@@ -150,12 +150,21 @@ public final class RangedTargetContractVerification {
 		var obstructed = aimingController(unsafe, player, target, true, false, Vec3.ZERO);
 		check(obstructed.tick(1000L).state() == ServerTransactionAdapter.TickState.RUNNING, "the draw begins with a clear target");
 		level.obstructed = true;
+		level.clearTargetScans = 0;
 		check(obstructed.tick(1050L).state() == ServerTransactionAdapter.TickState.RUNNING,
 				"an obstruction appearing during the draw holds the drawn bow instead of ending the shot");
+		for (long now = 1100L; now <= 3000L; now += 50L) {
+			check(obstructed.tick(now).state() == ServerTransactionAdapter.TickState.RUNNING, "the blocked draw stays held before its timeout");
+		}
+		check(level.clearTargetScans == 0, "a draw held behind cover never scans 128 blocks for other clear targets while it waits: "
+				+ level.clearTargetScans);
 		var blocked = obstructed.tick(11050L);
 		check(blocked.reasonCode().equals("TARGET_OBSTRUCTED") && blocked.message().contains("minecraft:stone")
 				&& blocked.message().contains("held the draw"), "a shot still blocked at its timeout names the block and the held draw: " + blocked.message());
 		check(blocked.message().contains("nearest first: none"), "blocked draw reports the empty visible arrow-line choices");
+		check(blocked.message().indexOf("; currently visible targets") < blocked.message().indexOf("; held the draw"),
+				"the clear-target list keeps its place between the blocker and the held draw: " + blocked.message());
+		check(level.clearTargetScans == 1, "the timeout report builds the clear-target list exactly once: " + level.clearTargetScans);
 		check(obstructed.tick(11100L) == blocked, "the blocked draw cannot retry or retarget on its own");
 		var cleared = aimingController(unsafe, player, target, true, false, Vec3.ZERO);
 		check(cleared.tick(1000L).state() == ServerTransactionAdapter.TickState.RUNNING, "a second draw begins clear");
@@ -265,7 +274,7 @@ public final class RangedTargetContractVerification {
 	}
 	private static final class FixtureDragon extends EnderDragon {
 		boolean alive;
-		private FixtureDragon() { super(EntityTypes.ENDER_DRAGON, null); }
+		private FixtureDragon() { super(McEntityTypes.ENDER_DRAGON, null); }
 		@Override public boolean isAlive() { return alive; }
 		@Override public boolean isInvisibleTo(Player observer) { return false; }
 	}
@@ -277,7 +286,7 @@ public final class RangedTargetContractVerification {
 	private static final class FixtureLevel extends ServerLevel {
 		// 26.3 entities take their ID from the level, and ServerLevel asks its (absent) chunk source.
 		private int fixtureEntityIds = 100_000;
-		@Override public int getNextEntityId() { return ++fixtureEntityIds; }
+		public int getNextEntityId() { return ++fixtureEntityIds; }
 		Collection<EnderDragonPart> parts;
 		Entity indexed;
 		boolean obstructed;
@@ -292,7 +301,12 @@ public final class RangedTargetContractVerification {
 		@Override public FluidState getFluidState(BlockPos position) { return getBlockState(position).getFluidState(); }
 		@Override public Entity getEntity(UUID identity) { return indexed != null && indexed.getUUID().equals(identity) ? indexed : null; }
 		@Override public Collection<EnderDragonPart> dragonParts() { return parts; }
-		@Override public List<Entity> getEntities(Entity except, AABB bounds, java.util.function.Predicate<? super Entity> filter) { return List.of(); }
+		/** Entity queries over the 128-block radius only the clear-target list asks for. */
+		int clearTargetScans;
+		@Override public List<Entity> getEntities(Entity except, AABB bounds, java.util.function.Predicate<? super Entity> filter) {
+			if (bounds.getXsize() >= 256D) clearTargetScans++;
+			return List.of();
+		}
 		@Override public <T extends Entity> List<T> getEntities(net.minecraft.world.level.entity.EntityTypeTest<Entity, T> type, net.minecraft.world.phys.AABB box, java.util.function.Predicate<? super T> filter) { return List.of(); }
 	}
 }

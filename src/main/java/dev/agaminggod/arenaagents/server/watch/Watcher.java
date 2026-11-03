@@ -57,7 +57,10 @@ import org.slf4j.LoggerFactory;
  * <p>It never acts and nothing it learns reaches the model: it only reads the world and the runtime, and writes
  * {@code arena-watch/<agentId>-episodes.jsonl}, {@code -forecasts.jsonl} and {@code -progress.jsonl} (progress truth for
  * the time audit, {@link ProgressWatch}) under the server's working directory.
- * Disable with {@code -Darenaagents.watch=false}.
+ *
+ * <p>Off by default: it scans the world for every agent every few ticks and writes on the server thread, which a
+ * player's server should not pay for. Enable it with {@code -Darenaagents.watch=true}; the quality harness launchers
+ * whose reports read these files ({@code scripts/run-headless-provider-matrix.*}, {@code test-progress-live.mjs}) do.
  */
 public final class Watcher {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Watcher.class);
@@ -135,8 +138,11 @@ public final class Watcher {
 		this.directory = server.getServerDirectory().resolve(DIRECTORY);
 	}
 
+	/** Property that opts a server into the Watcher; anything but {@code true} leaves it off. */
+	public static final String ENABLE_PROPERTY = "arenaagents.watch";
+
 	public static boolean enabled() {
-		return !"false".equalsIgnoreCase(System.getProperty("arenaagents.watch", "true"));
+		return "true".equalsIgnoreCase(System.getProperty(ENABLE_PROPERTY, "false").trim());
 	}
 
 	public static synchronized void register() {

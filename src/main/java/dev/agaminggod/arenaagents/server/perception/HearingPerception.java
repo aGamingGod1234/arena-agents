@@ -198,10 +198,7 @@ public final class HearingPerception {
 
 	/** The old PointedDripstoneBlock.canDrip (26.3 moved it into SpeleothemBlock as a protected helper). */
 	private static boolean canDrip(BlockState state) {
-		return state.is(net.minecraft.world.level.block.Blocks.POINTED_DRIPSTONE)
-				&& state.getValue(net.minecraft.world.level.block.SpeleothemBlock.TIP_DIRECTION) == net.minecraft.core.Direction.DOWN
-				&& state.getValue(net.minecraft.world.level.block.SpeleothemBlock.THICKNESS) == net.minecraft.world.level.block.state.properties.SpeleothemThickness.TIP
-				&& !state.getValue(net.minecraft.world.level.block.SpeleothemBlock.WATERLOGGED);
+		return dev.agaminggod.arenaagents.compat.McCompat.isDrippingDripstoneTip(state);
 	}
 
 	/** States whose client animateTick can play a sound; a cheap palette filter before reading any neighbour. */

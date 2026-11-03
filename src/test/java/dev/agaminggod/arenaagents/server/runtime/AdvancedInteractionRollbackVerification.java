@@ -205,7 +205,7 @@ public final class AdvancedInteractionRollbackVerification {
 		fixture.player().fixtureLevel.targetState = sign.getBlockState();
 		fixture.player().fixtureLevel.targetEntity = sign;
 		JsonObject signArgs = json("x", 0, "y", 64, "z", 0);
-		signArgs.addProperty("front", sign.getSlotPlayerIsFacing(fixture.player()) == net.minecraft.world.level.block.entity.SignTextSlot.FRONT);
+		signArgs.addProperty("front", dev.agaminggod.arenaagents.compat.McCompat.facingFrontText(sign, fixture.player()));
 		var expectedLines = new com.google.gson.JsonArray();
 		var newLines = new com.google.gson.JsonArray();
 		for (int i = 0; i < 4; i++) { expectedLines.add(i == 0 ? "changed elsewhere" : ""); newLines.add("authored text"); }
@@ -216,7 +216,7 @@ public final class AdvancedInteractionRollbackVerification {
 		} catch (dev.agaminggod.arenaagents.agent.AgentDomainException refused) {
 			assertEquals("SIGN_CHANGED", refused.code(), "actual sign edit entry point refuses stale expectedLines");
 		}
-		assertEquals("", sign.getText(signArgs.get("front").getAsBoolean() ? net.minecraft.world.level.block.entity.SignTextSlot.FRONT : net.minecraft.world.level.block.entity.SignTextSlot.BACK).getMessages(false).get(0).getString(),
+		assertEquals("", dev.agaminggod.arenaagents.compat.McCompat.signMessages(dev.agaminggod.arenaagents.compat.McCompat.signText(sign, signArgs.get("front").getAsBoolean()), false).get(0).getString(),
 				"stale sign edit preserves all original text");
 		ItemStack book = components.stack(Items.WRITABLE_BOOK, 1, 0);
 		book.set(DataComponents.WRITABLE_BOOK_CONTENT, new net.minecraft.world.item.component.WritableBookContent(java.util.List.of()));
@@ -412,7 +412,7 @@ public final class AdvancedInteractionRollbackVerification {
 		var args = json("recipeId", "minecraft:oak_planks", "count", 4, "timeoutMs", 5000);
 		var transaction = service().begin(fixture.player(), request(ActionType.CRAFT_INVENTORY, args), args);
 		var first = transaction.tick(System.currentTimeMillis());
-		assertEquals(ServerTransactionAdapter.TickState.RUNNING, first.state(), "inventory craft opens its screen before clicking");
+		assertEquals(ServerTransactionAdapter.TickState.RUNNING, first.state(), "inventory craft opens its screen before clicking (" + first + ")");
 		assertTrue(AgentInventoryView.isOpen(fixture.player()), "agent inventory screen is mirrored while crafting");
 		assertEquals(0, count(fixture, Items.OAK_PLANKS), "no output appears on the opening tick");
 		assertEquals(2, count(fixture, Items.OAK_LOG), "planning dry run leaves the inventory untouched");
@@ -752,14 +752,13 @@ public final class AdvancedInteractionRollbackVerification {
 		} catch (ReflectiveOperationException exception) { throw new AssertionError(exception); }
 	}
 
-	private static final class FixtureRecipes extends RecipeManager {
+	private static final class FixtureRecipes extends dev.agaminggod.arenaagents.compat.TestRecipeManagerBase {
 		FixtureRecipes() { this(false); }
 		FixtureRecipes(boolean includeSmelting) {
 			super(recipes(includeSmelting));
 		}
 
-		/** 26.3 reads recipes from the recipe registry of the lookup it is built with. */
-		private static net.minecraft.core.HolderLookup.Provider recipes(boolean includeSmelting) {
+		private static Map<ResourceKey<Recipe<?>>, Recipe<?>> recipes(boolean includeSmelting) {
 			var recipe = new ShapelessRecipe(new Recipe.CommonInfo(false),
 					new CraftingRecipe.CraftingBookInfo(CraftingBookCategory.BUILDING, "planks"),
 					new ItemStackTemplate(Items.OAK_PLANKS, 4), java.util.List.of(Ingredient.of(Items.OAK_LOG)));
@@ -770,14 +769,13 @@ public final class AdvancedInteractionRollbackVerification {
 			var smelting = new net.minecraft.world.item.crafting.SmeltingRecipe(new Recipe.CommonInfo(false),
 					new net.minecraft.world.item.crafting.AbstractCookingRecipe.CookingBookInfo(net.minecraft.world.item.crafting.CookingBookCategory.MISC, ""),
 					Ingredient.of(Items.RAW_IRON), new ItemStackTemplate(Items.IRON_INGOT, 1), 0.7F, 200);
-			var registry = new net.minecraft.core.MappedRegistry<Recipe<?>>(Registries.RECIPE, com.mojang.serialization.Lifecycle.stable());
-			net.minecraft.core.Registry.register(registry, ResourceKey.create(Registries.RECIPE, Identifier.parse("minecraft:oak_planks")), recipe);
-			net.minecraft.core.Registry.register(registry, ResourceKey.create(Registries.RECIPE, Identifier.parse("minecraft:wooden_pickaxe")), pickaxe);
+			Map<ResourceKey<Recipe<?>>, Recipe<?>> recipes = new java.util.LinkedHashMap<>();
+			recipes.put(ResourceKey.create(Registries.RECIPE, Identifier.parse("minecraft:oak_planks")), recipe);
+			recipes.put(ResourceKey.create(Registries.RECIPE, Identifier.parse("minecraft:wooden_pickaxe")), pickaxe);
 			if (includeSmelting) {
-				net.minecraft.core.Registry.register(registry, ResourceKey.create(Registries.RECIPE, Identifier.parse("minecraft:iron_ingot_from_smelting_raw_iron")), smelting);
+				recipes.put(ResourceKey.create(Registries.RECIPE, Identifier.parse("minecraft:iron_ingot_from_smelting_raw_iron")), smelting);
 			}
-			registry.freeze();
-			return net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.of(registry));
+			return recipes;
 		}
 	}
 
@@ -804,9 +802,9 @@ public final class AdvancedInteractionRollbackVerification {
 	}
 
 	/** Allocated without running a server constructor or starting any threads. */
-	private static final class FixtureServer extends net.minecraft.server.dedicated.DedicatedServer {
+	private static final class FixtureServer extends dev.agaminggod.arenaagents.compat.TestDedicatedServerBase {
 		private RecipeManager recipes;
-		private FixtureServer() { super(null, null, null, null, java.util.Optional.empty(), null, null, null, null, null); }
+		private FixtureServer() { }
 		@Override public RecipeManager getRecipeManager() { return recipes; }
 	}
 
@@ -1213,11 +1211,10 @@ public final class AdvancedInteractionRollbackVerification {
 		assertTrue(ready.has("readySequence"), "actual live completion has an attention identity");
 	}
 
-	private static final class ObservedFurnace extends net.minecraft.world.level.block.entity.FurnaceBlockEntity
+	private static final class ObservedFurnace extends dev.agaminggod.arenaagents.compat.TestFurnaceBase
 			implements dev.agaminggod.arenaagents.mixin.AbstractFurnaceBlockEntityAccessor {
-		ObservedFurnace(BlockPos position) { super(position, net.minecraft.world.level.block.Blocks.FURNACE.defaultBlockState()); }
+		ObservedFurnace(BlockPos position) { super(position); }
 		@Override public net.minecraft.world.inventory.ContainerData arenaagents$getFurnaceData() { return dataAccess; }
-		@Override public int arenaagents$burnDuration(net.minecraft.server.level.ServerLevel level, ItemStack stack) { return getBurnDuration(level, stack); }
 	}
 
 	private static void verifyPlacementInventorySwap(ComponentBindings components) {
@@ -1541,9 +1538,7 @@ public final class AdvancedInteractionRollbackVerification {
 				// 26.3 furnaces accept and burn fuel by its cooking_fuel component, which the datapack normally supplies.
 				int burnTicks = item == Items.COAL || item == Items.CHARCOAL ? 1600 : item == Items.BLAZE_ROD ? 2400
 						: item == Items.LAVA_BUCKET ? 20000 : item == Items.OAK_PLANKS || item == Items.OAK_LOG ? 300 : item == Items.STICK ? 100 : 0;
-				if (burnTicks > 0) components.set(DataComponents.COOKING_FUEL, new net.minecraft.world.item.component.CookingFuel(
-						new net.minecraft.world.level.storage.loot.providers.number.ints.ResolvableInt.Constant(burnTicks),
-						new net.minecraft.world.level.storage.loot.providers.number.floats.ResolvableFloat.Constant(1.0F)));
+				if (burnTicks > 0) dev.agaminggod.arenaagents.compat.TestCompat.setFuel(components, item, burnTicks);
 				holder.bindComponents(components.build());
 			}
 			return new ItemStack(item, count);
@@ -1577,7 +1572,7 @@ public final class AdvancedInteractionRollbackVerification {
 		}
 	}
 
-	private static final class FaultingServerPlayer extends ServerPlayer {
+	private static final class FaultingServerPlayer extends dev.agaminggod.arenaagents.compat.TestServerPlayerBase {
 		private MenuFixtureLevel fixtureLevel;
 		private boolean failMainHandVerification;
 		private boolean throwOnDrop;
@@ -1623,7 +1618,7 @@ public final class AdvancedInteractionRollbackVerification {
 		@Override public boolean isWithinBlockInteractionRange(net.minecraft.core.BlockPos position, double padding) { return true; }
 		@Override public double blockInteractionRange() { return 4.5D; }
 		@Override public boolean isDescending() { return false; }
-		@Override public boolean swing(net.minecraft.world.InteractionHand hand, net.minecraft.world.item.component.SwingAnimation animation, boolean toSelf) { swings++; return true; }
+		@Override protected boolean testSwing(net.minecraft.world.InteractionHand hand, boolean toSelf) { swings++; return true; }
 		@Override public void closeContainer() {
 			containerMenu.removed(this);
 			containerMenu = inventoryMenu;
@@ -1639,27 +1634,26 @@ public final class AdvancedInteractionRollbackVerification {
 		}
 
 		@Override
-		public ItemEntity drop(ItemStack stack, boolean thrownFromHand, net.minecraft.util.Prediction prediction) {
+		protected void testBeforeDrop(ItemStack stack) {
 			if (throwOnDrop) throw new IllegalStateException("injected drop failure after inventory debit");
-			return super.drop(stack, thrownFromHand, prediction);
 		}
 
 		// Every drop, including the randomly scattered one at a dead body, creates its entity here.
 		@Override
-		public ItemEntity createItemStackToDrop(ItemStack stack, boolean randomly, boolean thrownFromHand) {
+		protected ItemEntity testCreateDrop(ItemStack stack, boolean randomly, java.util.function.Supplier<ItemEntity> vanilla) {
 			if (recordDrops) {
 				if (dropped == null) dropped = new java.util.ArrayList<>();
 				dropped.add(stack.copy());
 				return null;
 			}
-			return super.createItemStackToDrop(stack, randomly, thrownFromHand);
+			return vanilla.get();
 		}
 	}
 
-	private static final class MenuFixtureLevel extends ServerLevel {
+	private static final class MenuFixtureLevel extends dev.agaminggod.arenaagents.compat.TestServerLevelBase {
 		// 26.3 entities take their ID from the level, and ServerLevel asks its (absent) chunk source.
 		private int fixtureEntityIds = 100_000;
-		@Override public int getNextEntityId() { return ++fixtureEntityIds; }
+		public int getNextEntityId() { return ++fixtureEntityIds; }
 		private RecipeManager recipes;
 		private boolean furnaceChunkUnloaded = false;
 		private long furnaceTick;

@@ -55,6 +55,7 @@ import dev.agaminggod.arenaagents.server.CoordinatorStartupSmokeVerification;
 import dev.agaminggod.arenaagents.server.CoordinatorLogRotationVerification;
 import dev.agaminggod.arenaagents.server.NodeRuntimeLocatorVerification;
 import dev.agaminggod.arenaagents.server.CoordinatorLaunchPolicyVerification;
+import dev.agaminggod.arenaagents.server.CoordinatorExhaustedStatusSnapshotVerification;
 import dev.agaminggod.arenaagents.server.CoordinatorVoiceEndpointVerification;
 import dev.agaminggod.arenaagents.server.CoordinatorVoiceEndpointRefreshVerification;
 import dev.agaminggod.arenaagents.server.CoordinatorVoiceTimeoutLifecycleVerification;
@@ -182,7 +183,13 @@ public final class VerificationMain {
 		passedAssertions += CoordinatorLogRotationVerification.verify();
 		passedAssertions += NodeRuntimeLocatorVerification.verify();
 		passedAssertions += CoordinatorLaunchPolicyVerification.verify();
+		passedAssertions += CoordinatorExhaustedStatusSnapshotVerification.verify();
+		passedAssertions += dev.agaminggod.arenaagents.server.runtime.reflex.LeaveFireDouseRecoveryVerification.verify();
+		passedAssertions += dev.agaminggod.arenaagents.server.runtime.reflex.RetreatEmergencyPriorityVerification.verify();
+		passedAssertions += dev.agaminggod.arenaagents.server.runtime.reflex.DefaultEatRearmingVerification.verify();
+		passedAssertions += dev.agaminggod.arenaagents.server.runtime.reflex.ModelOwnedDefaultRulesVerification.verify();
 		passedAssertions += CoordinatorProcessOwnershipVerification.verify();
+		passedAssertions += dev.agaminggod.arenaagents.server.WindowsCoordinatorJobDrainVerification.verify();
 		passedAssertions += CoordinatorStartupSmokeVerification.verify();
 		passedAssertions += CoordinatorVoiceTimeoutLifecycleVerification.verify();
 		passedAssertions += CoordinatorVoiceEndpointVerification.verify();
@@ -278,6 +285,12 @@ public final class VerificationMain {
 		passedAssertions += dev.agaminggod.arenaagents.server.runtime.controller.BrinkGuardVerification.verify();
 		passedAssertions += dev.agaminggod.arenaagents.server.runtime.controller.ShelterPlanVerification.verify();
 		passedAssertions += dev.agaminggod.arenaagents.server.runtime.controller.DigPlanVerification.verify();
+		passedAssertions += dev.agaminggod.arenaagents.server.runtime.controller.VerticalDescentHeadingVerification.verify();
+		passedAssertions += dev.agaminggod.arenaagents.server.runtime.controller.MiningToolsVerification.verify();
+		passedAssertions += dev.agaminggod.arenaagents.server.runtime.controller.VeinPlanVerification.verify();
+		passedAssertions += dev.agaminggod.arenaagents.server.runtime.controller.VeinSelectedToolInventoryVerification.verify();
+		passedAssertions += dev.agaminggod.arenaagents.server.runtime.controller.TravelStopsVerification.verify();
+		passedAssertions += dev.agaminggod.arenaagents.server.runtime.controller.DoorNavigationVerification.verify();
 		passedAssertions += dev.agaminggod.arenaagents.server.perception.HearingPerceptionVerification.verify();
 		passedAssertions += dev.agaminggod.arenaagents.server.perception.SightedFeaturesVerification.verify();
 		passedAssertions += dev.agaminggod.arenaagents.server.perception.PlayerTeleportsVerification.verify();
@@ -397,6 +410,7 @@ public final class VerificationMain {
 				"drop_item",
 				"navigate_to",
 				"dig_to",
+				"mine_vein",
 				"build_shelter",
 				"cast_obsidian",
 				"barter_until",
@@ -476,6 +490,13 @@ public final class VerificationMain {
 		assertDecodedType(codec, "drop_item", "\"slot\":0,\"count\":1", ActionType.DROP_ITEM);
 		assertDecodedType(codec, "navigate_to", "\"x\":10,\"y\":64,\"z\":-5,\"tolerance\":1.25,\"sprint\":true,\"timeoutMs\":30000", ActionType.NAVIGATE_TO);
 		assertDecodedType(codec, "dig_to", "\"pattern\":\"stairs_down\",\"y\":-55,\"timeoutMs\":300000", ActionType.DIG_TO);
+		assertDecodedType(codec, "mine_vein", "\"x\":4,\"y\":64,\"z\":-2,\"maxBlocks\":24,\"timeoutMs\":120000", ActionType.MINE_VEIN);
+		expectProtocolException(
+				() -> codec.decodeCommand(commandJson("mine_vein", "\"x\":4,\"y\":64,\"z\":-2,\"maxBlocks\":65,\"timeoutMs\":120000")),
+				"OUT_OF_RANGE",
+				"maxBlocks",
+				"mine_vein maxBlocks is at most 64"
+		);
 		assertDecodedType(codec, "build_shelter", "\"x\":83,\"y\":73,\"z\":91,\"opening\":\"east\",\"itemId\":\"minecraft:cobblestone\",\"timeoutMs\":120000", ActionType.BUILD_SHELTER);
 		assertDecodedType(codec, "fight_target", "\"targetId\":\"00000000-0000-0000-0000-000000000001\",\"desiredRange\":2.5,\"fleeAtHealth\":6,\"timeoutMs\":15000", ActionType.FIGHT_TARGET);
 		assertDecodedType(codec, "fight_until", "\"mob\":\"minecraft:blaze\",\"untilItem\":\"minecraft:blaze_rod\",\"untilCount\":6,\"weapon\":\"auto\",\"x\":1,\"y\":70,\"z\":2,\"radius\":16,\"timeoutMs\":180000", ActionType.FIGHT_UNTIL);

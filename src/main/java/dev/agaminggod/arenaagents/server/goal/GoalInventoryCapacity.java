@@ -17,7 +17,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
+import dev.agaminggod.arenaagents.compat.McEntityTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.BlockItem;
@@ -152,7 +152,7 @@ public final class GoalInventoryCapacity {
 		if (equippable != null
 				&& equippable.slot() != EquipmentSlot.OFFHAND
 				&& Inventory.EQUIPMENT_SLOT_MAPPING.containsValue(equippable.slot())
-				&& equippable.canBeEquippedBy(EntityTypes.PLAYER.builtInRegistryHolder())) {
+				&& equippable.canBeEquippedBy(McEntityTypes.PLAYER.builtInRegistryHolder())) {
 			equipmentSlot = equippable.slot();
 			equipmentCapacity = equipmentSlot.limit(
 					new ItemStack(item.builtInRegistryHolder(), maxStackSize)).getCount();

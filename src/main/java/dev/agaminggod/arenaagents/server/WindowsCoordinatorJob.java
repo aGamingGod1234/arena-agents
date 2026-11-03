@@ -14,6 +14,11 @@ import java.util.UUID;
 
 /** Gives one Windows coordinator launch durable, kernel-owned process-tree lifetime. */
 final class WindowsCoordinatorJob {
+	private static final int JOB_OBJECT_BASIC_ACCOUNTING_INFORMATION = 1;
+	private static final int BASIC_ACCOUNTING_INFORMATION_SIZE = 48;
+	private static final long ACTIVE_PROCESSES_OFFSET = 40L;
+	private static final int JOB_OBJECT_QUERY = 0x0004;
+	static final long DRAIN_TIMEOUT_MS = 5_000L;
 	private static final int JOB_OBJECT_EXTENDED_LIMIT_INFORMATION = 9;
 	private static final int JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE = 0x00002000;
 	private static final int JOB_OBJECT_TERMINATE = 0x0008;
@@ -64,7 +69,7 @@ final class WindowsCoordinatorJob {
 	static boolean terminateExisting(String launchId) throws IOException {
 		if (!supported()) return false;
 		Pointer handle = Kernel32.INSTANCE.OpenJobObjectW(
-				JOB_OBJECT_TERMINATE, false, new WString(name(launchId))
+				JOB_OBJECT_TERMINATE | JOB_OBJECT_QUERY, false, new WString(name(launchId))
 		);
 		if (nullHandle(handle)) {
 			int error = Native.getLastError();
@@ -72,7 +77,13 @@ final class WindowsCoordinatorJob {
 			throw failure("open owned coordinator job", error);
 		}
 		WindowsCoordinatorJob job = new WindowsCoordinatorJob(handle);
-		job.terminateAndClose();
+		try {
+			job.terminateAndClose();
+		} catch (IOException failure) {
+			// Reaping has no retained owner to retry this handle. Keep the ownership record and release the query handle.
+			try { job.closeHandle(); } catch (IOException closeFailure) { failure.addSuppressed(closeFailure); }
+			throw failure;
+		}
 		return true;
 	}
 
@@ -101,7 +112,45 @@ final class WindowsCoordinatorJob {
 		if (!Kernel32.INSTANCE.TerminateJobObject(handle, 1)) {
 			throw failure("terminate owned coordinator job", Native.getLastError());
 		}
+		awaitDrained();
 		closeHandle();
+	}
+
+	/** An unconfirmed stop must not let callers discard ownership of a process tree. */
+	private void awaitDrained() throws IOException {
+		try (Memory information = new Memory(BASIC_ACCOUNTING_INFORMATION_SIZE)) {
+			awaitDrained(() -> {
+				information.clear();
+				if (!Kernel32.INSTANCE.QueryInformationJobObject(
+						handle, JOB_OBJECT_BASIC_ACCOUNTING_INFORMATION, information, BASIC_ACCOUNTING_INFORMATION_SIZE, Pointer.NULL
+				)) {
+					throw failure("query terminated coordinator job process count", Native.getLastError());
+				}
+				return Integer.toUnsignedLong(information.getInt(ACTIVE_PROCESSES_OFFSET));
+			}, DRAIN_TIMEOUT_MS);
+		}
+	}
+
+	@FunctionalInterface
+	interface ActiveProcessCount {
+		long read() throws IOException;
+	}
+
+	static void awaitDrained(ActiveProcessCount count, long timeoutMs) throws IOException {
+		long deadline = System.nanoTime() + java.util.concurrent.TimeUnit.MILLISECONDS.toNanos(timeoutMs);
+		while (true) {
+			long active = count.read();
+			if (active == 0L) return;
+			if (System.nanoTime() >= deadline) {
+				throw new IOException(active + " coordinator job process(es) still exiting after " + timeoutMs + " ms");
+			}
+			try {
+				Thread.sleep(10L);
+			} catch (InterruptedException interrupted) {
+				Thread.currentThread().interrupt();
+				throw new IOException("Interrupted while waiting for the coordinator job to drain", interrupted);
+			}
+		}
 	}
 
 	synchronized void closeHandle() throws IOException {
@@ -154,6 +203,8 @@ final class WindowsCoordinatorJob {
 		Pointer OpenProcess(int desiredAccess, boolean inheritHandle, int processId);
 
 		boolean SetInformationJobObject(Pointer job, int informationClass, Pointer information, int length);
+
+		boolean QueryInformationJobObject(Pointer job, int informationClass, Pointer information, int length, Pointer returnLength);
 
 		boolean AssignProcessToJobObject(Pointer job, Pointer process);
 

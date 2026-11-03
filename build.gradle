@@ -5,13 +5,29 @@ plugins {
 	id 'maven-publish'
 }
 
-version = project.mod_version
+// A non-default Minecraft target says so in its version (arena-agents-0.2.0+mc26.2.jar); 26.3 keeps its historical name.
+def defaultTarget = project.mc_compat == '26.3'
+version = defaultTarget ? project.mod_version : "${project.mod_version}+mc${project.mc_compat}"
 group = project.maven_group
+
+// Version-specific Minecraft API shims: one implementation per target, the same package and signatures in each.
+sourceSets.main.java.srcDir "src/compat/${project.mc_compat}/java"
+sourceSets.main.resources.srcDir "src/compat/${project.mc_compat}/resources"
+sourceSets.test.java.srcDir "src/compat/${project.mc_compat}/testJava"
+sourceSets.test.resources.srcDir "src/compat/${project.mc_compat}/testResources"
+// The how-to index exporter reads the default target's game data (its output, coordinator/config/howto-index.json, is
+// generated from that one version), so other targets do not build it.
+if (!defaultTarget) sourceSets.test.java.exclude '**/howto/HowtoIndexExporter.java'
 
 allprojects {
 	dependencyLocking {
 		lockAllConfigurations()
 		lockMode = LockMode.STRICT
+		// Each Minecraft target resolves its own dependency graph; the default keeps the historical lockfile path.
+		def lockTarget = rootProject.findProperty('mc_compat')
+		if (lockTarget != '26.3') {
+			lockFile = rootProject.file("gradle/locks/${lockTarget}/${project.name}.lockfile")
+		}
 	}
 }
 
@@ -33,6 +49,11 @@ loom {
 	runs {
 		server {
 			vmArg "-Darenaagents.bridgeSecretFile=${developmentBridgeSecret}"
+			// scripts/live-server.py boots each target's server in its own directory, with its own JVM properties.
+			runDir = project.findProperty('serverRunDir') ?: 'run'
+			def extraServerJvmArgs = project.findProperty('serverJvmArgs')
+			// JSON preserves each JVM argument, including spaces in checkout paths.
+			if (extraServerJvmArgs) vmArgs(*new groovy.json.JsonSlurper().parseText(extraServerJvmArgs.toString()))
 		}
 	}
 
@@ -43,6 +64,10 @@ loom {
 		}
 	}
 }
+
+// Loom creates the client source set above; its version shims sit beside the main ones (src/compat/<target>/client*).
+sourceSets.client.java.srcDir "src/compat/${project.mc_compat}/clientJava"
+sourceSets.client.resources.srcDir "src/compat/${project.mc_compat}/clientResources"
 
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
@@ -60,7 +85,7 @@ def carpetJarName = "fabric-carpet-${project.carpet_version}.jar"
 def carpetDependency = layout.projectDirectory.file("libs/${carpetJarName}")
 def voicechatJarName = "voicechat-fabric-${project.voicechat_version}.jar"
 def voicechatDependency = layout.projectDirectory.file("libs/${voicechatJarName}")
-def localDependencyChecksums = layout.projectDirectory.file('libs/checksums.sha256')
+def localDependencyChecksums = layout.projectDirectory.file("libs/${project.libs_checksums}")
 def localDependencyJars = fileTree(layout.projectDirectory.dir('libs')) {
 	include '*.jar'
 }
@@ -103,10 +128,14 @@ tasks.register('verifyLocalDependencies') {
 
 processResources {
 	def version = project.version
+	def minecraftRange = project.minecraft_dependency
+	def carpetRange = project.carpet_dependency
 	inputs.property "version", version
+	inputs.property "minecraftDependency", minecraftRange
+	inputs.property "carpetDependency", carpetRange
 
 	filesMatching("fabric.mod.json") {
-		expand "version": version
+		expand "version": version, "minecraftDependency": minecraftRange, "carpetDependency": carpetRange
 	}
 }
 
@@ -340,7 +369,13 @@ tasks.register('stageWindowsDistribution', Sync) {
 		include 'distribution-runtime.ps1', 'install-distribution.ps1', 'verify-startup-packaging.ps1'
 	}
 	from(distributionMetadata)
-	from('docs/distribution/README.md') { rename { 'README.md' } }
+	from('docs/distribution/README.md') {
+		rename { 'README.md' }
+		// The install guide names the exact Minecraft and Fabric Loader this package was built for.
+		def guideVersions = ['@MINECRAFT_VERSION@': project.minecraft_version, '@LOADER_VERSION@': project.loader_version]
+		inputs.property 'distributionGuideVersions', guideVersions
+		filter { String line -> guideVersions.inject(line) { text, token, value -> text.replace(token, value) } }
+	}
 	from('LICENSE', 'NOTICE-FONTS.md')
 }
 
@@ -415,6 +450,16 @@ tasks.register('verifyCore', JavaExec) {
 
 tasks.named('test') {
 	failOnNoDiscoveredTests = false
+}
+
+if (!defaultTarget) {
+	tasks.register('verifyFurnaceFuelDuration', JavaExec) {
+		group = 'verification'
+		description = 'Checks subtype-specific furnace fuel duration on older Minecraft targets.'
+		dependsOn tasks.named('testClasses')
+		classpath = sourceSets.test.runtimeClasspath
+		mainClass.set('dev.agaminggod.arenaagents.compat.FurnaceFuelDurationVerification')
+	}
 }
 
 tasks.register('verifyDirector', JavaExec) {
@@ -612,9 +657,29 @@ def strategyGuide = layout.projectDirectory.file('coordinator/config/minecraft-a
 	}
 }
 
+// Static check of every mixin's targets (classes, injected methods, @At, @Accessor, @Invoker) against this target's
+// Minecraft, Carpet and Brigadier jars; catches a target that moved between 26.x drops without starting the game.
+// Needs python3, so CI runs it on Linux rather than through check.
+tasks.register('verifyMixinTargets', Exec) {
+	group = 'verification'
+	description = 'Checks every mixin target against the resolved Minecraft jars of this 26.x target.'
+	def target = project.mc_compat
+	def classpath = sourceSets.test.runtimeClasspath
+	def javap = new File(System.getProperty('java.home'), 'bin/javap').absolutePath // the JDK running Gradle (Java 25)
+	doFirst {
+		def jars = classpath.files.findAll { it.name ==~ /minecraft-(common|clientOnly)-.*\.jar/ || it.name.startsWith('fabric-carpet-') || it.name ==~ /brigadier-[0-9.]+\.jar/ }
+		if (jars.count { it.name.startsWith('minecraft-') } != 2) throw new GradleException("Expected the split Minecraft common and clientOnly jars, found ${jars*.name}")
+		commandLine(['python3', file('scripts/check-mixin-targets.py').absolutePath, target] + jars*.absolutePath + ['--javap', javap])
+	}
+}
+
 tasks.named('check') {
+	if (!defaultTarget) dependsOn tasks.named('verifyFurnaceFuelDuration')
 	dependsOn tasks.named('verifyStrategyKnowledge')
-	dependsOn tasks.named('verifyCore'), tasks.named('verifyCameraMixin'), tasks.named('verifyPovMixins'), tasks.named('verifyEntrypoints'), tasks.named('verifyMapBlockStateCatalog'), tasks.named('verifyMapStructureDataFixer'), ':voice-addon:check'
+	dependsOn tasks.named('verifyCore'), tasks.named('verifyCameraMixin'), tasks.named('verifyPovMixins'), tasks.named('verifyEntrypoints'), tasks.named('verifyMapStructureDataFixer'), ':voice-addon:check'
+	// Map modules are authored against the pinned 26.3 block-state catalog; older drops lack some of its states
+	// (26.2 lacks 3,357, all from blocks added in 26.3), so the byte-for-byte catalog check runs on 26.3 only.
+	if (defaultTarget) dependsOn tasks.named('verifyMapBlockStateCatalog')
 	dependsOn tasks.named('verifyClientAwtTrue'), tasks.named('verifyClientAwtFalse'), tasks.named('verifyClientAwtAuto')
 }
 
