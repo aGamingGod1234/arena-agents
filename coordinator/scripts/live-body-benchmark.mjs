@@ -29,9 +29,10 @@ const MODEL = 'gpt-6.1-sol';
 const X = 100.5, Y = -60, Z = 100.5;
 
 // The arms: the default set before the fast-danger reflexes were added, and the current one.
-const ARMS = {
-	original4: DEFAULT_REFLEXES.filter((rule) => ['default-lava', 'default-fire', 'default-air', 'default-edge'].includes(rule.id)),
-	current10: DEFAULT_REFLEXES,
+const benchmarkDefaults = DEFAULT_REFLEXES.map((rule) => ({ ...rule, coordinatorDefault: true }));
+export const ARMS = {
+	original4: benchmarkDefaults.filter((rule) => ['default-lava', 'default-fire', 'default-air', 'default-edge'].includes(rule.id)),
+	current10: benchmarkDefaults,
 };
 
 // Each scenario stages one danger on a fresh, full-health survival body and watches it for durationMs.
