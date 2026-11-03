@@ -6461,16 +6461,26 @@ const FIGHT_ACTION_TYPES = new Set(['fight_target', 'fight_until']);
 // The same bands the danger coalescer reports at: crossing one changes what a sensible choice is.
 const FIGHT_STEER_HEALTH_BANDS = Object.freeze([14, 10, 6]);
 
-function steerAttackerTypes(request) {
-	const types = new Set();
-	const add = (event) => {
-		const type = (event?.observation ?? {})?.player?.lastAttacker?.type;
-		if (typeof type === 'string') types.add(type);
+function steerAttackers(request) {
+	const attackers = [], types = new Set();
+	const add = (event, fallbackTrigger) => {
+		const attacker = event?.observation?.player?.lastAttacker;
+		const trigger = event?.status?.decision?.trigger ?? event?.trigger ?? fallbackTrigger;
+		if (attacker != null || trigger === 'damage') {
+			attackers.push(attacker ?? {});
+			types.add(attacker?.type);
+		}
+		const merged = event?.mergedEvents ?? [];
+		const retainedHits = merged.reduce((count, entry) => count + add(entry), 0);
+		// The current envelope also appears in mergedEvents; count original damage events only once.
+		return merged.length > 0 ? retainedHits : trigger === 'damage' ? 1 : 0;
 	};
-	add(request?.nativeEvent ?? request);
-	for (const merged of request?.nativeEvent?.mergedEvents ?? []) add(merged);
+	const retainedHits = add(request?.nativeEvent ?? request, request?.trigger);
 	for (const type of request?.dangerSummary?.attackers ?? []) if (typeof type === 'string') types.add(type);
-	return types;
+	// A type-only summary cannot establish which individuals caused hits missing from the retained history.
+	const identitiesComplete = !(request?.dangerSummary?.hitsSinceLastUpdate > retainedHits)
+		&& [...types].every(type => attackers.some(attacker => attacker.type === type));
+	return { attackers, types, identitiesComplete };
 }
 
 function steerHealth(request) {
@@ -6478,16 +6488,6 @@ function steerHealth(request) {
 	if (Number.isFinite(summary)) return summary;
 	const health = (request?.nativeEvent?.observation ?? request?.observation)?.player?.health;
 	return Number.isFinite(health) ? health : null;
-}
-
-function fightTargetTypes(running, request) {
-	const args = running?.arguments ?? {};
-	if (running?.actionType === 'fight_until') return typeof args.mob === 'string' ? new Set([args.mob]) : null;
-	// fight_target names a uuid; its kind comes from the threat rows that carry it.
-	const observation = request?.nativeEvent?.observation ?? request?.observation ?? {};
-	const rows = [...(observation?.player?.threats ?? []), ...(observation?.threats?.entries ?? []), ...(observation?.entities ?? [])];
-	const row = rows.find(entry => entry?.uuid != null && entry.uuid === args.targetId);
-	return typeof row?.type === 'string' ? new Set([row.type]) : null;
 }
 
 /**
@@ -6510,15 +6510,18 @@ export function fightSteerDecision(request, running, state = null) {
 	if (player.inLava === true || player.onFire === true || player.hazard != null) return cut;
 	const band = (value) => FIGHT_STEER_HEALTH_BANDS.filter(threshold => value <= threshold).length;
 	if (health === null || reference == null || band(health) > band(reference)) return cut;
-	const attackers = steerAttackerTypes(request);
-	if (attackers.size === 0) return cut;
+	const { attackers, types, identitiesComplete } = steerAttackers(request);
+	if (types.size === 0) return cut;
 	const args = running.arguments ?? {};
 	// A fight that follows through on attackers handles any hostile mob attacker itself; players stay the model's call.
 	const takesAttackers = running.actionType === 'fight_target' && (args.continueWithAttackers === true
 		|| ['nearest_attacker', 'highest_risk'].includes(args.targetPolicy));
-	const scope = fightTargetTypes(running, request);
-	const named = (type) => scope !== null && (scope.has(type) || scope.has(type.replace(/^minecraft:/, '')));
-	const covered = [...attackers].every(type => type !== 'minecraft:player' && (named(type) || takesAttackers));
+	const mob = (type) => typeof type === 'string' && type !== 'minecraft:player';
+	const covered = [...types].every(mob) && (takesAttackers
+		|| (running.actionType === 'fight_until'
+			? [...types].every(type => args.mob === type || args.mob === type.replace(/^minecraft:/, ''))
+			: identitiesComplete && typeof args.targetId === 'string' && args.targetId.length > 0
+				&& attackers.every(attacker => attacker.uuid === args.targetId)));
 	if (!covered) return cut;
 	return { interruption: null, absorbed: true, cut: null };
 }
