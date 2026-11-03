@@ -227,8 +227,11 @@ async function main() {
 			await command(`effect give ${AGENT} minecraft:instant_health 1 10 true`);
 			await command(`effect give ${AGENT} minecraft:saturation 1 20 true`);
 			await sleep(1500);
-			const supportedY = number(await command(`execute positioned ${X} ${Y} ${Z} if entity @a[name=${AGENT},distance=..0.01] if block ~ ~-1 ~ minecraft:grass_block if block ~ ~ ~ minecraft:air if block ~ ~1 ~ minecraft:air run data get entity ${AGENT} Pos[1]`));
-			if (supportedY !== Y) throw new Error('Reset must produce the supported benchmark position before staging');
+			const supported = await command(`execute positioned ${X} ${Y} ${Z} if entity @a[name=${AGENT},distance=..0.01] if block ~ ~-1 ~ minecraft:grass_block if block ~ ~ ~ minecraft:air if block ~ ~1 ~ minecraft:air run data get entity ${AGENT} Pos[1]`);
+			if (number(supported) !== Y) {
+				const position = await command(`data get entity ${AGENT} Pos`);
+				throw new Error(`Reset must produce the supported benchmark position before staging; check: ${supported}; body: ${position}`);
+			}
 		};
 		scenarios: for (const name of chosen) {
 			const scenario = SCENARIOS[name];
