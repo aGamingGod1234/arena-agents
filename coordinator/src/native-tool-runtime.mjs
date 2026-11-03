@@ -866,6 +866,7 @@ export class NativeToolRuntime {
 		if (request.tool.kind === 'replace_action') {
 			const rejected = this.#operationRejection(record, request.tool);
 			if (rejected !== null) throw codedError(rejected.code, rejected.message);
+			this.#answerLegChain(record, request.tool.actionId);
 			const pausedProgram = this.#programRuns.has(record.agentId);
 			const interrupted = pausedProgram ? this.#interruptedPausedDangerAction(record) : null;
 			if (interrupted !== null) return this.#withBlockingToolRun(record, run => this.#replaceInterruptedDangerAction(request, record, { ...request.tool, kind: 'action' }, interrupted, run, { pausedProgram }));
@@ -957,9 +958,13 @@ export class NativeToolRuntime {
 		const tool = request.tool;
 		const field = tool.after !== undefined ? 'after' : ['action_status', 'cancel_action', 'replace_action'].includes(tool.kind) ? 'actionId' : null;
 		if (field === null || !chain.ids.has(tool[field])) return request;
-		// Following, cancelling or replacing the chain is the model's reply: no further leg starts.
-		if (field === 'after' || tool.kind !== 'action_status') chain.replied = true;
 		return tool[field] === chain.currentId ? request : { ...request, tool: { ...tool, [field]: chain.currentId } };
+	}
+
+	/** Accepted controls stop continuation before any asynchronous cancellation or predecessor wait. */
+	#answerLegChain(record, actionId) {
+		const chain = this.#legChains.get(record.agentId);
+		if (chain?.goalRevision === record.goalRevision && chain.ids.has(actionId)) chain.replied = true;
 	}
 
 	/**
@@ -997,6 +1002,7 @@ export class NativeToolRuntime {
 		let resolved = null;
 		if (active?.actionId === after && active.goalRevision === record.goalRevision) {
 			if (active.engineActionId !== undefined) throw codedError('STALE_ACTION', `after:${after} names a program action; queue work after a program with queueProgram`);
+			this.#answerLegChain(record, after);
 			const settled = await this.#awaitPredecessor(record, active);
 			if (settled.type === 'error') throw settled.error;
 			if (settled.type === 'interruption') {
@@ -1013,6 +1019,7 @@ export class NativeToolRuntime {
 		} else {
 			const receipt = this.#terminalActionReceipt(record, after, record.goalRevision);
 			if (receipt === null) throw codedError('STALE_ACTION', `after:${after} is neither the running body action nor the latest ended one`);
+			this.#answerLegChain(record, after);
 			predecessor = structuredClone(receipt);
 		}
 		if (predecessor.state === 'SUCCEEDED') {
@@ -2101,6 +2108,7 @@ export class NativeToolRuntime {
 		const active = actionMap?.get(record.agentId);
 		const rejected = this.#operationRejection(record, { ...tool, kind: 'cancel_action' });
 		if (rejected !== null) throw codedError(rejected.code, rejected.message);
+		this.#answerLegChain(record, tool.actionId);
 		active.cancelling = true;
 		active.cancellationUncertain = false;
 		// cancelAction and replaceAction both end what the model was waiting on; wakes held for it are released.
