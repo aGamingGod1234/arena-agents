@@ -1565,7 +1565,7 @@ Full npm: 4,531 passed, 3 skipped, zero failed/cancelled, 109.05 s. Final Deskto
 ### The body stood still while the model thought
 - **Problem:** Every action ended with the body standing still for the 3-17 s the model needed to decide its next step. A start-and-return mode existed, but the model had no way to queue the next step, so it saved nothing.
 - **Solution:** The model can send its next step while the current one runs, and it starts the instant the current one succeeds. Exploring and tunnelling legs can also repeat until the model replies.
-- **Result:** In a deterministic replay on the real runtime at 4 s per decision, a 6-step chain went from 98.5 to 81 s (-18%) and a 6-leg tunnel from 96 to 76 s (-21%). The body's idle share fell from about 25% to 5-8% (measured, no provider).
+- **Result:** In a deterministic replay on the real runtime at 4 s per decision, a 6-step chain went from 98.5 to 81 s (-18%) and six completed tunnel legs from 96 to 76 s (-21%). The tunnel also dispatches a seventh speculative dig, cancelled after 50 ms, followed by a stop reply that completes at 76.1 s. These simulated occupancy and completion times use no provider and do not measure live digging cost. The body's idle share fell from about 25% to 5-8% in this synthetic workload.
 
 ### Danger alerts padded with trivia
 - **Problem:** At 9 HP against a zombie, the model's 17 KB alert spent a quarter of its bytes on block trivia like "sniffer_diggable_block", far snow blocks, footstep sounds and 16-decimal coordinates. The danger summary sat behind 14 KB of world facts.
@@ -1580,13 +1580,9 @@ Full npm: 4,531 passed, 3 skipped, zero failed/cancelled, 109.05 s. Final Deskto
 ### Measuring the reflexes in a live world, with no model
 - **Problem:** The new default reflexes had only been checked in unit tests. Nobody knew how they changed survival in a real world.
 - **Solution:** A benchmark connects to a real server as the coordinator, summons a body and stages dangers with server commands. Trials alternate the 4 original default reflexes with the 10 current ones.
-- **Result:** Measured live on 26.3, 6 trials per arm, mixed:
-  - **Hunger:** the eat reflex fired 6 times against 0, and final food was 10.8 against 2.3 of 20.
-  - **3 hearts beside a zombie:** retreating kept the body alive 6.1 s against 3.5 s, though with no healing it still died.
-  - **Creeper:** damage was 0 when the sprint finished, but the sprint often timed out.
-  - **Shield:** the shield reflex never fired against a skeleton.
+- **Result:** The historical 26.3 run contains 6 trials per arm, but its arm comparisons are invalid. Terrain was not restored after explosions, and one zombie trial started dead while others began below the promised 6 HP. All 48 observations and aggregate numbers remain in `reports/live-body-benchmark-26.3-2026-11-01.json`, explicitly marked invalid as controlled comparison evidence. The old 6.1 s versus 3.5 s survival and 10.8 versus 2.3 food figures do not establish improvements. Missing reflex events after death also limit diagnosis from that run.
 
-  The last two are body bugs the benchmark surfaced, logged as follow-ups rather than claimed as wins.
+  The harness now validates staging, restores terrain and retains received trial events through death. New paired live trials are required before publishing corrected comparisons. Creeper sprint timeouts and shield behavior remain follow-ups; this review did not measure their cause or resolution.
 
 ### The body picks its own pickaxe
 - **Problem:** Every block that needed a different tool cost two model calls, one to switch and one to mine. An ore mined with too weak a pick was destroyed and dropped nothing.
