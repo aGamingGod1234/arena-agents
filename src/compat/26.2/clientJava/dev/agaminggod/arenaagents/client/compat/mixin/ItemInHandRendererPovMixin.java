@@ -129,6 +129,14 @@ abstract class ItemInHandRendererPovMixin {
 		return original.call(dispatcher, agent == null ? player : agent);
 	}
 
+	// Map helpers read Minecraft.player directly instead of the player passed to the arm draw.
+	@WrapOperation(method = {"renderOneHandedMap", "renderTwoHandedMap"}, at = @At(value = "INVOKE",
+			target = "Lnet/minecraft/client/player/LocalPlayer;isInvisible()Z"))
+	private boolean arenaagents$povMapInvisible(LocalPlayer player, Operation<Boolean> original) {
+		AbstractClientPlayer agent = PovClient.isActive() ? PovClient.agentPlayer() : null;
+		return agent == null ? original.call(player) : agent.isInvisible();
+	}
+
 	@WrapOperation(method = "renderMapHand", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getSkin()Lnet/minecraft/world/entity/player/PlayerSkin;"))
 	private PlayerSkin arenaagents$povMapSkin(LocalPlayer player, Operation<PlayerSkin> original) {
 		AbstractClientPlayer agent = PovClient.isActive() ? PovClient.agentPlayer() : null;
