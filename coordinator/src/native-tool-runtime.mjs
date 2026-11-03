@@ -996,6 +996,7 @@ export class NativeToolRuntime {
 	 * works while the model decides the next step; danger during the wait returns before anything starts.
 	 */
 	async #executeAfter(request, record, lifecycleGeneration) {
+		const expectedEpoch = this.#executionEpoch(record.agentId);
 		const { after, ...tool } = request.tool;
 		const active = this.#actions.get(record.agentId);
 		let predecessor;
@@ -1023,6 +1024,7 @@ export class NativeToolRuntime {
 			predecessor = structuredClone(receipt);
 		}
 		if (predecessor.state === 'SUCCEEDED') {
+			if (this.#executionEpoch(record.agentId) !== expectedEpoch) throw codedError('STALE_NATIVE_TOOL', 'Lifecycle changed while waiting for the predecessor');
 			const result = await this.#executeTool({ ...request, tool }, record, lifecycleGeneration);
 			const summary = { actionId: predecessor.actionId, actionType: predecessor.actionType, state: predecessor.state, reasonCode: predecessor.reasonCode,
 				...(predecessor.durationMs === undefined ? {} : { durationMs: predecessor.durationMs }) };
