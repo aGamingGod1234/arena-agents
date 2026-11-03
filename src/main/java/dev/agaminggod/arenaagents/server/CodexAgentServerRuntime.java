@@ -524,9 +524,9 @@ public final class CodexAgentServerRuntime {
 			return "Automation is offline. Bridge and voice secret paths must point to the prepared runtime secret.";
 		}
 		if ("COORDINATOR_RESTART_EXHAUSTED".equals(code)) {
-			return "Automation is offline. The coordinator stopped repeatedly, so it is retried only every "
+			return "Automation is offline. Coordinator stopped repeatedly; retrying every "
 					+ CoordinatorLaunchPolicy.EXHAUSTED_RETRY_MS / 60_000L
-					+ " minutes; check the coordinator error log, then fix its runtime or config or restart Minecraft.";
+					+ " minutes. Check the coordinator error log and runtime/config, or restart Minecraft.";
 		}
 		return "Automation is offline. Restart Minecraft after checking the coordinator setup.";
 	}

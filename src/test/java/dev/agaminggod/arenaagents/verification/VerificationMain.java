@@ -55,6 +55,7 @@ import dev.agaminggod.arenaagents.server.CoordinatorStartupSmokeVerification;
 import dev.agaminggod.arenaagents.server.CoordinatorLogRotationVerification;
 import dev.agaminggod.arenaagents.server.NodeRuntimeLocatorVerification;
 import dev.agaminggod.arenaagents.server.CoordinatorLaunchPolicyVerification;
+import dev.agaminggod.arenaagents.server.CoordinatorExhaustedStatusSnapshotVerification;
 import dev.agaminggod.arenaagents.server.CoordinatorVoiceEndpointVerification;
 import dev.agaminggod.arenaagents.server.CoordinatorVoiceEndpointRefreshVerification;
 import dev.agaminggod.arenaagents.server.CoordinatorVoiceTimeoutLifecycleVerification;
@@ -182,6 +183,7 @@ public final class VerificationMain {
 		passedAssertions += CoordinatorLogRotationVerification.verify();
 		passedAssertions += NodeRuntimeLocatorVerification.verify();
 		passedAssertions += CoordinatorLaunchPolicyVerification.verify();
+		passedAssertions += CoordinatorExhaustedStatusSnapshotVerification.verify();
 		passedAssertions += CoordinatorProcessOwnershipVerification.verify();
 		passedAssertions += CoordinatorStartupSmokeVerification.verify();
 		passedAssertions += CoordinatorVoiceTimeoutLifecycleVerification.verify();
