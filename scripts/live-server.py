@@ -238,8 +238,9 @@ def main():
             checks.append((f'mod {mod} loaded', re.search(rf'^\s*- {re.escape(mod)} ', text, re.M) is not None))
         game = re.search(r'^\s*- minecraft (\S+)', text, re.M)
         checks.append((f"runs Minecraft {server.props['minecraft_version']}", bool(game) and game.group(1) == server.props['minecraft_version']))
-        status = server.command('agent status')
-        checks.append(('/agent command answers', bool(status.strip()) and 'Unknown or incomplete command' not in status))
+        status = server.command('codex status')
+        # prepare() creates a fresh world; statusAll must report its empty agent registry.
+        checks.append(('/codex status answers', status.strip() == 'You have not created any agents yet.'))
         server.command('player LiveCheck spawn at 0 -60 0')
         checks.append(('Carpet fake player joins', server.wait_for_player('LiveCheck')))
         # A 10-block drop: the body must land alive and hurt (vanilla takes 7 of 20), the server must not crash.
