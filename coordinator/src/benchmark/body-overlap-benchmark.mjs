@@ -6,7 +6,7 @@ import { normalizeMinecraftToolCall } from '../native-minecraft-tools.mjs';
 // Provider-free benchmark for audit 2026-11-01 #6 (let the body keep working while the model thinks).
 // The real NativeToolRuntime runs on a deterministic clock behind a fake Minecraft bridge: each action takes a fixed
 // simulated time and every model decision takes a fixed thinking time. Nothing calls a provider or a server. Each
-// strategy issues the same model-authored actions, so only the scheduling of thinking against body time differs.
+// strategy completes the same workload; keepGoing also dispatches a speculative leg that the reply cancels.
 //
 //   node src/benchmark/body-overlap-benchmark.mjs [thinkingMs=4000]
 const [thinkingArg = '4000'] = process.argv.slice(2);
@@ -81,6 +81,7 @@ function harness(strategy) {
 	const clock = deterministicClock();
 	const record = { agentId: `overlap-${strategy}`, provider: 'synthetic-benchmark', model: 'selected-model-simulation', reasoningEffort: 'fixed-delay', goalRevision: 1, currentGoal: 'Benchmark routine' };
 	const dispatched = [];
+	const executions = new Map();
 	const bodyBusy = [];
 	const endedAt = [];
 	let position = { x: 0, y: 64, z: 0 };
@@ -94,15 +95,27 @@ function harness(strategy) {
 		publicationGraceMs: 0,
 		bridge: { send: async (type, _agentId, payload) => {
 			if (type === 'action_cancel') {
-				clock.setTimeoutFn(() => runtime.onActionResult(record, { goalRevision: payload.goalRevision, actionId: payload.actionId, state: 'CANCELLED', reasonCode: 'ACTION_CANCELLED', actionObservation: { position } }), 50);
+				clock.setTimeoutFn(() => {
+					const execution = executions.get(payload.actionId);
+					assert.equal(execution.state, 'RUNNING', 'only running work can be cancelled');
+					execution.timer.cancelled = true;
+					execution.state = 'CANCELLED';
+					execution.finishedAtMs = clock.now();
+					runtime.onActionResult(record, { goalRevision: payload.goalRevision, actionId: payload.actionId, state: 'CANCELLED', reasonCode: 'ACTION_CANCELLED', actionObservation: { position } });
+				}, 50);
 				return;
 			}
 			if (type !== 'action_command') return;
 			const step = durations.get(JSON.stringify([payload.actionType, payload.arguments]));
 			assert.ok(step !== undefined, `unplanned action ${payload.actionType}`);
-			dispatched.push({ actionType: payload.actionType, arguments: structuredClone(payload.arguments) });
+			const action = { actionType: payload.actionType, arguments: structuredClone(payload.arguments) };
+			dispatched.push(action);
 			const startedAt = clock.now();
-			clock.setTimeoutFn(() => {
+			const execution = { ...action, state: 'RUNNING', startedAtMs: startedAt };
+			executions.set(payload.actionId, execution);
+			execution.timer = clock.setTimeoutFn(() => {
+				execution.state = 'SUCCEEDED';
+				execution.finishedAtMs = clock.now();
 				// Each completed leg moves the body, so a keepGoing leg counts as progress.
 				position = { ...position, x: position.x + 16 };
 				bodyBusy.push(clock.now() - startedAt);
@@ -119,7 +132,7 @@ function harness(strategy) {
 	const plan = (steps) => { for (const step of steps) durations.set(JSON.stringify([step.actionType, normalizeMinecraftToolCall('startAction', { actionType: step.actionType, arguments: step.arguments }).arguments]), step); };
 	const call = (name, args) => runtime.execute({ agentId: record.agentId, goalRevision: 1, turnId: 'turn-1', callId: `call-${++ordinal}`, tool: normalizeMinecraftToolCall(name, args) }, record);
 	const action = (step) => ({ actionType: step.actionType, arguments: step.arguments });
-	return { clock, runtime, call, action, plan, dispatched, bodyBusy, endedAt, dispose: () => runtime.disposeAll() };
+	return { clock, runtime, call, action, plan, dispatched, executions, bodyBusy, endedAt, dispose: () => runtime.disposeAll() };
 }
 
 const think = (clock) => clock.advanceBy(THINKING_MS);
@@ -155,6 +168,15 @@ async function afterChain() {
 	} finally { await h.dispose(); }
 }
 
+function tunnelAccounting(h, completedAtMs) {
+	const dispatches = [...h.executions.values()].map(({ timer, ...execution }) => execution);
+	assert.ok(dispatches.every(({ state }) => state === 'SUCCEEDED' || state === 'CANCELLED'), 'all tunnel dispatches must settle');
+	const digMs = (state) => dispatches.filter((row) => row.actionType === 'dig_to' && row.state === state)
+		.reduce((total, row) => total + row.finishedAtMs - row.startedAtMs, 0);
+	return { dispatches, completedDigMs: digMs('SUCCEEDED'), cancelledDigMs: digMs('CANCELLED'),
+		completedAtMs, stopFinishedAtMs: h.clock.now() };
+}
+
 // Today's default for open-ended work: one decision per tunnel leg.
 async function serialTunnel() {
 	const h = harness('serial-tunnel');
@@ -164,7 +186,7 @@ async function serialTunnel() {
 			await think(h.clock);
 			assert.equal((await h.clock.until(h.call('act', h.action(TUNNEL_LEG)))).state, 'SUCCEEDED');
 		}
-		return { elapsedMs: h.clock.now(), decisions: TUNNEL_LEGS, dispatched: h.dispatched, bodyMs: h.bodyBusy.reduce((a, b) => a + b, 0) };
+		return { elapsedMs: h.clock.now(), decisions: TUNNEL_LEGS, dispatched: h.dispatched, accounting: tunnelAccounting(h, h.clock.now()), bodyMs: h.bodyBusy.reduce((a, b) => a + b, 0) };
 	} finally { await h.dispose(); }
 }
 
@@ -184,15 +206,23 @@ async function keepGoingTunnel() {
 		// Its reply (any body call) stops the leg running now.
 		const reply = await h.clock.until(h.call('act', { actionType: 'look_at', arguments: { x: 200, y: 64, z: 0 } }));
 		assert.equal(reply.replacedAction.state, 'CANCELLED');
-		return { elapsedMs: legsDoneAt, decisions: 2, dispatched: h.dispatched.filter((row) => row.actionType === 'dig_to').slice(0, TUNNEL_LEGS),
-			bodyMs: h.bodyBusy.slice(0, TUNNEL_LEGS).reduce((a, b) => a + b, 0) };
+		const accounting = tunnelAccounting(h, legsDoneAt);
+		return { elapsedMs: legsDoneAt, decisions: 2, dispatched: h.dispatched, accounting,
+			bodyMs: accounting.completedDigMs };
 	} finally { await h.dispose(); }
 }
 
 const wallStartedAt = performance.now();
 const results = { serialChain: await serialChain(), afterChain: await afterChain(), serialTunnel: await serialTunnel(), keepGoingTunnel: await keepGoingTunnel() };
 assert.deepEqual(results.afterChain.dispatched, results.serialChain.dispatched, 'after dispatches exactly the serial chain');
-assert.deepEqual(results.keepGoingTunnel.dispatched, results.serialTunnel.dispatched, 'keepGoing digs exactly the serial legs');
+const completedDigs = (result) => result.accounting.dispatches
+	.filter(({ actionType, state }) => actionType === 'dig_to' && state === 'SUCCEEDED')
+	.map(({ actionType, arguments: args }) => ({ actionType, arguments: args }));
+assert.deepEqual(completedDigs(results.keepGoingTunnel), results.serialTunnel.dispatched, 'keepGoing completes exactly the serial legs');
+assert.deepEqual(results.keepGoingTunnel.accounting.dispatches.map(({ actionType, state }) => [actionType, state]), [
+	...Array.from({ length: TUNNEL_LEGS }, () => ['dig_to', 'SUCCEEDED']),
+	['dig_to', 'CANCELLED'], ['look_at', 'SUCCEEDED'],
+], 'the full tunnel dispatch list includes one cancelled speculative dig and the stop reply');
 const compare = (serial, overlapped) => ({
 	serialMs: results[serial].elapsedMs, overlappedMs: results[overlapped].elapsedMs,
 	savedMs: results[serial].elapsedMs - results[overlapped].elapsedMs,
@@ -205,8 +235,9 @@ process.stdout.write(`${JSON.stringify({
 	classification: 'synthetic, deterministic timing; no live provider or Minecraft server',
 	controller: 'real NativeToolRuntime with a deterministic clock and a fake action bridge',
 	thinkingMsPerDecision: THINKING_MS,
-	workloads: { chain: CHAIN.map(({ actionType, durationMs }) => ({ actionType, durationMs })), tunnel: { leg: TUNNEL_LEG.arguments, legs: TUNNEL_LEGS, legMs: TUNNEL_LEG.durationMs } },
-	correctness: 'PASSED: each overlapped strategy dispatched exactly the serial strategy\'s actions, in order',
+	workloads: { chain: CHAIN.map(({ actionType, durationMs }) => ({ actionType, durationMs })), tunnel: { leg: TUNNEL_LEG.arguments, legs: TUNNEL_LEGS, legMs: TUNNEL_LEG.durationMs, accounting: { serial: results.serialTunnel.accounting, keepGoing: results.keepGoingTunnel.accounting } } },
+	correctness: 'PASSED: known-chain dispatches and completed tunnel work match serial, in order; tunnel includes one cancelled speculative dig and a completed stop reply',
+	timingBasis: 'Comparison ends at workload completion; tunnel stopFinishedAtMs also includes cancellation acknowledgement and the stop reply. Cancelled dig time is simulated occupancy, not measured blocks or live gameplay cost.',
 	comparisons: { knownChain: compare('serialChain', 'afterChain'), openTunnel: compare('serialTunnel', 'keepGoingTunnel') },
 	benchmarkWallClockMs: Number((performance.now() - wallStartedAt).toFixed(1)),
 }, null, 2)}\n`);
