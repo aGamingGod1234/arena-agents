@@ -61,26 +61,67 @@ class Rcon:
             self.socket.close()
             raise
 
-    def _packet(self):
+    def _packet(self, deadline):
         def read(count):
             data = b''
             while len(data) < count:
+                if deadline is not None:
+                    remaining = deadline - time.monotonic()
+                    if remaining <= 0:
+                        raise TimeoutError('RCON response timed out')
+                    self.socket.settimeout(remaining)
                 chunk = self.socket.recv(count - len(data))
                 if not chunk:
                     raise ConnectionError('RCON connection closed')
                 data += chunk
             return data
         length = struct.unpack('<i', read(4))[0]
+        if not 10 <= length <= 1024 * 1024:
+            raise ConnectionError('Malformed RCON packet length')
         body = read(length)
-        request, _ = struct.unpack('<ii', body[:8])
-        return request, body[8:-2].decode('utf-8', 'replace')
+        if body[-2:] != b'\x00\x00':
+            raise ConnectionError('Malformed RCON string terminators')
+        request, kind = struct.unpack('<ii', body[:8])
+        return request, kind, body[8:-2]
 
-    def _send(self, kind, text):
+    def _write(self, kind, text):
         self.request += 1
         payload = struct.pack('<ii', self.request, kind) + text.encode('utf-8') + b'\x00\x00'
         self.socket.sendall(struct.pack('<i', len(payload)) + payload)
-        request, body = self._packet()
-        return request if kind == 3 else body
+        return self.request
+
+    def _send(self, kind, text):
+        timeout = self.socket.gettimeout()
+        deadline = None if timeout is None else time.monotonic() + timeout
+        try:
+            expected = self._write(kind, text)
+            request, reply_kind, body = self._packet(deadline)
+            if kind == 3:
+                if reply_kind != 2 or request not in (expected, -1):
+                    raise ConnectionError('Unexpected RCON authentication response')
+                self.socket.settimeout(timeout)
+                return request
+            chunks = []
+            marker = None
+            while True:
+                if reply_kind != 0:
+                    raise ConnectionError('Unexpected RCON command response type')
+                if request == expected:
+                    chunks.append(body)
+                    if marker is None:
+                        # Minecraft processes one request per read. Send only after its first
+                        # reply; the unsupported type-0 reply follows every command chunk.
+                        marker = self._write(0, '')
+                elif marker is not None and request == marker:
+                    self.socket.settimeout(timeout)
+                    return b''.join(chunks).decode('utf-8', 'replace')
+                else:
+                    raise ConnectionError('Unexpected RCON response request ID')
+                request, reply_kind, body = self._packet(deadline)
+        except Exception:
+            # A failed read leaves the command boundary unknown; never reuse this stream.
+            self.socket.close()
+            raise
 
     def command(self, text):
         return self._send(2, text)
