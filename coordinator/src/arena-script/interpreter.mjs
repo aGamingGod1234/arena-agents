@@ -36,6 +36,8 @@ const COMPOUND_ACTION_BYTES = 32_768;
 const CANONICAL_LIMITS = Object.freeze({ depth: 256, nodes: 4_096, keys: 4_096, stringBytes: 16_384, factBytes: MAX_LINE_BYTES * 2, arrayLength: 256, outputBytes: 4_096, resultBytes: 4_096, watcherIdBytes: 128 });
 const IDLE_YIELD = frozenRecord({ kind: 'idle' });
 const LOCATED_ERRORS = new WeakSet();
+const ARENA_FUNCTIONS = new WeakSet();
+const TRY_RESULT_FUNCTION = frozenRecord({ builtin: 'tryResult' });
 
 /** Names the code and authored line:column in the message itself, since that text is what reaches the model. */
 function locatedError(error, fallback) {
@@ -552,7 +554,7 @@ export class ArenaScriptInterpreter {
 			throw this.#error('UNKNOWN_MEMBER', `ArenaScript UNKNOWN_MEMBER: cannot read ${name} of ${operandKind(object)}${subjectText(node.object, ' (', ')')}${object === null ? '; a fact this sample lacks reads null, so test it first' : ''}`, node);
 		}
 		// A function value is opaque: its closure record is interpreter state, not data.
-		if (isArenaFunction(object) || object.builtin === 'tryResult') throw this.#error('UNKNOWN_MEMBER', `ArenaScript UNKNOWN_MEMBER: functions have no member ${name}`, node);
+		if (isArenaFunction(object) || object === TRY_RESULT_FUNCTION) throw this.#error('UNKNOWN_MEMBER', `ArenaScript UNKNOWN_MEMBER: functions have no member ${name}`, node);
 		if (Object.hasOwn(object, name)) return this.#values.push(object[name]);
 		// A key this record lacks reads null, as JavaScript reads undefined: optional facts (hazard, fire, lavaFlow)
 		// appear only while they apply, so a guard over them must not end the program on a quiet sample.
@@ -1088,7 +1090,7 @@ class Environment {
 function createRootEnvironment(bindings, context) {
 	const environment = new Environment(null, context);
 	for (const name of CAPABILITY_NAMES) environment.define(name, Object.freeze(Object.assign(Object.create(null), { capability: name })), 'const');
-	environment.define('tryResult', Object.freeze(Object.assign(Object.create(null), { builtin: 'tryResult' })), 'const');
+	environment.define('tryResult', TRY_RESULT_FUNCTION, 'const');
 	environment.define('undefined', undefined, 'const');
 	environment.define('NaN', NaN, 'const');
 	environment.define('Infinity', Infinity, 'const');
@@ -1181,8 +1183,12 @@ function countedIterations(node) {
 function expressionListFrame(nodes, environment) { return { type: 'expressions', nodes, environment, index: 0 }; }
 function normalCompletion() { return { kind: 'normal' }; }
 function isCapability(value) { return value && typeof value === 'object' && typeof value.capability === 'string'; }
-function isArenaFunction(value) { return value && typeof value === 'object' && value.kind === 'arena-function'; }
-function createFunction(node, environment) { return Object.freeze(Object.assign(Object.create(null), { kind: 'arena-function', node, environment })); }
+function isArenaFunction(value) { return ARENA_FUNCTIONS.has(value); }
+function createFunction(node, environment) {
+	const fn = Object.freeze(Object.assign(Object.create(null), { kind: 'arena-function', node, environment }));
+	ARENA_FUNCTIONS.add(fn);
+	return fn;
+}
 // Direct player.mine accepts autoAim like the bare mine alias; lower it the same way so autoAim never reaches break_block.
 function isDirectMineWithAutoAim(path, args) {
 	return path?.length === 2 && path[0] === 'player' && path[1] === 'mine' && args.length === 1
