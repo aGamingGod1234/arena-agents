@@ -15,6 +15,7 @@ import json
 import os
 import re
 import secrets
+import signal
 import shutil
 import socket
 import struct
@@ -98,6 +99,7 @@ class LiveServer:
         self.password = secrets.token_hex(16)
         self.rcon_port = free_port()
         self.process = None
+        self._process_group = None
         self.rcon = None
         self.log_path = os.path.join(self.run_dir, 'live-server.log')
 
@@ -142,8 +144,13 @@ class LiveServer:
         relative = os.path.relpath(self.run_dir, ROOT)
         self.log = open(self.log_path, 'w', encoding='utf-8')
         extra = [f'-PserverJvmArgs={json.dumps(self.jvm_args)}'] if self.jvm_args else []
+        ownership = ({'creationflags': subprocess.CREATE_NEW_PROCESS_GROUP} if os.name == 'nt'
+                     else {'start_new_session': True})
         self.process = subprocess.Popen(self._gradle(':runServer', f'-PserverRunDir={relative}', *extra, '--args=nogui'),
-                                        cwd=ROOT, stdout=self.log, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL)
+                                        cwd=ROOT, stdout=self.log, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL,
+                                        **ownership)
+        if os.name != 'nt':
+            self._process_group = self.process.pid
         deadline = time.monotonic() + timeout
         while time.monotonic() < deadline:
             text = self.read_log()
@@ -180,6 +187,17 @@ class LiveServer:
             time.sleep(0.5)
         return False
 
+    def _kill_process_tree(self):
+        if os.name == 'nt':
+            subprocess.run(['taskkill', '/PID', str(self.process.pid), '/T', '/F'],
+                           check=True, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
+        elif self._process_group is not None:
+            try:
+                os.killpg(self._process_group, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+            self._process_group = None
+
     def stop(self, timeout=180):
         if self.rcon is not None:
             try:
@@ -190,11 +208,16 @@ class LiveServer:
             self.rcon = None
         if self.process is not None:
             try:
-                self.process.wait(timeout)
-            except subprocess.TimeoutExpired:
-                self.process.kill()
-                self.process.wait()
-            self.log.close()
+                try:
+                    self.process.wait(timeout)
+                except subprocess.TimeoutExpired:
+                    self._kill_process_tree()
+                    self.process.wait()
+                # A launcher may exit before its descendants, so keep the group ID until cleanup.
+                if self._process_group is not None:
+                    self._kill_process_tree()
+            finally:
+                self.log.close()
         return self.process.returncode if self.process else None
 
 
