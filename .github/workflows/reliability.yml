@@ -11,7 +11,7 @@ permissions:
 jobs:
   coordinator:
     name: Coordinator (${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ (matrix.os == 'ubuntu-latest' || matrix.os == 'ubuntu-24.04') && 'boat-large' || matrix.os }}
     strategy:
       fail-fast: false
       matrix:
@@ -72,7 +72,7 @@ jobs:
 
   java-targets:
     name: Mod on Minecraft ${{ matrix.mc }}
-    runs-on: ubuntu-latest
+    runs-on: boat-large
     strategy:
       fail-fast: false
       matrix:
